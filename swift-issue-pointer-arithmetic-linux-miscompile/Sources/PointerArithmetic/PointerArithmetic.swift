@@ -34,7 +34,7 @@
 
 public struct Vec {
     public let raw: Int
-    public init(_ r: Int) { self.raw = r }
+    public init(_ raw: Int) { self.raw = raw }
 }
 
 public func + (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {

@@ -45,20 +45,13 @@ let package = Package(
     swiftLanguageModes: [.v6]
 )
 
-// Replicates swift-affine-primitives' per-target swiftSettings to test
-// whether the bug requires one of these features. Bisect downward by
-// commenting out lines until the test passes on Linux release.
+// Bisecting affine-primitives swiftSettings to find the minimum trigger.
+// d938a26 (all 10 settings): bug FIRES on Linux release.
+// This commit: only .enableExperimentalFeature("Lifetimes") — hypothesis,
+// since the bug shape (release-mode optimizer reordering pointer loads)
+// is most naturally an artefact of lifetime analysis.
 for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
     target.swiftSettings = (target.swiftSettings ?? []) + [
-        .strictMemorySafety(),
-        .enableUpcomingFeature("ExistentialAny"),
-        .enableUpcomingFeature("InternalImportsByDefault"),
-        .enableUpcomingFeature("MemberImportVisibility"),
-        .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-        .enableExperimentalFeature("LifetimeDependence"),
-        .enableExperimentalFeature("Lifetimes"),
-        .enableExperimentalFeature("SuppressedAssociatedTypes"),
-        .enableUpcomingFeature("InferIsolatedConformances"),
-        .enableUpcomingFeature("LifetimeDependence")
+        .enableExperimentalFeature("Lifetimes")
     ]
 }
