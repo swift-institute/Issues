@@ -1,23 +1,3 @@
-# ISSUE-77558-COMMENT — `gh issue comment` text for swiftlang/swift#77558 (NOT YET SUBMITTED)
-
-**Status**: revised twice on 2026-05-11. First revision: lead with empirically-verified Linux release firing path; caveat prior macOS-standalone observation. Second revision (orchestrator review): three wording nits applied (FIRES-row clarification, earlier-toolchain provenance parenthetical, Workaround split into its own sub-section); post-able body extracted to sibling file `ISSUE-77558-COMMENT-BODY.md` so the metadata-bearing master file is not posted. Awaiting explicit user YES before `gh issue comment 77558 -R swiftlang/swift --body-file <sibling-body-file>`.
-
-**Context**: Originally drafted as new-issue body (`UPSTREAM-DRAFT.md`); retired and replaced with this comment-on-existing-issue draft after the convergence identified [`swiftlang/swift#77558`](https://github.com/swiftlang/swift/issues/77558) (filed 2024-11-12, title: "Code generation bug in release mode") as the matching upstream report. Revised 2026-05-11 (PR — restructure landing) after empirical probing on current toolchains narrowed the firing surface — see "Trigger surface narrowing" below.
-
-**Posting recipe**:
-
-```bash
-gh issue comment 77558 \
-  -R swiftlang/swift \
-  --body-file swift-institute/Issues/swift-issue-pointer-arithmetic-linux-miscompile/ISSUE-77558-COMMENT-BODY.md
-```
-
-The sibling file `ISSUE-77558-COMMENT-BODY.md` carries ONLY the comment text without this internal-record metadata / Filing checklist / See-also section — that file is the one to pass to `gh issue comment --body-file`.
-
----
-
-## Comment body (verbatim copy for record; **post via sibling `ISSUE-77558-COMMENT-BODY.md` instead** — see Posting recipe above)
-
 Possibly the same root cause as this issue, surfaced via chained `advanced(by:)` on Array storage. **Fires under `swift test -c release` on `swiftlang/swift:6.3.1-RELEASE` Linux Docker; does not reproduce under standalone `swiftc -O` on the same Docker image or on current Apple Swift 6.3.1 / Xcode 26.** Does **not** reproduce on `swiftlang/swift:nightly-main`, so the defect appears toolchain-side and fixed on main.
 
 ### Minimal repro
@@ -61,7 +41,7 @@ Confirmed by variant probes:
 - ✓ Does NOT bug when the chain is collapsed to a single positive `advanced(by:)`
 - ✓ Does NOT bug when a side-effect read of every element precedes the chain
 
-### Optimized SIL symptom (from convergence analysis)
+### Optimized SIL symptom
 
 The literal `[0, 10, 20, 30, 40]` produces only **two** stores in optimized SIL — at offsets 0 and 4 of the five-element tail-allocated `_ContiguousArrayStorage<Int>`:
 
@@ -113,21 +93,3 @@ The same workaround pattern reported in this issue restores correct behavior on 
 ### Continuous fix-detection
 
 This issue carries an in-tree `withKnownIssue`-based fix-detection harness at [swift-institute/Issues/swift-issue-pointer-arithmetic-linux-miscompile](https://github.com/swift-institute/Issues/tree/main/swift-issue-pointer-arithmetic-linux-miscompile). The per-issue CI matrix runs `swift test -c release` against `swiftlang/swift:nightly-main-jammy` on a weekly cron; when the `withKnownIssue` block stops firing on nightly (i.e., the fix has propagated to a distribution we consume), that leg flips red and surfaces the close signal automatically.
-
----
-
-## Filing checklist
-
-- [ ] User authorizes `gh issue comment 77558 -R swiftlang/swift --body-file ISSUE-77558-COMMENT-BODY.md` (sibling file — NOT this master file)
-- [ ] After commenting: post URL back to this file and to `swift-affine-primitives/Tests/.../AffineSLITests.swift` `.bug(URL, ...)` trait
-- [ ] Update `swift-institute/Research/swift-compiler-bug-catalog.md` "Fixed upstream on 6.4-dev nightly-main" entry to cross-link the comment
-
-**Why two files**: this master file carries internal-record metadata (Status / Context / Filing-checklist / See-also pointing to local `/tmp/` paths) that should not propagate to the GitHub issue. `ISSUE-77558-COMMENT-BODY.md` is the verbatim post-able text. Keep both in sync: when revising the comment, edit the body section of this file AND mirror to the body-only sibling.
-
-## See also
-
-- `/tmp/swift-pointer-bug-converged.md` — converged plan
-- `/tmp/swift-pointer-bug-round-1-for-chatgpt.md` — input pack
-- `/tmp/swift-pointer-bug-round-2-claude.md` — Round 2 transcript
-- `swift-issue-pointer-arithmetic-linux-miscompile/INVESTIGATION-ARC.md` — full arc + blind-spot analysis
-- `swift-issue-pointer-arithmetic-linux-miscompile/evidence/README.md` — discrepancy section explaining the SwiftPM-test-runner-gated firing observation
