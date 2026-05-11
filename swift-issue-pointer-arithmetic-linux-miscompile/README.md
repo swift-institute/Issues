@@ -22,19 +22,34 @@ expected addresses. The miscompile is at the load codegen.
 
 ## Demonstration
 
-This directory contains two test targets that share **byte-identical** source
-files (`PointerArithmeticTests.swift`):
+This directory contains **eleven test targets** that share byte-identical
+source files (`PointerArithmeticTests.swift`). The targets differ only by
+their per-target `swiftSettings` in the top-level `Package.swift`. CI runs
+every target on every platform; exactly one target — `WithLifetimes` —
+fails on Linux release. This proves `.Lifetimes` is the **unique** trigger
+among the ecosystem-wide settings that swift-affine-primitives enables.
 
-| Target | swiftSettings | Linux 6.3 release | macOS | Windows |
-|--------|--------------|-------------------|-------|---------|
-| `WithLifetimes` | `.enableExperimentalFeature("Lifetimes")` | **FAILS** | passes | passes |
-| `WithoutLifetimes` | _(none)_ | passes | passes | passes |
+| Target | swiftSettings | Linux 6.3 release |
+|--------|--------------|-------------------|
+| `WithLifetimes` | `.enableExperimentalFeature("Lifetimes")` | **FAILS** |
+| `WithLifetimeDependenceExperimental` | `.enableExperimentalFeature("LifetimeDependence")` | passes |
+| `WithLifetimeDependenceUpcoming` | `.enableUpcomingFeature("LifetimeDependence")` | passes |
+| `WithStrictMemorySafety` | `.strictMemorySafety()` | passes |
+| `WithExistentialAny` | `.enableUpcomingFeature("ExistentialAny")` | passes |
+| `WithInternalImportsByDefault` | `.enableUpcomingFeature("InternalImportsByDefault")` | passes |
+| `WithMemberImportVisibility` | `.enableUpcomingFeature("MemberImportVisibility")` | passes |
+| `WithNonisolatedNonsendingByDefault` | `.enableUpcomingFeature("NonisolatedNonsendingByDefault")` | passes |
+| `WithSuppressedAssociatedTypes` | `.enableExperimentalFeature("SuppressedAssociatedTypes")` | passes |
+| `WithInferIsolatedConformances` | `.enableUpcomingFeature("InferIsolatedConformances")` | passes |
+| `Control` | _(none)_ | passes |
 
-The diff between the two targets is exactly one line in the top-level
-`Package.swift` (the swiftSettings list). The Swift source itself is
-identical. CI in this repo runs both side-by-side on every push, so the
-demonstration is self-contained: a maintainer cloning the repo sees the
-bug fire and a paired control proving the trigger.
+All targets pass on macOS, Windows, and Linux debug.
+
+The source file in every target is byte-identical (`diff -q` confirms across
+all 11). The diff between the targets is exclusively the `swiftSettings:`
+clause in `Package.swift`. CI's per-target test result is the demonstration
+— no need to dig through commit history or extract a Configuration matrix
+from a comment.
 
 ## Reproduction
 
@@ -51,8 +66,10 @@ both pass.
 To narrow further:
 
 ```bash
-swift test -c release --filter WithLifetimes
-swift test -c release --filter WithoutLifetimes
+swift test -c release --filter WithLifetimes   # fails on Linux
+swift test -c release --filter Control          # passes on Linux
+swift test -c release --filter WithLifetimeDependenceExperimental  # passes — not the trigger
+# … and so on for the other 8 With* targets, all passing on Linux.
 ```
 
 ## Environment
@@ -64,8 +81,7 @@ swift test -c release --filter WithoutLifetimes
 
 ## Minimal Code
 
-Both `WithLifetimes/PointerArithmeticTests.swift` and
-`WithoutLifetimes/PointerArithmeticTests.swift` (byte-identical):
+All 11 `<TargetName>/PointerArithmeticTests.swift` files are byte-identical:
 
 ```swift
 import Testing
@@ -76,11 +92,11 @@ struct Vec {
 }
 
 func + (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
-    lhs.advanced(by: rhs.raw)
+    unsafe lhs.advanced(by: rhs.raw)
 }
 
 func - (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
-    lhs.advanced(by: -rhs.raw)
+    unsafe lhs.advanced(by: -rhs.raw)
 }
 
 @Suite
@@ -88,15 +104,19 @@ struct PointerArithmeticReduced {
     @Test
     func reducedRepro() {
         var values: [Int] = [0, 10, 20, 30, 40]
-        values.withUnsafeMutableBufferPointer { buf in
+        unsafe values.withUnsafeMutableBufferPointer { buf in
             let base = buf.baseAddress!
-            let advanced = base + Vec(4)
-            let backed = advanced - Vec(2)
-            #expect(backed.pointee == 20)
+            let advanced = unsafe base + Vec(4)
+            let backed = unsafe advanced - Vec(2)
+            #expect(unsafe backed.pointee == 20)
         }
     }
 }
 ```
+
+The `unsafe` markers are present so the same file compiles under
+`.strictMemorySafety()`; they are no-ops without that setting, keeping the
+file byte-identical across all 11 targets.
 
 **Expected:** `backed.pointee == 20` (read from `&values[2]`).
 **Observed on Linux release with `.Lifetimes` enabled:** `backed.pointee`

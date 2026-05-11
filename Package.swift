@@ -10,16 +10,10 @@ import PackageDescription
 // known workaround.
 //
 // Pattern: where an issue is gated by a single SwiftPM `swiftSettings`
-// feature, register TWO test targets that share byte-identical sources
-// and differ only in the swiftSettings list — one demonstrates the bug
-// firing, the other is the control. CI then runs both side-by-side and
-// the diff IS the demonstration.
-//
-// CI semantics for an issue reproducer differ from production-package CI:
-// **a permanently-failing platform leg IS the bug's running evidence**.
-// When the upstream fix lands and the affected leg flips green, that is
-// the signal to close the issue and remove (or convert to regression
-// fixture) the reproducer.
+// feature, register a TEST TARGET PER CANDIDATE feature plus one control
+// target with no settings. All targets share byte-identical source. CI
+// then runs every target side-by-side; on the affected platform, exactly
+// the target carrying the load-bearing feature is red — uniqueness proof.
 
 let package = Package(
     name: "Issues",
@@ -29,23 +23,86 @@ let package = Package(
         //
         // Linux release-mode codegen miscompile: a `.pointee` read after a
         // user-authored `+`/`-` operator overload wrapping `.advanced(by:)`
-        // returns the value at the wrong address. Fires only when the
-        // enclosing target has `.enableExperimentalFeature("Lifetimes")`
-        // enabled. Affects Swift 6.3 stable and 6.4-dev nightly Linux
-        // release builds; macOS, Windows, and Linux debug all pass.
+        // returns the value at the wrong address. The bug was first
+        // observed in swift-affine-primitives, which had 10 swiftSettings
+        // enabled per the ecosystem-wide feature flags. Bisection landed
+        // on `.enableExperimentalFeature("Lifetimes")` as a sufficient
+        // single trigger; the targets below verify uniqueness by running
+        // each candidate setting in isolation against the same source.
+        //
+        // Expected results on Linux 6.3 release / 6.4-dev nightly release:
+        //   WithLifetimes                       — FAILS  (known trigger)
+        //   Every other With* target            — passes (control by feature)
+        //   Control (no swiftSettings)          — passes (control proper)
+        //
+        // On macOS / Windows / Linux debug: all targets pass.
 
-        // WithLifetimes: enables `.Lifetimes` — bug fires on Linux release.
+        // The known trigger.
         .testTarget(
             name: "WithLifetimes",
             path: "swift-issue-pointer-arithmetic-linux-miscompile/WithLifetimes",
             swiftSettings: [.enableExperimentalFeature("Lifetimes")]
         ),
 
-        // WithoutLifetimes: no swiftSettings — control. Passes on all
-        // platforms. Source file is byte-identical to WithLifetimes'.
+        // Pure control: zero swiftSettings.
         .testTarget(
-            name: "WithoutLifetimes",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithoutLifetimes"
+            name: "Control",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/Control"
+        ),
+
+        // The other 9 settings from affine-primitives, each in isolation.
+        .testTarget(
+            name: "WithStrictMemorySafety",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithStrictMemorySafety",
+            swiftSettings: [.strictMemorySafety()]
+        ),
+
+        .testTarget(
+            name: "WithExistentialAny",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithExistentialAny",
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")]
+        ),
+
+        .testTarget(
+            name: "WithInternalImportsByDefault",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithInternalImportsByDefault",
+            swiftSettings: [.enableUpcomingFeature("InternalImportsByDefault")]
+        ),
+
+        .testTarget(
+            name: "WithMemberImportVisibility",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithMemberImportVisibility",
+            swiftSettings: [.enableUpcomingFeature("MemberImportVisibility")]
+        ),
+
+        .testTarget(
+            name: "WithNonisolatedNonsendingByDefault",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithNonisolatedNonsendingByDefault",
+            swiftSettings: [.enableUpcomingFeature("NonisolatedNonsendingByDefault")]
+        ),
+
+        .testTarget(
+            name: "WithLifetimeDependenceExperimental",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithLifetimeDependenceExperimental",
+            swiftSettings: [.enableExperimentalFeature("LifetimeDependence")]
+        ),
+
+        .testTarget(
+            name: "WithSuppressedAssociatedTypes",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithSuppressedAssociatedTypes",
+            swiftSettings: [.enableExperimentalFeature("SuppressedAssociatedTypes")]
+        ),
+
+        .testTarget(
+            name: "WithInferIsolatedConformances",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithInferIsolatedConformances",
+            swiftSettings: [.enableUpcomingFeature("InferIsolatedConformances")]
+        ),
+
+        .testTarget(
+            name: "WithLifetimeDependenceUpcoming",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithLifetimeDependenceUpcoming",
+            swiftSettings: [.enableUpcomingFeature("LifetimeDependence")]
         )
     ],
     swiftLanguageModes: [.v6]
