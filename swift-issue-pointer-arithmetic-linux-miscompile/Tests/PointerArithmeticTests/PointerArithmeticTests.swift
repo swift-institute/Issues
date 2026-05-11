@@ -9,11 +9,11 @@ struct PointerArithmeticReduced {
     @Test
     func reducedRepro() {
         var values: [Int] = [0, 10, 20, 30, 40]
-        values.withUnsafeMutableBufferPointer { buf in
+        unsafe values.withUnsafeMutableBufferPointer { buf in
             let base = buf.baseAddress!
-            let advanced = base + Vec(4)
-            let backed = advanced - Vec(2)
-            #expect(backed.pointee == 20)
+            let advanced = unsafe base + Vec(4)
+            let backed = unsafe advanced - Vec(2)
+            #expect(unsafe backed.pointee == 20)
         }
     }
 }

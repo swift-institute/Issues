@@ -38,9 +38,9 @@ public struct Vec {
 }
 
 public func + (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
-    lhs.advanced(by: rhs.raw)
+    unsafe lhs.advanced(by: rhs.raw)
 }
 
 public func - (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
-    lhs.advanced(by: -rhs.raw)
+    unsafe lhs.advanced(by: -rhs.raw)
 }

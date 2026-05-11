@@ -40,7 +40,25 @@ let package = Package(
             name: "PointerArithmeticLinuxMiscompileTests",
             dependencies: ["PointerArithmeticLinuxMiscompile"],
             path: "swift-issue-pointer-arithmetic-linux-miscompile/Tests/PointerArithmeticTests"
-        ),
+        )
     ],
     swiftLanguageModes: [.v6]
 )
+
+// Replicates swift-affine-primitives' per-target swiftSettings to test
+// whether the bug requires one of these features. Bisect downward by
+// commenting out lines until the test passes on Linux release.
+for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
+    target.swiftSettings = (target.swiftSettings ?? []) + [
+        .strictMemorySafety(),
+        .enableUpcomingFeature("ExistentialAny"),
+        .enableUpcomingFeature("InternalImportsByDefault"),
+        .enableUpcomingFeature("MemberImportVisibility"),
+        .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+        .enableExperimentalFeature("LifetimeDependence"),
+        .enableExperimentalFeature("Lifetimes"),
+        .enableExperimentalFeature("SuppressedAssociatedTypes"),
+        .enableUpcomingFeature("InferIsolatedConformances"),
+        .enableUpcomingFeature("LifetimeDependence")
+    ]
+}
