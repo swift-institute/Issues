@@ -126,9 +126,9 @@ This issue carries an in-tree `withKnownIssue`-based fix-detection harness at [s
 
 ## Filing checklist
 
-- [ ] User authorizes `gh issue comment 77558 -R swiftlang/swift --body-file ISSUE-77558-COMMENT-BODY.md` (sibling file — NOT this master file)
-- [ ] After commenting: post URL back to this file and to `swift-affine-primitives/Tests/.../AffineSLITests.swift` `.bug(URL, ...)` trait
-- [ ] Update `swift-institute/Research/swift-compiler-bug-catalog.md` "Fixed upstream on 6.4-dev nightly-main" entry to cross-link the comment
+- [x] User authorized `gh issue comment 77558 -R swiftlang/swift --body-file ISSUE-77558-COMMENT-BODY.md` — posted 2026-05-11 under `coenttb`. Comment URL: <https://github.com/swiftlang/swift/issues/77558#issuecomment-4425028051>
+- [ ] Cross-link the comment URL on `swift-affine-primitives/Tests/.../AffineSLITests.swift` `.bug(URL, ...)` trait
+- [ ] Cross-link on `swift-institute/Research/swift-compiler-bug-catalog.md` "Fixed upstream on 6.4-dev nightly-main" entry
 
 **Why two files**: this master file carries internal-record metadata (Status / Context / Filing-checklist / See-also pointing to local `/tmp/` paths) that should not propagate to the GitHub issue. `ISSUE-77558-COMMENT-BODY.md` is the verbatim post-able text. Keep both in sync: when revising the comment, edit the body section of this file AND mirror to the body-only sibling.
 
