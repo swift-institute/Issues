@@ -4,104 +4,122 @@
 
 Minimal reproducer for a Linux-only release-mode codegen miscompile in which a
 `.pointee` read after a user-authored pointer arithmetic operator returns the
-value at the wrong address.
+value at the wrong address. **Gated by the experimental Swift feature
+`Lifetimes`** — without that swiftSetting, the same source compiles to
+correct code on every platform.
 
 ## Bug Summary
 
 User-authored `+` / `-` operator overloads on `UnsafeMutablePointer<Int>` that
 wrap `.advanced(by:)` produce correct pointer values, but the subsequent
-`.pointee` load reads from the wrong address. Affects only Linux release builds
-on Swift 6.3 stable and 6.4-dev nightly; macOS, Windows, and Linux debug all
-pass.
+`.pointee` load reads from the wrong address. Fires only when the enclosing
+target has `.enableExperimentalFeature("Lifetimes")` enabled in its SwiftPM
+swiftSettings.
 
 The arithmetic itself is correct — printing `UInt(bitPattern:)` of the
 intermediate pointers between the operator call and the load yields the
-expected addresses. The miscompile is at the load codegen, not the operator
-body.
+expected addresses. The miscompile is at the load codegen.
+
+## Demonstration
+
+This directory contains two test targets that share **byte-identical** source
+files (`PointerArithmeticTests.swift`):
+
+| Target | swiftSettings | Linux 6.3 release | macOS | Windows |
+|--------|--------------|-------------------|-------|---------|
+| `WithLifetimes` | `.enableExperimentalFeature("Lifetimes")` | **FAILS** | passes | passes |
+| `WithoutLifetimes` | _(none)_ | passes | passes | passes |
+
+The diff between the two targets is exactly one line in the top-level
+`Package.swift` (the swiftSettings list). The Swift source itself is
+identical. CI in this repo runs both side-by-side on every push, so the
+demonstration is self-contained: a maintainer cloning the repo sees the
+bug fire and a paired control proving the trigger.
 
 ## Reproduction
 
 ```bash
-# On Linux with Swift 6.3 or 6.4-dev nightly:
 git clone https://github.com/swift-institute/Issues.git
 cd Issues
-swift test -c release --filter PointerArithmeticReduced
+swift test -c release
 ```
 
-The test `reducedRepro` fails on Linux release. On macOS, Windows, and Linux
-debug, it passes. The targets `PointerArithmeticLinuxMiscompile` and
-`PointerArithmeticLinuxMiscompileTests` are registered in the top-level
-`Package.swift` and point into this sub-directory's `Sources/` and `Tests/`.
+On Linux 6.3 release: `WithLifetimes.reducedRepro` FAILS;
+`WithoutLifetimes.reducedRepro` passes. On macOS / Windows / Linux debug:
+both pass.
+
+To narrow further:
+
+```bash
+swift test -c release --filter WithLifetimes
+swift test -c release --filter WithoutLifetimes
+```
 
 ## Environment
 
 - **Swift versions:** 6.3 stable, 6.4-dev nightly
 - **Platform:** Linux (Ubuntu jammy, swift:6.3 and swiftlang/swift:nightly-main-jammy containers)
 - **Works on:** macOS (any build), Linux debug, Windows
+- **Trigger:** `.enableExperimentalFeature("Lifetimes")` in target's swiftSettings
 
 ## Minimal Code
 
-**Sources/PointerArithmetic/PointerArithmetic.swift:**
+Both `WithLifetimes/PointerArithmeticTests.swift` and
+`WithoutLifetimes/PointerArithmeticTests.swift` (byte-identical):
 
 ```swift
-public struct Vec {
-    public let raw: Int
-    public init(_ r: Int) { self.raw = r }
+import Testing
+
+struct Vec {
+    let raw: Int
+    init(_ raw: Int) { self.raw = raw }
 }
 
-public func + (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
+func + (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
     lhs.advanced(by: rhs.raw)
 }
 
-public func - (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
+func - (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
     lhs.advanced(by: -rhs.raw)
 }
-```
 
-**Tests/PointerArithmeticTests/PointerArithmeticTests.swift:**
-
-```swift
-@Test
-func reducedRepro() {
-    var values: [Int] = [0, 10, 20, 30, 40]
-    values.withUnsafeMutableBufferPointer { buf in
-        let base = buf.baseAddress!
-        let advanced = base + Vec(4)
-        let backed = advanced - Vec(2)
-        #expect(backed.pointee == 20)
+@Suite
+struct PointerArithmeticReduced {
+    @Test
+    func reducedRepro() {
+        var values: [Int] = [0, 10, 20, 30, 40]
+        values.withUnsafeMutableBufferPointer { buf in
+            let base = buf.baseAddress!
+            let advanced = base + Vec(4)
+            let backed = advanced - Vec(2)
+            #expect(backed.pointee == 20)
+        }
     }
 }
 ```
 
 **Expected:** `backed.pointee == 20` (read from `&values[2]`).
-**Observed on Linux release:** `backed.pointee` returns a different value;
-the load reads from the wrong address.
+**Observed on Linux release with `.Lifetimes` enabled:** `backed.pointee`
+returns a different value; the load reads from the wrong address.
 
 ## Reduction Path
 
 The bug was first observed in `swift-affine-primitives` with a much larger
 shape (`Tagged<Pointee, Ordinal>.Offset`, `Affine.Discrete.Vector`, a
 `Carrier.Protocol` witness, `~Copyable` generic parameters, package operator
-overloads). Aggressive single-pass reduction stripped all of these. **None
-were load-bearing.** What remains is the minimum trigger:
+overloads, 10 swiftSettings). Aggressive reduction stripped:
 
-- stdlib `UnsafeMutablePointer<Int>` + `.advanced(by:)`
-- a 10-line `Vec` struct wrapping a single `Int`
-- user-authored `+` / `-` operators that call `.advanced(by:)`
+- All wrapper types (`Tagged`, `Ordinal`, `Vector`, `Carrier.Protocol`)
+- The `~Copyable` generic parameter
+- All package operator overloads
+- 9 of the 10 swiftSettings
 
-## Failed Source-Level Fix Attempts
+What remains is the minimum trigger: stdlib `UnsafeMutablePointer<Int>` +
+10 lines of `Vec`/operator code + `.enableExperimentalFeature("Lifetimes")`.
 
-Three candidate fixes were applied symmetrically to the original failing
-operators in `swift-affine-primitives`. None resolved the bug:
-
-| # | Fix | Result on Linux 6.3 release + 6.4-dev nightly |
-|---|-----|-----------------------------------------------|
-| 1 | Explicit local `let offset = Int(bitPattern: rhs)` inside operator | Still fails |
-| 2 | Swap `@_transparent` → `@inlinable` | Still fails |
-| 3 | Wrap arithmetic in `withExtendedLifetime(rhs) { … }` | Still fails |
-
-The fixes were cumulative. None addressed the bug because the miscompile is at
-the call-site `.pointee` read, not at the operator body's pointer arithmetic.
+The Lifetimes setting was identified via bisection: commit `cc72949`
+narrowed from 10 settings to 1; each of the other 9 settings was confirmed
+unnecessary by exclusion.
 
 ## Heisenbug Character
 
@@ -109,15 +127,17 @@ Any diagnostic instrumentation that reads the result pointer between the
 operator call and the `.pointee` read structurally masks the bug:
 
 - Print statements between operator and load
-- Intermediate `let _ = UInt(bitPattern: backed)` materialization (single-line — **not** sufficient on its own, but multiple intermediate let-bindings together do mask)
-- A `print()` of the address inside a `#expect` message string
+- Multiple intermediate `let _ = UInt(bitPattern: backed)` materializations
+- `print()` of the address inside a `#expect` message string
 
-The reducedRepro above omits all such instrumentation. Adding any of them on
-Linux release heals the test.
+The `reducedRepro` above omits all such instrumentation. Adding any of them
+on Linux release with `.Lifetimes` enabled heals the test.
 
 ## Workaround for Consumers
 
-Bypass the user-authored operator and call `.advanced(by:)` directly:
+Drop `.enableExperimentalFeature("Lifetimes")` from the affected target's
+swiftSettings, OR bypass the user-authored operator and call `.advanced(by:)`
+directly:
 
 ```swift
 // Instead of:
@@ -126,28 +146,23 @@ let backed = advanced - Vec(2)
 let backed = advanced.advanced(by: -2)
 ```
 
-The stdlib direct-call form is not affected.
+The stdlib direct-call form is not affected by the miscompile.
 
 ## CI Status
 
-| Platform | Configuration | Status |
-|----------|---------------|--------|
-| macOS | Swift 6.3 release | Passes |
-| Linux | Swift 6.3 release | **FAILS** |
-| Linux | Swift 6.4-dev nightly release | **FAILS** |
-| Linux | Swift 6.3 debug | Passes |
-| Windows | Swift 6.3 release | Passes |
-
-CI workflow at `.github/workflows/ci.yml` runs all five legs on every push.
+The CI workflow at `.github/workflows/ci.yml` (top-level of the Issues repo)
+runs both targets on every push. The `Ubuntu (Swift 6.3, release)` and
+`Ubuntu (Swift 6.4-dev nightly, release)` legs are permanently red until
+the upstream fix lands — that red leg IS the bug's running evidence.
 
 ## Suggested Labels
 
-`bug`, `optimization`, `codegen`, `linux`, `unsafe-pointer`, `release-mode`
+`bug`, `optimization`, `codegen`, `linux`, `unsafe-pointer`, `release-mode`,
+`Lifetimes`, `experimental-feature`
 
 ## Original Discovery
 
 Bug surfaced in `swift-institute/swift-primitives/swift-affine-primitives` CI
 during release-mode test of `UnsafeMutablePointer<T> - Tagged<T, Ordinal>.Offset`
-operator. See `swift-affine-primitives/Research/swift-issue-pointer-arithmetic.md`
-for the full investigation trail, including the failed source-level fix
-attempts and the reduction sequence.
+operator. The affine-primitives target has `.Lifetimes` (and 9 other features)
+enabled per the swift-institute ecosystem-wide feature flags.
