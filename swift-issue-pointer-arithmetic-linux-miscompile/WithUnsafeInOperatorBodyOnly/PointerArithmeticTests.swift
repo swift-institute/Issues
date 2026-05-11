@@ -21,7 +21,7 @@ func - (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
 @Suite
 struct PointerArithmeticReduced {
     @Test
-    func reducedRepro() {
+    func reducedRepro_unsafeInOperatorBodyOnly() {
         var values: [Int] = [0, 10, 20, 30, 40]
         values.withUnsafeMutableBufferPointer { buf in
             let base = buf.baseAddress!

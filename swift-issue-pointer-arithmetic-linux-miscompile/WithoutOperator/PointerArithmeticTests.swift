@@ -11,7 +11,7 @@ import Testing
 @Suite
 struct PointerArithmeticReduced {
     @Test
-    func reducedRepro() {
+    func reducedRepro_withoutOperator() {
         var values: [Int] = [0, 10, 20, 30, 40]
         unsafe values.withUnsafeMutableBufferPointer { buf in
             let base = buf.baseAddress!
