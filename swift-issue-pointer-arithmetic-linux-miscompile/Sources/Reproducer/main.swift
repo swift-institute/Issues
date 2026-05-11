@@ -13,8 +13,12 @@
 import Darwin
 #elseif canImport(Glibc)
 import Glibc
-#elseif canImport(MSVCRT)
-import MSVCRT
+#elseif canImport(Musl)
+import Musl
+#elseif canImport(Bionic)
+import Bionic
+#elseif canImport(WinSDK)
+import WinSDK
 #endif
 
 struct Vec {
