@@ -103,6 +103,16 @@ let package = Package(
             name: "WithLifetimeDependenceUpcoming",
             path: "swift-issue-pointer-arithmetic-linux-miscompile/WithLifetimeDependenceUpcoming",
             swiftSettings: [.enableUpcomingFeature("LifetimeDependence")]
+        ),
+
+        // Disambiguator target. Differs from all sibling targets only by
+        // the absence of `unsafe` keyword markers in its source. If this
+        // target passes on Linux release while every other target fails,
+        // the `unsafe` keyword itself is the load-bearing trigger — none
+        // of the swiftSettings are.
+        .testTarget(
+            name: "WithoutUnsafe",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithoutUnsafe"
         )
     ],
     swiftLanguageModes: [.v6]

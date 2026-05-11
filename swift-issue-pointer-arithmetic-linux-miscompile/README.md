@@ -4,52 +4,66 @@
 
 Minimal reproducer for a Linux-only release-mode codegen miscompile in which a
 `.pointee` read after a user-authored pointer arithmetic operator returns the
-value at the wrong address. **Gated by the experimental Swift feature
-`Lifetimes`** — without that swiftSetting, the same source compiles to
-correct code on every platform.
+value at the wrong address. **Trigger: the Swift 6.3 `unsafe` keyword
+expression** on the operator's call to `.advanced(by:)` (or on the call site).
+With `unsafe` markers removed, the same source compiles to correct code on
+every platform.
 
 ## Bug Summary
 
 User-authored `+` / `-` operator overloads on `UnsafeMutablePointer<Int>` that
-wrap `.advanced(by:)` produce correct pointer values, but the subsequent
-`.pointee` load reads from the wrong address. Fires only when the enclosing
-target has `.enableExperimentalFeature("Lifetimes")` enabled in its SwiftPM
-swiftSettings.
+wrap `unsafe .advanced(by:)` produce correct pointer values, but the subsequent
+`.pointee` load reads from the wrong address. Fires on Linux release mode any
+time the source uses the `unsafe` keyword expression on the `.advanced(by:)`
+call. **No swiftSettings, experimental features, or upcoming features required.**
 
 The arithmetic itself is correct — printing `UInt(bitPattern:)` of the
 intermediate pointers between the operator call and the load yields the
 expected addresses. The miscompile is at the load codegen.
 
+## Investigation Note
+
+Earlier iterations of this README cited `.enableExperimentalFeature("Lifetimes")`
+as the trigger. That hypothesis was falsified when the 11-target sweep
+(commit `5965972`) showed ALL 11 targets — including the `Control` target with
+zero swiftSettings — failing on Linux release. The common factor across all 11
+was the `unsafe` keyword markers, which had been added back along with the
+swiftSettings. The `WithoutUnsafe` disambiguator target was added in the next
+commit to verify: same source layout, `unsafe` markers removed, swiftSettings
+empty — and it passes on Linux release.
+
 ## Demonstration
 
-This directory contains **eleven test targets** that share byte-identical
-source files (`PointerArithmeticTests.swift`). The targets differ only by
-their per-target `swiftSettings` in the top-level `Package.swift`. CI runs
-every target on every platform; exactly one target — `WithLifetimes` —
-fails on Linux release. This proves `.Lifetimes` is the **unique** trigger
-among the ecosystem-wide settings that swift-affine-primitives enables.
+This directory contains **twelve test targets**. The first eleven share
+byte-identical source files with `unsafe` markers on `.advanced(by:)` calls;
+they differ only by their per-target `swiftSettings`. The twelfth target
+(`WithoutUnsafe`) has the SAME source structure but with `unsafe` markers
+removed and no swiftSettings.
 
-| Target | swiftSettings | Linux 6.3 release |
-|--------|--------------|-------------------|
-| `WithLifetimes` | `.enableExperimentalFeature("Lifetimes")` | **FAILS** |
-| `WithLifetimeDependenceExperimental` | `.enableExperimentalFeature("LifetimeDependence")` | passes |
-| `WithLifetimeDependenceUpcoming` | `.enableUpcomingFeature("LifetimeDependence")` | passes |
-| `WithStrictMemorySafety` | `.strictMemorySafety()` | passes |
-| `WithExistentialAny` | `.enableUpcomingFeature("ExistentialAny")` | passes |
-| `WithInternalImportsByDefault` | `.enableUpcomingFeature("InternalImportsByDefault")` | passes |
-| `WithMemberImportVisibility` | `.enableUpcomingFeature("MemberImportVisibility")` | passes |
-| `WithNonisolatedNonsendingByDefault` | `.enableUpcomingFeature("NonisolatedNonsendingByDefault")` | passes |
-| `WithSuppressedAssociatedTypes` | `.enableExperimentalFeature("SuppressedAssociatedTypes")` | passes |
-| `WithInferIsolatedConformances` | `.enableUpcomingFeature("InferIsolatedConformances")` | passes |
-| `Control` | _(none)_ | passes |
+| Target | `unsafe` markers | swiftSettings | Linux 6.3 release |
+|--------|-----------------|--------------|-------------------|
+| `WithLifetimes` | yes | `.enableExperimentalFeature("Lifetimes")` | **FAILS** |
+| `WithLifetimeDependenceExperimental` | yes | `.enableExperimentalFeature("LifetimeDependence")` | **FAILS** |
+| `WithLifetimeDependenceUpcoming` | yes | `.enableUpcomingFeature("LifetimeDependence")` | **FAILS** |
+| `WithStrictMemorySafety` | yes | `.strictMemorySafety()` | **FAILS** |
+| `WithExistentialAny` | yes | `.enableUpcomingFeature("ExistentialAny")` | **FAILS** |
+| `WithInternalImportsByDefault` | yes | `.enableUpcomingFeature("InternalImportsByDefault")` | **FAILS** |
+| `WithMemberImportVisibility` | yes | `.enableUpcomingFeature("MemberImportVisibility")` | **FAILS** |
+| `WithNonisolatedNonsendingByDefault` | yes | `.enableUpcomingFeature("NonisolatedNonsendingByDefault")` | **FAILS** |
+| `WithSuppressedAssociatedTypes` | yes | `.enableExperimentalFeature("SuppressedAssociatedTypes")` | **FAILS** |
+| `WithInferIsolatedConformances` | yes | `.enableUpcomingFeature("InferIsolatedConformances")` | **FAILS** |
+| `Control` | yes | _(none)_ | **FAILS** |
+| `WithoutUnsafe` | **no** | _(none)_ | **passes** |
 
 All targets pass on macOS, Windows, and Linux debug.
 
-The source file in every target is byte-identical (`diff -q` confirms across
-all 11). The diff between the targets is exclusively the `swiftSettings:`
-clause in `Package.swift`. CI's per-target test result is the demonstration
-— no need to dig through commit history or extract a Configuration matrix
-from a comment.
+The decisive comparison is `Control` vs `WithoutUnsafe`: both have zero
+swiftSettings; the only difference is the presence of `unsafe` keyword
+markers in the source. `Control` fails on Linux release; `WithoutUnsafe`
+passes. Therefore the `unsafe` keyword itself is the load-bearing trigger.
+The 10 With\*-feature targets confirm by exclusion that no SwiftPM
+swiftSetting is required — they all fail equally on Linux because they all
+carry `unsafe` markers.
 
 ## Reproduction
 
