@@ -4,24 +4,26 @@
 
 A `.pointee` load after a pair of chained `.advanced(by:)` calls on
 `UnsafeMutablePointer<Int>` — at least one with a negative offset —
-reads from the wrong address under `-O` / `-Osize`. Cross-platform
-(macOS arm64 + Linux x86_64); SIL and LLVM IR are byte-identical
-between affected and unaffected source forms; the defect is at LLVM
-optimization or backend codegen.
+reads from the wrong address under SwiftPM `swift test -c release`
+on Linux 6.3.1 release. The defect is at SIL optimization or LLVM
+codegen and is fixed upstream on `swiftlang/swift:nightly-main` (Swift
+6.4-dev).
 
 ## Trigger characterization
 
-- **Where**: LLVM optimizer or backend (SIL / LLVM IR byte-identical between trigger and non-trigger source).
-- **Affected**: Swift 6.3.1 release + 6.4-dev nightly, `-O` / `-Osize`, macOS arm64 and Linux x86_64.
-- **Unaffected**: `-Onone` on any platform; Swift 6.4-dev nightly-main (fixed upstream).
-- **Trigger**: ≥2 chained `.advanced(by:)` calls on `UnsafeMutablePointer<Int>`, with at least one negative offset.
+- **Where**: SIL optimizer or LLVM backend. The structural SIL pattern is `ref_tail_addr` on `_ContiguousArrayStorage<Int>` followed by chained `index_addr` instructions with mixed-direction folded offsets; dead-store elimination of the array literal's intermediate-index stores leaves an uninitialized-memory read at the folded offset.
+- **Affected via SwiftPM-test path**: `swift test -c release` on `swift:6.3-jammy` Docker (Linux x86_64 AND aarch64). Fires; the in-tree `withKnownIssue` harness catches it as a recorded known issue.
+- **NOT affected via bare `swiftc -O` on current 6.3.x distributions**: empirically verified 2026-05-11 — neither Apple Swift 6.3.1 (macOS arm64) nor `swift:6.3-jammy` Docker (Linux x86_64 / aarch64) reproduces the bug standalone on any of the probed repro shapes (operator-wrapped, direct `.advanced(by:)`, function-wrapped, byte-for-byte mirror of the test body). See [`evidence/README.md`](evidence/README.md) for the discrepancy analysis. The convergence-discussion's earlier "macOS arm64 standalone fires" observation is no longer reproducible on the current distribution; the SwiftPM-test-runner build flag combination appears to gate the firing on the current minimum repro.
+- **Unaffected by toolchain version**: `swiftlang/swift:nightly-main-jammy` (Swift 6.4-dev) does NOT reproduce via either path — upstream fix landed.
+- **Trigger (when firing)**: ≥2 chained `.advanced(by:)` calls on `UnsafeMutablePointer<Int>`, with at least one negative offset, over array literal storage.
 - **Does NOT depend on**: SwiftPM `swiftSettings`, the `unsafe` keyword (SE-0466), user-authored operator overloads, `.strictMemorySafety`, `.Lifetimes`, `.LifetimeDependence`, or any other experimental / upcoming feature.
 
 The investigation visited three sequential hypotheses (`.Lifetimes`
 trigger → `unsafe`-keyword trigger → actual chained-advance trigger),
 each refuted by the next experiment. See
 [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) for the convergence
-chronology.
+chronology and [`evidence/README.md`](evidence/README.md) for the
+2026-05-11 standalone-doesn't-fire discrepancy analysis.
 
 ## Layout — per-issue pattern
 
@@ -48,14 +50,17 @@ Two harnesses cover complementary surfaces:
   in `withKnownIssue("swiftlang/swift#77558", when: { isLinuxRelease() })`.
   Green while the bug fires on Linux release (current state); the test
   flips **red** the moment upstream lands a fix and the bug stops
-  firing. The red flip IS the upstream-fix detection signal — captured
-  by `.github/workflows/nightly.yml` against
-  `swiftlang/swift:nightly-main-jammy`.
-- **`Sources/Reproducer/main.swift`** — standalone executable. The
-  bug fires on `swiftc -O` on both Linux AND macOS; SwiftPM
-  `swift test -c release` masks the macOS case for reasons related to
-  test-framework build flags. The executable closes that gap with an
-  exit-code assertion: `exit(observed == 20 ? 0 : 1)`.
+  firing. The red flip IS the upstream-fix detection signal — surfaced
+  on the per-issue CI matrix's `Linux nightly` leg via
+  `swiftlang/swift:nightly-main-jammy`. **This is the load-bearing
+  signal.**
+- **`Sources/Reproducer/main.swift`** — standalone executable, retained
+  as a local-probing tool. On current 6.3.x distributions (Apple
+  Swift 6.3.1 / `swift:6.3-jammy` Docker) the bare `swiftc -O` /
+  `swift run` path does NOT fire the bug — exits 0. Kept in the
+  package for ad-hoc probing against older Apple toolchains or
+  candidate-fix-state toolchains where the firing surface may
+  differ.
 
 ## Reproduction
 
@@ -77,7 +82,7 @@ docker run --rm -v $(pwd):/work -w /work swift:6.3-jammy \
 
 ### Standalone executable
 
-The standalone executable target (`swift-issue-pointer-arithmetic-linux-miscompile-Repro`) is retained as a local-probing tool. **Empirical 2026-05-11**: on Apple Swift 6.3.1 (macOS 26) AND `swiftlang/swift:6.3.1-RELEASE` (Linux ARM64 + Linux x86_64), `swiftc -O` standalone does NOT fire the bug — exit 0 on every platform/optimization-level combination. The bug fires only through the SwiftPM-test path on Linux release. See [`evidence/README.md`](evidence/README.md) for the discrepancy analysis (likely SwiftPM-test-runner-gated firing per INVESTIGATION-ARC.md §Round 2).
+The standalone executable target (`swift-issue-pointer-arithmetic-linux-miscompile-Repro`) is retained as a local-probing tool. **Empirical 2026-05-11**: on Apple Swift 6.3.1 (macOS 26) AND `swift:6.3-jammy` Docker (Linux ARM64 + Linux x86_64), `swiftc -O` standalone does NOT fire the bug — exit 0 on every platform / optimization-level / repro-shape combination. The bug fires only through the SwiftPM-test path on Linux release. See [`evidence/README.md`](evidence/README.md) for the discrepancy analysis (likely SwiftPM-test-runner-gated firing per INVESTIGATION-ARC.md §Round 2).
 
 ```bash
 swift run swift-issue-pointer-arithmetic-linux-miscompile-Repro; echo $?
@@ -88,24 +93,28 @@ swift run swift-issue-pointer-arithmetic-linux-miscompile-Repro; echo $?
 
 ## Workaround for consumers
 
-Avoid the user-authored operator wrappers; call `.advanced(by:)`
-directly and inline the offsets, OR collapse the two `.advanced(by:)`
-calls into one with the net offset:
+Collapse the two `.advanced(by:)` calls into one with the net offset,
+OR insert an opaque side effect that observes every element before
+the chained load (preventing the DSE of the live-element stores):
 
 ```swift
-// Triggers the bug:
+// Structural trigger pattern (fires via swift test -c release on Linux 6.3.1 release):
 let advanced = base.advanced(by: 4)
 let backed   = advanced.advanced(by: -2)
 let value    = backed.pointee
 
-// Workaround:
+// Workaround A — collapse the chain:
 let backed = base.advanced(by: 2)   // 4 - 2 collapsed
 let value  = backed.pointee
+
+// Workaround B — force every element to be observed first:
+for v in values { _ = v }
+// ... then perform the chained advance normally
 ```
 
 ## Minimal code
 
-The 8-line repro (also in `Sources/Reproducer/main.swift`):
+The structural minimum repro (also in `Sources/Reproducer/main.swift`):
 
 ```swift
 var values: [Int] = [0, 10, 20, 30, 40]
@@ -113,9 +122,15 @@ values.withUnsafeMutableBufferPointer { buf in
     let base     = buf.baseAddress!
     let advanced = base.advanced(by: 4)
     let backed   = advanced.advanced(by: -2)
-    print(backed.pointee)   // expected 20; observed: wrong value under -O
+    print(backed.pointee)   // expected 20; observed: wrong value via swift test -c release on Linux 6.3.1 release
 }
 ```
+
+Note: this exact form does NOT fire bare under `swiftc -O` on current
+6.3.1 distributions — only via the SwiftPM-test-runner path. The in-tree
+test harness at `Tests/Reproducer.swift` uses an operator-wrapped
+variant (`base + Vec(4)`, `advanced - Vec(2)`) over the same chained
+pattern; that's the form CI exercises.
 
 ## Heisenbug character
 

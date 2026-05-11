@@ -64,7 +64,7 @@ Two hypotheses are consistent with this data:
 1. **Apple-side backport for macOS**: Apple's 6.3.x distribution carries the
    upstream fix-quad (`swiftlang/swift` commits `1cbed39f326` / `de557cab56f`
    / `71381fab3c0` / `02fafc63d67`, landed 2025-10-10). This would explain
-   the macOS-arm64 row but not the Linux rows on the same `swiftlang/swift:6.3.1-RELEASE`
+   the macOS-arm64 row but not the Linux rows on the same `swift:6.3-jammy`
    image that still fires the bug via `swift test`.
 2. **SwiftPM-test-runner-gated firing**: per INVESTIGATION-ARC.md §Round 2,
    "the `unsafe` attribution was an artifact of SwiftPM test-framework build
