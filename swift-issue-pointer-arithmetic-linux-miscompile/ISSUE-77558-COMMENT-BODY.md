@@ -92,9 +92,11 @@ Candidate fix commits per `git log --since=2024-11-12 -- lib/SILOptimizer/` (all
 - [`71381fab3c0`](https://github.com/swiftlang/swift/commit/71381fab3c0) — ConstExpr: support the new array literal initialization pattern
 - [`02fafc63d67`](https://github.com/swiftlang/swift/commit/02fafc63d67) — Optimizer: support the new array literal initialization pattern in the ForEachLoopUnroll pass
 
+These commits target the array-literal lowering pattern (which matches this comment's reduction). Whether the same root cause underlies this issue's tuple-storage shape (the original report's `var data: (UInt8, ...)` 40-element tuple with `start.advanced(by: -1)`) is for the maintainer to determine.
+
 ### Workaround
 
-The same workaround pattern reported in this issue restores correct behavior on the affected toolchains: insert an opaque side effect that observes every element before the chained-`advanced(by:)` load, e.g., `for v in values { _ = v }` (or any equivalent forcing pass that prevents the DSE of the live-element stores).
+A workaround in the same class — inserting any opaque side effect that observes the data before the chained load — restores correct behavior on the affected toolchains. Examples in this class: the `print(start)` form originally reported on this issue, or a `for v in values { _ = v }` loop over the array literal. Any equivalent forcing pass that prevents the DSE of the live-element stores should work.
 
 ### Continuous fix-detection
 
