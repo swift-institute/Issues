@@ -113,6 +113,33 @@ let package = Package(
         .testTarget(
             name: "WithoutUnsafe",
             path: "swift-issue-pointer-arithmetic-linux-miscompile/WithoutUnsafe"
+        ),
+
+        // Q1a — `unsafe` ONLY inside the operator bodies.
+        .testTarget(
+            name: "WithUnsafeInOperatorBodyOnly",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithUnsafeInOperatorBodyOnly"
+        ),
+
+        // Q1b — `unsafe` ONLY at the @Test call sites.
+        .testTarget(
+            name: "WithUnsafeAtCallSiteOnly",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithUnsafeAtCallSiteOnly"
+        ),
+
+        // Q2 — no user-authored operator, direct stdlib `.advanced(by:)`
+        // calls with `unsafe` markers. If this fails on Linux release,
+        // the bug extends to ANY Swift 6.3 code using `unsafe` on
+        // stdlib pointer arithmetic — not only user operator wrappers.
+        .testTarget(
+            name: "WithoutOperator",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithoutOperator"
+        ),
+
+        // Q2 negative control — no operator, no `unsafe`. Sanity check.
+        .testTarget(
+            name: "WithoutOperatorAndWithoutUnsafe",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithoutOperatorAndWithoutUnsafe"
         )
     ],
     swiftLanguageModes: [.v6]
