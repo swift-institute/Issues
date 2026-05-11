@@ -4,16 +4,31 @@ import PackageDescription
 
 // MARK: - Swift Institute Issues
 //
-// Each `swift-issue-*` subdirectory holds the source files for one minimum
-// reproducer of a Swift toolchain or compiler bug, together with a README
-// documenting the bug, its filing status, affected toolchains, and any
-// known workaround.
+// Each `swift-issue-*` subdirectory holds the source for one minimum
+// reproducer of a Swift toolchain or compiler bug, plus a README
+// documenting the bug, its upstream-filing status, affected toolchains,
+// and any known workaround.
 //
-// Pattern: where an issue is gated by a single SwiftPM `swiftSettings`
-// feature, register a TEST TARGET PER CANDIDATE feature plus one control
-// target with no settings. All targets share byte-identical source. CI
-// then runs every target side-by-side; on the affected platform, exactly
-// the target carrying the load-bearing feature is red — uniqueness proof.
+// Per-issue layout (steady-state pattern, set by the
+// pointer-arithmetic-linux-miscompile precedent — see top-level
+// README.md "Per-Issue Convention" for the full spec):
+//
+//   swift-issue-<topic>/
+//     ├── README.md
+//     ├── INVESTIGATION-ARC.md      (if a multi-round investigation preceded the filing)
+//     ├── Tests/Reproducer.swift     ← Swift Testing harness with `withKnownIssue` flip semantics
+//     ├── Sources/Reproducer/        ← standalone executable repro + exit-code probe
+//     └── evidence/                  (optional, for investigations that produced bisection artifacts)
+//
+// Each issue declares EXACTLY TWO SwiftPM targets:
+//   • one testTarget    — wraps the repro in withKnownIssue("swiftlang/swift#NNNN", when: ...)
+//                         Green on platforms where the bug fires;
+//                         flips red the moment upstream lands a fix —
+//                         that flip is the detection signal.
+//   • one executableTarget — same repro as a standalone with
+//                            `exit(0 / 1)` per expected behavior. Covers
+//                            codegen surfaces that SwiftPM `swift test`
+//                            masks (e.g., the macOS standalone case for #77558).
 
 let package = Package(
     name: "Issues",
@@ -21,126 +36,26 @@ let package = Package(
 
         // MARK: - swift-issue-pointer-arithmetic-linux-miscompile
         //
-        // Linux release-mode codegen miscompile: a `.pointee` read after a
-        // user-authored `+`/`-` operator overload wrapping `.advanced(by:)`
-        // returns the value at the wrong address. The bug was first
-        // observed in swift-affine-primitives, which had 10 swiftSettings
-        // enabled per the ecosystem-wide feature flags. Bisection landed
-        // on `.enableExperimentalFeature("Lifetimes")` as a sufficient
-        // single trigger; the targets below verify uniqueness by running
-        // each candidate setting in isolation against the same source.
-        //
-        // Expected results on Linux 6.3 release / 6.4-dev nightly release:
-        //   WithLifetimes                       — FAILS  (known trigger)
-        //   Every other With* target            — passes (control by feature)
-        //   Control (no swiftSettings)          — passes (control proper)
-        //
-        // On macOS / Windows / Linux debug: all targets pass.
+        // swiftlang/swift#77558 — pointer arithmetic release-mode
+        // miscompile. ≥2 chained `.advanced(by:)` calls on
+        // UnsafeMutablePointer<Int> with at least one negative offset
+        // misload at `-O` / `-Osize`. Cross-platform (macOS arm64 +
+        // Linux x86_64); fixed on 6.4-dev nightly-main.
 
-        // The known trigger.
+        // Target names match the issue directory so `swift test --filter
+        // <issue-dir-underscored>` selects exactly this issue's tests via
+        // substring match on the module-name prefix. Executable target
+        // adds a `-Repro` suffix to differentiate the standalone binary.
+
         .testTarget(
-            name: "WithLifetimes",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithLifetimes",
-            swiftSettings: [.enableExperimentalFeature("Lifetimes")]
+            name: "swift-issue-pointer-arithmetic-linux-miscompile-Tests",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/Tests"
         ),
 
-        // Pure control: zero swiftSettings.
-        .testTarget(
-            name: "Control",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/Control"
+        .executableTarget(
+            name: "swift-issue-pointer-arithmetic-linux-miscompile-Repro",
+            path: "swift-issue-pointer-arithmetic-linux-miscompile/Sources/Reproducer"
         ),
-
-        // The other 9 settings from affine-primitives, each in isolation.
-        .testTarget(
-            name: "WithStrictMemorySafety",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithStrictMemorySafety",
-            swiftSettings: [.strictMemorySafety()]
-        ),
-
-        .testTarget(
-            name: "WithExistentialAny",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithExistentialAny",
-            swiftSettings: [.enableUpcomingFeature("ExistentialAny")]
-        ),
-
-        .testTarget(
-            name: "WithInternalImportsByDefault",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithInternalImportsByDefault",
-            swiftSettings: [.enableUpcomingFeature("InternalImportsByDefault")]
-        ),
-
-        .testTarget(
-            name: "WithMemberImportVisibility",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithMemberImportVisibility",
-            swiftSettings: [.enableUpcomingFeature("MemberImportVisibility")]
-        ),
-
-        .testTarget(
-            name: "WithNonisolatedNonsendingByDefault",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithNonisolatedNonsendingByDefault",
-            swiftSettings: [.enableUpcomingFeature("NonisolatedNonsendingByDefault")]
-        ),
-
-        .testTarget(
-            name: "WithLifetimeDependenceExperimental",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithLifetimeDependenceExperimental",
-            swiftSettings: [.enableExperimentalFeature("LifetimeDependence")]
-        ),
-
-        .testTarget(
-            name: "WithSuppressedAssociatedTypes",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithSuppressedAssociatedTypes",
-            swiftSettings: [.enableExperimentalFeature("SuppressedAssociatedTypes")]
-        ),
-
-        .testTarget(
-            name: "WithInferIsolatedConformances",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithInferIsolatedConformances",
-            swiftSettings: [.enableUpcomingFeature("InferIsolatedConformances")]
-        ),
-
-        .testTarget(
-            name: "WithLifetimeDependenceUpcoming",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithLifetimeDependenceUpcoming",
-            swiftSettings: [.enableUpcomingFeature("LifetimeDependence")]
-        ),
-
-        // Disambiguator target. Differs from all sibling targets only by
-        // the absence of `unsafe` keyword markers in its source. If this
-        // target passes on Linux release while every other target fails,
-        // the `unsafe` keyword itself is the load-bearing trigger — none
-        // of the swiftSettings are.
-        .testTarget(
-            name: "WithoutUnsafe",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithoutUnsafe"
-        ),
-
-        // Q1a — `unsafe` ONLY inside the operator bodies.
-        .testTarget(
-            name: "WithUnsafeInOperatorBodyOnly",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithUnsafeInOperatorBodyOnly"
-        ),
-
-        // Q1b — `unsafe` ONLY at the @Test call sites.
-        .testTarget(
-            name: "WithUnsafeAtCallSiteOnly",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithUnsafeAtCallSiteOnly"
-        ),
-
-        // Q2 — no user-authored operator, direct stdlib `.advanced(by:)`
-        // calls with `unsafe` markers. If this fails on Linux release,
-        // the bug extends to ANY Swift 6.3 code using `unsafe` on
-        // stdlib pointer arithmetic — not only user operator wrappers.
-        .testTarget(
-            name: "WithoutOperator",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithoutOperator"
-        ),
-
-        // Q2 negative control — no operator, no `unsafe`. Sanity check.
-        .testTarget(
-            name: "WithoutOperatorAndWithoutUnsafe",
-            path: "swift-issue-pointer-arithmetic-linux-miscompile/WithoutOperatorAndWithoutUnsafe"
-        )
     ],
     swiftLanguageModes: [.v6]
 )

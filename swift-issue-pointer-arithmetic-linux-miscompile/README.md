@@ -1,202 +1,161 @@
-# Swift Issue: Linux Release-Mode Pointer Arithmetic Miscompile
+# Swift Issue: Pointer Arithmetic Release-Mode Miscompile
 
-**Bug Report:** Pending — issue body drafted, awaiting filing at swiftlang/swift.
+**Upstream:** [`swiftlang/swift#77558`](https://github.com/swiftlang/swift/issues/77558) — filed 2024-11-12, **fixed on 6.4-dev nightly-main**, awaiting backport / 6.4 release.
 
-Minimal reproducer for a Linux-only release-mode codegen miscompile in which a
-`.pointee` read after a user-authored pointer arithmetic operator returns the
-value at the wrong address. **Trigger: the Swift 6.3 `unsafe` keyword
-expression** on the operator's call to `.advanced(by:)` (or on the call site).
-With `unsafe` markers removed, the same source compiles to correct code on
-every platform.
+A `.pointee` load after a pair of chained `.advanced(by:)` calls on
+`UnsafeMutablePointer<Int>` — at least one with a negative offset —
+reads from the wrong address under `-O` / `-Osize`. Cross-platform
+(macOS arm64 + Linux x86_64); SIL and LLVM IR are byte-identical
+between affected and unaffected source forms; the defect is at LLVM
+optimization or backend codegen.
 
-## Bug Summary
+## Trigger characterization
 
-User-authored `+` / `-` operator overloads on `UnsafeMutablePointer<Int>` that
-wrap `unsafe .advanced(by:)` produce correct pointer values, but the subsequent
-`.pointee` load reads from the wrong address. Fires on Linux release mode any
-time the source uses the `unsafe` keyword expression on the `.advanced(by:)`
-call. **No swiftSettings, experimental features, or upcoming features required.**
+- **Where**: LLVM optimizer or backend (SIL / LLVM IR byte-identical between trigger and non-trigger source).
+- **Affected**: Swift 6.3.1 release + 6.4-dev nightly, `-O` / `-Osize`, macOS arm64 and Linux x86_64.
+- **Unaffected**: `-Onone` on any platform; Swift 6.4-dev nightly-main (fixed upstream).
+- **Trigger**: ≥2 chained `.advanced(by:)` calls on `UnsafeMutablePointer<Int>`, with at least one negative offset.
+- **Does NOT depend on**: SwiftPM `swiftSettings`, the `unsafe` keyword (SE-0466), user-authored operator overloads, `.strictMemorySafety`, `.Lifetimes`, `.LifetimeDependence`, or any other experimental / upcoming feature.
 
-The arithmetic itself is correct — printing `UInt(bitPattern:)` of the
-intermediate pointers between the operator call and the load yields the
-expected addresses. The miscompile is at the load codegen.
+The investigation visited three sequential hypotheses (`.Lifetimes`
+trigger → `unsafe`-keyword trigger → actual chained-advance trigger),
+each refuted by the next experiment. See
+[`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) for the convergence
+chronology.
 
-## Investigation Note
+## Layout — per-issue pattern
 
-Earlier iterations of this README cited `.enableExperimentalFeature("Lifetimes")`
-as the trigger. That hypothesis was falsified when the 11-target sweep
-(commit `5965972`) showed ALL 11 targets — including the `Control` target with
-zero swiftSettings — failing on Linux release. The common factor across all 11
-was the `unsafe` keyword markers, which had been added back along with the
-swiftSettings. The `WithoutUnsafe` disambiguator target was added in the next
-commit to verify: same source layout, `unsafe` markers removed, swiftSettings
-empty — and it passes on Linux release.
+```
+swift-issue-pointer-arithmetic-linux-miscompile/
+├── README.md                    — this file
+├── INVESTIGATION-ARC.md         — chronological convergence record
+├── ISSUE-77558-COMMENT.md       — staged upstream-posting draft
+├── Tests/
+│   └── Reproducer.swift         — withKnownIssue flip-on-fix harness
+├── Sources/
+│   └── Reproducer/
+│       └── main.swift           — standalone exit-code reproducer
+└── evidence/                    — 16 bisection variants, plain .swift
+    ├── README.md
+    ├── Control.swift
+    ├── WithLifetimes.swift
+    └── … (14 more)
+```
 
-## Demonstration
+Two harnesses cover complementary surfaces:
 
-This directory contains **twelve test targets**. The first eleven share
-byte-identical source files with `unsafe` markers on `.advanced(by:)` calls;
-they differ only by their per-target `swiftSettings`. The twelfth target
-(`WithoutUnsafe`) has the SAME source structure but with `unsafe` markers
-removed and no swiftSettings.
-
-| Target | `unsafe` markers | swiftSettings | Linux 6.3 release |
-|--------|-----------------|--------------|-------------------|
-| `WithLifetimes` | yes | `.enableExperimentalFeature("Lifetimes")` | **FAILS** |
-| `WithLifetimeDependenceExperimental` | yes | `.enableExperimentalFeature("LifetimeDependence")` | **FAILS** |
-| `WithLifetimeDependenceUpcoming` | yes | `.enableUpcomingFeature("LifetimeDependence")` | **FAILS** |
-| `WithStrictMemorySafety` | yes | `.strictMemorySafety()` | **FAILS** |
-| `WithExistentialAny` | yes | `.enableUpcomingFeature("ExistentialAny")` | **FAILS** |
-| `WithInternalImportsByDefault` | yes | `.enableUpcomingFeature("InternalImportsByDefault")` | **FAILS** |
-| `WithMemberImportVisibility` | yes | `.enableUpcomingFeature("MemberImportVisibility")` | **FAILS** |
-| `WithNonisolatedNonsendingByDefault` | yes | `.enableUpcomingFeature("NonisolatedNonsendingByDefault")` | **FAILS** |
-| `WithSuppressedAssociatedTypes` | yes | `.enableExperimentalFeature("SuppressedAssociatedTypes")` | **FAILS** |
-| `WithInferIsolatedConformances` | yes | `.enableUpcomingFeature("InferIsolatedConformances")` | **FAILS** |
-| `Control` | yes | _(none)_ | **FAILS** |
-| `WithoutUnsafe` | **no** | _(none)_ | **passes** |
-
-All targets pass on macOS, Windows, and Linux debug.
-
-The decisive comparison is `Control` vs `WithoutUnsafe`: both have zero
-swiftSettings; the only difference is the presence of `unsafe` keyword
-markers in the source. `Control` fails on Linux release; `WithoutUnsafe`
-passes. Therefore the `unsafe` keyword itself is the load-bearing trigger.
-The 10 With\*-feature targets confirm by exclusion that no SwiftPM
-swiftSetting is required — they all fail equally on Linux because they all
-carry `unsafe` markers.
+- **`Tests/Reproducer.swift`** — Swift Testing. Wraps the 8-line repro
+  in `withKnownIssue("swiftlang/swift#77558", when: { isLinuxRelease() })`.
+  Green while the bug fires on Linux release (current state); the test
+  flips **red** the moment upstream lands a fix and the bug stops
+  firing. The red flip IS the upstream-fix detection signal — captured
+  by `.github/workflows/nightly.yml` against
+  `swiftlang/swift:nightly-main-jammy`.
+- **`Sources/Reproducer/main.swift`** — standalone executable. The
+  bug fires on `swiftc -O` on both Linux AND macOS; SwiftPM
+  `swift test -c release` masks the macOS case for reasons related to
+  test-framework build flags. The executable closes that gap with an
+  exit-code assertion: `exit(observed == 20 ? 0 : 1)`.
 
 ## Reproduction
 
-```bash
-git clone https://github.com/swift-institute/Issues.git
-cd Issues
-swift test -c release
-```
-
-On Linux 6.3 release: `WithLifetimes.reducedRepro` FAILS;
-`WithoutLifetimes.reducedRepro` passes. On macOS / Windows / Linux debug:
-both pass.
-
-To narrow further:
+From the Issues repo root:
 
 ```bash
-swift test -c release --filter WithLifetimes   # fails on Linux
-swift test -c release --filter Control          # passes on Linux
-swift test -c release --filter WithLifetimeDependenceExperimental  # passes — not the trigger
-# … and so on for the other 8 With* targets, all passing on Linux.
+# Test harness — green on macOS (when:-predicate false on macOS); green on
+# Linux release with `withKnownIssue` catching the firing bug; red on Linux
+# nightly = fix landed upstream.
+swift test --filter swift_issue_pointer_arithmetic_linux_miscompile                  # debug
+swift test -c release --filter swift_issue_pointer_arithmetic_linux_miscompile       # fires on Linux
+
+# Linux release through SwiftPM test runner — fires the bug, withKnownIssue catches it:
+docker run --rm -v $(pwd):/work -w /work swift:6.3-jammy \
+    swift test -c release --filter swift_issue_pointer_arithmetic_linux_miscompile
+# → "Test reproducer() recorded a known issue at Reproducer.swift:62:21:
+#    Expectation failed: unsafe backed.pointee == 20"
 ```
 
-## Environment
+### Standalone executable
 
-- **Swift versions:** 6.3 stable, 6.4-dev nightly
-- **Platform:** Linux (Ubuntu jammy, swift:6.3 and swiftlang/swift:nightly-main-jammy containers)
-- **Works on:** macOS (any build), Linux debug, Windows
-- **Trigger:** `.enableExperimentalFeature("Lifetimes")` in target's swiftSettings
+The standalone executable target (`swift-issue-pointer-arithmetic-linux-miscompile-Repro`) is retained as a local-probing tool. **Empirical 2026-05-11**: on Apple Swift 6.3.1 (macOS 26) AND `swiftlang/swift:6.3.1-RELEASE` (Linux ARM64 + Linux x86_64), `swiftc -O` standalone does NOT fire the bug — exit 0 on every platform/optimization-level combination. The bug fires only through the SwiftPM-test path on Linux release. See [`evidence/README.md`](evidence/README.md) for the discrepancy analysis (likely SwiftPM-test-runner-gated firing per INVESTIGATION-ARC.md §Round 2).
 
-## Minimal Code
+```bash
+swift run swift-issue-pointer-arithmetic-linux-miscompile-Repro; echo $?
+# → exit 0 on current toolchains (does not fire). Useful for probing
+#   older Apple toolchains or candidate fix toolchains where the
+#   bug's surface may differ.
+```
 
-All 11 `<TargetName>/PointerArithmeticTests.swift` files are byte-identical:
+## Workaround for consumers
+
+Avoid the user-authored operator wrappers; call `.advanced(by:)`
+directly and inline the offsets, OR collapse the two `.advanced(by:)`
+calls into one with the net offset:
 
 ```swift
-import Testing
+// Triggers the bug:
+let advanced = base.advanced(by: 4)
+let backed   = advanced.advanced(by: -2)
+let value    = backed.pointee
 
-struct Vec {
-    let raw: Int
-    init(_ raw: Int) { self.raw = raw }
-}
-
-func + (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
-    unsafe lhs.advanced(by: rhs.raw)
-}
-
-func - (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
-    unsafe lhs.advanced(by: -rhs.raw)
-}
-
-@Suite
-struct PointerArithmeticReduced {
-    @Test
-    func reducedRepro() {
-        var values: [Int] = [0, 10, 20, 30, 40]
-        unsafe values.withUnsafeMutableBufferPointer { buf in
-            let base = buf.baseAddress!
-            let advanced = unsafe base + Vec(4)
-            let backed = unsafe advanced - Vec(2)
-            #expect(unsafe backed.pointee == 20)
-        }
-    }
-}
+// Workaround:
+let backed = base.advanced(by: 2)   // 4 - 2 collapsed
+let value  = backed.pointee
 ```
 
-The `unsafe` markers are present so the same file compiles under
-`.strictMemorySafety()`; they are no-ops without that setting, keeping the
-file byte-identical across all 11 targets.
+## Minimal code
 
-**Expected:** `backed.pointee == 20` (read from `&values[2]`).
-**Observed on Linux release with `.Lifetimes` enabled:** `backed.pointee`
-returns a different value; the load reads from the wrong address.
-
-## Reduction Path
-
-The bug was first observed in `swift-affine-primitives` with a much larger
-shape (`Tagged<Pointee, Ordinal>.Offset`, `Affine.Discrete.Vector`, a
-`Carrier.Protocol` witness, `~Copyable` generic parameters, package operator
-overloads, 10 swiftSettings). Aggressive reduction stripped:
-
-- All wrapper types (`Tagged`, `Ordinal`, `Vector`, `Carrier.Protocol`)
-- The `~Copyable` generic parameter
-- All package operator overloads
-- 9 of the 10 swiftSettings
-
-What remains is the minimum trigger: stdlib `UnsafeMutablePointer<Int>` +
-10 lines of `Vec`/operator code + `.enableExperimentalFeature("Lifetimes")`.
-
-The Lifetimes setting was identified via bisection: commit `cc72949`
-narrowed from 10 settings to 1; each of the other 9 settings was confirmed
-unnecessary by exclusion.
-
-## Heisenbug Character
-
-Any diagnostic instrumentation that reads the result pointer between the
-operator call and the `.pointee` read structurally masks the bug:
-
-- Print statements between operator and load
-- Multiple intermediate `let _ = UInt(bitPattern: backed)` materializations
-- `print()` of the address inside a `#expect` message string
-
-The `reducedRepro` above omits all such instrumentation. Adding any of them
-on Linux release with `.Lifetimes` enabled heals the test.
-
-## Workaround for Consumers
-
-Drop `.enableExperimentalFeature("Lifetimes")` from the affected target's
-swiftSettings, OR bypass the user-authored operator and call `.advanced(by:)`
-directly:
+The 8-line repro (also in `Sources/Reproducer/main.swift`):
 
 ```swift
-// Instead of:
-let backed = advanced - Vec(2)
-// Use:
-let backed = advanced.advanced(by: -2)
+var values: [Int] = [0, 10, 20, 30, 40]
+values.withUnsafeMutableBufferPointer { buf in
+    let base     = buf.baseAddress!
+    let advanced = base.advanced(by: 4)
+    let backed   = advanced.advanced(by: -2)
+    print(backed.pointee)   // expected 20; observed: wrong value under -O
+}
 ```
 
-The stdlib direct-call form is not affected by the miscompile.
+## Heisenbug character
 
-## CI Status
+Any diagnostic instrumentation reading the result pointer between the
+second `.advanced(by:)` and the `.pointee` load masks the bug:
 
-The CI workflow at `.github/workflows/ci.yml` (top-level of the Issues repo)
-runs both targets on every push. The `Ubuntu (Swift 6.3, release)` and
-`Ubuntu (Swift 6.4-dev nightly, release)` legs are permanently red until
-the upstream fix lands — that red leg IS the bug's running evidence.
+- Print statements between the second advance and the load.
+- Intermediate `let _ = UInt(bitPattern: backed)` materializations.
+- `print()` of the address inside a `#expect` message string.
 
-## Suggested Labels
+The reduced repro deliberately omits all such instrumentation.
 
-`bug`, `optimization`, `codegen`, `linux`, `unsafe-pointer`, `release-mode`,
-`Lifetimes`, `experimental-feature`
+## CI status
 
-## Original Discovery
+The Issues repo's `.github/workflows/ci.yml` is a per-issue matrix wrapper
+around the centralized `swift-institute/.github` reusable workflow. Each
+push touching `swift-issue-pointer-arithmetic-linux-miscompile/**` or
+`Package.swift` runs the full reusable (macOS / Linux release / Linux
+nightly / Windows + format + lint + advisory linters) with `test-filter:
+swift-issue-pointer-arithmetic-linux-miscompile`. Per-leg status checks
+are named `swift-issue-pointer-arithmetic-linux-miscompile / <reusable-job>`.
 
-Bug surfaced in `swift-institute/swift-primitives/swift-affine-primitives` CI
-during release-mode test of `UnsafeMutablePointer<T> - Tagged<T, Ordinal>.Offset`
-operator. The affine-primitives target has `.Lifetimes` (and 9 other features)
-enabled per the swift-institute ecosystem-wide feature flags.
+Expected leg outcomes while the bug is live upstream:
+
+- **macOS**: GREEN — `withKnownIssue`'s `when:` predicate is false on
+  macOS; wrapped block runs unguarded and passes.
+- **Linux release**: GREEN with 1 known issue — bug fires under `-O`;
+  `withKnownIssue` catches it; suite passes.
+- **Linux nightly** (`continue-on-error: true`): GREEN with 1 known issue
+  until upstream fix propagates to `swiftlang/swift:nightly-main-jammy`;
+  RED (withKnownIssue flip) after fix lands.
+- **Windows**: GREEN — bug is Linux-specific.
+
+The **weekly cron** (Monday 06:00 UTC) re-runs the matrix specifically to
+detect the Linux-nightly flip without depending on unrelated pushes.
+
+The universal-reusable's `ci-ok` aggregator job is emitted but treated as
+informational only in this repo (no branch-protection rule references
+it).
+
+## Suggested labels
+
+`bug`, `optimization`, `codegen`, `linux`, `darwin`, `unsafe-pointer`, `release-mode`

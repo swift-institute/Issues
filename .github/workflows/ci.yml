@@ -1,12 +1,66 @@
 name: CI
 
+# Per-issue × per-platform CI for swift-institute/Issues.
+#
+# Each `swift-issue-*/` subdirectory holds one minimum reproducer plus its
+# Tests/ harness and Sources/Reproducer/ standalone. The CI shape mirrors
+# that one-issue-per-subdir layout: a single enumerate-issues job emits
+# the directory list as a JSON array; the per-issue job consumes that
+# matrix and calls the centralized swift-institute reusable workflow with
+# `test-filter: <issue-dir>`. Each (issue × platform) leg shows up as its
+# own status check, naming `${{ matrix.issue }} / <reusable-job>` —
+# per-issue isolation in dashboards and merge queues.
+#
+# Design properties:
+#
+#   • Re-uses the canonical reusable in full: macOS / Linux release /
+#     Linux nightly / Windows + format + lint + advisory linters. No
+#     CI logic duplicated at this consumer; bump the upstream reusable
+#     and Issues inherits the change.
+#
+#   • `fail-fast: false` — one issue's red leg MUST NOT cancel sibling
+#     issues' legs. The dashboard's value depends on each issue being
+#     independently visible regardless of every other issue's state.
+#
+#   • Auto-enumeration via `ls -d swift-issue-*/`. New issues land as
+#     new directories under the repo root; CI auto-includes them on
+#     the next push. Zero per-issue CI maintenance.
+#
+#   • Path filter on `swift-issue-*/**`, `Package.swift`, and this
+#     workflow file. Unrelated repo edits (HANDOFF*.md, top-level
+#     READMEs) don't trigger CI.
+#
+#   • Weekly cron at Monday 06:00 UTC against the Linux nightly leg
+#     specifically — that's where `withKnownIssue` flips red when an
+#     upstream fix lands and the bug stops firing. Per-issue Tests/
+#     Reproducer.swift carries the `when:` predicate; CI surfaces the
+#     flip.
+#
+#   • No `ci-ok` aggregator-gating in this repo's branch protection.
+#     The reusable workflow emits ci-ok as a job, but the Issues repo
+#     treats it as informational. Per-issue test legs are the
+#     actionable signals; one red issue does not block merges.
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+    paths:
+      - 'swift-issue-*/**'
+      - 'Package.swift'
+      - '.github/workflows/ci.yml'
   pull_request:
-    branches:
-      - main
+    branches: [main]
+    paths:
+      - 'swift-issue-*/**'
+      - 'Package.swift'
+      - '.github/workflows/ci.yml'
+  schedule:
+    # Weekly fix-detection sweep against swift-institute reusable's
+    # linux-nightly leg (swiftlang/swift:nightly-main-jammy). When the
+    # upstream fix lands and a `withKnownIssue` block stops firing, that
+    # leg flips red — the cron makes the flip visible without waiting
+    # for an unrelated push.
+    - cron: '0 6 * * 1'
   workflow_dispatch:
 
 concurrency:
@@ -14,10 +68,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Build + test matrix — routes directly to the swift-institute universal
-  # reusable. Issues is not a layer (primitives/standards/foundations), so
-  # there is no layer wrapper; consumer → universal is a 2-tier chain per
-  # [CI-001].
-  ci:
+  enumerate-issues:
+    name: Enumerate swift-issue-* directories
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      issues: ${{ steps.list.outputs.issues }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: list
+        shell: bash
+        run: |
+          set -euo pipefail
+          ISSUES=$(ls -d swift-issue-*/ 2>/dev/null | sed 's:/$::' | jq -Rsc 'split("\n") | map(select(length > 0))')
+          echo "issues=$ISSUES" >> "$GITHUB_OUTPUT"
+          echo "Enumerated issues: $ISSUES"
+
+  per-issue:
+    needs: enumerate-issues
+    name: ${{ matrix.issue }}
+    strategy:
+      fail-fast: false
+      matrix:
+        issue: ${{ fromJson(needs.enumerate-issues.outputs.issues) }}
     uses: swift-institute/.github/.github/workflows/swift-ci.yml@main
+    with:
+      test-filter: ${{ matrix.issue }}
     secrets: inherit
