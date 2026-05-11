@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Build + test matrix — routes directly to the swift-institute universal
+  # reusable. Issues is not a layer (primitives/standards/foundations), so
+  # there is no layer wrapper; consumer → universal is a 2-tier chain per
+  # [CI-001].
+  ci:
+    uses: swift-institute/.github/.github/workflows/swift-ci.yml@main
+    secrets: inherit
