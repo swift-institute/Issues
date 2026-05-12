@@ -1,5 +1,16 @@
 # Swift Issue: SwiftPM Planning-Build Stall at Heavy Consumers
 
+> **Per-issue restructure: deferred 2026-05-12.** The minimum reproducer for
+> this bug is a multi-package SwiftPM workspace topology with URL/local
+> identity-dedup edges, not a single-file Swift snippet. The per-issue
+> convention set by sibling
+> [`swift-issue-pointer-arithmetic-linux-miscompile/`](../swift-issue-pointer-arithmetic-linux-miscompile/)
+> assumes a single `swiftc`-buildable `Tests/Reproducer.swift` +
+> `Sources/Reproducer/main.swift` pair; SwiftPM planner-stage bugs at
+> workspace topology don't fit that shape. The forensic record below +
+> [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) carry the audit trail; a
+> minimal multi-package SwiftPM fixture is still listed as "pending" below.
+
 **Upstream**: [`swiftlang/swift-package-manager#9441`](https://github.com/swiftlang/swift-package-manager/issues/9441)
 (symptom match), with the workaround documented by
 [PR #9493](https://github.com/swiftlang/swift-package-manager/pull/9493)

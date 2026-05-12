@@ -1,5 +1,22 @@
 # Swift Issue: CopyPropagation `~Escapable` Coroutine Yield Crash
 
+> **Per-issue restructure: deferred 2026-05-12.** The bug has been fixed
+> upstream in Swift 6.3 (Xcode 26.4) — see
+> [`swift-institute/Research/swift-compiler-bug-catalog.md`](../../Research/swift-compiler-bug-catalog.md)
+> § A2 ("CopyPropagation ~Escapable coroutine yield crash (FIXED in 6.3)").
+> The per-issue convention set by sibling
+> [`swift-issue-pointer-arithmetic-linux-miscompile/`](../swift-issue-pointer-arithmetic-linux-miscompile/)
+> uses `withKnownIssue` to detect upstream fix-landing by flipping red when
+> the bug stops firing. Because this bug no longer fires on **any**
+> toolchain in the supported matrix (Swift 6.3 stable + 6.4-dev nightly,
+> all four platforms), a `withKnownIssue` harness would be permanently red
+> with no detection signal. The forensic record below +
+> [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) +
+> [`PRE-FILING-BUG-REPORT.md`](PRE-FILING-BUG-REPORT.md) carry the audit
+> trail; the standalone reproducer at
+> [`coenttb/swift-issue-copypropagation-nonescapable-mark-dependence`](https://github.com/coenttb/swift-issue-copypropagation-nonescapable-mark-dependence)
+> remains as an external regression-fixture and historical receipt.
+
 **Upstream**: [`swiftlang/swift#88022`](https://github.com/swiftlang/swift/issues/88022) (filed).
 **Status**: Bug FIXED in Swift 6.3 (Xcode 26.4). Property.View types in
 `swift-property-primitives` re-added `~Escapable` and `@_lifetime(borrow base)`
