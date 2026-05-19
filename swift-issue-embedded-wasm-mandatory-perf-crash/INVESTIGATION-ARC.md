@@ -1,6 +1,8 @@
-# Swift 6.3.2 Wasm Embedded — `MandatoryPerformanceOptimizations` SIL crash on @inlinable init delegating via closure
+# Swift 6.3.x Wasm Embedded — `MandatoryPerformanceOptimizations` SIL crash on cross-module use of `Tagged<Tag, Ordinal> + Tagged<Tag, Cardinal>` operator
 
-**Status**: VERIFIED + WORKAROUND-APPLIED — bug empirically reproduced on Swift 6.3.2 RELEASE Wasm SDK Embedded in Docker (`swift:6.3.2-jammy` + `swift-6.3.2-RELEASE_wasm-embedded` SDK); same toolchain on Swift 6.4-dev nightly Embedded (Linux) compiles clean (verified via cohort CI). Workaround in place for 6.3.2 RELEASE Wasm SDK.
+**Status**: VERIFIED — bug empirically reproduced on Swift 6.3.2 RELEASE Wasm SDK Embedded in Docker (`swift:6.3.2-jammy` + `swift-6.3.2-RELEASE_wasm-embedded` SDK). Same code compiles cleanly on Swift 6.4-dev nightly Embedded (Linux Embedded job verified). **No source-level workaround in the upstream operator has been found**; the only working mitigation is a consumer-side `#if !hasFeature(Embedded)` guard around any code path that invokes the operator across a module boundary.
+
+**Upstream filing posture**: per `[ISSUE-001]`, fixed-in-dev bugs don't strictly require a new upstream filing. Filing as a **6.3.x backport request** is the appropriate ask — the Wasm SDK currently ships against 6.3.x as the stable Embedded target, and downstream consumers in the swift-primitives ecosystem are accumulating consumer-side guards in the meantime.
 
 **Classification**: ICE (compiler crash with assertion + SIGABRT/SIGSEGV).
 
@@ -129,6 +131,21 @@ NOT required (verified by removal):
 - Init delegation pattern.
 - Property-chain access in closure body.
 - Multiple init parameters.
+
+### Failed upstream workaround attempts (signal-for-the-Swift-team)
+
+Each attempted in `swift-ordinal-primitives` on the `+ (Self, Count) -> Self` operator at `Sources/Ordinal Primitives Core/Ordinal.Protocol.swift`. None of these fixed the consumer-side crash:
+
+| Attempt | Result |
+|---------|--------|
+| Remove `@inlinable` | Still crashes (Embedded mandatorily monomorphizes regardless) |
+| `@_optimize(none)` on the operator | Still crashes (sub-pass runs at all opt levels) |
+| Restructure body to intermediate `let`-bindings (`let sum; let ord; return Self(ord)`) | **Still crashes** — earlier "verified" was a build-cache artifact (cleanly retested 2026-05-19 in fresh container, signal 11 reproduces) |
+| Return `lhs` as a no-op body | Compiles cleanly — but breaks semantics; confirms the `Self(Ordinal(_))` construction is the trigger, not the body shape |
+
+**Implication for the bug**: the `isLegalSILType()` assertion in `eliminateDeadAllocations` rejects an `alloc_stack` of the monomorphized `Self == Tagged<Int, Ordinal>` type emitted by the consumer's inliner. The operator body's source-level shape doesn't matter — the *type being allocated* is what triggers the assertion. Whatever the SIL bug is, it lives in the consumer's lowering of generic-method bodies that construct `Self` for monomorphized `Tagged<Tag, Underlying>` instantiations under Embedded.
+
+### Synthetic standalone reductions (failed to reproduce)
 
 ### Standalone synthetic (no production deps) — still NOT reproduced
 
