@@ -32,6 +32,34 @@ import PackageDescription
 
 let package = Package(
     name: "Issues",
+
+    // The macOS platform minimum mirrors the swift-primitives
+    // ecosystem's deployment target (`.v26`) so that targets depending
+    // on `swift-tagged-primitives` / `swift-ordinal-primitives` /
+    // `swift-cardinal-primitives` resolve cleanly. Targets that do NOT
+    // depend on swift-primitives products (e.g.
+    // `swift-issue-pointer-arithmetic-linux-miscompile-*`) are
+    // unaffected on Linux/Windows where the `platforms:` minimum is
+    // not consulted.
+    platforms: [.macOS(.v26)],
+
+    // External dependencies are unusual for the Issues repo — the
+    // per-issue convention prefers bare-`swiftc` single-file
+    // reproducers per [ISSUE-002]. They are accommodated for issues
+    // that are NOT reducible to bare `swiftc`. Currently the only
+    // such issue is the Tagged + Atomic + `~Copyable` metadata
+    // SIGSEGV, which is specific to the production
+    // `Tagged_Primitives.Tagged` symbol's runtime materialization
+    // and cannot be reduced to a local-copy reproducer (see
+    // `swift-issue-tagged-noncopyable-atomic-metadata-crash/INVESTIGATION-ARC.md`
+    // Arc 4 §`[ISSUE-002]`). The three deps below back ONLY that issue's
+    // targets — every other issue MUST remain dependency-free.
+    dependencies: [
+        .package(url: "https://github.com/swift-primitives/swift-tagged-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-ordinal-primitives.git", branch: "main"),
+        .package(url: "https://github.com/swift-primitives/swift-cardinal-primitives.git", branch: "main"),
+    ],
+
     targets: [
 
         // MARK: - swift-issue-pointer-arithmetic-linux-miscompile
@@ -55,6 +83,50 @@ let package = Package(
         .executableTarget(
             name: "swift-issue-pointer-arithmetic-linux-miscompile-Repro",
             path: "swift-issue-pointer-arithmetic-linux-miscompile/Sources/Reproducer"
+        ),
+
+        // MARK: - swift-issue-tagged-noncopyable-atomic-metadata-crash
+        //
+        // swiftlang/swift (pending filing — see PRE-FILING-BUG-REPORT.md
+        // in the issue directory) — `Atomic<Tagged<Tag, Ordinal>>.advance(within:)`
+        // SIGSEGVs at runtime on Apple Swift 6.3.x (Xcode 26.4.1)
+        // because the type-metadata cache stub
+        // `__swift_instantiateConcreteTypeFromMangledNameV2` returns
+        // null for `Atomic<Tagged_Primitives.Tagged<…>>`. The runtime
+        // demangler returns `TypeLookupError("unknown error")` for the
+        // symbolic-mangled name's inline-encoded module-identifier
+        // fragment referencing the
+        // `Tagged_Primitives_Standard_Library_Integration` submodule
+        // where the conditional `AtomicRepresentable` conformance lives.
+        //
+        // Fixed on Swift 6.5-dev nightly `2026-03-16-a` and later.
+        //
+        // This issue is the sole reason the Issues package declares
+        // external `.package(...)` dependencies — the bug is specific
+        // to the production `Tagged_Primitives.Tagged` symbol's
+        // runtime materialization and cannot be reduced to a
+        // local-copy / bare-`swiftc` reproducer. The reproducer
+        // therefore preserves `import Tagged_Primitives` per
+        // [ISSUE-002]'s "If the issue requires SwiftPM" branch.
+
+        .testTarget(
+            name: "swift-issue-tagged-noncopyable-atomic-metadata-crash-Tests",
+            dependencies: [
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
+                .product(name: "Ordinal Primitives", package: "swift-ordinal-primitives"),
+                .product(name: "Cardinal Primitives", package: "swift-cardinal-primitives"),
+            ],
+            path: "swift-issue-tagged-noncopyable-atomic-metadata-crash/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-tagged-noncopyable-atomic-metadata-crash-Repro",
+            dependencies: [
+                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
+                .product(name: "Ordinal Primitives", package: "swift-ordinal-primitives"),
+                .product(name: "Cardinal Primitives", package: "swift-cardinal-primitives"),
+            ],
+            path: "swift-issue-tagged-noncopyable-atomic-metadata-crash/Sources/Reproducer"
         ),
     ],
     swiftLanguageModes: [.v6]

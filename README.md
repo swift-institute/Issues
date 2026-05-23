@@ -147,6 +147,7 @@ Each issue subdirectory documents its bug in `README.md`. Current
 issues:
 
 - [`swift-issue-pointer-arithmetic-linux-miscompile/`](swift-issue-pointer-arithmetic-linux-miscompile/) — Pointer-arithmetic release-mode miscompile (`swiftlang/swift#77558`), fixed on 6.4-dev nightly-main.
+- [`swift-issue-tagged-noncopyable-atomic-metadata-crash/`](swift-issue-tagged-noncopyable-atomic-metadata-crash/) — `Atomic<Tagged<Tag, Ordinal>>.advance(within:)` runtime metadata SIGSEGV on Apple Swift 6.3.x; demangling-time conformance lookup fails for cross-module conditional `AtomicRepresentable` conformance with `~Copyable` Tag suppression. Fixed on Swift 6.5-dev nightly `2026-03-16-a` and later. Upstream filing pending.
 
 ## License
 
