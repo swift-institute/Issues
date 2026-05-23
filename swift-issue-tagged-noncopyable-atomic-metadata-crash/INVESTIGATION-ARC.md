@@ -71,9 +71,11 @@ through. Test runs against this state went green (33/33 swift-executors,
 Orchestrator rejected the pivot: the typed-wrapper pattern degrades the
 typed approach at the storage layer rather than fixing the cause; saving
 the typed-surface form at the public API does not redeem dropping the
-typed phantom-Tag from the storage. Per
+typed phantom-Tag from the storage. Per the memory entry
 `feedback_correctness_and_evergreen.md`, structural correctness +
-evergreen disposition outweigh [`RES-018`] consumer-demand thresholds.
+evergreen disposition outweigh consumer-demand thresholds (the memory
+itself flags the relevant skill-side framing for future skill-lifecycle
+rethink).
 All four workarounds were reverted.
 
 Catalog §A9 (commit `ba4b911`) was retained because the bug remained
@@ -150,39 +152,51 @@ The bug is fixed in the 6.4-dev → 6.5-dev nightly stream by
 ~5-month gap between 6.3.2's release and `2026-03-16-a`; pinpointing
 it is deferred to upstream filing.
 
-### [`ISSUE-002`] Bare-`swiftc` reduction attempted; not achievable
+### [`ISSUE-002`] Bare-`swiftc` reduction — five-shape attempt; v1 untested
 
-Four reduction shapes were tried (full source in `/tmp/sigsegv-bare/`,
+Five reduction shapes were attempted (full source in `/tmp/sigsegv-bare/`,
 not committed):
 
 | Shape | Description | Result on 6.3.2 |
 |-------|-------------|-----------------|
-| v1 single-file with full Tagged | `@frozen`, `package(set)`, `@_lifetime`, `~Escapable` storage, all conformances | Compile errors (required `-package-name` / `-enable-experimental-feature Lifetimes` / `~Escapable` ergonomics) |
+| **v1** single-file with full Tagged | `@frozen`, `package(set)`, `@_lifetime`, `~Escapable` storage, all conformances | **NOT TESTED** — compile-errored at the unflagged `swiftc` invocation; the errors (`-package-name` / `-enable-experimental-feature Lifetimes` / `~Escapable`-storage ergonomics) are resolvable with the required flag scaffolding, but the retry was not performed |
 | v2 single-file simplified Tagged | Without `package(set)`/`@_lifetime`/`~Escapable`; inline `AtomicRepresentable` conformance; `Atomic<Tagged>.load + compareExchange` | **PASS** (no crash) |
 | v3 two-module split (Tagged in module A; consumer in B) | Inline conformance in module A (no SLI submodule) | **PASS** |
 | v4 three-module split (Tagged / `@retroactive AtomicRepresentable` conformance / consumer) | Conformance in separate module, imported by consumer | **PASS** |
 | v5 four-module split with generic Atomic extension | Tagged / Conformance / Atomic extension `bumpZero` / consumer | **PASS** |
 
-None of the local-copy bare-`swiftc` shapes reproduces on 6.3.2.
-Combined with Arc 3's evidence (Tagged.swift declaration changes don't
-fix the bug) and Arc 1's variable-isolation evidence (the bug is
-specific to `Tagged_Primitives.Tagged` materialized inside generic
-stdlib containers like `Atomic` or `Dictionary`), the conclusion is:
+Per [`ISSUE-026`] coverage-scope discipline, the truthful conclusion
+from this experiment is:
 
-> The bug requires the actual production `Tagged_Primitives.Tagged`
-> symbol with its production module structure. A bare-`swiftc` reduction
-> that strips out `Tagged_Primitives` is fundamentally unable to
-> reproduce. Per [`ISSUE-002`]'s "If the issue requires SwiftPM" branch,
-> the reproducer documented here preserves
-> `import Tagged_Primitives` (with `Ordinal_Primitives` /
-> `Cardinal_Primitives` for the `.advance(within:)` extension and the
-> `Cardinal` Underlying).
+> v2–v5 (simplified-Tagged single-file + 2/3/4-module splits) all PASS
+> on 6.3.2 — none of the four *simplified* bare-`swiftc` shapes
+> reproduces. Combined with Arc 3's evidence (single-file edits to
+> Tagged.swift don't fix the crash) and Arc 1's variable-isolation
+> evidence (a local wrapper struct mirroring Tagged's shape doesn't
+> reproduce), the *conditional* conclusion is consistent: the
+> production `Tagged_Primitives.Tagged` symbol with its production
+> module structure appears to be load-bearing.
+>
+> The v1 hypothesis (full-attribute single-file with all required
+> flag scaffolding) is **UNTESTED**. It may reproduce in isolation; it
+> may not. The five-shape attempt does NOT empirically close that
+> question. Pursuing v1 is deferred — per [`ISSUE-008`] resolution
+> path ("Fixed on dev toolchain, not in Xcode → apply workaround,
+> document, wait for release"), further reduction effort is not
+> load-bearing for the resolution decision.
+
+The reproducer documented here therefore preserves
+`import Tagged_Primitives` (with `Ordinal_Primitives` /
+`Cardinal_Primitives` for the `.advance(within:)` extension and the
+`Cardinal` Underlying), per [`ISSUE-002`]'s "If the issue requires
+SwiftPM" branch — *accommodating* the SwiftPM dependency, not
+*proving* SwiftPM is required.
 
 This is unusual for the per-issue convention but accommodated.
 `swift-issue-spm-planning-build-stall/` is the existing precedent for a
 SwiftPM-only Issues entry (different bug class — planner-stage stall
-on multi-package workspace topology — but the same "no single
-`.swift` reproducer is possible" structural constraint).
+on multi-package workspace topology — and an empirically closed
+"no single-`swift` reproducer" claim for that planner-stage bug).
 
 ### [`ISSUE-007`] Duplicate search
 
@@ -207,8 +221,8 @@ is:
 
 > Apply workaround, document, wait for release.
 
-The orchestrator's standing correctness preference
-(`feedback_correctness_and_evergreen.md`) rules out the typed-wrapper
+The orchestrator's standing correctness preference (memory entry
+`feedback_correctness_and_evergreen.md`) rules out the typed-wrapper
 workaround that Arc 2 explored. The applied resolution for this arc is
 therefore:
 
@@ -217,9 +231,18 @@ therefore:
 2. Update catalog §A9 with the dev-toolchain status (fixed on 6.5-dev).
 3. Append `§Findings (2026-05-23 Arc 4)` to
    `HANDOFF-tagged-noncopyable-atomic-metadata-crash.md`.
-4. Stage the upstream backport-request draft at
-   [`PRE-FILING-BUG-REPORT.md`](PRE-FILING-BUG-REPORT.md). Filing is
-   pending orchestrator authorization per [`ISSUE-008`].
+4. Stage a sibling-comment data-point draft for posting on
+   [`swiftlang/swift#74303`](https://github.com/swiftlang/swift/issues/74303),
+   the existing open issue covering the same
+   `__swift_instantiateConcreteTypeFromMangledName`-null-return
+   failure family in a different domain (DiscordBM
+   `IntBitField<Flag>?` Codable+Optional). Draft at
+   [`SIBLING-COMMENT-DRAFT.md`](SIBLING-COMMENT-DRAFT.md); posting is
+   pending orchestrator authorization per [`ISSUE-008`]. This posture
+   replaces the earlier "backport-request" framing — given the bug is
+   already fixed on 6.5-dev and the failure mode is a tracked family
+   with existing open instances, a sibling-instance comment is the
+   appropriate ask rather than a new issue or a 6.3.x-backport request.
 5. Wait for the Swift 6.5 release. The three handoff-flagged packages
    (swift-executors, swift-threads, swift-io) will pass on 6.5+ with no
    source change.
@@ -231,7 +254,7 @@ therefore:
 - `swift-institute/Issues/swift-issue-tagged-noncopyable-atomic-metadata-crash/` — this directory
   - `README.md`
   - `INVESTIGATION-ARC.md` (this file)
-  - `PRE-FILING-BUG-REPORT.md`
+  - `SIBLING-COMMENT-DRAFT.md` (data-point comment for swiftlang/swift#74303)
   - `Sources/Reproducer/main.swift`
   - `Tests/Reproducer.swift`
 - `swift-institute/Issues/Package.swift` — two new targets +

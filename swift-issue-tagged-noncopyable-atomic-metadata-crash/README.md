@@ -4,11 +4,12 @@
 snapshots `2026-03-16-a`, `2026-05-07-a`, `2026-05-12-a`); STILL FIRES on
 Apple Swift 6.3.x (`swiftlang-6.3.2.1.108`, current Xcode 26.4.1).
 
-**Upstream filing posture**: pending. Per [`ISSUE-001`] the bug is
-already fixed in dev — a 6.3.x-backport request is the appropriate
-upstream ask, not a new bug report. The draft is staged at
-[`PRE-FILING-BUG-REPORT.md`](PRE-FILING-BUG-REPORT.md). Filing requires
-orchestrator authorization per [`ISSUE-008`].
+**Upstream filing posture**: sibling-comment on
+[`swiftlang/swift#74303`](https://github.com/swiftlang/swift/issues/74303)
+— a data-point comment on the existing open `__swift_instantiateConcreteTypeFromMangledName`-null-return issue,
+NOT a new issue and NOT a backport request. The draft is staged at
+[`SIBLING-COMMENT-DRAFT.md`](SIBLING-COMMENT-DRAFT.md); posting
+requires orchestrator authorization per [`ISSUE-008`].
 
 **Classification**: Runtime miscompile / crash (per
 [`ISSUE-010`]). The compiler accepts the source and emits a binary; at
@@ -107,12 +108,29 @@ single-file change to `Tagged.swift` reproduces or fixes it.
 ## Reproducer
 
 This reproducer requires **SwiftPM with three external dependencies**.
-Bare `swiftc` reduction is not achievable on 6.3.x: the trigger is
-specific to the `Tagged_Primitives.Tagged` symbol's presence under
-its production module/submodule layout — a local-copy `Tagged`
-declaration, a 2-module same-package conformance split, and a 4-module
-split-conformance-plus-generic-extension setup all FAIL to reproduce
-on bare `swiftc`. The minimum reproducer therefore preserves
+Bare-`swiftc` reduction was attempted across five shapes (see
+[`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) §`[ISSUE-002]`). The v1
+"full-attribute single-file" shape (the version that includes
+`@_lifetime`, `package(set)`, struct-level `~Escapable`, the full
+conformance chain) compile-errored at the `swiftc` invocation and was
+**not retried with the required flag scaffolding** (`-package-name`
++ `-enable-experimental-feature Lifetimes` + `~Escapable`-ergonomic
+substitutions). Shapes v2–v5 (simplified-Tagged single-file + 2-module
+split + 3-module retroactive-conformance split + 4-module
+split-with-generic-extension) all PASS on 6.3.2.
+
+The conclusion supported by the v2–v5 evidence is: *the bug is not
+reproduced by any of the four simplified-Tagged shapes tried*. The
+stronger claim ("bug requires production
+`Tagged_Primitives.Tagged` symbol with production module structure")
+is consistent with this evidence and with the prior arcs'
+nine-candidate Tagged.swift bisection + local-wrapper-shape
+non-reproduction, but it is NOT empirically closed against the v1
+hypothesis (full-attribute single-file may reproduce in isolation).
+Pursuing v1 is deferred — per [`ISSUE-008`] resolution path
+("Fixed on dev toolchain, not in Xcode → apply workaround, document,
+wait for release"), further reduction effort is not load-bearing for
+the resolution decision. The reproducer below preserves
 `import Tagged_Primitives` (with `Ordinal_Primitives` /
 `Cardinal_Primitives` for the `.advance(within:)` extension and the
 `Cardinal` Underlying), per [`ISSUE-002`]'s "If the issue requires
@@ -185,8 +203,9 @@ which will carry the fix to all consumers.
 ## See also
 
 - [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) — full 4-arc convergence record
-- [`PRE-FILING-BUG-REPORT.md`](PRE-FILING-BUG-REPORT.md) — staged
-  upstream-filing draft (`swiftlang/swift` backport request)
+- [`SIBLING-COMMENT-DRAFT.md`](SIBLING-COMMENT-DRAFT.md) — staged
+  data-point comment for posting on
+  [`swiftlang/swift#74303`](https://github.com/swiftlang/swift/issues/74303)
 - `swift-institute/Research/swift-compiler-bug-catalog.md` §A9 — the
   ecosystem-wide canonical entry for this defect
 - `swift-foundations/swift-executors/Experiments/sigsegv-repro/` — the
