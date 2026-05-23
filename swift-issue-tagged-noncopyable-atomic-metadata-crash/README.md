@@ -1,8 +1,8 @@
 # Swift Issue: Tagged + Atomic + `~Copyable` cross-module conditional-conformance runtime metadata SIGSEGV
 
-**Status**: RESOLVED on Swift 6.5-dev nightly (verified 2026-05-23 against
-snapshots `2026-03-16-a`, `2026-05-07-a`, `2026-05-12-a`); STILL FIRES on
-Apple Swift 6.3.x (`swiftlang-6.3.2.1.108`, current Xcode 26.4.1).
+**Status**: RESOLVED on Swift 6.4-dev / 6.5-dev nightly (verified 2026-05-23 against
+snapshots `2026-03-16-a` (6.4-dev), `2026-05-07-a` (6.4-dev), `2026-05-12-a` (6.5-dev));
+STILL FIRES on Apple Swift 6.3.x (`swiftlang-6.3.2.1.108`, current Xcode 26.4.1).
 
 **Upstream filing posture**: sibling-comment on
 [`swiftlang/swift#74303`](https://github.com/swiftlang/swift/issues/74303)
@@ -26,8 +26,8 @@ and the caller's generic-dispatch dereferences `[null + 0x10]` →
 |-----------|------------|--------|
 | Apple Swift 6.3.2 RELEASE (Xcode 26.4.1, default) | `swiftlang-6.3.2.1.108` | **CRASH** (exit 139) |
 | Apple Swift 6.3.1 RELEASE | `swift-6.3.1-RELEASE` | **CRASH** (per prior arc) |
-| Swift 6.5-dev nightly 2026-03-16-a | `org.swift.64202603161a` | **PASS** (exit 0) |
-| Swift 6.5-dev nightly 2026-05-07-a | `org.swift.64202605071a` | **PASS** (exit 0) |
+| Swift 6.4-dev nightly 2026-03-16-a | `org.swift.64202603161a` | **PASS** (exit 0) |
+| Swift 6.4-dev nightly 2026-05-07-a | `org.swift.64202605071a` | **PASS** (exit 0) |
 | Swift 6.5-dev nightly 2026-05-12-a | `org.swift.64202605121a` | **PASS** (exit 0; debug + release) |
 
 The exact 6.3.x → 6.4-dev → 6.5-dev fix landing window is narrower
@@ -161,7 +161,7 @@ The reproducer below preserves `import Tagged_Primitives` (with
 ```bash
 swift run swift-issue-tagged-noncopyable-atomic-metadata-crash-Repro
 # on Apple Swift 6.3.2 (Xcode 26.4.1):  killed by signal 11; exit 139
-# on Swift 6.5-dev nightly 2026-03-16-a+:  prints "result = 0"; exit 0
+# on Swift 6.4-dev nightly 2026-03-16-a+:  prints "result = 0"; exit 0
 ```
 
 The executable source is [`Sources/Reproducer/main.swift`](Sources/Reproducer/main.swift)

@@ -135,8 +135,8 @@ standalone SwiftPM reproducer at
 |-----------|-----------|-------|-----|
 | Apple Swift 6.3.2 (default) | `swift-6.3.2-RELEASE` | OK | **CRASH** (exit 139) |
 | Swift 6.5-dev `2026-05-12-a` | `org.swift.64202605121a` | OK (debug + release) | **PASS** (exit 0) |
-| Swift 6.5-dev `2026-05-07-a` | `org.swift.64202605071a` | OK | **PASS** (exit 0) |
-| Swift 6.5-dev `2026-03-16-a` | `org.swift.64202603161a` | OK | **PASS** (exit 0) |
+| Swift 6.4-dev `2026-05-07-a` | `org.swift.64202605071a` | OK | **PASS** (exit 0) |
+| Swift 6.4-dev `2026-03-16-a` | `org.swift.64202603161a` | OK | **PASS** (exit 0) |
 
 The DeinitDevirtualizer blocker DOES affect a full
 `swift-executors swift test` run on 6.5-dev (the `swift-array-primitives`
@@ -145,7 +145,7 @@ standalone reproducer build (the reproducer's three direct deps
 `swift-tagged-primitives` / `swift-ordinal-primitives` /
 `swift-cardinal-primitives` do not transit through `swift-array-primitives`).
 
-The standalone reproducer passes on every 6.5-dev nightly we sampled.
+The standalone reproducer passes on every 6.4-dev / 6.5-dev nightly we sampled.
 The bug is fixed in the 6.4-dev → 6.5-dev nightly stream by
 `2026-03-16-a` (the earliest 6.4-dev nightly available locally past the
 6.3.2 ship). The exact commit window is somewhere in the

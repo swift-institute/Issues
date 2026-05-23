@@ -18,7 +18,7 @@ private enum SimpleTag: Sendable {}
 /// signal. `withKnownIssue` is documentation of intent for human
 /// readers in that case.
 ///
-/// On Swift 6.5-dev (snapshot 2026-03-16-a or newer, verified
+/// On Swift 6.4-dev / 6.5-dev (snapshot 2026-03-16-a or newer, verified
 /// 2026-05-23): the demangling-time conformance lookup succeeds and
 /// the call returns cleanly. The `when:` predicate returns `false`,
 /// `withKnownIssue` is bypassed, and the `#expect` runs as a normal
@@ -52,8 +52,8 @@ struct TaggedNoncopyableAtomicReproducer {
 
 /// Compile-time gate: returns `true` on toolchains whose Swift compiler
 /// version is older than 6.5. The bug fires on Apple Swift 6.3.x (the
-/// current shipping Xcode); is fixed on the Swift 6.5-dev nightly
-/// snapshot stream (verified 2026-03-16-a / 2026-05-07-a / 2026-05-12-a).
+/// current shipping Xcode); is fixed on the Swift 6.4-dev / 6.5-dev nightly
+/// snapshot stream (verified 2026-03-16-a / 2026-05-07-a (6.4-dev) / 2026-05-12-a (6.5-dev)).
 private func isShippingBuggyToolchain() -> Bool {
     #if compiler(<6.5)
     return true

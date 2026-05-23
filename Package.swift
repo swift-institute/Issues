@@ -99,7 +99,7 @@ let package = Package(
         // `Tagged_Primitives_Standard_Library_Integration` submodule
         // where the conditional `AtomicRepresentable` conformance lives.
         //
-        // Fixed on Swift 6.5-dev nightly `2026-03-16-a` and later.
+        // Fixed on Swift 6.4-dev nightly `2026-03-16-a` and later.
         //
         // This issue is the sole reason the Issues package declares
         // external `.package(...)` dependencies — the bug is specific
