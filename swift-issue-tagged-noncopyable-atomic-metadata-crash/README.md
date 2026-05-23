@@ -109,32 +109,52 @@ single-file change to `Tagged.swift` reproduces or fixes it.
 
 This reproducer requires **SwiftPM with three external dependencies**.
 Bare-`swiftc` reduction was attempted across five shapes (see
-[`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) §`[ISSUE-002]`). The v1
-"full-attribute single-file" shape (the version that includes
-`@_lifetime`, `package(set)`, struct-level `~Escapable`, the full
-conformance chain) compile-errored at the `swiftc` invocation and was
-**not retried with the required flag scaffolding** (`-package-name`
-+ `-enable-experimental-feature Lifetimes` + `~Escapable`-ergonomic
-substitutions). Shapes v2–v5 (simplified-Tagged single-file + 2-module
-split + 3-module retroactive-conformance split + 4-module
-split-with-generic-extension) all PASS on 6.3.2.
+[`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) §`[ISSUE-002]`):
 
-The conclusion supported by the v2–v5 evidence is: *the bug is not
-reproduced by any of the four simplified-Tagged shapes tried*. The
-stronger claim ("bug requires production
-`Tagged_Primitives.Tagged` symbol with production module structure")
-is consistent with this evidence and with the prior arcs'
-nine-candidate Tagged.swift bisection + local-wrapper-shape
-non-reproduction, but it is NOT empirically closed against the v1
-hypothesis (full-attribute single-file may reproduce in isolation).
-Pursuing v1 is deferred — per [`ISSUE-008`] resolution path
-("Fixed on dev toolchain, not in Xcode → apply workaround, document,
-wait for release"), further reduction effort is not load-bearing for
-the resolution decision. The reproducer below preserves
-`import Tagged_Primitives` (with `Ordinal_Primitives` /
-`Cardinal_Primitives` for the `.advance(within:)` extension and the
-`Cardinal` Underlying), per [`ISSUE-002`]'s "If the issue requires
-SwiftPM" branch.
+- **v1 (full-attribute single-file)** — Tagged declaration mirroring
+  production verbatim (`@_lifetime(copy underlying)`, `package(set)`,
+  struct-level `~Escapable`, the full conditional Copyable / Escapable
+  / Sendable / BitwiseCopyable / Equatable / Hashable / Comparable
+  conformance chain, the `modify` extension, and the
+  `AtomicRepresentable` conformance from the SLI submodule). Built
+  with the required four-flag scaffolding
+  (`swiftc -O -package-name v1pkg
+  -enable-experimental-feature Lifetimes
+  -enable-experimental-feature SuppressedAssociatedTypes`). Tested
+  with two triggers: (A) `Atomic<Tagged<SimpleTag, Int>>.load(ordering: .relaxed)`,
+  (B) a generic-extension `bumpZero<C>(within:)` on `Atomic` whose
+  where-clause chain (`Value.AtomicRepresentation == UInt.AtomicRepresentation`
+  + `C.AtomicRepresentation == UInt.AtomicRepresentation`) mirrors
+  production `.advance(within:)`'s metadata-forcing same-type
+  constraints. **Both PASS** (compile clean, run clean, exit 0).
+- **v2–v5 (simplified-Tagged single-file + 2/3/4-module splits)** —
+  all **PASS** on 6.3.2.
+
+The conclusion across all five reduction shapes plus Arc 3's
+nine-candidate `Tagged.swift` single-file bisection: *the bug is not
+reproduced by any single-file or multi-module shape we tried*. The
+"bug requires production `Tagged_Primitives.Tagged` symbol with its
+production module structure" claim is now **strongly supported** —
+not just consistent with prior evidence but empirically tested
+against the strongest single-file approximation we could fit.
+
+**Remaining caveat** (per [`ISSUE-026`] coverage-scope discipline):
+v1's Trigger B drops the *specific protocol identities* used by
+production `.advance(within:)` — `Ordinal.\`Protocol\``,
+`Carrier.\`Protocol\`<Cardinal>`, `Cardinal` — because inlining them
+would exceed a reasonable single-file budget (~200 lines). If the bug
+is gated by those specific protocol identities rather than by the
+same-type-constraint *shape* my Trigger B captures, that cell remains
+untested. Pursuing a Trigger C with full protocol-identity
+scaffolding was orchestrator-decided 2026-05-23 to be diminishing
+returns (the resolution path per [`ISSUE-008`] is "wait for the
+Swift 6.5 release"; further reduction is not load-bearing for the
+resolution decision).
+
+The reproducer below preserves `import Tagged_Primitives` (with
+`Ordinal_Primitives` / `Cardinal_Primitives` for the
+`.advance(within:)` extension and the `Cardinal` Underlying), per
+[`ISSUE-002`]'s "If the issue requires SwiftPM" branch.
 
 ### Standalone executable
 

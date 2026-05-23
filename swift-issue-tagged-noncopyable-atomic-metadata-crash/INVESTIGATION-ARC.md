@@ -152,45 +152,58 @@ The bug is fixed in the 6.4-dev → 6.5-dev nightly stream by
 ~5-month gap between 6.3.2's release and `2026-03-16-a`; pinpointing
 it is deferred to upstream filing.
 
-### [`ISSUE-002`] Bare-`swiftc` reduction — five-shape attempt; v1 untested
+### [`ISSUE-002`] Bare-`swiftc` reduction — five-shape attempt; v1 retried and PASS
 
-Five reduction shapes were attempted (full source in `/tmp/sigsegv-bare/`,
-not committed):
+Five reduction shapes were attempted (full source in `/tmp/sigsegv-bare/`
+for v2–v5 and `/tmp/sigsegv-v1/` for v1, not committed):
 
 | Shape | Description | Result on 6.3.2 |
 |-------|-------------|-----------------|
-| **v1** single-file with full Tagged | `@frozen`, `package(set)`, `@_lifetime`, `~Escapable` storage, all conformances | **NOT TESTED** — compile-errored at the unflagged `swiftc` invocation; the errors (`-package-name` / `-enable-experimental-feature Lifetimes` / `~Escapable`-storage ergonomics) are resolvable with the required flag scaffolding, but the retry was not performed |
+| **v1** single-file with full Tagged | `@frozen`, `package(set)`, `@_lifetime`, `~Escapable` storage, all conformances, `modify` extension, inline `AtomicRepresentable` conformance | **PASS** — Trigger A (`Atomic<Tagged<SimpleTag, Int>>.load(ordering: .relaxed)`) AND Trigger B (`Atomic<Tagged<SimpleTag, UInt>>.bumpZero(within:)` with same-type-constraint-chain extension matching production `.advance(within:)`'s where-clause shape) both compile + run + exit 0 under `swiftc -O -package-name v1pkg -enable-experimental-feature Lifetimes -enable-experimental-feature SuppressedAssociatedTypes`. Files at `/tmp/sigsegv-v1/v1_trigger_a.swift` (123 lines) and `/tmp/sigsegv-v1/v1_trigger_b.swift` (164 lines), not committed |
 | v2 single-file simplified Tagged | Without `package(set)`/`@_lifetime`/`~Escapable`; inline `AtomicRepresentable` conformance; `Atomic<Tagged>.load + compareExchange` | **PASS** (no crash) |
 | v3 two-module split (Tagged in module A; consumer in B) | Inline conformance in module A (no SLI submodule) | **PASS** |
 | v4 three-module split (Tagged / `@retroactive AtomicRepresentable` conformance / consumer) | Conformance in separate module, imported by consumer | **PASS** |
 | v5 four-module split with generic Atomic extension | Tagged / Conformance / Atomic extension `bumpZero` / consumer | **PASS** |
 
 Per [`ISSUE-026`] coverage-scope discipline, the truthful conclusion
-from this experiment is:
+from this experiment (post v1 retry) is:
 
-> v2–v5 (simplified-Tagged single-file + 2/3/4-module splits) all PASS
-> on 6.3.2 — none of the four *simplified* bare-`swiftc` shapes
-> reproduces. Combined with Arc 3's evidence (single-file edits to
-> Tagged.swift don't fix the crash) and Arc 1's variable-isolation
-> evidence (a local wrapper struct mirroring Tagged's shape doesn't
-> reproduce), the *conditional* conclusion is consistent: the
+> v1 (full-attribute production-verbatim single-file with required
+> four-flag scaffolding) AND v2–v5 (simplified-Tagged single-file +
+> 2/3/4-module splits) **all PASS** on 6.3.2 — none of the five
+> bare-`swiftc` shapes reproduces. Combined with Arc 3's
+> nine-candidate `Tagged.swift` single-file bisection (also failed to
+> fix the crash) and Arc 1's variable-isolation evidence (a local
+> wrapper struct mirroring Tagged's shape doesn't reproduce), the
 > production `Tagged_Primitives.Tagged` symbol with its production
-> module structure appears to be load-bearing.
+> module structure is **strongly supported** as the load-bearing
+> trigger — not just consistent with prior evidence but empirically
+> tested against the strongest single-file approximation we could fit.
 >
-> The v1 hypothesis (full-attribute single-file with all required
-> flag scaffolding) is **UNTESTED**. It may reproduce in isolation; it
-> may not. The five-shape attempt does NOT empirically close that
-> question. Pursuing v1 is deferred — per [`ISSUE-008`] resolution
-> path ("Fixed on dev toolchain, not in Xcode → apply workaround,
-> document, wait for release"), further reduction effort is not
-> load-bearing for the resolution decision.
+> **Remaining caveat**: v1's Trigger B drops the specific protocol
+> identities used by production `.advance(within:)` —
+> `Ordinal.\`Protocol\``, `Carrier.\`Protocol\`<Cardinal>`,
+> `Cardinal` — because inlining them would exceed a reasonable
+> single-file budget (~200 lines). Trigger B captures the *shape* of
+> the same-type-constraint chain
+> (`Value.AtomicRepresentation == UInt.AtomicRepresentation`
+> + `C.AtomicRepresentation == UInt.AtomicRepresentation`) that
+> production `.advance(within:)` uses, but not the protocol
+> *identities*. If the bug is gated by the specific
+> Ordinal/Carrier/Cardinal protocol identities rather than the
+> constraint shape, that cell remains untested. A Trigger C with full
+> protocol-identity scaffolding was orchestrator-decided 2026-05-23
+> to be diminishing returns (per [`ISSUE-008`] resolution path
+> "Fixed on dev toolchain, not in Xcode → wait for release", further
+> reduction is not load-bearing for the resolution decision).
 
 The reproducer documented here therefore preserves
 `import Tagged_Primitives` (with `Ordinal_Primitives` /
 `Cardinal_Primitives` for the `.advance(within:)` extension and the
 `Cardinal` Underlying), per [`ISSUE-002`]'s "If the issue requires
-SwiftPM" branch — *accommodating* the SwiftPM dependency, not
-*proving* SwiftPM is required.
+SwiftPM" branch — *accommodating* the SwiftPM dependency, with the
+five-shape + nine-candidate evidence as strong support for that
+accommodation.
 
 This is unusual for the per-issue convention but accommodated.
 `swift-issue-spm-planning-build-stall/` is the existing precedent for a
