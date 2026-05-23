@@ -348,3 +348,29 @@ references, on 6.3.x only.
 Pinpointing further requires upstream-side bisection of the
 6.3.2 → 6.5-dev nightly stream — out of scope for this arc per
 [`ISSUE-022`].
+
+---
+
+## Arc 5 (2026-05-23) — Commit bisection
+
+Identified fix at HIGH confidence: [PR #87066](https://github.com/swiftlang/swift/pull/87066) / commit [`bc44d42f11`](https://github.com/swiftlang/swift/commit/bc44d42f11830ea37a3b882e332ef480c1b4324e) ("SuppressedAssociatedTypesWithDefaults: swiftinterface and mangling support", merged 2026-02-10 by @kavon). The 14-line addition to `lib/Demangling/Demangler.cpp` adds cases `'j'` (Inverse + Assoc) and `'J'` (Inverse + CompoundAssoc) to `Demangler::demangleGenericRequirement()`. Verified absent from `release/6.3` / `release/6.3.1`; present on `release/6.4.x` and `main`. PR explicitly added test coverage at `test/Casting/suppressed-associated-types.swift`. Confidence vectors: source-mechanism match + PR-body runtime-breakage acknowledgment + cherry-pick absence on `release/6.3`.
+
+## Arc 6 (2026-05-23) — Drafts + audit + posting closeout
+
+Three artifacts staged + audited + posted:
+
+- **Backport request issue** filed at [swiftlang/swift#89389](https://github.com/swiftlang/swift/issues/89389) — narrowed to `release/6.3` only (`release/6.4.x` already carries `bc44d42f11`).
+- **Sibling-instance comment** posted on [swiftlang/swift#74303](https://github.com/swiftlang/swift/issues/74303#issuecomment-4524878679) — cites identified fix + cross-platform CI matrix + links the backport-request issue.
+- **§A9 catalog correction** landed at swift-institute/Research commit `aa94a98` — additive snapshot version-label correction (`2026-03-16-a` and `2026-05-07-a` are 6.4-dev, not 6.5-dev as the prior Arc 4 update labeled).
+
+### Pre-post audit (Arc 6 fresh-perspective review)
+
+A fresh-chat audit verified every empirical claim against verifiable sources (`gh api`, file:line reads, CI run inspection) and minimized public-text length to ≤200 words sibling comment + ≤350 words backport request (prose-only count). Key corrections caught and folded in:
+
+- **C-19** (snapshot version labels): catalog §A9 mislabeled two snapshots as 6.5-dev; empirical `swift --version` shows they are 6.4-dev. Reviewed drafts use neutral "main-branch nightly" framing; catalog §A9 amended additively.
+- **C-22** (#74333 disposition): not a duplicate of #74303 as prior drafts claimed; state is `CLOSED` with `stateReason: COMPLETED`. Removed.
+- **C-30** (statement count): `main.swift` has 9 statements, not "~13".
+- **C-35/36/37** (platform claim): "platform-independent — likely affects every host" empirically refuted. CI run [26326702012](https://github.com/swift-institute/Issues/actions/runs/26326702012) shows: macOS Apple 6.3.2 CRASH; swift.org Linux 6.3.2 NO CRASH (same `swift-6.3.2-RELEASE` source tag); Windows ambiguous. Bug is Apple-toolchain-specific within the release/6.3 lineage.
+- **C-38** (CI confound): macOS leg runs `-c debug` and Linux 6.3 leg runs `-c release`; CI doesn't fully isolate platform vs build mode. Reviewed drafts disclose this and note local testing on Apple Xcode 6.3.2 reports CRASH under both `-Onone` and `-O`.
+
+Audit details + full 40-row claim inventory at [`AUDIT-REPORT.md`](AUDIT-REPORT.md). Reviewed drafts at [`REVIEWED-BACKPORT-REQUEST.md`](REVIEWED-BACKPORT-REQUEST.md) and [`REVIEWED-SIBLING-COMMENT.md`](REVIEWED-SIBLING-COMMENT.md). Historical Arc 4 / Arc 6 drafts retained at [`BACKPORT-REQUEST-DRAFT.md`](BACKPORT-REQUEST-DRAFT.md) and [`SIBLING-COMMENT-DRAFT.md`](SIBLING-COMMENT-DRAFT.md).
