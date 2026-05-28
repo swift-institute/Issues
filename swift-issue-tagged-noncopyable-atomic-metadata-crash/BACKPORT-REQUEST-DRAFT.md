@@ -8,7 +8,20 @@ date: 2026-05-23
 venue-precedent: swiftlang/swift#88239 ("Serialized explicit module paths … on release/6.3" — same shape: bug report titled with affected branch, body notes "fixed on main", asks for handling on release branch). swiftlang/swift uses no dedicated backport-request issue type; cherry-picks are maintainer-filed PRs (label `🍒 release cherry pick`); external reporters file regular bug-tracker issues that flag affected branches in the title.
 ---
 
-> **STATUS** (2026-05-23): pending orchestrator authorization per
+> **WITHDRAWN (2026-05-28).** This backport request was filed as
+> [swiftlang/swift#89389](https://github.com/swiftlang/swift/issues/89389) and
+> then **withdrawn**. Its central premise — that the crash is a demangler gap
+> fixable by cherry-picking `bc44d42f11` to `release/6.3` — is **wrong**. A
+> compiler/runtime swap shows the fault is compiler **emission (codegen)**, not
+> the demangler: `bc44d42f11` (demangler-only) would not fix 6.3-compiled code.
+> This is the incomplete-on-6.3 `SuppressedAssociatedTypes` feature. See
+> INVESTIGATION-ARC.md Arc 7, catalog §A9 Correction (2026-05-28), and the
+> withdrawal reply at #89389 comment 4563419364. The draft below is retained as
+> historical record only — do not act on it.
+>
+> ---
+>
+> **STATUS** (2026-05-23, superseded): pending orchestrator authorization per
 > [`ISSUE-008`]. The body below is intended as a NEW top-level issue
 > on swiftlang/swift, following the standard Swift bug-template shape
 > with affected-branch tag in the title (precedent:

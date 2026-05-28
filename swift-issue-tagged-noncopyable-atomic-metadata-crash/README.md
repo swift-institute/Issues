@@ -1,8 +1,23 @@
 # Swift Issue: Tagged + Atomic + `~Copyable` cross-module conditional-conformance runtime metadata SIGSEGV
 
+> **CORRECTION (2026-05-28).** This document's diagnosis below (and the original
+> filings) blamed the **demangler** — a missing `'j'`/`'J'` inverse-assoc case
+> (`bc44d42f11`) — and asked for a `release/6.3` cherry-pick. **That was wrong.**
+> A controlled compiler/runtime swap shows the fault is **codegen (compiler
+> emission), not the demangler**: a 6.3.2-built binary crashes even on a fixed
+> 6.4-dev runtime, while a 6.4-dev-built binary runs clean on the 6.3.2 runtime.
+> This is the `SuppressedAssociatedTypes` experimental feature, whose codegen is
+> incomplete on 6.3 and complete by 6.4-dev (the crashing `.advance(within:)` is
+> constrained on `Ordinal.Domain: ~Copyable`). `bc44d42f11` would NOT fix
+> 6.3-compiled code. Backport-request #89389 withdrawn; #74303 note corrected.
+> See INVESTIGATION-ARC.md Arc 7 and catalog §A9 Correction (2026-05-28).
+> The demangler framing throughout the rest of this file is superseded.
+
 **Status**: RESOLVED on Swift 6.4-dev / 6.5-dev nightly (verified 2026-05-23 against
 snapshots `2026-03-16-a` (6.4-dev), `2026-05-07-a` (6.4-dev), `2026-05-12-a` (6.5-dev));
 STILL FIRES on Apple Swift 6.3.x (`swiftlang-6.3.2.1.108`, current Xcode 26.4.1).
+Root cause: **compiler codegen** for the incomplete-on-6.3 `SuppressedAssociatedTypes`
+feature — not the runtime demangler (see Correction above).
 
 **Upstream filing posture**: sibling-comment on
 [`swiftlang/swift#74303`](https://github.com/swiftlang/swift/issues/74303)

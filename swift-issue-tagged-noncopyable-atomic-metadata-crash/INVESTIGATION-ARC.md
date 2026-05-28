@@ -374,3 +374,21 @@ A fresh-chat audit verified every empirical claim against verifiable sources (`g
 - **C-38** (CI confound): macOS leg runs `-c debug` and Linux 6.3 leg runs `-c release`; CI doesn't fully isolate platform vs build mode. Reviewed drafts disclose this and note local testing on Apple Xcode 6.3.2 reports CRASH under both `-Onone` and `-O`.
 
 Audit details + full 40-row claim inventory at [`AUDIT-REPORT.md`](AUDIT-REPORT.md). Reviewed drafts at [`REVIEWED-BACKPORT-REQUEST.md`](REVIEWED-BACKPORT-REQUEST.md) and [`REVIEWED-SIBLING-COMMENT.md`](REVIEWED-SIBLING-COMMENT.md). Historical Arc 4 / Arc 6 drafts retained at [`BACKPORT-REQUEST-DRAFT.md`](BACKPORT-REQUEST-DRAFT.md) and [`SIBLING-COMMENT-DRAFT.md`](SIBLING-COMMENT-DRAFT.md).
+
+## Arc 7 (2026-05-28) — Arc 5 diagnosis REFUTED; root cause is codegen, not the demangler
+
+@kavon pushed back on #89389 ([comment](https://github.com/swiftlang/swift/issues/89389#issuecomment-4547334121)): `release/6.3` does not have a complete `SuppressedAssociatedTypesWithDefaults` implementation, so why backport the feature? Re-verification proved **Arc 5 was wrong**.
+
+Arc 5 "bisection" was a code-search heuristic, never an experiment. A controlled compiler/runtime swap of the reproducer refutes the demangler diagnosis:
+
+| Binary built by | Runtime (`libswiftCore`) | Result |
+|-----------------|--------------------------|--------|
+| 6.3.2 | 6.3.2 (OS) | CRASH (139) |
+| 6.3.2 | 6.4-dev nightly `2026-03-16-a` (fixed demangler loaded, confirmed) | **CRASH (139)**, same deref |
+| 6.4-dev nightly `2026-03-16-a` | 6.3.2 (OS) | **PASS (`result = 0`)** |
+
+The fix travels with the binary, not the runtime → **emission (compiler), not the demangler**. `bc44d42f11` is demangler-only (+14/−0) and would NOT fix `release/6.3`-compiled code. The emitted symbolic mangled name for `Atomic<Tagged<…>>` differs structurally between 6.3.2 and 6.4-dev (spurious `_` after the 46-char SLI identifier; `HCHCg` vs `HC_HCg`) — malformed emission.
+
+This is the incomplete-on-6.3 `SuppressedAssociatedTypes` feature (production enables the flag in swift-tagged-primitives + swift-ordinal-primitives; the crashing `.advance(within:)` is constrained on `Ordinal.Domain: ~Copyable`). Exact fixing commit not bisected. kavon's framing was correct.
+
+**Disposition**: #89389 reply posted conceding + withdrawing the request ([comment](https://github.com/swiftlang/swift/issues/89389#issuecomment-4563419364)); #74303 note corrected; this doc, README, BACKPORT-REQUEST-DRAFT, and catalog §A9 updated. Earlier Arc 1–6 demangler framing throughout this file is superseded by this arc — retained as historical record. Consumer resolution: require Swift 6.4+ for these paths.
