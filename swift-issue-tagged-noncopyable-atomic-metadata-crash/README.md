@@ -120,6 +120,54 @@ single-file change to `Tagged.swift` reproduces or fixes it.
 
 ---
 
+## Additional sites (same family)
+
+The defect is container-agnostic (axis-B): any generic container that
+forces `Tagged_Primitives.Tagged`'s full type metadata at runtime hits
+the same `swift_getTypeByMangledName` → `TypeLookupError("unknown error")`
+null-metadata path.
+
+| Site | Forcing path | Discovered | Confirmation |
+|------|--------------|------------|--------------|
+| `Atomic<Tagged<…>>.advance(within:)` | generic `@inlinable` extension dispatch | 2026-05-22 | original |
+| `Dictionary<Tagged<…>, ~Copyable>.set/.remove` | hash-table insert needs Tagged VWT | 2026-05-22 | original |
+| **`Set<Tagged/Index>.Ordered.insert(_:)`** | **`Hash.Table` insert needs Tagged VWT** | **2026-06-01** | **3-package reproducer, signature-confirmed** |
+
+**`Set.Ordered` site (2026-06-01).** Found while greening
+`swift-graph-primitives` during the queue dissolve-Core cascade: graph
+builds green (debug + release) but `swift test` SIGSEGVs.
+`Index_Primitives.Index<E> = Tagged<E, Ordinal>` and
+`Graph.Node<Tag> = Index<Tag>`, so graph's
+`Set<Graph.Node<Tag>>.Ordered.insert` is `Set<Tagged<…>>.Ordered.insert`
+via two typealias hops. A minimal 3-package reproducer with **zero graph
+code** (`swift-set-ordered-primitives` + `swift-set-primitives` +
+`swift-index-primitives`) crashes identically:
+
+```swift
+import Set_Ordered_Primitives; import Set_Primitives; import Index_Primitives
+enum SimpleTag {}
+var set = Set<Index<SimpleTag>>.Ordered()
+set.insert(Index<SimpleTag>.zero)   // ← SIGSEGV
+```
+
+```
+$ SWIFT_DEBUG_FAILED_TYPE_LOOKUP=1 .build/debug/repro
+failed type lookup for �$: unknown error
+[exit 139]
+```
+
+Blast radius (2026-06-01): graph `Set<Graph.Node>.Ordered` in
+`Analyze.Reachable` / `Analyze.Dead` / `Reverse.Reachable` (+ `Transform.Subgraph`
+consumer); latent generic carriers `Dictionary.Ordered`/`Dictionary`
+(`_keys: Set<Key>.Ordered`, crash iff `Key` is `Index`/`Tagged`); candidate
+plain `Set<Index>` (same VWT path, untested). Graph's four affected test
+suites were guarded with a suite-level `.disabled(if:)` trait gated on
+`compiler(<6.4)` (not `withKnownIssue` — see the §"Swift Testing harness"
+note below: a SIGSEGV kills the runner before a known issue can register,
+so only skipping the body yields a clean 6.3.2 run).
+
+---
+
 ## Reproducer
 
 This reproducer requires **SwiftPM with three external dependencies**.

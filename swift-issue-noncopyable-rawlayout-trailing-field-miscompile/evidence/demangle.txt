@@ -1,0 +1,8 @@
+Symbols extracted from the pre-LLVM-opt IRGen module (swiftc -O -emit-irgen).
+Toolchain: Apple Swift 6.3.2 (swiftlang-6.3.2.1.108).
+
+$s4main3BoxVwxx                          -> $s4main3BoxVwxx ---> destroy value witness for main.Box
+$s4main3BoxVwta                          -> $s4main3BoxVwta ---> assignWithTake value witness for main.Box
+$s4main3BoxVwet                          -> $s4main3BoxVwet ---> getEnumTagSinglePayload value witness for main.Box
+$s4main3BoxVwst                          -> $s4main3BoxVwst ---> storeEnumTagSinglePayload value witness for main.Box
+$s4main3BoxVAARi_zrlEfD                  -> $s4main3BoxVAARi_zrlEfD ---> (extension in main):main.Box< where A: ~Swift.Copyable>.deinit

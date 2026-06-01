@@ -1,0 +1,36 @@
+error: compile command failed due to signal 6 (use -v to see invocation)
+Instruction does not dominate all uses!
+  %13 = load i64, ptr %12, align 8, !invariant.load !17
+  %20 = mul i64 %13, 8
+Instruction does not dominate all uses!
+  %14 = load i64, ptr %13, align 8, !invariant.load !17
+  %23 = mul i64 %14, 8
+<unknown>:0: error: fatal error encountered during compilation; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+<unknown>:0: note: Broken module found, compilation aborted!
+Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+Stack dump:
+0.	Program arguments: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c -primary-file v5_single_struct.swift -target arm64-apple-macosx26.0 -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -no-color-diagnostics -Xcc -fno-color-diagnostics -O -new-driver-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-driver -enable-experimental-feature RawLayout -enable-experimental-feature ValueGenerics -empty-abi-descriptor -Xllvm -print-after-all -no-auto-bridging-header-chaining -module-name null -disable-clang-spi -target-sdk-version 26.5 -target-sdk-name macosx26.5 -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -external-plugin-path /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/lib/swift/host/plugins#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/lib/swift/host/plugins -enable-default-cmo -o /var/folders/zh/1w0zshh16kl26vbbnj4v9q000000gn/T/TemporaryDirectory.h7lWu8/v5_single_struct-1.o
+1.	Apple Swift version 6.3.2 (swiftlang-6.3.2.1.108 clang-2100.1.1.101)
+2.	Compiling with effective version 5.10
+3.	Running pass "verify" on module "/var/folders/zh/1w0zshh16kl26vbbnj4v9q000000gn/T/TemporaryDirectory.h7lWu8/v5_single_struct-1.o"
+Stack dump without symbol names (ensure you have llvm-symbolizer in your PATH or set the environment var `LLVM_SYMBOLIZER_PATH` to point to it):
+0  swift-frontend           0x00000001095aca30 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) + 56
+1  swift-frontend           0x00000001095a9ed0 llvm::sys::RunSignalHandlers() + 172
+2  swift-frontend           0x00000001095ad020 SignalHandler(int, __siginfo*, void*) + 356
+3  libsystem_platform.dylib 0x0000000181c9f744 _sigtramp + 56
+4  libsystem_pthread.dylib  0x0000000181c95888 pthread_kill + 296
+5  libsystem_c.dylib        0x0000000181b9a850 abort + 124
+6  swift-frontend           0x0000000103514da0 swift::DiagnosticHelper::~DiagnosticHelper() + 0
+7  swift-frontend           0x0000000109518b44 llvm::report_fatal_error(llvm::Twine const&, bool) + 292
+8  swift-frontend           0x0000000109518a20 llvm::report_fatal_error(llvm::Twine const&, bool) + 0
+9  swift-frontend           0x000000010376c000 llvm::detail::PassModel<llvm::Module, llvm::VerifierPass, llvm::AnalysisManager<llvm::Module>>::printPipeline(llvm::raw_ostream&, llvm::function_ref<llvm::StringRef (llvm::StringRef)>) + 0
+10 swift-frontend           0x000000010931f3a4 llvm::PassManager<llvm::Module, llvm::AnalysisManager<llvm::Module>>::run(llvm::Module&, llvm::AnalysisManager<llvm::Module>&) + 712
+11 swift-frontend           0x000000010375ee28 swift::performLLVMOptimizations(swift::IRGenOptions const&, swift::DiagnosticEngine&, llvm::sys::SmartMutex<false>*, llvm::Module*, llvm::TargetMachine*, llvm::raw_pwrite_stream*) + 6128
+12 swift-frontend           0x0000000103760bdc swift::performLLVM(swift::IRGenOptions const&, swift::DiagnosticEngine&, llvm::sys::SmartMutex<false>*, llvm::GlobalVariable*, llvm::Module*, llvm::TargetMachine*, llvm::StringRef, llvm::vfs::OutputBackend&, swift::UnifiedStatsReporter*) + 3020
+13 swift-frontend           0x000000010311e90c generateCode(swift::CompilerInstance&, llvm::StringRef, llvm::Module*, llvm::GlobalVariable*) + 440
+14 swift-frontend           0x0000000103117a54 performCompileStepsPostSILGen(swift::CompilerInstance&, std::__1::unique_ptr<swift::SILModule, std::__1::default_delete<swift::SILModule>>, llvm::PointerUnion<swift::ModuleDecl*, swift::SourceFile*>, swift::PrimarySpecificPaths const&, int&, swift::FrontendObserver*, llvm::ArrayRef<char const*>) + 2508
+15 swift-frontend           0x0000000103116118 swift::performCompileStepsPostSema(swift::CompilerInstance&, int&, swift::FrontendObserver*, llvm::ArrayRef<char const*>) + 1052
+16 swift-frontend           0x000000010311bab0 performCompile(swift::CompilerInstance&, int&, swift::FrontendObserver*, llvm::ArrayRef<char const*>) + 1740
+17 swift-frontend           0x0000000103118818 swift::performFrontend(llvm::ArrayRef<char const*>, char const*, void*, swift::FrontendObserver*) + 3308
+18 swift-frontend           0x0000000103098424 swift::mainEntry(int, char const**) + 5224
+19 dyld                     0x00000001818cdd54 start + 7184

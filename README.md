@@ -148,6 +148,7 @@ issues:
 
 - [`swift-issue-pointer-arithmetic-linux-miscompile/`](swift-issue-pointer-arithmetic-linux-miscompile/) — Pointer-arithmetic release-mode miscompile (`swiftlang/swift#77558`), fixed on 6.4-dev nightly-main.
 - [`swift-issue-tagged-noncopyable-atomic-metadata-crash/`](swift-issue-tagged-noncopyable-atomic-metadata-crash/) — `Atomic<Tagged<Tag, Ordinal>>.advance(within:)` runtime metadata SIGSEGV on Apple Swift 6.3.x; demangling-time conformance lookup fails for cross-module conditional `AtomicRepresentable` conformance with `~Copyable` Tag suppression. Fixed on Swift 6.4-dev nightly `2026-03-16-a` and later. Upstream filing pending.
+- [`swift-issue-noncopyable-rawlayout-trailing-field-miscompile/`](swift-issue-noncopyable-rawlayout-trailing-field-miscompile/) — `~Copyable` value-witness IRGen emits an SSA dominance violation (LLVM "Instruction does not dominate all uses", signal 6 at `-O`) when a generic `@_rawLayout(likeArrayOf:count:)` buffer is followed by a trailing scalar field in a type with a `deinit`. Standalone single-file reducer; reproduces on Swift 6.3.1/6.3.2/6.4-dev/6.5-dev across macOS arm64 and Linux aarch64. Workaround: declare the scalar field before the buffer (field reorder). Distinct from but related to `swiftlang/swift#86652`. Upstream filing pending.
 
 ## License
 

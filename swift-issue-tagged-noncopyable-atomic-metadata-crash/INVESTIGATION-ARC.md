@@ -318,6 +318,46 @@ The 15-site ecosystem-wide `Atomic<…>` audit shows that every other
 (Int / UInt64 / Bool / UInt8) and does NOT trigger. The 3 executor-cursor
 sites (Sharded + Stealing) are the canonical Atomic-axis crash shape.
 
+### `Set.Ordered` axis extension (2026-06-01)
+
+A new site of the same family surfaced while greening
+`swift-graph-primitives` (queue dissolve-Core cascade): `swift test`
+SIGSEGVs although the package builds green. The element type is
+`Graph.Node<Tag> = Index<Tag> = Tagged<Tag, Ordinal>` (two typealias
+hops), so the literal `Set<Tagged…>`/`Set<Index…>` grep used on
+2026-05-23 did not catch it — the new search angle is *"`Set.Ordered`
+whose element resolves to `Tagged` through any typealias chain."*
+
+Signature-confirmed with a 3-package, zero-graph-code reproducer
+(`swift-set-ordered-primitives` + `swift-set-primitives` +
+`swift-index-primitives`): `Set<Index<SimpleTag>>.Ordered().insert(.zero)`
+on Apple Swift 6.3.2 prints `failed type lookup … unknown error`
+(`SWIFT_DEBUG_FAILED_TYPE_LOOKUP=1`) and exits 139 — the exact §A9
+`swift_getTypeByMangledName` null-metadata signature. The forcing path is
+`Hash.Table` insert needing the element's value-witness table, i.e. the
+same path as confirmed Dictionary sites #3/#4, in a different container.
+
+| # | Package | Site | Status on 6.3.2 |
+|---|---------|------|-----------------|
+| 6 | `swift-primitives/swift-graph-primitives` | `Set<Graph.Node<Tag>>.Ordered` in `Analyze.Reachable` / `Analyze.Dead` / `Reverse.Reachable` constructors (+ `Transform.Subgraph` consumer) | **CRASH** (confirmed) |
+| 7 | `swift-primitives/swift-dictionary-ordered-primitives`, `swift-dictionary-primitives` | `_keys: Set<Key>.Ordered` (generic carrier) | **CRASH** iff `Key` is `Index`/`Tagged` (latent) |
+| 8 | `swift-primitives/swift-index-primitives` | plain `Set<Index<Int>>` (non-`.Ordered`; tests) | LIKELY CRASH — same VWT path, untested 2026-06-01 |
+
+**Dev-toolchain (PASS-on-dev)**: no 6.4-dev+ snapshot is currently
+installed; this site inherits the family fix (Arc 4 toolchain matrix +
+Arc 7 controlled compiler/runtime swap → incomplete `SuppressedAssociatedTypes`
+codegen, fix complete by 6.4-dev). A per-container re-confirm was deemed
+low marginal value (orchestrator decision 2026-06-01); the accurate gate
+is `compiler(<6.4)`.
+
+**Consumer mitigation**: graph's four uniformly-affected suites
+(`Transform.Subgraph`, `Analyze.Dead`, `Reachability`, `Reverse.Reachable`)
+were guarded with a suite-level `.disabled(if: Toolchain.hasTaggedMetadataSIGSEGV, …)`
+trait. `.disabled(if:)` rather than `withKnownIssue` because a SIGSEGV
+kills the runner before swift-testing can register a known issue (see the
+README §"Swift Testing harness" note) — only skipping the body yields a
+clean 6.3.2 run; the guard auto-recovers on 6.4+.
+
 ### Three-axis bisection matrix (open)
 
 The orchestrator-mapped axes for narrowing the trigger further:

@@ -1,0 +1,65 @@
+// CANONICAL MINIMUM REPRODUCER — swiftlang/swift (PENDING filing)
+//
+// `~Copyable` value-witness IRGen emits an SSA dominance violation when a
+// generic `@_rawLayout`-backed storage field is followed by a trailing
+// fixed-size (scalar) stored property in a type that has a `deinit`.
+//
+// This file is NOT a compiled SwiftPM target: compiling it under `-O`
+// ABORTS the compiler (signal 6) before object code is produced, so it
+// cannot live in a normal target without breaking the whole package build.
+// It is shipped as a `.swift.txt` resource and compiled out-of-process by
+// the harnesses in `Tests/Reproducer.swift` and `Sources/Reproducer/main.swift`.
+//
+// Build to observe the crash (any toolchain >= 6.3.1, macOS or Linux):
+//
+//   swiftc -O \
+//     -enable-experimental-feature RawLayout \
+//     -enable-experimental-feature ValueGenerics \
+//     Crash.swift.txt -o /tmp/crash
+//
+// Observed (release / -O):
+//   Instruction does not dominate all uses!
+//     %25 = load i64, ptr %24, align 8, !invariant.load !17
+//     %37 = mul i64 %25, 8
+//   <unknown>:0: note: Broken module found, compilation aborted!
+//   error: compile command failed due to signal 6
+//
+// Expected: clean compile (the value witness must load element stride on
+// every path that reaches the trailing-field offset computation).
+//
+// Debug (`-Onone`) compiles cleanly and the program prints `1` / exits 0.
+
+// `Box` stores a generic `@_rawLayout` buffer (`raw`) FOLLOWED BY a scalar
+// field (`position`). With a `deinit` present, the compiler synthesizes the
+// `destroy` and `assignWithTake` value witnesses as a per-element loop over
+// the raw-layout storage; the post-loop offset of `position` is computed as
+// `stride(Element) * capacity`. `stride` is an `!invariant.load` from the
+// element value-witness table emitted INSIDE the loop body, but the `mul`
+// using it is placed in the loop-exit block, which is also reachable from the
+// loop pre-header (zero-trip path). The load therefore does not dominate the
+// use, and LLVM's module verifier rejects the IR.
+struct Box<Element: ~Copyable>: ~Copyable {
+    @_rawLayout(likeArrayOf: Element, count: 8)
+    struct Raw: ~Copyable { init() {} }
+
+    // FIELD ORDER IS LOAD-BEARING. Swap these two declarations (scalar first,
+    // raw-layout buffer last) and the crash disappears — that reorder is the
+    // production workaround in swift-buffer-{linear,ring}-primitives.
+    var raw: Raw       // generic @_rawLayout storage (variable size)
+    var position: Int  // trailing scalar field (fixed size) — REQUIRED
+
+    init() { raw = Raw(); position = 0 }
+
+    // A `deinit` is REQUIRED: it forces the composite value witnesses that
+    // contain the broken loop. Remove it and the module verifies cleanly.
+    deinit { _ = position }
+}
+
+@inline(never)
+func make<T>(_ t: T.Type) -> Int {
+    var s = Box<T>()
+    s.position = 1
+    return s.position
+}
+
+print(make(Int.self))

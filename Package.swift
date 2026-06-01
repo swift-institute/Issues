@@ -128,6 +128,39 @@ let package = Package(
             ],
             path: "swift-issue-tagged-noncopyable-atomic-metadata-crash/Sources/Reproducer"
         ),
+
+        // MARK: - swift-issue-noncopyable-rawlayout-trailing-field-miscompile
+        //
+        // swiftlang/swift (pending filing) — a `~Copyable` type that stores a
+        // generic `@_rawLayout(likeArrayOf: Element, count:)` buffer FOLLOWED BY
+        // a trailing fixed-size scalar field, with a `deinit` present, makes
+        // IRGen emit the synthesized `destroy` / `assignWithTake` value
+        // witnesses with an SSA dominance violation (the trailing-field offset
+        // `mul stride, capacity` lands in the loop-exit block while `stride` is
+        // loaded only inside the loop). `swiftc -O` aborts (signal 6) with the
+        // LLVM module verifier "Instruction does not dominate all uses" on
+        // every toolchain >= 6.3.1, macOS + Linux. Workaround: declare the
+        // scalar field before the buffer.
+        //
+        // Because the bug aborts the COMPILER, the triggering source cannot be
+        // a compiled target (it would abort the whole package build). It ships
+        // as the `Crash.swift.txt` resource and both harnesses compile it OUT
+        // OF PROCESS via `swiftc -O`, reporting the verifier abort as the
+        // signal. The test wraps the probe in `withKnownIssue` (green while the
+        // out-of-process build crashes; red on upstream fix).
+
+        .testTarget(
+            name: "swift-issue-noncopyable-rawlayout-trailing-field-miscompile-Tests",
+            path: "swift-issue-noncopyable-rawlayout-trailing-field-miscompile/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-noncopyable-rawlayout-trailing-field-miscompile-Repro",
+            path: "swift-issue-noncopyable-rawlayout-trailing-field-miscompile/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
