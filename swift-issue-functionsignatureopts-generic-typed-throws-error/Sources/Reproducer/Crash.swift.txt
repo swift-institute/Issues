@@ -1,0 +1,25 @@
+// Compiler-aborting reproducer (shipped as a .txt RESOURCE, not a compiled
+// target — compiling it inside the package would abort the whole build).
+//
+//   swiftc -O -swift-version 6 -c Crash.swift     →  signal 6
+//
+//   6.3.1+  : Assertion failed: (!type.hasTypeParameter()), SILArgument.cpp:40,
+//             While running pass SILFunctionTransform "FunctionSignatureOpts".
+//   6.2/6.2.3 (asserts off): SIL verification failed: error destination of
+//             try_apply must take argument of error result type ($E<τ_0_0> vs $E<T>).
+//
+// Trigger: a generic function (1) whose typed-throws error type carries the
+// function's own abstract type parameter (2), with a same-module caller (3),
+// an eliminable/dead argument (4 — `_ x` is unused → FunctionSignatureOpts
+// dead-arg-eliminates and rebuilds the signature), under -O (5). Remove any one
+// and it compiles clean. See ../../README.md.
+
+public enum MyError<T>: Swift.Error { case fail }
+
+public func parse<T>(_ x: T) throws(MyError<T>) -> UInt8 {       // FunctionSignatureOpts crashes here
+    throw .fail
+}
+
+public func run<T>(_ x: T) -> UInt8 {                            // same-module caller keeps `parse`'s generic form referenced
+    do { return try parse(x) } catch { return 0 }
+}

@@ -161,6 +161,40 @@ let package = Package(
                 .copy("Crash.swift.txt")
             ]
         ),
+
+        // MARK: - swift-issue-functionsignatureopts-generic-typed-throws-error
+        //
+        // swiftlang/swift (PENDING filing) — FunctionSignatureOpts asserts at -O on
+        // a generic function whose typed-throws error type carries the function's
+        // own abstract type parameter (`func f<T>(…) throws(E<T>)`), with a
+        // same-module caller and an eliminable (dead) argument. swift-frontend
+        // aborts (signal 6) building the signature-optimized clone: it constructs
+        // the indirect typed-error-result SILArgument with the unsubstituted
+        // interface type `E<T>` (still carrying the type parameter). On 6.3.1+ the
+        // always-on ASSERT(!type.hasTypeParameter()) (SILArgument.cpp:40) fires; on
+        // 6.2/6.2.3 (asserts off) the SIL verifier rejects the try_apply error
+        // destination. Present on EVERY tested toolchain 6.2 -> 6.5-dev — NOT a 6.3
+        // regression, NOT fixed on latest dev. Distinct from #87030 (IRGen, clean on
+        // 6.3.2) and its fix #88931 (SILGen/IRGen, not FunctionSignatureOpts).
+        //
+        // Because the bug aborts the COMPILER, the triggering source ships as the
+        // `Crash.swift.txt` resource; both harnesses compile it OUT OF PROCESS via
+        // `swiftc -O` and report the abort. The test wraps the probe in
+        // `withKnownIssue` (green while it crashes; red on upstream fix). No external
+        // dependencies — bare-`swiftc` single-file per [ISSUE-002].
+
+        .testTarget(
+            name: "swift-issue-functionsignatureopts-generic-typed-throws-error-Tests",
+            path: "swift-issue-functionsignatureopts-generic-typed-throws-error/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-functionsignatureopts-generic-typed-throws-error-Repro",
+            path: "swift-issue-functionsignatureopts-generic-typed-throws-error/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
