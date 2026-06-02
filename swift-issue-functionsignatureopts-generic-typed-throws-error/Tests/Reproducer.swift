@@ -4,7 +4,7 @@ import Testing
 import Foundation
 #endif
 
-// swiftlang/swift (PENDING filing) — FunctionSignatureOpts asserts on a generic
+// swiftlang/swift#89617 — FunctionSignatureOpts asserts on a generic
 // function whose typed-throws error type carries the function's own abstract
 // type parameter (`func f<T>(…) throws(E<T>)`), with a same-module caller, at -O.
 //
@@ -101,7 +101,7 @@ struct FunctionSignatureOptsGenericTypedThrowsErrorReproducer {
         }
 
         withKnownIssue(
-            "swiftlang/swift#PENDING — FunctionSignatureOpts !type.hasTypeParameter() on a generic typed-throws error result",
+            "swiftlang/swift#89617 — FunctionSignatureOpts !type.hasTypeParameter() on a generic typed-throws error result",
             { #expect(fired == false) },
             when: { fired }
         )

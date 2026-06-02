@@ -1,4 +1,4 @@
-// swiftlang/swift (PENDING filing) — standalone exit-code reproducer.
+// swiftlang/swift#89617 — standalone exit-code reproducer.
 //
 // The bug is a COMPILE-TIME abort: compiling `Crash.swift.txt` under `-O`
 // aborts swift-frontend (signal 6) in the FunctionSignatureOpts SIL pass. A

@@ -164,7 +164,7 @@ let package = Package(
 
         // MARK: - swift-issue-functionsignatureopts-generic-typed-throws-error
         //
-        // swiftlang/swift (PENDING filing) — FunctionSignatureOpts asserts at -O on
+        // swiftlang/swift#89617 — FunctionSignatureOpts asserts at -O on
         // a generic function whose typed-throws error type carries the function's
         // own abstract type parameter (`func f<T>(…) throws(E<T>)`), with a
         // same-module caller and an eliminable (dead) argument. swift-frontend

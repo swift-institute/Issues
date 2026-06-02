@@ -1,6 +1,6 @@
 # Swift Issue: FunctionSignatureOpts asserts on a generic function with a generic typed-throws error type
 
-**Upstream:** NOT YET FILED. Standalone single-file `swiftc -O` reducer is ready ([ISSUE-002] gold standard); filing pending principal authorization. Closest existing reports are **distinct** (see *Duplicate search* below).
+**Upstream:** **FILED — [swiftlang/swift#89617](https://github.com/swiftlang/swift/issues/89617)** (2026-06-02). Standalone single-file `swiftc -O` reducer per the [ISSUE-002] gold standard. Closest existing reports are **distinct** (see *Duplicate search* below).
 
 **Classification:** ICE / compiler crash (signal 6, assertion failure) in the SIL optimizer.
 
@@ -184,19 +184,17 @@ No exact match found (FSO + `!type.hasTypeParameter()` + `SILArgument.cpp:40` si
 - [`#83597`](https://github.com/swiftlang/swift/issues/83597) / [`#84899`](https://github.com/swiftlang/swift/issues/84899) — release-mode **OwnershipModelEliminator** verifier crashes (load-borrow; parameter packs). Different pass.
 - [`#83744`](https://github.com/swiftlang/swift/issues/83744) — `-enable-sil-opaque-values`, a different `SILArgument` assertion (`index < getNumSILArguments()`). Needs a non-default flag.
 
-## Disposition — PENDING PRINCIPAL DECISION
+## Disposition — FILED upstream
 
-Per the investigation brief, the source-side fix is **held for principal
-decision** (no autonomous source workaround / toolchain-floor change). Options:
+**Filed as [swiftlang/swift#89617](https://github.com/swiftlang/swift/issues/89617)** on 2026-06-02,
+after two independent fresh-eyes reviews and a live duplicate re-check. The CI `withKnownIssue`
+harness tracks #89617 and will flip red when an upstream fix lands.
 
-1. **File upstream** (reducer is filing-ready) + accept that `swift test -c
-   release` is broken for affected packages until a fix lands. Note "require
-   6.4+" is NOT a remedy here.
-2. **Source restructure** (behaviour-preserving): hoist the accidentally-generic
-   `Digit.Error` (and sibling fixtures' errors) out of the generic context so the
-   typed-throws error type is non-generic.
-3. **Localized guard**: `@_optimize(none)` on each affected `parse` (test
-   fixtures), or exclude the affected test target from release builds.
+Source-side remediation of the affected package (`swift-parser-primitives`) is a **separate concern
+owned by that package's session**; behaviour-preserving options remain: (1) hoist the
+accidentally-generic `Digit.Error` (and sibling fixtures) out of the generic context so the
+typed-throws error type is non-generic; (2) `@_optimize(none)` on each affected leaf `parse`, or
+exclude the test target from release builds. "Require Swift 6.4+" is NOT a remedy (live on 6.4-dev/6.5-dev).
 
 ## Provenance
 
