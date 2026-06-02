@@ -42,6 +42,8 @@ public func run<T>(_ x: T) -> UInt8 { do { return try parse(x) } catch { return 
 swiftc -O reproducer.swift -c -o /tmp/x.o     # signal 6
 ```
 
+**Expected:** compiles cleanly (exit 0).
+
 ## CI validation (this entry is wired into the Issues repo CI)
 
 Because the bug aborts the compiler, the crashing source is shipped as a
@@ -60,7 +62,8 @@ The repo CI (`.github/workflows/ci.yml`) enumerates `swift-issue-*/` and runs ea
 through the canonical `swift-institute` reusable, whose matrix is **Swift 6.3
 (macOS / Linux / Windows) + 6.5-dev nightly (Linux, advisory)**. So CI empirically
 confirms the crash on the **6.3 stable** pin (= the reported 6.3.2-family
-environment) across macOS/Linux/Windows **and** on **6.5-dev** nightly — a *subset*
+environment) across macOS and Linux **and** on **6.5-dev** nightly (the Windows leg is a
+no-op — the harness probe is POSIX-only and `#else`-skips Windows) — a *subset*
 of the full 6.2 → 6.5-dev matrix above. The **6.2 / 6.2.3** legs are **not** in the
 CI matrix; those cells were verified locally (see the correction note above).
 
@@ -155,8 +158,8 @@ generic-typed-throws-error shape).
   **not fixed** on 6.5-dev.
 - **§A9** (Tagged-metadata family): a **runtime** `swift_getTypeByMangledName`
   SIGSEGV requiring `SuppressedAssociatedTypes`, **fixed on 6.4-dev**. This entry
-  is a **compile-time** assertion requiring **no** experimental features and is a
-  **regression since 6.3**, unfixed on 6.5-dev.
+  is a **compile-time** assertion requiring **no** experimental features, is
+  **present since ≥6.2 (not a 6.3 regression)**, and is unfixed on 6.5-dev.
 
 ## Workarounds (all validated on 6.3.2)
 
@@ -170,7 +173,7 @@ generic-typed-throws-error shape).
 ## Duplicate search ([ISSUE-007])
 
 No exact match found (FSO + `!type.hasTypeParameter()` + `SILArgument.cpp:40` signature). Closest hits, all **distinct**:
-- **Our own [`swiftlang/swift#87030`](https://github.com/swiftlang/swift/issues/87030) + its fix [`#88931`](https://github.com/swiftlang/swift/pull/88931) — a DIFFERENT bug; does NOT cover this one.** #87030 is an **IRGen** crash (`getMutableErrorResult` / `Types.h:5174`) triggered by a stored closure field `(T) throws(Error) -> T` + a constrained extension `where T == Concrete`; it is **clean on Swift 6.3.2** and only crashes on 6.5-dev. This FSO crash, by contrast, **crashes on 6.3.2** (where #87030 is clean). #88931 changes `SILGenProlog.cpp` / `SILVerifier.cpp` / `IRGenSIL.cpp` — **not** FunctionSignatureOpts — and this FSO crash still reproduces on 6.5-dev. Same typed-throws-nested-generic-error *family*, different *bug*.
+- **Our own [`swiftlang/swift#87030`](https://github.com/swiftlang/swift/issues/87030) + its fix [`#88931`](https://github.com/swiftlang/swift/pull/88931) — a DIFFERENT bug; does NOT cover this one.** #87030 is an **IRGen** crash (`getMutableErrorResult` / `Types.h:5174`) triggered by a stored closure field `(T) throws(Error) -> T` + a constrained extension `where T == Concrete`; it is **clean on Swift 6.3.2** and only crashes on 6.5-dev. This FSO crash, by contrast, **crashes on 6.3.2** (where #87030 is clean). #88931 (open, unmerged) changes SILGen / the SIL verifier — **not** FunctionSignatureOpts — and this FSO crash still reproduces on 6.5-dev. Same typed-throws-nested-generic-error *family*, different *bug*.
 - [`swiftlang/swift#73345`](https://github.com/swiftlang/swift/issues/73345) — assertion `signature || !origType->hasTypeParameter()` but in **SILGen** (`AbstractionPattern.h:529`). Different pass.
 - [`swiftlang/swift#81317`](https://github.com/swiftlang/swift/issues/81317) — typed throws + `-enable-testing` crash. This reducer needs neither `-enable-testing` nor a test target.
 - [`swiftlang/swift#75430`](https://github.com/swiftlang/swift/issues/75430) — type-inference (front-end), not SIL.

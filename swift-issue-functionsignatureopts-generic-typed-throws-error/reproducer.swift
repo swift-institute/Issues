@@ -22,13 +22,14 @@
 // `@inline(never)`, `-enable-testing`, `-parse-as-library`, `-enable-default-cmo`,
 // or any experimental/upcoming feature (SuppressedAssociatedTypes, Lifetimes, …).
 //
-// TOOLCHAINS (all verified via `swift --version`):
-//   Swift 6.2, 6.2.3 ................................. CLEAN
-//   Swift 6.3.1, 6.3.2 (current Xcode default) ....... CRASH
+// TOOLCHAINS (each verified by running the reducer; `swift --version`-confirmed):
+//   Swift 6.2, 6.2.3 ................................. CRASH (SIL verifier; asserts off)
+//   Swift 6.3.1, 6.3.2 (current Xcode default) ....... CRASH (ASSERT !type.hasTypeParameter())
 //   6.3-dev (2026-01-07/01-09/02-05) ................. CRASH
 //   6.4-dev (2026-03-16-a, 2026-05-07-a) ............. CRASH
 //   6.5-dev (2026-05-12-a, swift-latest) ............. CRASH
-//   => regression introduced in 6.3; NOT fixed on the latest 6.5-dev.
+//   => present on every tested toolchain 6.2 → 6.5-dev; NOT a 6.3 regression
+//      (6.3 only added the earlier SILArgument assert); NOT fixed on the latest 6.5-dev.
 
 public enum MyError<T>: Swift.Error { case fail }
 
