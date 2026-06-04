@@ -195,6 +195,41 @@ let package = Package(
                 .copy("Crash.swift.txt")
             ]
         ),
+
+        // MARK: - swift-issue-conditional-extension-typealias-name-capture
+        //
+        // swiftlang/swift#89684 — bogus `type 'Substrate' does not conform to
+        // protocol 'P'` when a conditional extension of a nested generic type
+        // declares a member typealias named after an ENCLOSING type's generic
+        // parameter. References to that name inside the nested type's
+        // declaring context are captured by the conditionally-available
+        // member; the compiler evaluates the extension's `where` condition
+        // against the open generic argument and rejects valid source at
+        // `-typecheck`. Present on 6.3.2 → 6.5-dev. The same member in an
+        // UNCONDITIONAL extension (member-shadows-outer baseline) and the
+        // same annotation in a separate extension context both compile — see
+        // the entry README's inconsistency matrix.
+        //
+        // Because the bug REJECTS VALID SOURCE, the triggering source cannot
+        // be a compiled target (it would fail the whole package build while
+        // the bug lives). It ships as the `Reject.swift.txt` resource; both
+        // harnesses typecheck it OUT OF PROCESS via `swiftc -typecheck` and
+        // report the bogus rejection. The test wraps the probe in
+        // `withKnownIssue` (green while it rejects; red on upstream fix). No
+        // external dependencies — bare-`swiftc` single-file per [ISSUE-002].
+
+        .testTarget(
+            name: "swift-issue-conditional-extension-typealias-name-capture-Tests",
+            path: "swift-issue-conditional-extension-typealias-name-capture/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-conditional-extension-typealias-name-capture-Repro",
+            path: "swift-issue-conditional-extension-typealias-name-capture/Sources/Reproducer",
+            resources: [
+                .copy("Reject.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
