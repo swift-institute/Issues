@@ -1,0 +1,26 @@
+=== m20 crash signature (6.3.2, -Onone) ===
+* thread #1, queue = 'com.apple.main-thread', stop reason = EXC_BAD_ACCESS (code=1, address=0x10)
+    frame #0: 0x0000000100000d3c m20_noflags`m20_noflags.W.c.getter : Swift.Int + 12
+->  0x100000d3c <+12>: ldr    x8, [x0, #0x10]
+
+=== SWIFT_DEBUG_FAILED_TYPE_LOOKUP=1 ===
+constructed
+failed type lookup for ‰: subject type x does not conform to protocol P
+exit=139
+
+=== toolchain matrix (m20, -Onone) ===
+6.2 / 6.2.3 / 6.3.1 / 6.3.2 / 6.5-dev(2026-05-27): all exit 139
+vs 6.5-dev toolchain libswiftCore (DYLD_LIBRARY_PATH): exit 139
+-O: exit 0 (this shape); _mangledTypeName(W<Gen<Pool>>.self) crashes at -O
+
+=== dynamic-cast probe ===
+dyn-cast Gen<Pool>   is P (same-type to ~Copyable, EXPECT true): false
+dyn-cast Gen2<PoolC> is P (same-type to Copyable,  EXPECT true): true
+dyn-cast Gen3<Pool>  is P (inverse-conditional,    EXPECT true): true
+
+=== _typeByName probe (OS runtime + 6.5-dev runtime identical) ===
+PlainGen<CopyablePayload>: mangled=4mini8PlainGenVyAA15CopyablePayloadVG roundtrip=PlainGen<CopyablePayload>
+Gen<CopyablePayload>     : mangled=4mini3GenVyAA15CopyablePayloadVG roundtrip=Gen<CopyablePayload>
+Gen<Int>                 : mangled=4mini3GenVySiG roundtrip=Gen<Int>
+Gen<Pool> by name        : NIL
+Pool by name             : NIL
