@@ -1,0 +1,152 @@
+# Captures — generated 2026-06-11 on macOS 26.2 (Darwin 25.2.0) arm64
+# Toolchain of record: TOOLCHAINS=org.swift.632202605101a -> Apple Swift version 6.3.2 (swift-6.3.2-RELEASE)
+
+## 1. Minimal reproducer (reproducer.swift) — xcrun swiftc -emit-object
+reproducer.swift:16:17: error: multiple definitions of symbol '$s3cap4TreeOAARi_zrlE7BuilderO5buildyyFZ'
+ 9 | extension Tree where Element: ~Copyable {
+10 |     enum Builder {
+11 |         static func build() {}
+   |                     `- note: other definition here
+12 |     }
+13 | }
+14 | 
+15 | extension Tree.Builder where Element: Copyable {
+16 |     static func build() {}
+   |                 `- error: multiple definitions of symbol '$s3cap4TreeOAARi_zrlE7BuilderO5buildyyFZ'
+17 | }
+18 | 
+
+## 2. Sema accepts the pair — xcrun swiftc -typecheck reproducer.swift
+(exit 0 — no diagnostics)
+
+## 3. Call-site resolution control — xcrun swiftc -typecheck overload-resolution-control.swift
+(exit 0 — no diagnostics)
+
+## 4. Colliding symbol demangled (record toolchain swift-demangle)
+$s4main4TreeOAARi_zrlE7BuilderO5buildyyFZ ---> static (extension in main):main.Tree< where A: ~Swift.Copyable>.Builder.build() -> ()
+
+## 5. Escapable analogue (escapable-analogue.swift)
+escapable-analogue.swift:17:12: error: multiple definitions of symbol '$s3cap4TreeOAARi0_zrlE9UnboundedVAEyx_GycfC'
+$s4main4TreeOAARi0_zrlE9UnboundedVAEyx_GycfC ---> (extension in main):main.Tree< where A: ~Swift.Escapable>.Unbounded.init() -> (extension in main):main.Tree<A>< where A: ~Swift.Escapable>.Unbounded
+
+## 6. Production shape (production-shape-init.swift)
+production-shape-init.swift:18:12: error: multiple definitions of symbol '$s3cap5StackVAARi_zrlE7BoundedV8capacityAEyx_GSi_tcfC'
+
+## 7. Workarounds build clean + emitted twin symbols
+workaround-member-where.swift: builds clean
+  _$s4main4TreeO9UnboundedVAEyx_GycfC
+    main.Tree.Unbounded.init() -> main.Tree<A>.Unbounded
+  _$s4main4TreeOAARi_zrlE9UnboundedVAEyx_GycfC
+    (extension in main):main.Tree< where A: ~Swift.Copyable>.Unbounded.init() -> (extension in main):main.Tree<A>< where A: ~Swift.Copyable>.Unbounded
+workaround-extension-twins.swift: builds clean
+  _$s4main4TreeOAARi_zrlE9UnboundedVAARi_zrlEAEyx_GycfC
+    (extension in main):(extension in main):main.Tree< where A: ~Swift.Copyable>.Unbounded< where A: ~Swift.Copyable>.init() -> (extension in main):main.Tree<A>< where A: ~Swift.Copyable>.Unbounded
+  _$s4main4TreeOAARi_zrlE9UnboundedVAEyx_GycfC
+    (extension in main):main.Tree< where A: ~Swift.Copyable>.Unbounded.init() -> (extension in main):main.Tree<A>< where A: ~Swift.Copyable>.Unbounded
+
+## 8. Version matrix (probe set: production init shape p01, method p22, depth-2 p21, escapable p19b, ext-vs-ext control p03)
+== snapshot-2026-05-27
+   Apple Swift version 6.5-dev (LLVM 8f81a64f6a8bcf6, Swift 4d0c97fa5b05711)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== snapshot-2026-05-12
+   Apple Swift version 6.5-dev (LLVM 7c86461e21cca7e, Swift 6da4da7153e8252)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== snapshot-2026-05-07
+   Apple Swift version 6.4-dev (LLVM d2079213f1d4451, Swift 82b7720768ba875)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== snapshot-2026-03-16
+   Apple Swift version 6.4-dev (LLVM a3655ee8d8c4d74, Swift d13cbbfd336f246)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== snapshot-2026-02-05
+   Apple Swift version 6.3-dev (LLVM 410183a0c1c6764, Swift 4c5257d961b9eb5)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== snapshot-2026-01-09
+   Apple Swift version 6.3-dev (LLVM d402ab9729f318e, Swift 2de856568572fc0)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== snapshot-2026-01-07
+   Apple Swift version 6.3-dev (LLVM 7d051219b6327ed, Swift 478bdb5222e650c)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== release-6.3.2
+   Apple Swift version 6.3.2 (swift-6.3.2-RELEASE)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== release-6.3.1
+   Apple Swift version 6.3.1 (swift-6.3.1-RELEASE)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== release-6.2.3
+   Apple Swift version 6.2.3 (swift-6.2.3-RELEASE)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== release-6.2
+   Apple Swift version 6.2 (swift-6.2-RELEASE)
+   p01-body-vs-ext: COLLIDE | p22-method: COLLIDE | p21-depth2: COLLIDE | p19b-escapable: COLLIDE | p03-control: PASS
+== xcode-default (Apple Swift 6.3.2, via plain swiftc shim)
+swift-driver version: 1.148.6    Apple Swift version 6.3.2 (swiftlang-6.3.2.1.108 clang-2100.1.1.101)
+   p01: COLLIDE
+   p22: COLLIDE
+   p21: COLLIDE
+   p19b-escapable-extnested: COLLIDE
+   p03-control: PASS
+
+## 9. Constraint-model matrix (toolchain of record)
+PASS     p13-toplevel-body-vs-ext
+PASS     p14-toplevel-member-where
+PASS     p15-bodynested-body-vs-ext
+PASS     p16-bodynested-member-where
+PASS     p17-bodynested-ext-vs-ext
+PASS     p18-extnested-memberwhere-vs-extinverse
+PASS     p19-escapable-analogue
+PASS     p20-nongeneric-parent
+COLLIDE  p21-depth2-extnested -> $s4main4TreeOAARi_zrlE5OuterVAARi_zrlE5InnerVAGyx__GycfC
+COLLIDE  p22-method-body-vs-ext -> $s4main4TreeOAARi_zrlE9UnboundedV4pingSiyF
+COLLIDE  p23-static-body-vs-ext -> $s4main4TreeOAARi_zrlE7BuilderO5buildSiyFZ
+
+## 10. Mangled-form table (demangle-verified; record toolchain)
+Five distinct renderings; the defect is that forms F2 and F3 coincide.
+
+F1 body member, BODY-nested child            $s…P_1UV[AARi_zrlE]AE…fC
+   "(ext in main):main.P.U< where A: ~Copyable>.init()"        [inverse at CHILD position]
+F2 body member, EXT-nested child             $s…P_[AARi_zrlE]1UV_AE…fC
+   "(ext in main):main.P< where A: ~Copyable>.U.init()"        [inverse at PARENT position]
+F3 `extension U where Element: Copyable`     $s…P_[AARi_zrlE]1UV_AE…fC   == F2  << COLLISION
+   (Copyable requirement never mangled; rendered as a plain member of U)
+F4 `extension U where Element: ~Copyable`    $s…P_[AARi_zrlE]1UV[AARi_zrlE]AE…fC
+   "(ext):(ext) P< where A: ~Copyable>.U< where A: ~Copyable>.init()"
+F5 member-level `where Element: Copyable`    $s…P_1UV_AE…fC   (no inverse segment at all)
+   "main.P.U.init()"
+
+Identification evidence (one decl per object unless noted):
+  f1 ext-nested body twin:        _$s4main4TreeOAARi_zrlE1UVAEyx_GycfC                  (F2)
+  f2 ext-nested ext-Copyable:     _$s4main4TreeOAARi_zrlE1UVAEyx_GycfC                  (F3 == F2)
+  f3 ext-nested ext-~Copyable:    _$s4main4TreeOAARi_zrlE1UVAARi_zrlEAEyx_GycfC         (F4)
+  f4 ext-nested member-where:     _$s4main4TreeO1UVAEyx_GycfC                           (F5)
+  s1 BODY-nested both twins (PASSES) — pair:
+     body twin:                   _$s4main1PO1UVAARi_zrlEAEyx_GycfC                     (F1)
+     ext-Copyable twin:           _$s4main1POAARi_zrlE1UVAEyx_GycfC                     (F3)
+  f6 BODY-nested, implicit init + ext-Copyable (PASSES) — pair:
+     synthesized init():          _$s4main4TreeO1UVAARi_zrlEAEyx_GycfC                  (F1)
+     ext-Copyable twin:           _$s4main4TreeOAARi_zrlE1UVAEyx_GycfC                  (F3)
+
+## 10a. Parent-kind sweep (collision is independent of parent kind; nesting site decides)
+PASS     s1-enum-body
+COLLIDE  s2-enum-ext -> $s4main1POAARi_zrlE1UVAEyx_GycfC
+PASS     s3-struct-body
+COLLIDE  s4-struct-ext -> $s4main1PVAARi_zrlE1UVAEyx_GycfC
+PASS     s5-ncstruct-body
+COLLIDE  s6-ncstruct-ext -> $s4main1PVAARi_zrlE1UVAEyx_GycfC
+
+## 10b. Collision against a COMPILER-SYNTHESIZED declaration (no written body twin)
+   public enum Tree<Element: ~Copyable> {}
+   extension Tree where Element: ~Copyable { public struct U: ~Copyable {} }   // implicit init()
+   extension Tree.U where Element: Copyable { public init() {} }
+-> error: multiple definitions of symbol '$s…TreeOAARi_zrlE1UVAEyx_GycfC'
+   (note "other definition here" points at the struct declaration: the synthesized init)
+   Control: the same pair with `where Element: ~Copyable` on the extension is correctly
+   Sema-rejected as "invalid redeclaration of synthesized 'init()'" — Sema distinguishes
+   the constraint-split pair that the mangler then erases.
+
+## 11. Failure-mode characterization (no silent miscompile found; all shapes ERROR)
+-- same file (reproducer.swift): frontend 'multiple definitions of symbol' (see §1)
+-- cross-file, executable (a.swift defines body twin / b.swift defines Copyable-ext twin / main.swift calls both):
+   [-Onone] error: function type mismatch, declared as '@convention(method) <τ_0_0> (@thin Tree<τ_0_0>.Builder.Type) -> Int' but used as '@convention(method) <τ_0_0 where τ_0_0 : ~Copyable> (@thin Tree<τ_0_0>.Builder.Type) -> Int'
+   [-O -wmo] error: function type mismatch, declared as '@convention(method) <τ_0_0> (@thin Tree<τ_0_0>.Builder.Type) -> Int' but used as '@convention(method) <τ_0_0 where τ_0_0 : ~Copyable> (@thin Tree<τ_0_0>.Builder.Type) -> Int'
+-- cross-file, internal access, -emit-library:
+   ld: duplicate symbol 'static (extension in M):M.Tree< where A: ~Swift.Copyable>.Builder.build() -> Swift.Int' in:
