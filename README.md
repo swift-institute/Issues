@@ -2,9 +2,9 @@
 
 Minimal Swift packages reproducing toolchain and compiler bugs encountered
 while developing the [Swift Institute](https://swift-institute.org)
-ecosystem — public receipts for issues filed at
-[swiftlang/swift](https://github.com/swiftlang/swift) and related
-repositories.
+ecosystem — the institute's own defect records: each entry carries the
+reduced reproducer, evidence captures, duplicate differentiation against
+upstream reports, and the verified workaround the ecosystem ships.
 
 ## Overview
 
@@ -34,7 +34,7 @@ subsequent issue.
 swift-issue-<topic>/
 ├── README.md                  — bug summary, trigger characterization, workaround
 ├── INVESTIGATION-ARC.md       — (optional) multi-round convergence record
-├── ISSUE-<NNNN>-COMMENT.md    — (optional) staged upstream-posting draft
+├── ISSUE-<NNNN>-COMMENT.md    — (optional, historical) extended characterization notes from earlier entries
 ├── Tests/
 │   └── Reproducer.swift       — Swift Testing harness, withKnownIssue flip semantics
 ├── Sources/
@@ -148,17 +148,17 @@ issues:
 
 - [`swift-issue-conditional-extension-typealias-name-capture/`](swift-issue-conditional-extension-typealias-name-capture/) — conditional-extension member `typealias` named after an enclosing type's generic parameter captures declaring-context references; bogus rejects-valid `does not conform` diagnostic at `-typecheck` ([`swiftlang/swift#89684`](https://github.com/swiftlang/swift/issues/89684)); present 6.3.2 → 6.5-dev, unfixed.
 - [`swift-issue-copypropagation-nonescapable-mark-dependence/`](swift-issue-copypropagation-nonescapable-mark-dependence/) — CopyPropagation `~Escapable` coroutine-yield crash ([`swiftlang/swift#88022`](https://github.com/swiftlang/swift/issues/88022)); **fixed** in Swift 6.3 (Xcode 26.4).
-- [`swift-issue-embedded-wasm-mandatory-perf-crash/`](swift-issue-embedded-wasm-mandatory-perf-crash/) — Wasm Embedded `MandatoryPerformanceOptimizations` SIL crash on cross-module use of the `Tagged<Tag, Ordinal> + Tagged<Tag, Cardinal>` operator; verified on Swift 6.3.2 Wasm SDK Embedded. Upstream filing pending. *(investigation-arc + standalone repro only; no `withKnownIssue` test harness yet)*
+- [`swift-issue-embedded-wasm-mandatory-perf-crash/`](swift-issue-embedded-wasm-mandatory-perf-crash/) — Wasm Embedded `MandatoryPerformanceOptimizations` SIL crash on cross-module use of the `Tagged<Tag, Ordinal> + Tagged<Tag, Cardinal>` operator; verified on Swift 6.3.2 Wasm SDK Embedded. Terminal record — not filed. *(investigation-arc + standalone repro only; no `withKnownIssue` test harness yet)*
 - [`swift-issue-functionsignatureopts-generic-typed-throws-error/`](swift-issue-functionsignatureopts-generic-typed-throws-error/) — `FunctionSignatureOpts` `!type.hasTypeParameter()` assertion (`SILArgument.cpp:40`) at `-O` on a generic function whose typed-throws error type carries its own generic parameter ([`swiftlang/swift#89617`](https://github.com/swiftlang/swift/issues/89617)); present 6.2 → 6.5-dev, unfixed.
 - [`swift-issue-noncopyable-extension-member-mangling-collision/`](swift-issue-noncopyable-extension-member-mangling-collision/) — a member of a `where Element: Copyable` extension and the same-signature member in the primary body of a type nested in `extension P where Element: ~Copyable` mangle to one symbol (the defaulted requirement is never mangled; `ASTMangler` then treats the extension as unconstrained) — Sema-valid constraint-split twins die at IRGen with `multiple definitions of symbol`; generalizes to `~Escapable`, any member kind, depth-2 nesting; present 6.2 → 6.5-dev, unfixed. **Terminal record — STAGED, not filed** (standing policy). Workarounds: member-level `where` clause (SE-0267) or both twins extension-homed.
-- [`swift-issue-noncopyable-rawlayout-trailing-field-miscompile/`](swift-issue-noncopyable-rawlayout-trailing-field-miscompile/) — `~Copyable` value-witness IRGen SSA dominance violation (LLVM "Instruction does not dominate all uses", signal 6 at `-O`) when a generic `@_rawLayout(likeArrayOf:count:)` buffer precedes a trailing scalar field in a type with a `deinit`. Swift 6.3.1 → 6.5-dev, macOS arm64 + Linux aarch64. Workaround: field reorder. Related to `swiftlang/swift#86652`. Upstream filing pending.
+- [`swift-issue-noncopyable-rawlayout-trailing-field-miscompile/`](swift-issue-noncopyable-rawlayout-trailing-field-miscompile/) — `~Copyable` value-witness IRGen SSA dominance violation (LLVM "Instruction does not dominate all uses", signal 6 at `-O`) when a generic `@_rawLayout(likeArrayOf:count:)` buffer precedes a trailing scalar field in a type with a `deinit`. Swift 6.3.1 → 6.5-dev, macOS arm64 + Linux aarch64. Workaround: field reorder. Related to `swiftlang/swift#86652`. Terminal record — not filed.
 - [`swift-issue-noncopyable-sametype-conditional-conformance/`](swift-issue-noncopyable-sametype-conditional-conformance/) — the runtime cannot verify a conditional conformance whose same-type requirement RHS is a `~Copyable` type: null-metadata SIGSEGV at `-Onone` AND silent wrong `is` results at any optimization level (catalog §A15; traced to `ProtocolConformance.cpp:1843`); broken on every compiler × runtime combination tested, 6.2 → 6.5-dev, unfixed. **Terminal record — STAGED, not filed** (standing policy). Verified workaround recorded in-dossier; the shipped mitigation is the `Memory.Pooling` capability seam.
 - [`swift-issue-parameterized-typealias-opaque-return-ice/`](swift-issue-parameterized-typealias-opaque-return-ice/) — parameterized-typealias × parameterized-protocol opaque-return ICE ("failed to produce diagnostic"); **fixed** upstream on Swift 6.4-dev nightly-main.
 - [`swift-issue-pointer-arithmetic-linux-miscompile/`](swift-issue-pointer-arithmetic-linux-miscompile/) — pointer-arithmetic release-mode miscompile ([`swiftlang/swift#77558`](https://github.com/swiftlang/swift/issues/77558)); **fixed** on 6.4-dev nightly-main.
 - [`swift-issue-rawlayout-noncopyable-deinit/`](swift-issue-rawlayout-noncopyable-deinit/) — `@_rawLayout` element-destruction LLVM IR domination crash ([`swiftlang/swift#86652`](https://github.com/swiftlang/swift/issues/86652)).
-- [`swift-issue-rawlayout-noncopyable-extension-rejection/`](swift-issue-rawlayout-noncopyable-extension-rejection/) — unconditional protocol-conformance extension leaks `Copyable` back to the primary declaration of a `~Copyable`-generic nested type; workaround `where Element: ~Copyable`. Upstream filing pending.
-- [`swift-issue-spm-planning-build-stall/`](swift-issue-spm-planning-build-stall/) — SwiftPM planning-build stall at heavy consumers. Not yet filed as a standalone issue.
-- [`swift-issue-tagged-noncopyable-atomic-metadata-crash/`](swift-issue-tagged-noncopyable-atomic-metadata-crash/) — `Atomic<Tagged<Tag, Ordinal>>.advance(within:)` runtime metadata SIGSEGV on Apple Swift 6.3.x (demangle-time lookup of a cross-module conditional `AtomicRepresentable` conformance with `~Copyable` Tag suppression); **fixed** on Swift 6.4-dev nightly `2026-03-16-a` and later. Upstream filing pending.
+- [`swift-issue-rawlayout-noncopyable-extension-rejection/`](swift-issue-rawlayout-noncopyable-extension-rejection/) — unconditional protocol-conformance extension leaks `Copyable` back to the primary declaration of a `~Copyable`-generic nested type; workaround `where Element: ~Copyable`. Terminal record — not filed.
+- [`swift-issue-spm-planning-build-stall/`](swift-issue-spm-planning-build-stall/) — SwiftPM planning-build stall at heavy consumers. Terminal record — not filed.
+- [`swift-issue-tagged-noncopyable-atomic-metadata-crash/`](swift-issue-tagged-noncopyable-atomic-metadata-crash/) — `Atomic<Tagged<Tag, Ordinal>>.advance(within:)` runtime metadata SIGSEGV on Apple Swift 6.3.x (demangle-time lookup of a cross-module conditional `AtomicRepresentable` conformance with `~Copyable` Tag suppression); **fixed** on Swift 6.4-dev nightly `2026-03-16-a` and later. Terminal record — not filed.
 
 ## License
 
