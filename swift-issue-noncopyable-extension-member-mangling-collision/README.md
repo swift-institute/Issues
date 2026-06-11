@@ -1,8 +1,8 @@
 # Members split on a defaulted invertible-protocol requirement mangle identically when their type is nested in a constrained extension
 
-> **STATUS: STAGED — NOT FILED.** This dossier is the **terminal record** (principal
-> standing policy, 2026-06-11: upstream filing does not exist as a step; any outward
-> act — filing or pushing — would require a fresh principal YES).
+> **STATUS: STAGED — TERMINAL RECORD.** Per principal standing policy (2026-06-11),
+> upstream filing does not exist as a step — this dossier is the record. The repo is
+> public; pushing it is an outward act and stays principal-gated.
 > Drafted 2026-06-11 from the `/issue-investigation` of catalog B7 (lane tower-lane-b7).
 > The issue body below is written §A15-style to be self-contained.
 
