@@ -152,7 +152,11 @@ all platforms anyway (it is merely unverified on RELEASE).
    (b) restructure the leaf-default so the defining module never instantiates the
    serialized accessor; (c) accept Windows/Embedded RED until the toolchain advances
    (the bug is unfixed on 6.5-dev, so "wait for release" does not resolve it soon).
-   Per [ISSUE-022] this needs a principal shape preference before editing the protocol.
+   **RESOLVED 2026-06-25**: principal chose option (a) — `Serializer.Witness` (type +
+   conformance) relocated to a new `Serializer Witness Primitives` target. Applied + pushed
+   (`swift-primitives/swift-serializer-primitives` `a652cec`); verified clean on stock Xcode
+   6.3.2 + `-sil-verify-all` and Embedded on 6.5-dev. The underlying compiler bug remains
+   UNFIXED upstream — this is a workaround (re-test on toolchain advances).
 2. **Upstream**: standing policy forbids filing; this dossier is terminal.
 
 ## Removal / re-test condition
