@@ -1,0 +1,151 @@
+Swift version 6.3.3-dev (LLVM 82cdc19fa54d566, Swift c83acbf89dd1298)
+Target: aarch64-unknown-linux-gnu
+consumer.swift:18:1: warning: extension declares a conformance of imported type 'Iterator' to imported protocol 'IterP'; this will not behave correctly if the owners of 'M' introduce this conformance in the future
+16 | 
+17 | // (Vector+Iterable.swift:38) scalar Iterator conforms to scalar IterP AND stdlib IteratorProtocol.
+18 | extension Vec.Iterator: IterP, Swift.IteratorProtocol where Bound: Copyable {}
+   | |- warning: extension declares a conformance of imported type 'Iterator' to imported protocol 'IterP'; this will not behave correctly if the owners of 'M' introduce this conformance in the future
+   | `- note: add '@retroactive' to silence this warning
+19 | 
+20 | // (Vector+Iterable.swift:56) the DUAL makeIterator: ops-module borrowing one coexisting with the
+
+consumer.swift:32:1: warning: extension declares a conformance of imported type 'Vec' to imported protocol 'Iterable2'; this will not behave correctly if the owners of 'M' introduce this conformance in the future
+30 | // is bound to the nested-generic Mat<Vec.Iterator> (Materializing<Vector.Iterator>). The mangled
+31 | // name of iterableMakeIterator is what the +Asserts mangler emits but cannot re-demangle.
+32 | extension Vec: Iterable2 where Bound: Copyable {
+   | |- warning: extension declares a conformance of imported type 'Vec' to imported protocol 'Iterable2'; this will not behave correctly if the owners of 'M' introduce this conformance in the future
+   | `- note: add '@retroactive' to silence this warning
+33 |     @_implements(Iterable2, Iterator)
+34 |     public typealias IterableIterator = Mat<Iterator>
+
+Abort: function verify at Mangler.cpp:176
+Can't demangle: $s1M3VecV1NE20iterableMakeIteratorAA3MatVyAcARi_zrlE0D0Vyx_GAjA5IterPAD_HCg_GyF
+Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+Stack dump:
+0.	Program arguments: /usr/bin/swift-frontend -frontend -c consumer.swift -target aarch64-unknown-linux-gnu -Xllvm -aarch64-use-tbi -disable-objc-interop -I . -no-color-diagnostics -Xcc -fno-color-diagnostics -swift-version 6 -enable-experimental-feature SuppressedAssociatedTypes -enable-experimental-feature Lifetimes -empty-abi-descriptor -no-auto-bridging-header-chaining -module-name N -in-process-plugin-server-path /usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /usr/lib/swift/host/plugins -plugin-path /usr/local/lib/swift/host/plugins -parse-as-library -o n.o
+1.	Swift version 6.3.3-dev (LLVM 82cdc19fa54d566, Swift c83acbf89dd1298)
+2.	Compiling with the current language version
+3.	While evaluating request ASTLoweringRequest(Lowering AST to SIL for module N)
+4.	Abort: function verify at Mangler.cpp:176
+| 	Can't demangle: $s1M3VecV1NE20iterableMakeIteratorAA3MatVyAcARi_zrlE0D0Vyx_GAjA5IterPAD_HCg_GyF
+ #0 0x0000aaaae63b89bc llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) (/usr/bin/swift-frontend+0x81f89bc)
+ #1 0x0000aaaae63b6484 llvm::sys::RunSignalHandlers() (/usr/bin/swift-frontend+0x81f6484)
+ #2 0x0000aaaae63b979c SignalHandler(int, siginfo_t*, void*) Signals.cpp:0:0
+ #3 0x0000ffffa68997a0 (linux-vdso.so.1+0x7a0)
+ #4 0x0000ffffa48d2008 (/lib/aarch64-linux-gnu/libc.so.6+0x82008)
+ #5 0x0000ffffa488a83c gsignal (/lib/aarch64-linux-gnu/libc.so.6+0x3a83c)
+ #6 0x0000ffffa4877134 abort (/lib/aarch64-linux-gnu/libc.so.6+0x27134)
+ #7 0x0000aaaae0b2314c CONDITIONAL_ASSERT_enabled() (/usr/bin/swift-frontend+0x296314c)
+ #8 0x0000aaaae0b23218 _ABORT(char const*, int, char const*, llvm::StringRef) (/usr/bin/swift-frontend+0x2963218)
+ #9 0x0000aaaae0b39d3c swift::Mangle::Mangler::verify(llvm::StringRef, swift::Mangle::ManglingFlavor) (/usr/bin/swift-frontend+0x2979d3c)
+#10 0x0000aaaae05f954c swift::Mangle::ASTMangler::mangleEntity[abi:cxx11](swift::ValueDecl const*, swift::Mangle::ASTMangler::SymbolKind) (/usr/bin/swift-frontend+0x243954c)
+#11 0x0000aaaadf6a5d08 swift::SILDeclRef::mangle[abi:cxx11](swift::SILDeclRef::ManglingKind) const (/usr/bin/swift-frontend+0x14e5d08)
+#12 0x0000aaaadf6cb510 swift::SILFunctionBuilder::getOrCreateFunction(swift::SILLocation, swift::SILDeclRef, swift::ForDefinition_t, llvm::function_ref<swift::SILFunction* (swift::SILLocation, swift::SILDeclRef)>, swift::ProfileCounter) (/usr/bin/swift-frontend+0x150b510)
+#13 0x0000aaaadf3120e4 swift::Lowering::SILGenModule::getFunction(swift::SILDeclRef, swift::ForDefinition_t) crtstuff.c:0:0
+#14 0x0000aaaadf315f28 swift::Lowering::SILGenModule::emitOrDelayFunction(swift::SILDeclRef) crtstuff.c:0:0
+#15 0x0000aaaadf312f0c swift::Lowering::SILGenModule::emitFunction(swift::FuncDecl*) crtstuff.c:0:0
+#16 0x0000aaaadf425594 SILGenExtension::visitFuncDecl(swift::FuncDecl*) crtstuff.c:0:0
+#17 0x0000aaaadf4207e8 SILGenExtension::emitExtension(swift::ExtensionDecl*) crtstuff.c:0:0
+#18 0x0000aaaadf420738 swift::Lowering::SILGenModule::visitExtensionDecl(swift::ExtensionDecl*) crtstuff.c:0:0
+#19 0x0000aaaadf319104 swift::Lowering::SILGenModule::emitSourceFile(swift::SourceFile*) crtstuff.c:0:0
+#20 0x0000aaaadf3196d0 swift::ASTLoweringRequest::evaluate(swift::Evaluator&, swift::ASTLoweringDescriptor) const (/usr/bin/swift-frontend+0x11596d0)
+#21 0x0000aaaadf408db8 swift::SimpleRequest<swift::ASTLoweringRequest, std::unique_ptr<swift::SILModule, std::default_delete<swift::SILModule>> (swift::ASTLoweringDescriptor), (swift::RequestFlags)17>::evaluateRequest(swift::ASTLoweringRequest const&, swift::Evaluator&) crtstuff.c:0:0
+#22 0x0000aaaadf31ead4 swift::ASTLoweringRequest::OutputType swift::Evaluator::getResultUncached<swift::ASTLoweringRequest, swift::ASTLoweringRequest::OutputType swift::evaluateOrFatal<swift::ASTLoweringRequest>(swift::Evaluator&, swift::ASTLoweringRequest)::'lambda'()>(swift::ASTLoweringRequest const&, swift::ASTLoweringRequest::OutputType swift::evaluateOrFatal<swift::ASTLoweringRequest>(swift::Evaluator&, swift::ASTLoweringRequest)::'lambda'())::'lambda'()::operator()() const crtstuff.c:0:0
+#23 0x0000aaaadf31e90c swift::ASTLoweringRequest::OutputType swift::Evaluator::getResultUncached<swift::ASTLoweringRequest, swift::ASTLoweringRequest::OutputType swift::evaluateOrFatal<swift::ASTLoweringRequest>(swift::Evaluator&, swift::ASTLoweringRequest)::'lambda'()>(swift::ASTLoweringRequest const&, swift::ASTLoweringRequest::OutputType swift::evaluateOrFatal<swift::ASTLoweringRequest>(swift::Evaluator&, swift::ASTLoweringRequest)::'lambda'()) crtstuff.c:0:0
+#24 0x0000aaaadf319b48 swift::performASTLowering(swift::ModuleDecl*, swift::Lowering::TypeConverter&, swift::SILOptions const&, swift::IRGenOptions const*) (/usr/bin/swift-frontend+0x1159b48)
+#25 0x0000aaaadeb80cb8 swift::performCompileStepsPostSema(swift::CompilerInstance&, int&, swift::FrontendObserver*, llvm::ArrayRef<char const*>) (/usr/bin/swift-frontend+0x9c0cb8)
+#26 0x0000aaaadeb939c4 withSemanticAnalysis(swift::CompilerInstance&, swift::FrontendObserver*, llvm::function_ref<bool (swift::CompilerInstance&)>, bool) FrontendTool.cpp:0:0
+#27 0x0000aaaadeb85404 performCompile(swift::CompilerInstance&, int&, swift::FrontendObserver*, llvm::ArrayRef<char const*>) FrontendTool.cpp:0:0
+#28 0x0000aaaadeb82b14 swift::performFrontend(llvm::ArrayRef<char const*>, char const*, void*, swift::FrontendObserver*) (/usr/bin/swift-frontend+0x9c2b14)
+#29 0x0000aaaade8ff884 swift::mainEntry(int, char const**) (/usr/bin/swift-frontend+0x73f884)
+#30 0x0000ffffa4877400 (/lib/aarch64-linux-gnu/libc.so.6+0x27400)
+#31 0x0000ffffa48774d8 __libc_start_main (/lib/aarch64-linux-gnu/libc.so.6+0x274d8)
+#32 0x0000aaaade8fe8f0 _start (/usr/bin/swift-frontend+0x73e8f0)
+
+*** Signal 6: Backtracing from 0xffffa4935b68... done ***
+
+*** Program crashed: Aborted at 0x000000000000000f ***
+
+Platform: arm64 Linux (Ubuntu 22.04.5 LTS)
+
+Thread 0 "swift-frontend" crashed:
+
+  0      0x0000ffffa4935b68 <unknown> in libc.so.6
+  1 [ra] 0x0000ffffa68997a0
+  2 [ra] 0x0000ffffa48d1ff4 <unknown> in libc.so.6
+  3 [ra] 0x0000ffffa488a83c <unknown> in libc.so.6
+  4 [ra] 0x0000ffffa4877134 <unknown> in libc.so.6
+  5 [ra] 0x0000aaaae0b2314c _abortWithMessage(llvm::StringRef) + 67 in swift-frontend
+  6 [ra] 0x0000aaaae0b23218 _ABORT(char const*, int, char const*, llvm::function_ref<void (llvm::raw_ostream&)>) + 179 in swift-frontend
+  7 [ra] 0x0000aaaae0b39d3c swift::Mangle::Mangler::verify(llvm::StringRef, swift::Mangle::ManglingFlavor) + 863 in swift-frontend
+  8 [ra] 0x0000aaaae05f954c swift::Mangle::ASTMangler::mangleEntity[abi:cxx11](swift::ValueDecl const*, swift::Mangle::ASTMangler::SymbolKind) + 171 in swift-frontend
+  9 [ra] 0x0000aaaadf6a5d08 swift::SILDeclRef::mangle[abi:cxx11](swift::SILDeclRef::ManglingKind) const + 2471 in swift-frontend
+ 10 [ra] 0x0000aaaadf6cb510 swift::SILFunctionBuilder::getOrCreateFunction(swift::SILLocation, swift::SILDeclRef, swift::ForDefinition_t, llvm::function_ref<swift::SILFunction* (swift::SILLocation, swift::SILDeclRef)>, swift::ProfileCounter) + 75 in swift-frontend
+ 11 [ra] 0x0000aaaadf3120e4 swift::Lowering::SILGenModule::getFunction(swift::SILDeclRef, swift::ForDefinition_t) + 207 in swift-frontend
+ 12 [ra] 0x0000aaaadf315f28 swift::Lowering::SILGenModule::emitOrDelayFunction(swift::SILDeclRef) + 239 in swift-frontend
+ 13 [ra] 0x0000aaaadf312f0c swift::Lowering::SILGenModule::emitFunction(swift::FuncDecl*) + 175 in swift-frontend
+ 14 [ra] 0x0000aaaadf425594 SILGenExtension::visitFuncDecl(swift::FuncDecl*) + 163 in swift-frontend
+ 15 [ra] 0x0000aaaadf4207e8 SILGenExtension::emitExtension(swift::ExtensionDecl*) + 163 in swift-frontend
+ 16 [ra] 0x0000aaaadf420738 swift::Lowering::SILGenModule::visitExtensionDecl(swift::ExtensionDecl*) + 23 in swift-frontend
+ 17 [ra] 0x0000aaaadf319104 swift::Lowering::SILGenModule::emitSourceFile(swift::SourceFile*) + 159 in swift-frontend
+ 18 [ra] 0x0000aaaadf3196d0 swift::ASTLoweringRequest::evaluate(swift::Evaluator&, swift::ASTLoweringDescriptor) const + 611 in swift-frontend
+ 19 [ra] 0x0000aaaadf408db8 swift::SimpleRequest<swift::ASTLoweringRequest, std::unique_ptr<swift::SILModule, std::default_delete<swift::SILModule> > (swift::ASTLoweringDescriptor), (swift::RequestFlags)17>::evaluateRequest(swift::ASTLoweringRequest const&, swift::Evaluator&) + 127 in swift-frontend
+ 20 [ra] 0x0000aaaadf31ead4 swift::Evaluator::getResultUncached<swift::ASTLoweringRequest, swift::evaluateOrFatal<swift::ASTLoweringRequest>(swift::Evaluator&, swift::ASTLoweringRequest)::{lambda()#1}>(swift::ASTLoweringRequest const&, swift::evaluateOrFatal<swift::ASTLoweringRequest>(swift::Evaluator&, swift::ASTLoweringRequest)::{lambda()#1})::{lambda()#1}::operator()() const + 79 in swift-frontend
+ 21 [ra] 0x0000aaaadf31e90c swift::ASTLoweringRequest::OutputType swift::Evaluator::getResultUncached<swift::ASTLoweringRequest, swift::evaluateOrFatal<swift::ASTLoweringRequest>(swift::Evaluator&, swift::ASTLoweringRequest)::{lambda()#1}>(swift::ASTLoweringRequest const&, swift::evaluateOrFatal<swift::ASTLoweringRequest>(swift::Evaluator&, swift::ASTLoweringRequest)::{lambda()#1}) + 315 in swift-frontend
+ 22 [ra] 0x0000aaaadf319b48 swift::performASTLowering(swift::ModuleDecl*, swift::Lowering::TypeConverter&, swift::SILOptions const&, swift::IRGenOptions const*) + 119 in swift-frontend
+ 23 [ra] 0x0000aaaadeb80cb8 swift::performCompileStepsPostSema(swift::CompilerInstance&, int&, swift::FrontendObserver*, llvm::ArrayRef<char const*>) + 739 in swift-frontend
+ 24 [ra] 0x0000aaaadeb939c4 withSemanticAnalysis(swift::CompilerInstance&, swift::FrontendObserver*, llvm::function_ref<bool (swift::CompilerInstance&)>, bool) + 171 in swift-frontend
+ 25 [ra] 0x0000aaaadeb85404 performCompile(swift::CompilerInstance&, int&, swift::FrontendObserver*, llvm::ArrayRef<char const*>) + 1931 in swift-frontend
+ 26 [ra] 0x0000aaaadeb82b14 swift::performFrontend(llvm::ArrayRef<char const*>, char const*, void*, swift::FrontendObserver*) + 2579 in swift-frontend
+ 27 [ra] 0x0000aaaade8ff884 swift::mainEntry(int, char const**) + 2919 in swift-frontend
+ 28 [ra] 0x0000ffffa4877400 <unknown> in libc.so.6
+ 29 [ra] 0x0000ffffa48774d8 <unknown> in libc.so.6
+...
+
+
+Registers:
+
+ x0 0x0000000000000000  0
+ x1 0x000000000000000f  15
+ x2 0x0000000000000006  6
+ x3 0x0000aaaaed421210  06 00 00 00 00 00 00 00 fa ff ff ff 00 00 00 00  ········úÿÿÿ····
+ x4 0xb184366cd1cb360c  12791408682643174924
+ x5 0x79732d6d766c6c2f  8751388449072507951
+ x6 0x79732d6d766c6c2f  8751388449072507951
+ x7 0x79732d6d766c6c2f  8751388449072507951
+ x8 0x00000000000000f0  240
+ x9 0x0000000000000021  33
+x10 0x0000ffffa4854860  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ················
+x11 0x0000000000000000  0
+x12 0x0000000000000033  51
+x13 0x0000000000000000  0
+x14 0x0000000000000001  1
+x15 0x0000000000000000  0
+x16 0x0000aaaae7802b98  40 5b 93 a4 ff ff 00 00 f8 ca 89 de aa aa 00 00  @[·¤ÿÿ··øÊ·Þªª··
+x17 0x0000ffffa4935b40  1f 20 03 d5 e8 03 00 2a e0 03 01 aa e1 03 02 aa  · ·Õè··*à··ªá··ª
+x18 0x0000000000000001  1
+x19 0x0000000000000006  6
+x20 0x0000aaaaed421210  06 00 00 00 00 00 00 00 fa ff ff ff 00 00 00 00  ········úÿÿÿ····
+x21 0x000000000000000f  15
+x22 0x0000aaaaeb247c00  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ················
+x23 0x0000000000000000  0
+x24 0x0000ffffe3f18b20  70 8b f1 e3 ff ff 00 00 84 1c 60 e0 aa aa 00 00  p·ñãÿÿ····`àªª··
+x25 0x0000aaaae7533450  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ················
+x26 0x0000ffffe3f188c8  60 34 53 e7 aa aa 00 00 68 e6 95 ed aa aa 00 00  `4Sçªª··hæ·íªª··
+x27 0x0000aaaadf31c658  ff c3 00 d1 fd 7b 02 a9 fd 83 00 91 60 00 c0 3d  ÿÃ·Ñý{·©ý···`·À=
+x28 0x0000aaaaed825009  46 81 01 f1 49 f9 72 ec b9 27 55 38 22 68 42 01  F··ñIùrì¹'U8"hB·
+ fp 0x0000aaaaed4211d0  60 24 42 ed aa aa 00 00 a0 97 89 a6 ff ff 00 00  `$Bíªª·· ··¦ÿÿ··
+ lr 0x0000aaaae63b97c4  20 fc ff 34 94 90 13 96 08 00 40 b9 1f 05 00 71   üÿ4······@¹···q
+ sp 0x0000aaaaed4210d0  ff ff ff 7f fe ff ff ff 00 00 00 00 00 00 00 00  ÿÿÿ·þÿÿÿ········
+ pc 0x0000ffffa4935b68  1f fc 3f b1 42 00 00 54 c0 03 5f d6 8b 06 fd 17  ·ü?±B··TÀ·_Ö··ý·
+
+
+Images (27 omitted):
+
+0x0000aaaade1c0000–0x0000aaaae749c048 5543f8514ea18aedd16da4e3ed814720170afe7f swift-frontend /usr/bin/swift-frontend
+0x0000ffffa4850000–0x0000ffffa49dd404 9f32d43c341bff10b9e7196738eedcfc4f3cc36c libc.so.6      /usr/lib/aarch64-linux-gnu/libc.so.6
+
+Backtrace took 0.07s
+
+Aborted
+[[N-FAILED]]
