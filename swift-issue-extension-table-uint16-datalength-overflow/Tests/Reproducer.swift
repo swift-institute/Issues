@@ -4,7 +4,7 @@ import Testing
 import Foundation
 #endif
 
-// swiftlang/swift#NNNN — `ExtensionTableInfo::EmitKeyDataLength` serializes the
+// swiftlang/swift#90319 — `ExtensionTableInfo::EmitKeyDataLength` serializes the
 // per-base-name extension-table `dataLength` as a **uint16_t**, which overflows
 // when a nominal type is extended enough times (Serialization.cpp:239).
 //
@@ -123,7 +123,7 @@ struct ExtensionTableUInt16DataLengthOverflowReproducer {
     func reproducer() {
         guard let fired = Self.bugFires() else { return }   // no compiler / inconclusive → skip
         withKnownIssue(
-            "swiftlang/swift#NNNN — ExtensionTableInfo uint16 dataLength overflow (Serialization.cpp:239): crash on asserts, silent truncation on release",
+            "swiftlang/swift#90319 — ExtensionTableInfo uint16 dataLength overflow (Serialization.cpp:239): crash on asserts, silent truncation on release",
             { #expect(fired == false) },
             // `when: { true }`, NOT `{ fired }`: the `guard let fired … else { return }`
             // above already skips unreachable / N-A platforms, so known-issue matching must

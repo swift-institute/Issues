@@ -1,4 +1,4 @@
-// swiftlang/swift#NNNN — standalone exit-code reproducer for the
+// swiftlang/swift#90319 — standalone exit-code reproducer for the
 // `ExtensionTableInfo::EmitKeyDataLength` uint16 `dataLength` overflow.
 //
 // The bug has two manifestations of one defect (Serialization.cpp:239):

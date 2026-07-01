@@ -1,6 +1,6 @@
 # Swift Issue: serialized extension-lookup-table `dataLength` overflows `uint16_t` when a type has too many extensions
 
-**Upstream:** **STAGED — not yet filed.** Standalone single-file `swiftc -emit-module` reducer per the [ISSUE-002] gold standard. A duplicate search (below) surfaced no existing report of this size-limit overflow. Filing to `swiftlang/swift` is gated on explicit principal approval.
+**Upstream:** **FILED — [swiftlang/swift#90319](https://github.com/swiftlang/swift/issues/90319)** (2026-07-01). Standalone single-file `swiftc -emit-module` reducer per the [ISSUE-002] gold standard. A duplicate search (below) surfaced no existing report of this size-limit overflow.
 
 **Classification:** dual manifestation of one serialization defect —
 - **ICE / compiler crash** (signal 6, assertion) on **asserts-enabled** toolchains, and

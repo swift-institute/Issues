@@ -233,7 +233,7 @@ let package = Package(
 
         // MARK: - swift-issue-extension-table-uint16-datalength-overflow
         //
-        // swiftlang/swift#NNNN — ExtensionTableInfo serializes the per-base-name
+        // swiftlang/swift#90319 — ExtensionTableInfo serializes the per-base-name
         // extension-table `dataLength` as a uint16_t (Serialization.cpp:239). When a
         // nominal type is extended enough times that Σ(8 + mangledNameSize) for its
         // base name exceeds 65535, the length overflows. On ASSERTS toolchains
