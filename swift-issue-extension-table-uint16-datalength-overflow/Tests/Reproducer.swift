@@ -122,16 +122,14 @@ struct ExtensionTableUInt16DataLengthOverflowReproducer {
     @Test
     func reproducer() {
         guard let fired = Self.bugFires() else { return }   // no compiler / inconclusive → skip
-        // `when: { true }`, NOT `when: { fired }`. The `guard` above already skips every
-        // platform where presence can't be determined (Windows, unreachable compiler), so by
-        // here the bug is expected until upstream fixes it. With `true`, known-issue matching
-        // stays active when `fired` becomes `false` (fix landed) → the body passes → Swift
-        // Testing records "Known issue was not recorded" → the leg flips RED. `when: { fired }`
-        // would disable matching on a fix, leave the body passing, and stay GREEN forever —
-        // defeating the weekly cron's fix-detection (empirically verified).
         withKnownIssue(
             "swiftlang/swift#NNNN — ExtensionTableInfo uint16 dataLength overflow (Serialization.cpp:239): crash on asserts, silent truncation on release",
             { #expect(fired == false) },
+            // `when: { true }`, NOT `{ fired }`: the `guard let fired … else { return }`
+            // above already skips unreachable / N-A platforms, so known-issue matching must
+            // stay ACTIVE when the bug stops firing — that is what flips the leg RED on an
+            // upstream fix (the cron's whole purpose). `{ fired }` disables matching on a fix,
+            // leaves the body passing, and stays GREEN forever (empirically verified).
             when: { true }
         )
     }
