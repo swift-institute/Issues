@@ -99,7 +99,14 @@ struct NoncopyableRawLayoutTrailingFieldReproducer {
         withKnownIssue(
             "swiftlang/swift#PENDING — ~Copyable @_rawLayout trailing-field value-witness dominance violation",
             { #expect(fired == false) },
-            when: { fired }
+            // `when: { true }`, NOT `{ fired }`: the `guard let fired … else { return }`
+            // above already skips unreachable / N-A platforms, so known-issue matching must
+            // stay ACTIVE when the bug stops firing — that is what flips the leg RED on an
+            // upstream fix (the cron's whole purpose). `{ fired }` disables matching on a fix,
+            // leaves the body passing, and stays GREEN forever (empirically verified). The
+            // "Broken module" verifier error is target-independent (it runs pre-lowering), so
+            // this fires on x86_64 CI legs too, per the arch-independence noted above.
+            when: { true }
         )
     }
 }

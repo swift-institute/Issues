@@ -102,7 +102,12 @@ struct ConditionalExtensionTypealiasNameCaptureReproducer {
         withKnownIssue(
             "swiftlang/swift#89684 — conditional-extension typealias named after an enclosing generic parameter captures declaring-context references",
             { #expect(fired == false) },
-            when: { fired }
+            // `when: { true }`, NOT `{ fired }`: the `guard let fired … else { return }`
+            // above already skips unreachable / N-A platforms, so known-issue matching must
+            // stay ACTIVE when the bug stops firing — that is what flips the leg RED on an
+            // upstream fix (the cron's whole purpose). `{ fired }` disables matching on a fix,
+            // leaves the body passing, and stays GREEN forever (empirically verified).
+            when: { true }
         )
     }
 }
