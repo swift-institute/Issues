@@ -230,6 +230,37 @@ let package = Package(
                 .copy("Reject.swift.txt")
             ]
         ),
+
+        // MARK: - swift-issue-extension-table-uint16-datalength-overflow
+        //
+        // swiftlang/swift#NNNN — ExtensionTableInfo serializes the per-base-name
+        // extension-table `dataLength` as a uint16_t (Serialization.cpp:239). When a
+        // nominal type is extended enough times that Σ(8 + mangledNameSize) for its
+        // base name exceeds 65535, the length overflows. On ASSERTS toolchains
+        // `swiftc -emit-module` aborts (signal 6); on RELEASE toolchains it emits a
+        // SILENTLY TRUNCATED module and downstream consumers cannot resolve the
+        // dropped members ("type '…' has no member 'Artikel N'"). Present 6.3.3 →
+        // 6.5-dev. Natural trigger: a statute-book namespace whose ~700 articles are
+        // each declared in their own `extension Book { struct `Artikel i` }` (one
+        // file per statutory provision — the idiomatic legal encoding).
+        //
+        // The asserts manifestation aborts the compiler mid-emit, so the trigger
+        // ships as the `Crash.swift.txt` resource; both harnesses drive `swiftc`
+        // OUT OF PROCESS and detect BOTH the crash and the release-truncation.
+        // bare-`swiftc` single-file per [ISSUE-002].
+
+        .testTarget(
+            name: "swift-issue-extension-table-uint16-datalength-overflow-Tests",
+            path: "swift-issue-extension-table-uint16-datalength-overflow/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-extension-table-uint16-datalength-overflow-Repro",
+            path: "swift-issue-extension-table-uint16-datalength-overflow/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
