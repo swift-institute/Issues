@@ -1,0 +1,156 @@
+
+   | `- note: add '@retroactive' to silence this warning
+
+12 |     public var body: HTML.Text {
+
+13 |         HTML.Text(self)
+
+error: compile command failed due to exception 3 (use -v to see invocation)
+Assertion failed: isActuallyCanonicalOrNull() && "Forming a CanType out of a non-canonical type!", file C:\Users\swift-ci\jenkins\workspace\swift-6.3-windows-toolchain\swift\include\swift/AST/Type.h, line 421
+
+Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+
+Stack dump:
+
+0.	Program arguments: C:\\hostedtoolcache\\windows\\swift-6.3.3-RELEASE-windows10\\6.3.3\\x86_64\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift-frontend.exe -frontend -c -primary-file "D:\\a\\swift-html- [...truncated: full swift-frontend invocation elided, primary-file batch list omitted...]
+
+1.	Swift version 6.3.3 (swift-6.3.3-RELEASE)
+
+2.	Compiling with the current language version
+
+3.	While evaluating request IRGenRequest(IR Generation for file "D:\a\swift-html-render\swift-html-render\Sources\HTML Rendering Core\HTML.AnyView.swift")
+
+4.	While emitting IR SIL function "@$s18WHATWG_HTML_Shared0a1_B0O0B15_Rendering_CoreE7AnyViewVyAfcDE0G0_pcfC".
+
+ for 'init(_:)' (at D:\a\swift-html-render\swift-html-render\Sources\HTML Rendering Core\HTML.AnyView.swift:42:16)
+
+5.	While mangling type for debugger type 'any HTML.View'
+
+Exception Code: 0x80000003
+
+ #0 0x00007ff79b967965 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x7247965)
+
+ #1 0x00007fff636419a9 (C:\Windows\System32\ucrtbase.dll+0xc19a9)
+
+ #2 0x00007fff63624ad1 (C:\Windows\System32\ucrtbase.dll+0xa4ad1)
+
+ #3 0x00007fff636429a6 (C:\Windows\System32\ucrtbase.dll+0xc29a6)
+
+ #4 0x00007fff63642b81 (C:\Windows\System32\ucrtbase.dll+0xc2b81)
+
+ #5 0x00007ff7969e5b61 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x22c5b61)
+
+ #6 0x00007ff7969e4e06 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x22c4e06)
+
+ #7 0x00007ff7969f011b (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x22d011b)
+
+ #8 0x00007ff7951fd2ac (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xadd2ac)
+
+ #9 0x00007ff7951ffd3e (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xadfd3e)
+
+#10 0x00007ff7951faf6f (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xadaf6f)
+
+#11 0x00007ff7951fab39 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xadab39)
+
+#12 0x00007ff7953403f1 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xc203f1)
+
+#13 0x00007ff7953387ee (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xc187ee)
+
+#14 0x00007ff79534d83f (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xc2d83f)
+
+#15 0x00007ff7953267c8 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xc067c8)
+
+#16 0x00007ff7953255f1 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xc055f1)
+
+#17 0x00007ff795166833 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xa46833)
+
+#18 0x00007ff7950e5b35 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x9c5b35)
+
+#19 0x00007ff7950ef2c6 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x9cf2c6)
+
+#20 0x00007ff794cd3f6b (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x5b3f6b)
+
+#21 0x00007ff7950e8f61 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x9c8f61)
+
+#22 0x00007ff794d2b1ac (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x60b1ac)
+
+#23 0x00007ff794d2ef41 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x60ef41)
+
+#24 0x00007ff794d2f9d8 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x60f9d8)
+
+#25 0x00007ff794d21e50 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x601e50)
+
+#26 0x00007ff794d2e1a5 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x60e1a5)
+
+#27 0x00007ff794d2e659 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x60e659)
+
+#28 0x00007ff794d30b34 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x610b34)
+
+#29 0x00007ff794b6a20e (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x44a20e)
+
+#30 0x00007ff794b69dc7 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x449dc7)
+
+#31 0x00007ff79b9d0400 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x72b0400)
+
+#32 0x00007fff64cee8d7 (C:\Windows\System32\KERNEL32.DLL+0x2e8d7)
+
+#33 0x00007fff661ac53c (C:\Windows\SYSTEM32\ntdll.dll+0x8c53c)
+
+Assertion failed: isActuallyCanonicalOrNull() && "Forming a CanType out of a non-canonical type!", file C:\Users\swift-ci\jenkins\workspace\swift-6.3-windows-toolchain\swift\include\swift/AST/Type.h, line 421
+
+Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+
+Stack dump:
+
+0.	Program arguments: C:\\hostedtoolcache\\windows\\swift-6.3.3-RELEASE-windows10\\6.3.3\\x86_64\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift-frontend.exe -frontend -c -primary-file "D:\\a\\swift-html- [...truncated: full swift-frontend invocation elided, primary-file batch list omitted...]
+
+1.	Swift version 6.3.3 (swift-6.3.3-RELEASE)
+
+2.	Compiling with the current language version
+
+3.	While evaluating request IRGenRequest(IR Generation for file "D:\a\swift-html-render\swift-html-render\Sources\HTML Rendering Core\HTML.AnyView.swift")
+
+4.	While emitting IR SIL function "@$s18WHATWG_HTML_Shared0a1_B0O0B15_Rendering_CoreE7AnyViewVyAfcDE0G0_pcfC".
+
+ for 'init(_:)' (at D:\a\swift-html-render\swift-html-render\Sources\HTML Rendering Core\HTML.AnyView.swift:42:16)
+
+5.	While mangling type for debugger type 'any HTML.View'
+
+Exception Code: 0x80000003
+
+ #0 0x00007ff79b967965 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x7247965)
+
+ #1 0x00007fff636419a9 (C:\Windows\System32\ucrtbase.dll+0xc19a9)
+
+ #2 0x00007fff63624ad1 (C:\Windows\System32\ucrtbase.dll+0xa4ad1)
+
+ #3 0x00007fff636429a6 (C:\Windows\System32\ucrtbase.dll+0xc29a6)
+
+ #4 0x00007fff63642b81 (C:\Windows\System32\ucrtbase.dll+0xc2b81)
+
+ #5 0x00007ff7969e5b61 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x22c5b61)
+
+ #6 0x00007ff7969e4e06 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x22c4e06)
+
+ #7 0x00007ff7969f011b (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0x22d011b)
+
+ #8 0x00007ff7951fd2ac (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xadd2ac)
+
+ #9 0x00007ff7951ffd3e (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xadfd3e)
+
+#10 0x00007ff7951faf6f (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xadaf6f)
+
+#11 0x00007ff7951fab39 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xadab39)
+
+#12 0x00007ff7953403f1 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xc203f1)
+
+#13 0x00007ff7953387ee (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xc187ee)
+
+#14 0x00007ff79534d83f (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xc2d83f)
+
+#15 0x00007ff7953267c8 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xc067c8)
+
+#16 0x00007ff7953255f1 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xc055f1)
+
+#17 0x00007ff795166833 (C:\hostedtoolcache\windows\swift-6.3.3-RELEASE-windows10\6.3.3\x86_64\Toolchains\6.3.3+Asserts\usr\bin\swift-frontend.exe+0xa46833)
+
