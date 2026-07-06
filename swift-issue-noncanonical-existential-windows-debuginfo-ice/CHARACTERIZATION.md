@@ -263,9 +263,9 @@ cross-package shape and that one 6.4-dev snapshot; the full-graph 6.4 proof job
 (`windows-6.4-proof.yml`) remains blocked earlier in the graph by
 swift-sequence-primitives' 6.4-unreadiness.
 
-**Workaround VALIDATED (A″ — canonical-root respell)**: since the sugar in the
-WRITTEN type is the trigger, respelling the two downcasts through the canonical
-root — `as? any ISO_32000.HTML.Style.Modifier` / `as? any
+**Workaround VALIDATED and APPLIED (A″ — canonical-root respell)**: since the
+sugar in the WRITTEN type is the trigger, respelling the two downcasts through
+the canonical root — `as? any ISO_32000.HTML.Style.Modifier` / `as? any
 ISO_32000.HTML.Style.Context.Modifier` at `PDF.HTML.Context+Rendering.swift:267/:283`
 — produces a canonical written type and avoids the assertion with a one-token
 change per site (no structural refactor). Verified in run `28776603241`
@@ -274,7 +274,22 @@ except those two spellings, declarations still via the `PDF` alias) is
 **CLEAN on Swift 6.3.3 AND on 6.4-dev `a42409e978ff428`** while its
 alias-spelled twin STILL FIRES on both, same run, same runner. A grep confirms
 these two sites are the ONLY `any PDF.…` existential spellings in the
-swift-pdf graph's sources. Production application pending principal go.
+swift-pdf graph's sources.
+
+**Manifestation B → RESOLVED (2026-07-06)**: A″ applied in swift-pdf-html-render
+`58e77f9` (with the `5bf09c4` lint-sweep `Self.Table?` damage reverted in
+`9691d46`). CI-verified on the Windows 6.3.3 (+Asserts) leg: swift-pdf-html-render
+run `28777760002` (job `85325681332`) and swift-pdf run `28777772153` (job
+`85326213240`) both reach **`Build complete!`** with **zero**
+`isActuallyCanonicalOrNull` occurrences — the first-ever full Windows debug
+builds of this module/graph. The legs remain red only on an UNRELATED
+cross-platform runtime test regression (`Parser.Parser.swift:134` "String is a
+leaf parser" fatalError, tracked separately in `Workspace/inbox.md`) that fails
+macOS/Ubuntu identically — the Windows leg is no longer Windows-special. The
+standing probe for the underlying compiler bug (still UNFIXED upstream through
+6.4-dev `a42409e978ff428`) is `swift-pdf/.github/workflows/windows-existential-repro.yml`'s
+cross-package variant; the two production respells retire when it goes CLEAN
+on the CI toolchain.
 
 ## Cross-references
 
