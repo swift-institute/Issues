@@ -150,6 +150,24 @@ before the crash); the crash is confined to the **test target** (the
 `Parser.Builder Tests.swift` parser fixtures — `Digit`, `Expect`, … — share the
 generic-typed-throws-error shape).
 
+### Additional production manifestations (`Sources/`-level, whole-module release aborts)
+
+Beyond the test-target hit above, this bug has surfaced twice at library `Sources/`
+level — i.e. every consumer's `-c release` of the affected graph aborts:
+
+- **`swift-iso-8601`** — `ISO_8601.DateTime.Parse.parse` (four `<Domain>.Parse.Error`
+  enums phantom-nested in generic `Parse<Input>`). **Fixed 2026-06-29** by de-phantoming
+  the error enums to module scope (`aa1c557..8ad787e`).
+- **`swift-w3c-xml`** — `W3C_XML.Lexer.lexDoctype(startPos:)` (phantom-generic
+  `Lexer<…>.Error`), CI-surfaced 2026-07-06 on **6.3.3-RELEASE**, Linux x86_64
+  `-c release -enable-default-cmo`; macOS debug clean. **Pre-existing** (failed before the
+  unrelated ownership-shared rename respell) and **transitively** in consumer `swift-xml`.
+  **Open** — source remediation owned by a w3c-xml session (hoist `Lexer`'s phantom `Error`,
+  as done for iso-8601). Evidence: CI run
+  [28802981666](https://github.com/swift-w3c/swift-w3c-xml/actions/runs/28802981666).
+
+Full manifestation history + latent-sibling watchlist: catalog **§ A13** manifestations (2)/(3).
+
 ## Distinct from neighbouring catalog entries
 
 - **§A8** (same *file*, different bug): a type-checker "failed to produce
