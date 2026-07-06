@@ -1,0 +1,175 @@
+{"app_name":"swiftpm-testing-helper","timestamp":"2026-07-06 11:22:46.00 +0200","app_version":"","slice_uuid":"4eb4a7d1-5653-3dfc-a72c-b419749a7345","build_version":"","platform":1,"share_with_app_devs":1,"is_first_party":1,"bug_type":"309","os_version":"macOS 26.5.1 (25F80)","roots_installed":0,"incident_id":"EC185692-E57F-4E44-AEF7-858A2391C933","name":"swiftpm-testing-helper"}
+{
+  "uptime" : 330000,
+  "procRole" : "Unspecified",
+  "version" : 2,
+  "userID" : 501,
+  "deployVersion" : 210,
+  "modelCode" : "Mac15,13",
+  "coalitionID" : 1149,
+  "osVersion" : {
+    "train" : "macOS 26.5.1",
+    "build" : "25F80",
+    "releaseType" : "User"
+  },
+  "captureTime" : "2026-07-06 11:22:45.2382 +0200",
+  "codeSigningMonitor" : 2,
+  "incident" : "EC185692-E57F-4E44-AEF7-858A2391C933",
+  "pid" : 88950,
+  "translated" : false,
+  "cpuType" : "ARM-64",
+  "procLaunch" : "2026-07-06 11:22:45.1793 +0200",
+  "procStartAbsTime" : 8136944929260,
+  "procExitAbsTime" : 8136945607639,
+  "procName" : "swiftpm-testing-helper",
+  "procPath" : "\/Applications\/Xcode.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/libexec\/swift\/pm\/swiftpm-testing-helper",
+  "parentProc" : "Exited process",
+  "parentPid" : 87233,
+  "coalitionName" : "com.apple.Terminal",
+  "crashReporterKey" : "55A7DFCB-0318-D857-9BF6-C6539231978F",
+  "appleIntelligenceStatus" : {"reasons":["selectedLanguageDoesNotMatchSelectedSiriLanguageInfo(system: en, siri: en-GB)","selectedLanguageDoesNotMatchSelectedSiriLanguage"],"state":"unavailable"},
+  "developerMode" : 1,
+  "bootProgressRegister" : "0x2f000000",
+  "responsiblePid" : 89371,
+  "responsibleProc" : "Terminal",
+  "codeSigningID" : "swiftpm-testing-helper-55554944ba585ba158063ed3876069a6d83a8aa4",
+  "codeSigningTeamID" : "",
+  "codeSigningFlags" : 570425861,
+  "codeSigningValidationCategory" : 10,
+  "codeSigningTrustLevel" : 4294967295,
+  "codeSigningAuxiliaryInfo" : 0,
+  "instructionByteStream" : {"beforePC":"f8IA+X++APl\/ugD5f54A+X+aAPl\/ugD5f5oA+X+aAPl\/ugD5f7oA+Q==","atPC":"SAhA+Wg6APkICUD5CAlA+QENQPlhRgD5KIBf+AghQPkI\/UDTCD0AkQ=="},
+  "bootSessionUUID" : "8F18B9FE-487F-4F4E-925F-253069053641",
+  "wakeTime" : 8185,
+  "sleepWakeUUID" : "849D60AE-051A-4F37-90C7-B73486AC87A2",
+  "sip" : "enabled",
+  "vmRegionInfo" : "0x10 is not in any region.  Bytes before following region: 4343398384\n      REGION TYPE                    START - END         [ VSIZE] PRT\/MAX SHRMOD  REGION DETAIL\n      UNUSED SPACE AT START\n--->  \n      __TEXT                      102e30000-102e34000    [   16K] r-x\/r-x SM=COW  \/Applications\/Xcode.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/libexec\/swift\/pm\/swiftpm-testing-helper",
+  "exception" : {"codes":"0x0000000000000001, 0x0000000000000010","rawCodes":[1,16],"type":"EXC_BAD_ACCESS","signal":"SIGSEGV","subtype":"KERN_INVALID_ADDRESS at 0x0000000000000010"},
+  "termination" : {"flags":0,"code":11,"namespace":"SIGNAL","indicator":"Segmentation fault: 11","byProc":"exc handler","byPid":88950},
+  "vmregioninfo" : "0x10 is not in any region.  Bytes before following region: 4343398384\n      REGION TYPE                    START - END         [ VSIZE] PRT\/MAX SHRMOD  REGION DETAIL\n      UNUSED SPACE AT START\n--->  \n      __TEXT                      102e30000-102e34000    [   16K] r-x\/r-x SM=COW  \/Applications\/Xcode.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/libexec\/swift\/pm\/swiftpm-testing-helper",
+  "extMods" : {"caller":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"system":{"thread_create":0,"thread_set_state":36,"task_for_pid":4},"targeted":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"warnings":0},
+  "faultingThread" : 2,
+  "threads" : [{"id":31621321,"threadState":{"x":[{"value":268451845},{"value":21592279046},{"value":8589934592,"objc-selector":"imationForOptions:"},{"value":26401163968512},{"value":1828509304},{"value":26401163968512},{"value":2},{"value":4294967295},{"value":0},{"value":17179869184},{"value":0},{"value":2},{"value":0},{"value":0},{"value":6147},{"value":0},{"value":18446744073709551569},{"value":12},{"value":0},{"value":4294967295},{"value":2},{"value":26401163968512},{"value":1828509304},{"value":26401163968512},{"value":21592279046},{"value":6123475912},{"value":8589934592,"objc-selector":"imationForOptions:"},{"value":18446744073709550527},{"value":4412409862}],"flavor":"ARM_THREAD_STATE64","lr":{"value":6530385268},"cpsr":{"value":4096},"fp":{"value":6123475760},"sp":{"value":6123475680},"esr":{"value":1442840704,"description":"(Syscall)"},"pc":{"value":6530309172},"far":{"value":0}},"queue":"com.apple.main-thread","frames":[{"imageOffset":3124,"symbol":"mach_msg2_trap","symbolLocation":8,"imageIndex":4},{"imageOffset":79220,"symbol":"mach_msg2_internal","symbolLocation":76,"imageIndex":4},{"imageOffset":39360,"symbol":"mach_msg_overwrite","symbolLocation":480,"imageIndex":4},{"imageOffset":4032,"symbol":"mach_msg","symbolLocation":24,"imageIndex":4},{"imageOffset":516312,"symbol":"__CFRunLoopServiceMachPort","symbolLocation":160,"imageIndex":5},{"imageOffset":510404,"symbol":"__CFRunLoopRun","symbolLocation":1188,"imageIndex":5},{"imageOffset":1372612,"symbol":"_CFRunLoopRunSpecificWithOptions","symbolLocation":532,"imageIndex":5},{"imageOffset":994036,"symbol":"CFRunLoopRun","symbolLocation":64,"imageIndex":5},{"imageOffset":396036,"symbol":"CFMainExecutor.run()","symbolLocation":48,"imageIndex":6},{"imageOffset":396552,"symbol":"protocol witness for RunLoopExecutor.run() in conformance DispatchMainExecutor","symbolLocation":40,"imageIndex":6},{"imageOffset":398132,"symbol":"swift_task_asyncMainDrainQueueImpl","symbolLocation":140,"imageIndex":6},{"imageOffset":49880,"symbol":"swift_task_asyncMainDrainQueue","symbolLocation":92,"imageIndex":6},{"imageOffset":5306220,"sourceFile":"runner.swift","symbol":"main","symbolLocation":132,"imageIndex":1},{"imageOffset":2188,"imageIndex":0},{"imageOffset":1864,"imageIndex":0},{"imageOffset":130560,"symbol":"start","symbolLocation":6992,"imageIndex":7}]},{"id":31621326,"frames":[],"threadState":{"x":[{"value":6124040192},{"value":3339},{"value":6123503616},{"value":0},{"value":409604},{"value":18446744073709551615},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0}],"flavor":"ARM_THREAD_STATE64","lr":{"value":0},"cpsr":{"value":4096},"fp":{"value":0},"sp":{"value":6124040192},"esr":{"value":1442840704,"description":"(Syscall)"},"pc":{"value":6530567176},"far":{"value":0}}},{"triggered":true,"id":31621327,"threadState":{"x":[{"value":6124610936},{"value":6124610912},{"value":0},{"value":18446726483666796544},{"value":8299248640,"symbolLocation":0,"symbol":"_os_log_current_test_callback"},{"value":1},{"value":0},{"value":0},{"value":6124610944},{"value":4447750736,"symbolLocation":0,"symbol":"demangling cache variable for type metadata for __Dictionary<__HashIndexed<Buffer<Storage<Memory.Allocator<Memory.Heap>><>.Contiguous<Hash.Entry<Tagged<ISO_9945.Kernel.Event, UInt>, ISO_9945.Kernel.Event.Driver.Registration>>><>.Linear>>"},{"value":0},{"value":0},{"value":140752525623296},{"value":123145307192320},{"value":688128},{"value":13},{"value":10749247937444839424},{"value":117441536},{"value":0},{"value":6124609888},{"value":31755550744},{"value":0},{"value":31759605088},{"value":93},{"value":6124613856},{"value":0},{"value":11244819032,"symbolLocation":0,"symbol":"swift::concurrency::trace::TracingEnabled"},{"value":11244819040,"symbolLocation":0,"symbol":"swift::concurrency::trace::LogsToken"},{"value":0}],"flavor":"ARM_THREAD_STATE64","lr":{"value":4445146064},"cpsr":{"value":1610616832},"fp":{"value":6124610640},"sp":{"value":6124609888},"esr":{"value":2449473542,"description":"(Data Abort) byte read Translation fault"},"pc":{"value":4443119964,"matchesCrashFrame":1},"far":{"value":16}},"queue":"com.apple.root.default-qos.cooperative","frames":[{"imageOffset":1630556,"sourceFile":"<stdin>","symbol":"__Dictionary<>.insert<A, B>(key:value:)","symbolLocation":80,"imageIndex":1},{"imageOffset":3656656,"sourceLine":136,"sourceFile":"Kernel.Event.Driver.swift","symbol":"closure #1 in ISO_9945.Kernel.Event.Driver.init(add:modify:remove:arm:poll:close:)","imageIndex":1,"symbolLocation":768},{"imageOffset":3656880,"sourceFile":"\/<compiler-generated>","symbol":"partial apply for closure #1 in ISO_9945.Kernel.Event.Driver.init(add:modify:remove:arm:poll:close:)","symbolLocation":32,"imageIndex":1},{"imageOffset":3673780,"sourceLine":50,"sourceFile":"Kernel.Event.Source.swift","symbol":"ISO_9945.Kernel.Event.Source.register(descriptor:interest:)","imageIndex":1,"symbolLocation":112},{"imageOffset":2546328,"sourceLine":151,"sourceFile":"IO.Event.Driver.Contract.Tests.swift","symbol":"SourceContractTests.`poll drops events for deregistered IDs`()","imageIndex":1,"symbolLocation":440},{"imageOffset":2545328,"sourceLine":5,"sourceFile":"@__swiftmacro_15IO_Events_Tests014SourceContractC0V0050polldropseventsforderegisteredIDs_hFafgdmHCBFGsdba4TestfMp_.swift","symbol":"$s15IO_Events_Tests014SourceContractC0V0050polldropseventsforderegisteredIDs_hFafgdmHCBFGsdba4TestfMp_7__localfMu0_ #1 @Sendable (_:) in static SourceContractTests.$s15IO_Events_Tests014SourceContractC0V0050polldropseventsforderegisteredIDs_hFafgdmHCBFGsdba4TestfMp_17Z93865942d9dc64a2fMu_@Sendable ()","imageIndex":1,"symbolLocation":124},{"imageOffset":2544377,"sourceLine":7,"sourceFile":"@__swiftmacro_15IO_Events_Tests014SourceContractC0V0050polldropseventsforderegisteredIDs_hFafgdmHCBFGsdba4TestfMp_.swift","symbol":"static SourceContractTests.$s15IO_Events_Tests014SourceContractC0V0050polldropseventsforderegisteredIDs_hFafgdmHCBFGsdba4TestfMp_17Z93865942d9dc64a2fMu_@Sendable ()","imageIndex":1,"symbolLocation":1},{"imageOffset":2548305,"sourceFile":"@__swiftmacro_15IO_Events_Tests014SourceContractC0V0050polldropseventsforderegisteredIDs_hFafgdmHCBFGsdba4TestfMp_.swift","symbol":"implicit closure #1 in static SourceContractTests.$s15IO_Events_Tests014SourceContractC0V0050polldropseventsforderegisteredIDs_hFafgdmHCBFGsdba4TestfMp_25generator93865942d9dc64a2fMu_@Sendable ()","symbolLocation":1,"imageIndex":1},{"imageOffset":2584329,"sourceFile":"\/<compiler-generated>","symbol":"partial apply for implicit closure #1 in static SourceContractTests.$s15IO_Events_Tests014SourceContractC0V0050polldropseventsforderegisteredIDs_hFafgdmHCBFGsdba4TestfMp_25generator93865942d9dc64a2fMu_@Sendable ()","symbolLocation":1,"imageIndex":1},{"imageOffset":2171425,"sourceFile":"\/<compiler-generated>","symbol":"thunk for @escaping @callee_guaranteed @Sendable @async (@guaranteed Builtin.ImplicitActor) -> (@error @owned Error)","symbolLocation":1,"imageIndex":1},{"imageOffset":2584633,"sourceFile":"\/<compiler-generated>","symbol":"partial apply for thunk for @escaping @callee_guaranteed @Sendable @async (@guaranteed Builtin.ImplicitActor) -> (@error @owned Error)","symbolLocation":1,"imageIndex":1},{"imageOffset":854181,"symbol":"closure #1 in closure #1 in static Runner._runTestCase(_:within:context:)","symbolLocation":1,"imageIndex":2},{"imageOffset":194817,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":633389,"symbol":"specialized static Issue.withErrorRecording(at:configuration:isolation:_:)","symbolLocation":1,"imageIndex":2},{"imageOffset":850393,"symbol":"closure #1 in static Runner._runTestCase(_:within:context:)","symbolLocation":1,"imageIndex":2},{"imageOffset":194817,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":190625,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":194817,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":195133,"symbol":"withTaskCancellationHandler<A>(operation:onCancel:isolation:)","symbolLocation":1,"imageIndex":6},{"imageOffset":1382213,"symbol":"specialized closure #1 in TestCancellable.withCancellationHandling<A>(_:)","symbolLocation":1,"imageIndex":2},{"imageOffset":118725,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":388229,"symbol":"TaskLocal.withValueImpl<A>(_:operation:isolation:file:line:)","symbolLocation":1,"imageIndex":6},{"imageOffset":387245,"symbol":"TaskLocal.withValue<A>(_:operation:isolation:file:line:)","symbolLocation":1,"imageIndex":6},{"imageOffset":1068081,"symbol":"specialized TestCancellable.withCancellationHandling<A>(_:)","symbolLocation":1,"imageIndex":2},{"imageOffset":190625,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":194817,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":388229,"symbol":"TaskLocal.withValueImpl<A>(_:operation:isolation:file:line:)","symbolLocation":1,"imageIndex":6},{"imageOffset":387245,"symbol":"TaskLocal.withValue<A>(_:operation:isolation:file:line:)","symbolLocation":1,"imageIndex":6},{"imageOffset":859961,"symbol":"specialized static Test.Case.withCurrent<A>(_:perform:)","symbolLocation":1,"imageIndex":2},{"imageOffset":920297,"symbol":"specialized static Runner._runTestCase(_:within:context:)","symbolLocation":1,"imageIndex":2},{"imageOffset":846893,"symbol":"closure #4 in static Runner._runTestCases<A>(_:within:context:)","symbolLocation":1,"imageIndex":2},{"imageOffset":118725,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":235537,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":194817,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":909453,"symbol":"specialized closure #1 in closure #1 in static Runner._forEach<A, B>(in:namingTasksWith:_:)","symbolLocation":1,"imageIndex":2},{"imageOffset":194817,"symbol":"<deduplicated_symbol>","symbolLocation":1,"imageIndex":2},{"imageOffset":52933,"symbol":"completeTaskWithClosure(swift::AsyncContext*, swift::SwiftError*)","symbolLocation":1,"imageIndex":6}]},{"id":31621328,"frames":[],"threadState":{"x":[{"value":6125187072},{"value":0},{"value":6124650496},{"value":0},{"value":278532},{"value":18446744073709551615},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0},{"value":0}],"flavor":"ARM_THREAD_STATE64","lr":{"value":0},"cpsr":{"value":4096},"fp":{"value":0},"sp":{"value":6125187072},"esr":{"value":0},"pc":{"value":6530567176},"far":{"value":0}}}],
+  "usedImages" : [
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4343398400,
+    "size" : 16384,
+    "uuid" : "4eb4a7d1-5653-3dfc-a72c-b419749a7345",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/libexec\/swift\/pm\/swiftpm-testing-helper",
+    "name" : "swiftpm-testing-helper"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4441489408,
+    "size" : 5996544,
+    "uuid" : "61c6e245-27ae-36eb-a024-259d5b145a70",
+    "path" : "\/private\/tmp\/*\/swift-ioPackageTests",
+    "name" : "swift-ioPackageTests"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64e",
+    "base" : 4434345984,
+    "CFBundleShortVersionString" : "1.0",
+    "CFBundleIdentifier" : "com.apple.dt.swift-testing",
+    "size" : 1654784,
+    "uuid" : "85e3ccff-c7d0-3ff9-8085-8348315d76b3",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/Library\/Frameworks\/Testing.framework\/Versions\/A\/Testing",
+    "name" : "Testing",
+    "CFBundleVersion" : "1902"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64e",
+    "base" : 4343758848,
+    "size" : 16384,
+    "uuid" : "afef7129-d17d-3925-adf5-14ae12759cbb",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/usr\/lib\/lib_TestingInterop.dylib",
+    "name" : "lib_TestingInterop.dylib"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64e",
+    "base" : 6530306048,
+    "size" : 250544,
+    "uuid" : "cc1cf985-bc65-3725-809f-4c1e36b8f4ba",
+    "path" : "\/usr\/lib\/system\/libsystem_kernel.dylib",
+    "name" : "libsystem_kernel.dylib"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64e",
+    "base" : 6530846720,
+    "CFBundleShortVersionString" : "6.9",
+    "CFBundleIdentifier" : "com.apple.CoreFoundation",
+    "size" : 5628704,
+    "uuid" : "04e3598b-f226-3250-b3b2-ce938dd4db7e",
+    "path" : "\/System\/Library\/Frameworks\/CoreFoundation.framework\/Versions\/A\/CoreFoundation",
+    "name" : "CoreFoundation",
+    "CFBundleVersion" : "5026.5.4"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64e",
+    "base" : 10902630400,
+    "size" : 569494,
+    "uuid" : "e3545aa1-ff13-3698-8657-91bb23002df9",
+    "path" : "\/usr\/lib\/swift\/libswift_Concurrency.dylib",
+    "name" : "libswift_Concurrency.dylib"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64e",
+    "base" : 6526533632,
+    "size" : 680472,
+    "uuid" : "a237ef81-b68b-37ba-a165-92c965529534",
+    "path" : "\/usr\/lib\/dyld",
+    "name" : "dyld"
+  },
+  {
+    "size" : 0,
+    "source" : "A",
+    "base" : 0,
+    "uuid" : "00000000-0000-0000-0000-000000000000"
+  }
+],
+  "sharedCache" : {
+  "base" : 6525403136,
+  "size" : 5990596608,
+  "uuid" : "ff7119a7-f64d-305d-8135-7e6eb1c207d1"
+},
+  "vmSummary" : "ReadOnly portion of Libraries: Total=881.3M resident=0K(0%) swapped_out_or_unallocated=881.3M(100%)\nWritable regions: Total=91.3M written=304K(0%) resident=304K(0%) swapped_out=0K(0%) unallocated=91.0M(100%)\n\n                                VIRTUAL   REGION \nREGION TYPE                        SIZE    COUNT (non-coalesced) \n===========                     =======  ======= \nActivity Tracing                   256K        1 \nKernel Alloc Once                   32K        1 \nMALLOC                            16.8M        9 \nMALLOC guard page                 4128K        4 \nMemory Tag 22                     64.0M        1 \nSTACK GUARD                       56.1M        4 \nStack                             9808K        4 \n__AUTH                            1321K      148 \n__AUTH_CONST                      17.7M      341 \n__CTF                               824        1 \n__DATA                            4713K      301 \n__DATA_CONST                      16.6M      343 \n__DATA_DIRTY                      1321K      285 \n__FONT_DATA                        2352        1 \n__LINKEDIT                       586.0M        5 \n__OBJC_RO                         79.1M        1 \n__OBJC_RW                         2599K        1 \n__TEXT                           295.3M      352 \n__TPRO_CONST                       128K        2 \nmapped file                         80K        1 \npage table in kernel               304K        1 \nshared memory                       48K        2 \n===========                     =======  ======= \nTOTAL                              1.1G     1809 \n",
+  "legacyInfo" : {
+  "threadTriggered" : {
+    "queue" : "com.apple.root.default-qos.cooperative"
+  }
+},
+  "logWritingSignature" : "ac5a422ea1290437338997856a97bf3f49417fdf",
+  "roots_installed" : 0,
+  "bug_type" : "309",
+  "trmStatus" : 1,
+  "trialInfo" : {
+  "rollouts" : [
+    {
+      "rolloutId" : "66d35d7fe4d6bf7664f40ddf",
+      "factorPackIds" : [
+        "68c1a34bd359577bbe8f2182"
+      ],
+      "deploymentId" : 240000066
+    },
+    {
+      "rolloutId" : "6297d96be2c9387df974efa4",
+      "factorPackIds" : [
+
+      ],
+      "deploymentId" : 240000032
+    }
+  ],
+  "experiments" : [
+
+  ]
+}
+}

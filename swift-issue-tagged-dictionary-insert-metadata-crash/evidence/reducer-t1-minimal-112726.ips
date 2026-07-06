@@ -1,0 +1,124 @@
+{"app_name":"t1-tagged-copyable","timestamp":"2026-07-06 11:27:26.00 +0200","app_version":"","slice_uuid":"649915e0-df46-3b98-9488-d14b188ca93c","build_version":"","platform":1,"share_with_app_devs":1,"is_first_party":1,"bug_type":"309","os_version":"macOS 26.5.1 (25F80)","roots_installed":0,"incident_id":"820E88A4-47E0-4CE8-8168-DE6085C9E605","name":"t1-tagged-copyable"}
+{
+  "uptime" : 330000,
+  "procRole" : "Unspecified",
+  "version" : 2,
+  "userID" : 501,
+  "deployVersion" : 210,
+  "modelCode" : "Mac15,13",
+  "coalitionID" : 1149,
+  "osVersion" : {
+    "train" : "macOS 26.5.1",
+    "build" : "25F80",
+    "releaseType" : "User"
+  },
+  "captureTime" : "2026-07-06 11:27:26.5147 +0200",
+  "codeSigningMonitor" : 2,
+  "incident" : "820E88A4-47E0-4CE8-8168-DE6085C9E605",
+  "pid" : 16570,
+  "translated" : false,
+  "cpuType" : "ARM-64",
+  "procLaunch" : "2026-07-06 11:27:26.5033 +0200",
+  "procStartAbsTime" : 8143696584167,
+  "procExitAbsTime" : 8143696847146,
+  "procName" : "t1-tagged-copyable",
+  "procPath" : "\/private\/tmp\/*\/t1-tagged-copyable",
+  "parentProc" : "zsh",
+  "parentPid" : 16568,
+  "coalitionName" : "com.apple.Terminal",
+  "crashReporterKey" : "55A7DFCB-0318-D857-9BF6-C6539231978F",
+  "appleIntelligenceStatus" : {"reasons":["selectedLanguageDoesNotMatchSelectedSiriLanguageInfo(system: en, siri: en-GB)","selectedLanguageDoesNotMatchSelectedSiriLanguage"],"state":"unavailable"},
+  "developerMode" : 1,
+  "bootProgressRegister" : "0x2f000000",
+  "responsiblePid" : 89371,
+  "responsibleProc" : "Terminal",
+  "codeSigningID" : "t1-tagged-copyable-55554944649915e0df463b989488d14b188ca93c",
+  "codeSigningTeamID" : "",
+  "codeSigningFlags" : 570425861,
+  "codeSigningValidationCategory" : 10,
+  "codeSigningTrustLevel" : 4294967295,
+  "codeSigningAuxiliaryInfo" : 0,
+  "instructionByteStream" : {"beforePC":"f8IA+X++APl\/ugD5f54A+X+aAPl\/ugD5f5oA+X+aAPl\/ugD5f7oA+Q==","atPC":"SAhA+Wg6APkICUD5CAlA+QENQPlhRgD5KIBf+AghQPkI\/UDTCD0AkQ=="},
+  "bootSessionUUID" : "8F18B9FE-487F-4F4E-925F-253069053641",
+  "wakeTime" : 8467,
+  "sleepWakeUUID" : "849D60AE-051A-4F37-90C7-B73486AC87A2",
+  "sip" : "enabled",
+  "vmRegionInfo" : "0x10 is not in any region.  Bytes before following region: 4341563376\n      REGION TYPE                    START - END         [ VSIZE] PRT\/MAX SHRMOD  REGION DETAIL\n      UNUSED SPACE AT START\n--->  \n      __TEXT                      102c70000-102ec0000    [ 2368K] r-x\/r-x SM=COW  \/tmp\/*\/t1-tagged-copyable",
+  "exception" : {"codes":"0x0000000000000001, 0x0000000000000010","rawCodes":[1,16],"type":"EXC_BAD_ACCESS","signal":"SIGSEGV","subtype":"KERN_INVALID_ADDRESS at 0x0000000000000010"},
+  "termination" : {"flags":0,"code":11,"namespace":"SIGNAL","indicator":"Segmentation fault: 11","byProc":"exc handler","byPid":16570},
+  "vmregioninfo" : "0x10 is not in any region.  Bytes before following region: 4341563376\n      REGION TYPE                    START - END         [ VSIZE] PRT\/MAX SHRMOD  REGION DETAIL\n      UNUSED SPACE AT START\n--->  \n      __TEXT                      102c70000-102ec0000    [ 2368K] r-x\/r-x SM=COW  \/tmp\/*\/t1-tagged-copyable",
+  "extMods" : {"caller":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"system":{"thread_create":0,"thread_set_state":36,"task_for_pid":4},"targeted":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"warnings":0},
+  "faultingThread" : 0,
+  "threads" : [{"triggered":true,"id":31678557,"threadState":{"x":[{"value":6125316136},{"value":6125316128},{"value":0},{"value":96},{"value":18446726483666796544},{"value":0},{"value":110},{"value":18446744072631617535},{"value":6125316144},{"value":4344099192,"symbolLocation":0,"symbol":"demangling cache variable for type metadata for __Dictionary<__HashIndexed<Buffer<Storage<Memory.Allocator<Memory.Heap>><>.Contiguous<Hash.Entry<Tagged<ISO_9945.Kernel.Event, UInt>, Int>>><>.Linear>>"},{"value":4356780608},{"value":1},{"value":52780857346048},{"value":35184376333312},{"value":51200},{"value":4294967296},{"value":6528783784,"symbolLocation":0,"symbol":"dispatch_once_f"},{"value":8367409488},{"value":0},{"value":6125314736},{"value":4344269832,"symbolLocation":0,"symbol":"d"},{"value":6125316952},{"value":18446744073709551600},{"value":8344106848,"symbolLocation":0,"symbol":"vm_page_mask"},{"value":1},{"value":6125317312},{"value":8344106864,"symbolLocation":0,"symbol":"mach_task_self_"},{"value":0},{"value":0}],"flavor":"ARM_THREAD_STATE64","lr":{"value":4343699548},"cpsr":{"value":1610616832},"fp":{"value":6125315488},"sp":{"value":6125314736},"esr":{"value":2449473542,"description":"(Data Abort) byte read Translation fault"},"pc":{"value":4342164624,"matchesCrashFrame":1},"far":{"value":16}},"queue":"com.apple.main-thread","frames":[{"imageOffset":601232,"sourceFile":"<stdin>","symbol":"__Dictionary<>.insert<A, B>(key:value:)","symbolLocation":80,"imageIndex":0},{"imageOffset":2136156,"sourceLine":10,"sourceFile":"main.swift","symbol":"main","imageIndex":0,"symbolLocation":244},{"imageOffset":130560,"symbol":"start","symbolLocation":6992,"imageIndex":1}]}],
+  "usedImages" : [
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4341563392,
+    "size" : 2424832,
+    "uuid" : "649915e0-df46-3b98-9488-d14b188ca93c",
+    "path" : "\/private\/tmp\/*\/t1-tagged-copyable",
+    "name" : "t1-tagged-copyable"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64e",
+    "base" : 6526533632,
+    "size" : 680472,
+    "uuid" : "a237ef81-b68b-37ba-a165-92c965529534",
+    "path" : "\/usr\/lib\/dyld",
+    "name" : "dyld"
+  },
+  {
+    "size" : 0,
+    "source" : "A",
+    "base" : 0,
+    "uuid" : "00000000-0000-0000-0000-000000000000"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64e",
+    "base" : 6528765952,
+    "size" : 291392,
+    "uuid" : "f071efe4-299f-3089-acc4-0025b8ffb52a",
+    "path" : "\/usr\/lib\/system\/libdispatch.dylib",
+    "name" : "libdispatch.dylib"
+  }
+],
+  "sharedCache" : {
+  "base" : 6525403136,
+  "size" : 5990596608,
+  "uuid" : "ff7119a7-f64d-305d-8135-7e6eb1c207d1"
+},
+  "vmSummary" : "ReadOnly portion of Libraries: Total=592.4M resident=0K(0%) swapped_out_or_unallocated=592.4M(100%)\nWritable regions: Total=89.4M written=240K(0%) resident=240K(0%) swapped_out=0K(0%) unallocated=89.2M(100%)\n\n                                VIRTUAL   REGION \nREGION TYPE                        SIZE    COUNT (non-coalesced) \n===========                     =======  ======= \nActivity Tracing                   256K        1 \nKernel Alloc Once                   32K        1 \nMALLOC                            16.8M        9 \nMALLOC guard page                 3584K        4 \nMemory Tag 22                     64.0M        1 \nSTACK GUARD                       56.0M        1 \nStack                             8176K        1 \n__AUTH                             530K       16 \n__AUTH_CONST                       488K       53 \n__DATA                             528K       41 \n__DATA_CONST                      3175K       52 \n__DATA_DIRTY                       270K       39 \n__LINKEDIT                       577.7M        2 \n__OBJC_RO                         79.1M        1 \n__OBJC_RW                         2599K        1 \n__TEXT                            14.7M       55 \n__TPRO_CONST                       128K        2 \nmapped file                         80K        1 \npage table in kernel               240K        1 \nshared memory                       48K        2 \n===========                     =======  ======= \nTOTAL                            828.1M      284 \n",
+  "legacyInfo" : {
+  "threadTriggered" : {
+    "queue" : "com.apple.main-thread"
+  }
+},
+  "logWritingSignature" : "2e7503605841550a2cecea2c11b0062dc365333b",
+  "bug_type" : "309",
+  "roots_installed" : 0,
+  "trmStatus" : 1,
+  "trialInfo" : {
+  "rollouts" : [
+    {
+      "rolloutId" : "66d35d7fe4d6bf7664f40ddf",
+      "factorPackIds" : [
+        "68c1a34bd359577bbe8f2182"
+      ],
+      "deploymentId" : 240000066
+    },
+    {
+      "rolloutId" : "6297d96be2c9387df974efa4",
+      "factorPackIds" : [
+
+      ],
+      "deploymentId" : 240000032
+    }
+  ],
+  "experiments" : [
+
+  ]
+}
+}
