@@ -215,6 +215,67 @@ itself is UNFIXED on the 6.3 line for either manifestation's trigger shape; the
 6.4-fixes-it claim is PENDING CI CONFIRMATION, not yet proven for this
 ecosystem's build.
 
+## Trigger Refinement (2026-07-06) — typealias sugar at the namespace root; 6.4 does NOT fix it
+
+A minimal-repro campaign (swift-pdf-owned advisory workflow
+`.github/workflows/windows-existential-repro.yml`, reproducer sources committed
+under `swift-pdf/.github/repro/`) refined the trigger and empirically tested the
+6.4 premise. Verified dispositions (run `28776276301`, jobs `85320926270` /
+`85320926228`, 2026-07-06):
+
+| Variant | Swift 6.3.3 (Windows +Asserts) | Swift 6.4-dev `a42409e978ff428` (Windows +Asserts) |
+|---|---|---|
+| single-file (whole shape in ONE module, real enums, SE-0404 nested protocols, `as? any …` from `Any`, `-Onone -g`) | CLEAN | CLEAN |
+| cross-package (namespace root is `public typealias PDF = ISO_32000` in a SEPARATE package; otherwise identical) | **STILL FIRING** | **STILL FIRING** |
+
+Both firing legs show the byte-identical assertion (`isActuallyCanonicalOrNull`,
+`AST/Type.h:421`) and frame (`While mangling type for debugger type
+'any PDF.HTML.Style.Modifier'`) as production — this two-tiny-package,
+zero-external-dependency reproducer is the reduced form of Manifestation B.
+
+**Mechanism (refined)**: the common factor across BOTH manifestations is not
+`~Copyable`/recursion (Manifestation A's theory) and not nested protocols per
+se (single-file leg is CLEAN) — it is the **namespace-root TYPEALIAS declared
+in another package**: `PDF = ISO_32000` (swift-pdf-standard, reaching
+pdf-html-render via swift-pdf-render's `@_exported public import PDF_Standard`)
+for Manifestation B, and `HTML = WHATWG_HTML_Shared.WHATWG_HTML`
+(swift-html-standard `exports.swift:22`) for Manifestation A. The written
+existential carries `TypeAliasType` sugar at its root; the debug-info mangler
+forms a `CanType` from the sugared type and asserts. This matches the
+principal's pre-policy upstream report **swiftlang/swift#86202** (2025-12-24,
+`any HTML.View`, Swift 6.0.3 era; ingredients: cross-package + namespace
+typealias + `ExistentialAny`/`InternalImportsByDefault`; cross-module-same-
+package does NOT crash — consistent with our single-file CLEAN leg; compnerd
+2025-12-29: "a generic issue with existentials"; no fix PR linked as of
+2026-07-06).
+
+**6.4 refutation**: the 6.4 line carries typealias-existential debug-info fixes
+absent from 6.3 (`45547be3f8f` "[Debug Info] Represent type alias existentials
+in debug info"; `6f60adf009c` "Use a separate DIRefMap cache for existential
+typealiases (#86368)"; `2934386efde` "ASTMangler: Fix mangling of sugared
+(nested) ProtocolCompositionTypes", fixes #86207) — but none covers this shape:
+the reproducer fires on the 6.4.x Windows toolchain. **The §Resolution
+assumption "(b) the ecosystem's move to Swift 6.4 … is intended to empirically
+confirm" is REFUTED for Manifestation B** — the ~Sept 6.4 move will NOT clear
+swift-pdf's Windows leg absent an upstream fix landing after snapshot
+`a42409e978ff428`. Coverage note per [ISSUE-026]: tested on the minimal
+cross-package shape and that one 6.4-dev snapshot; the full-graph 6.4 proof job
+(`windows-6.4-proof.yml`) remains blocked earlier in the graph by
+swift-sequence-primitives' 6.4-unreadiness.
+
+**Workaround VALIDATED (A″ — canonical-root respell)**: since the sugar in the
+WRITTEN type is the trigger, respelling the two downcasts through the canonical
+root — `as? any ISO_32000.HTML.Style.Modifier` / `as? any
+ISO_32000.HTML.Style.Context.Modifier` at `PDF.HTML.Context+Rendering.swift:267/:283`
+— produces a canonical written type and avoids the assertion with a one-token
+change per site (no structural refactor). Verified in run `28776603241`
+(2026-07-06): the `RespellModule` variant (identical to the firing variant
+except those two spellings, declarations still via the `PDF` alias) is
+**CLEAN on Swift 6.3.3 AND on 6.4-dev `a42409e978ff428`** while its
+alias-spelled twin STILL FIRES on both, same run, same runner. A grep confirms
+these two sites are the ONLY `any PDF.…` existential spellings in the
+swift-pdf graph's sources. Production application pending principal go.
+
 ## Cross-references
 
 - Catalog §A20 (`swift-issue-vector-iterable-materializing-mangler-verify`) — sibling class, `Mangler::verify` at SILGen.
