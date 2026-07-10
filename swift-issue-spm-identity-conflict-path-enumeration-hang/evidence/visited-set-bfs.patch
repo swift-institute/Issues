@@ -1,0 +1,101 @@
+From 0995a1cf4e1ba373e46ad8b128f85f48cf75e622 Mon Sep 17 00:00:00 2001
+From: Coen ten Thije Boonkkamp <coen@coenttb.com>
+Date: Fri, 10 Jul 2026 10:49:55 +0200
+Subject: [PATCH] Fix exponential path enumeration in conflicting-identity
+ diagnostic
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+findAllTransitiveDependencies (introduced in #8390) runs a BFS over the
+dependency graph with no visited set, collecting every distinct path
+from each root to the conflicting dependency. On path-rich DAGs the
+number of distinct paths is exponential in graph depth (a two-wide
+diamond lattice of depth N contains 2^N paths), and the queue is popped
+with Array.removeFirst (O(n) memmove per pop) — so a single
+conflicting-identity edge on a large real-world graph makes
+createResolvedPackages effectively non-terminating: swift build spins
+at 100% CPU inside Array.replaceSubrange/_platform_memmove and never
+completes or diagnoses anything.
+
+Both call sites only ever surface one chain per root (.first for the
+error; the emitted warning even says 'only the first chain is shown
+here'), so a breadth-first search with a visited set returning a single
+shortest chain is behavior-preserving for the diagnostic while making
+the walk O(V + E).
+
+Reproducer: 39 local packages — a 2-wide layered lattice of depth 18
+plus one package identity reachable under two canonical locations.
+Stock 6.3.2 hangs indefinitely in findAllTransitiveDependencies;
+with this change the graph loads in seconds and emits the ordinary
+conflicting-identity warning with a correct shortest chain.
+---
+ .../PackageGraph/ModulesGraph+Loading.swift   | 34 +++++++++++--------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
+
+diff --git a/Sources/PackageGraph/ModulesGraph+Loading.swift b/Sources/PackageGraph/ModulesGraph+Loading.swift
+index 1b698e6bc..8b12f9232 100644
+--- a/Sources/PackageGraph/ModulesGraph+Loading.swift
++++ b/Sources/PackageGraph/ModulesGraph+Loading.swift
+@@ -332,14 +332,21 @@ fileprivate extension ResolvedProduct {
+     }
+ }
+ 
+-/// Find all transitive dependencies between `root` and `dependency`.
++/// Find a transitive dependency chain between `root` and `dependency`.
+ /// - root: A root package to start search from
+-/// - dependency: A dependency which to find transitive dependencies for.
++/// - dependency: A dependency which to find a transitive dependency chain for.
+ /// - graph: List of resolved package builders representing a dependency graph.
+-/// The function returns all possible dependency chains, each chain is a list of nodes representing transitive
++/// The function returns at most one (shortest) dependency chain, a list of nodes representing transitive
+ /// dependencies between `root` and `dependency`. A dependency chain
+ /// "A root depends on B, which depends on C" is returned as [Root, B, C].
+ /// If `root` doesn't actually depend on `dependency` then the function returns empty list.
++///
++/// Note: enumerating *every* distinct chain is exponential in graph depth on
++/// path-rich DAGs (a diamond lattice of depth N contains 2^N distinct paths),
++/// which made graph loading effectively non-terminating on large real-world
++/// graphs whenever the conflicting-identity diagnostic fired. The diagnostic
++/// only ever surfaces one representative chain per root, so a breadth-first
++/// search with a visited set (one shortest chain, O(V+E)) is sufficient.
+ private func findAllTransitiveDependencies(
+     root: CanonicalPackageLocation,
+     dependency: CanonicalPackageLocation,
+@@ -352,23 +359,22 @@ private func findAllTransitiveDependencies(
+                 .map(\.packageRef.canonicalLocation)
+         )
+     ) })
+-    // Use BFS to find paths between start and finish.
++    // Use BFS with a visited set to find a shortest path between start and finish.
+     var queue: [(CanonicalPackageLocation, [CanonicalPackageLocation])] = []
+-    var foundPaths: [[CanonicalPackageLocation]] = []
++    var visited: Set<CanonicalPackageLocation> = [root]
+     queue.append((root, []))
+-    while !queue.isEmpty {
+-        let currentItem = queue.removeFirst()
+-        let current = currentItem.0
+-        let pathToCurrent = currentItem.1
++    var index = queue.startIndex
++    while index < queue.endIndex {
++        let (current, pathToCurrent) = queue[index]
++        index += 1
+         if current == dependency {
+-            let pathToFinish = pathToCurrent + [current]
+-            foundPaths.append(pathToFinish)
++            return [pathToCurrent + [current]]
+         }
+-        for dependency in edges[current] ?? [] {
+-            queue.append((dependency, pathToCurrent + [current]))
++        for next in edges[current] ?? [] where visited.insert(next).inserted {
++            queue.append((next, pathToCurrent + [current]))
+         }
+     }
+-    return foundPaths
++    return []
+ }
+ 
+ /// Create resolved packages from the loaded packages.
+-- 
+2.50.1 (Apple Git-155)
+
