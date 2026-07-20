@@ -44,6 +44,8 @@ name: CI
 on:
   push:
     branches: [main]
+    tags:
+      - '*'
     paths:
       - 'swift-issue-*/**'
       - 'Package.swift'
