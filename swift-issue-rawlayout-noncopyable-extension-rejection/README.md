@@ -113,7 +113,7 @@ The production fix (Workaround D) is a one-line change. **The principal decides 
 - Related but **distinct** bug — [`swift-issue-rawlayout-noncopyable-deinit`](../swift-issue-rawlayout-noncopyable-deinit/README.md). That bug is a RUNTIME deinit-not-firing defect on cross-package value-generic `@_rawLayout` chains (`swiftlang/swift#86652` variant). THIS bug is a COMPILE-TIME type-checking defect with no `@_rawLayout` dependency.
 - SE-0427 Noncopyable Generics — establishes the default `T: Copyable` rule for concrete extensions. The leak-back behavior contradicts the proposal's scope ("on the extension").
 - `swift-institute/Research/swift-compiler-bug-catalog.md` — append entry.
-- Memory: `feedback_extension_implies_copyable.md` — the implicit constraint rule is known; the LEAK behavior is the bug.
+- Memory: an internal feedback note — the implicit constraint rule is known; the LEAK behavior is the bug.
 
 ## Reproducer
 

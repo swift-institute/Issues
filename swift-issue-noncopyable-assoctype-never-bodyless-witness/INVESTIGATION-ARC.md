@@ -4,7 +4,7 @@
 
 **Classification**: ICE — SIL verification failure (`SILType.h`-class invariant: a `public/package/shared` SIL function must have a body / "Must have a construct to emit for").
 
-**Standing policy note**: per [ISSUE-008] (principal, 2026-06-11) and `feedback_never_file_upstream_swiftlang.md`, upstream filing at swiftlang does **not** exist as a step. This dossier is the terminal record. The parent handoff (an internal handoff document) requested "file the swift.org bug" — that instruction conflicts with standing policy and was **not** executed; the conflict is surfaced to the principal.
+**Standing policy note**: per [ISSUE-008] (principal, 2026-06-11) and the standing upstream-filing policy, upstream filing at swiftlang does **not** exist as a step. This dossier is the terminal record. The parent handoff (an internal handoff document) requested "file the swift.org bug" — that instruction conflicts with standing policy and was **not** executed; the conflict is surfaced to the principal.
 
 ---
 

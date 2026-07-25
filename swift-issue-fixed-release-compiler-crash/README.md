@@ -20,7 +20,7 @@ first's workaround*:
 > the `Fixed`/Buffer/Storage teardown is correct at `-O`; nothing is silently leaking.**
 
 **Filing policy:** per standing policy, **NOT** filed upstream to swiftlang;
-`swift-institute/Issues` is the terminal record (`feedback_never_file_upstream_swiftlang`).
+`swift-institute/Issues` is the terminal record (the standing upstream-filing policy).
 
 ---
 

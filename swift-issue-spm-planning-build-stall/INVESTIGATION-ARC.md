@@ -123,7 +123,7 @@ Each removal is a strictly mechanical delete of an adjacent duplicate line; no s
 
 `swift package purge-cache && swift package reset && swift build` from the consumer package directory. This clears `~/Library/Caches/org.swift.swiftpm/` (manifests + repositories) and the local workspace state, forcing SwiftPM to recompute everything from scratch. The freshly-recomputed planner state evades the bug.
 
-The workaround is operational, not permanent. The bug will recur whenever the global cache state aligns again with the trigger pattern. Permanent fix is to upgrade to a Swift toolchain that contains PR #9493 — Swift 6.3-dev snapshots from 2025-12-15+ or Swift 6.4-dev nightly per `feedback_toolchain_versions.md`. Apple Swift 6.3.1 (Xcode 26.4.1) does NOT yet contain this fix.
+The workaround is operational, not permanent. The bug will recur whenever the global cache state aligns again with the trigger pattern. Permanent fix is to upgrade to a Swift toolchain that contains PR #9493 — Swift 6.3-dev snapshots from 2025-12-15+ or Swift 6.4-dev nightly per an internal feedback note. Apple Swift 6.3.1 (Xcode 26.4.1) does NOT yet contain this fix.
 
 ## Verification
 
@@ -281,5 +281,5 @@ To definitively isolate swift-syntax / macros as the trigger would require remov
 - `swift-institute/Research/spm-build-parallelism-spurious-module-errors.md` — different SPM defect class (parallel-scheduler artifact, NOT planning-build hang; do NOT conflate the two).
 - Handoff: an internal handoff document (parent investigation brief).
 - Skills: **issue-investigation** ([ISSUE-001] dev-toolchain-first, [ISSUE-010] classification, [ISSUE-013] variable isolation), **modularization** ([MOD-*]), **platform** ([PLAT-ARCH-*]).
-- Memory: `feedback_toolchain_versions.md` (Swift 6.3 + 6.4-dev nightly only; no other toolchains tested).
+- Memory: an internal feedback note (Swift 6.3 + 6.4-dev nightly only; no other toolchains tested).
 - Upstream: [PR #9493](https://github.com/swiftlang/swift-package-manager/pull/9493), [Issue #9441](https://github.com/swiftlang/swift-package-manager/issues/9441), [Forum thread](https://forums.swift.org/t/swiftpm-hangs-at-planning-build-on-every-incremental-build-swift-6-2-linux/83562).

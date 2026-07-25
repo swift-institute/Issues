@@ -209,4 +209,4 @@ The fix is principal-decided. This investigation does NOT modify swift-storage-p
   - `swift-storage-primitives@ee86ee0` `Sources/Storage Inline Primitives/Storage.Inline+Memory.Contiguous.Protocol.swift` line 69 — unconditional conformance.
   - `swift-storage-primitives@ee86ee0` `Sources/Storage Inline Primitives/Storage.Inline.swift` lines 97/139/142/143 — error fires here.
 - SE-0427 Noncopyable Generics — establishes the default `Copyable` rule that this bug exposes.
-- Memory: `feedback_extension_implies_copyable.md` — the implicit-Copyable-on-bare-extension rule is known and documented in workspace memory; the cross-sibling LEAK is what this investigation surfaces as a bug.
+- Memory: an internal feedback note — the implicit-Copyable-on-bare-extension rule is known and documented in workspace memory; the cross-sibling LEAK is what this investigation surfaces as a bug.

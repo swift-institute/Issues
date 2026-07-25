@@ -277,7 +277,7 @@ swift-threads, swift-io) currently SIGSEGV at test time on Apple Swift
 Per [`ISSUE-008`] the appropriate workaround for "fixed in dev, not in
 Xcode" is to apply and document — but the orchestrator's standing
 correctness preference here (memory entry
-`feedback_correctness_and_evergreen.md`) takes precedence over the
+an internal feedback note) takes precedence over the
 short-term unblock. Resolution is to wait for the Swift 6.5 release,
 which will carry the fix to all consumers.
 

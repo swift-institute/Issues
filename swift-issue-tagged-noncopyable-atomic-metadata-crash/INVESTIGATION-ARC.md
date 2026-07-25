@@ -72,7 +72,7 @@ Orchestrator rejected the pivot: the typed-wrapper pattern degrades the
 typed approach at the storage layer rather than fixing the cause; saving
 the typed-surface form at the public API does not redeem dropping the
 typed phantom-Tag from the storage. Per the memory entry
-`feedback_correctness_and_evergreen.md`, structural correctness +
+an internal feedback note, structural correctness +
 evergreen disposition outweigh consumer-demand thresholds (the memory
 itself flags the relevant skill-side framing for future skill-lifecycle
 rethink).
@@ -235,7 +235,7 @@ is:
 > Apply workaround, document, wait for release.
 
 The orchestrator's standing correctness preference (memory entry
-`feedback_correctness_and_evergreen.md`) rules out the typed-wrapper
+an internal feedback note) rules out the typed-wrapper
 workaround that Arc 2 explored. The applied resolution for this arc is
 therefore:
 

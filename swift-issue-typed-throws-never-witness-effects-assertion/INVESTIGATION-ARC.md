@@ -8,7 +8,7 @@ reproducible on the NoAsserts RELEASE toolchains available locally, and not on 6
 
 **Classification**: ICE — Sema assertion (`assert()` in `lib/Sema/TypeCheckProtocol.cpp:1311`), `+Asserts` builds only.
 
-**Standing policy note**: per [ISSUE-008] / `feedback_never_file_upstream_swiftlang.md`, no upstream filing. The parent handoff's "file the swift.org bug" instruction conflicts with policy and was not executed (surfaced to principal). Since the bug is fixed on dev, a filing would be a 6.3.x-backport ask at most — not pursued.
+**Standing policy note**: per [ISSUE-008] / the standing upstream-filing policy, no upstream filing. The parent handoff's "file the swift.org bug" instruction conflicts with policy and was not executed (surfaced to principal). Since the bug is fixed on dev, a filing would be a 6.3.x-backport ask at most — not pursued.
 
 ---
 
