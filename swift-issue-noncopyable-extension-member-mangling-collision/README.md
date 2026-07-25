@@ -3,7 +3,7 @@
 > **STATUS: STAGED — TERMINAL RECORD.** Per principal standing policy (2026-06-11),
 > upstream filing does not exist as a step — this dossier is the record. The repo is
 > public; pushing it is an outward act and stays principal-gated.
-> Drafted 2026-06-11 from the `/issue-investigation` of catalog B7 (lane tower-lane-b7).
+> Drafted 2026-06-11 from the `/issue-investigation` of catalog B7.
 > The issue body below is written §A15-style to be self-contained.
 
 ---
@@ -169,7 +169,7 @@ None of the four involves two Sema-distinct declarations mapping to one mangled 
   including the body twin — which explains the "extension-level twins mangle
   identically" reading. The resolution ladder's "extension-homed twins (top-level
   generic types only)" restriction is likewise falsified (F4-vs-F3 is distinct at every
-  tested nesting depth). Catalog amendment is the seat's call; this lane is read-only
+  tested nesting depth). Catalog amendment is the catalog owner's call; this investigation is read-only
   outside `/tmp` and this repository.
 
 ## Re-run checklist (revalidation on any future toolchain)
@@ -197,5 +197,5 @@ re-run the workaround files before relying on either spelling remaining necessar
   package-copy reconstruction record, deviation notes).
 - Probes: `/tmp/b7-{matrix,versions,forms,parent-sweep,severity}/`; early anchors and
   the tree-unbounded package copy under an internal probe directory
-  (pre-lane-brief placement, disclosed in the report).
+  (placement predates the brief, disclosed in the report).
 - Evidence captures: `evidence/captures.txt` (§1–§11, toolchain of record).

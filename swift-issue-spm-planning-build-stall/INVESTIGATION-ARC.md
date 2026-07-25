@@ -277,7 +277,7 @@ To definitively isolate swift-syntax / macros as the trigger would require remov
 
 ## Cross-references
 
-- `swift-institute/Audits/post-path-x-architecture-review-2026-04-30.md` — Wave 4a Sites 1+2+3 closure section (this investigation closes the consumer-build verification gap via the workaround).
+- an internal audit record — Wave 4a Sites 1+2+3 closure section (this investigation closes the consumer-build verification gap via the workaround).
 - `swift-institute/Research/spm-build-parallelism-spurious-module-errors.md` — different SPM defect class (parallel-scheduler artifact, NOT planning-build hang; do NOT conflate the two).
 - Handoff: an internal handoff document (parent investigation brief).
 - Skills: **issue-investigation** ([ISSUE-001] dev-toolchain-first, [ISSUE-010] classification, [ISSUE-013] variable isolation), **modularization** ([MOD-*]), **platform** ([PLAT-ARCH-*]).
