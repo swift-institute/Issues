@@ -43,7 +43,7 @@ Caveat (preserved from earlier draft): five bare-`swiftc` reduction shapes plus 
 ## Cross-references (for the comment author, not part of the posted comment)
 
 - Local catalog entry: `swift-institute/Research/swift-compiler-bug-catalog.md` §A9 (Arc 4 commits `ba4b911` + `f237cda` + `f2d7efd` + `19da3a4`; Arc 5 bisection record pending)
-- Investigation arcs: [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) (4-arc history through bare-`swiftc` reduction + v1 retry); workspace handoffs an internal handoff document (Arcs 1–3) + an internal handoff document (Arcs 4–5)
+- Investigation arcs: [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) (4-arc history through bare-`swiftc` reduction + v1 retry); internal workspace handoffs covering Arcs 1–3 and Arcs 4–5
 - Companion artifact: [`BACKPORT-REQUEST-DRAFT.md`](BACKPORT-REQUEST-DRAFT.md) — draft of separate backport-request issue
 - Related upstream issues:
   - [`#74303`](https://github.com/swiftlang/swift/issues/74303) — target for this comment
