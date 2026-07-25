@@ -34,7 +34,7 @@ Whether `bc44d42f11` also closes this issue (DiscordBM `IntBitField<Flag>?` Coda
 ## Cross-references (for the comment author, not part of the posted comment)
 
 - Local catalog entry: `swift-institute/Research/swift-compiler-bug-catalog.md` §A9 (note: §A9 update labels three snapshots as Swift 6.5-dev; empirically two are 6.4-dev — see AUDIT-REPORT.md C-19).
-- Investigation arc: [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md); internal workspace handoffs covering Arcs 1–3 and Arcs 4–5.
+- Investigation arc: [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md); internal workspace records covering Arcs 1–3 and Arcs 4–5.
 - Companion artifact: [`REVIEWED-BACKPORT-REQUEST.md`](REVIEWED-BACKPORT-REQUEST.md).
 - Audit: [`AUDIT-REPORT.md`](AUDIT-REPORT.md).
 

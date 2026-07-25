@@ -4,8 +4,8 @@ This document carries forward the four-arc convergence record. The
 canonical bug-catalog entry for this defect is
 `swift-institute/Research/swift-compiler-bug-catalog.md` §A9 (commit
 `ba4b911`). The workspace-side investigation handoffs that produced this
-record are an internal handoff document (Arcs 1–3) and
-an internal handoff document (Arc 4).
+record are an internal working document (Arcs 1–3) and
+an internal working document (Arc 4).
 
 ---
 
@@ -243,7 +243,7 @@ therefore:
    public-facing reproducer + record.
 2. Update catalog §A9 with the dev-toolchain status (fixed on 6.5-dev).
 3. Append `§Findings (2026-05-23 Arc 4)` to
-   an internal handoff document.
+   an internal working document.
 4. Stage a sibling-comment data-point draft for posting on
    [`swiftlang/swift#74303`](https://github.com/swiftlang/swift/issues/74303),
    the existing open issue covering the same
@@ -273,7 +273,7 @@ therefore:
 - `swift-institute/Issues/Package.swift` — two new targets +
   three external dependencies (per the brief's accommodation of the
   SwiftPM-only-reproducer case)
-- an internal handoff document — appended
+- an internal working document — appended
   `§Findings (2026-05-23 Arc 4)`
 - `swift-institute/Research/swift-compiler-bug-catalog.md` — §A9
   updated with dev-toolchain-fix status + Issues-directory reference

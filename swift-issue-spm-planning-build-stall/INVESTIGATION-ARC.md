@@ -44,7 +44,7 @@ The bug reproduces on BOTH Apple Swift 6.3.1 (Xcode 26.4.1) AND Swift 6.4-dev ni
 
 ## Provenance
 
-Handoff: an internal handoff document
+Handoff: an internal working document
 (parent conversation post-Path-X workspace cleanup; Wave 4a Sites 1+2+3
 POSIX-side L3 platform-C cleanup committed and pushed but consumer builds
 swift-io + swift-executors blocked by tooling stall, not by the change).
@@ -279,7 +279,7 @@ To definitively isolate swift-syntax / macros as the trigger would require remov
 
 - an internal audit record — Wave 4a Sites 1+2+3 closure section (this investigation closes the consumer-build verification gap via the workaround).
 - `swift-institute/Research/spm-build-parallelism-spurious-module-errors.md` — different SPM defect class (parallel-scheduler artifact, NOT planning-build hang; do NOT conflate the two).
-- Handoff: an internal handoff document (parent investigation brief).
+- Handoff: an internal working document (parent investigation brief).
 - Skills: **issue-investigation** ([ISSUE-001] dev-toolchain-first, [ISSUE-010] classification, [ISSUE-013] variable isolation), **modularization** ([MOD-*]), **platform** ([PLAT-ARCH-*]).
 - Memory: an internal feedback note (Swift 6.3 + 6.4-dev nightly only; no other toolchains tested).
 - Upstream: [PR #9493](https://github.com/swiftlang/swift-package-manager/pull/9493), [Issue #9441](https://github.com/swiftlang/swift-package-manager/issues/9441), [Forum thread](https://forums.swift.org/t/swiftpm-hangs-at-planning-build-on-every-incremental-build-swift-6-2-linux/83562).

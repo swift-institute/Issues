@@ -142,7 +142,7 @@ Thank you for your time.
 ## Cross-references (for the author, not part of the posted issue)
 
 - Local catalog entry: `swift-institute/Research/swift-compiler-bug-catalog.md` §A9 (commits `ba4b911` + Arc 4 corrections `f237cda` + `f2d7efd` + `19da3a4`)
-- Investigation arcs: [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md), internal workspace handoffs covering Arcs 1–3 and Arcs 4–5
+- Investigation arcs: [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md), internal workspace records covering Arcs 1–3 and Arcs 4–5
 - Arc 5 bisection record (commit identification): pending append after orchestrator authorization
 
 ## Posting checklist (for orchestrator review)

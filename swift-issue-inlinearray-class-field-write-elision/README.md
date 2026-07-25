@@ -14,7 +14,7 @@ family). The authoritative reproduction is the in-package release test (below).
 **Workaround**: none clean within scope. The affected shape (a buffer-owned class `Box`
 holding an inline `InlineArray` bitmap **sibling** to a `~Copyable` `@_rawLayout` substrate)
 is release-broken; the institute deferred it to an architecture decision
-(an internal handoff document — leaf-owned occupancy probe). The release-broken
+(an internal working document — leaf-owned occupancy probe). The release-broken
 tests are skip-guarded under `-O`.
 
 ## Summary
@@ -93,7 +93,7 @@ they share a root is open.
 ## Disposition
 
 This finding is a primary technical input to the institute's deferred "sparse occupancy
-placement" decision (an internal handoff document): a
+placement" decision (an internal working document): a
 buffer-owned class `Box` over inline storage is release-broken; the leaf-owned alternative
 (occupancy bitmap in a `@_rawLayout` leaf, not a class value-field) plausibly sidesteps it
 and is the decision's probe-first next step. The buffer-owned interim does NOT ship for the

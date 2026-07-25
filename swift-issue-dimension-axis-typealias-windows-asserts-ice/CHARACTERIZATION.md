@@ -99,4 +99,4 @@ Per [ISSUE-008]: terminal dossier (this) + applied workaround; **no upstream fil
 
 ## Source
 
-2026-06-27 swift-dimension-primitives Windows +Asserts investigation (RESOLVE + RECORD; an internal handoff document).
+2026-06-27 swift-dimension-primitives Windows +Asserts investigation (RESOLVE + RECORD; an internal working document).

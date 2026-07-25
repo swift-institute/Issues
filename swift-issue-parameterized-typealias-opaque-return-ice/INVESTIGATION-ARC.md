@@ -3,7 +3,7 @@
 > **Status**: root cause identified (HIGH confidence); workaround proposed (MODERATE confidence, not yet empirically verified)
 > **Author**: Claude, 2026-05-16
 > **Trigger context**: blocked Step 3 of the byte-arc cohort dispatch in `swift-ascii-parser-primitives`
-> **Companion docs**: an internal handoff document (item 8 surfaced from D7), an internal handoff document (the broader roadmap this work was advancing)
+> **Companion docs**: an internal working document (item 8 surfaced from D7), an internal working document (the broader roadmap this work was advancing)
 
 ---
 

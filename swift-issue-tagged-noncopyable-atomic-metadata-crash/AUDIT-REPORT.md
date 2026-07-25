@@ -1,7 +1,7 @@
 ---
 title: "Pre-post audit — BACKPORT-REQUEST-DRAFT.md + SIBLING-COMMENT-DRAFT.md (Arc 6)"
 date: 2026-05-23
-auditor: pre-post audit subordinate (per an internal handoff document)
+auditor: pre-post audit subordinate (per an internal working document)
 auditee: Arc 6 staged drafts (BACKPORT-REQUEST-DRAFT.md, SIBLING-COMMENT-DRAFT.md)
 status: COMPLETE — no structural failure; nine non-structural corrections applied to REVIEWED-* outputs
 companion-outputs:
