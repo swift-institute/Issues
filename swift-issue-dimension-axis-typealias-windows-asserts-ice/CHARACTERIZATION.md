@@ -59,7 +59,7 @@ A test declares a **named local of the sugared type**: `let v: Axis<2>.Vertical 
 **Canonical (robust) — the real package.** Build the test target on a +Asserts toolchain:
 
 ```sh
-docker run --rm -v /Users/coen/Developer:/Users/coen/Developer -v /tmp/spm:/root/.swiftpm \
+docker run --rm -v ~/Developer:~/Developer -v /tmp/spm:/root/.swiftpm \
   -v <copy-parent>:/scratch swiftlang/swift:nightly-6.3-jammy \
   sh -c 'cd /scratch/swift-dimension-primitives && swift build --build-tests'
 # → Abort: getMangledName / IRGenDebugInfo.cpp:1098   (evidence/real-package-crash-6.3.3-dev.log)

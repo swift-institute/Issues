@@ -22,17 +22,17 @@ Write a global mirrors.json at `~/Library/org.swift.swiftpm/configuration/mirror
 
 | Original URL | Mirror (local file://) |
 |---|---|
-| `https://github.com/swift-primitives/swift-carrier-primitives.git` | `file:///Users/coen/Developer/swift-primitives/swift-carrier-primitives` |
-| `https://github.com/swift-primitives/swift-tagged-primitives.git` | `file:///Users/coen/Developer/swift-primitives/swift-tagged-primitives` |
-| `https://github.com/swift-primitives/swift-ownership-primitives.git` | `file:///Users/coen/Developer/swift-primitives/swift-ownership-primitives` |
-| `https://github.com/swift-primitives/swift-property-primitives.git` | `file:///Users/coen/Developer/swift-primitives/swift-property-primitives` |
-| `https://github.com/swiftlang/swift-syntax.git` | `file:///Users/coen/Developer/swiftlang/swift-syntax` |
+| `https://github.com/swift-primitives/swift-carrier-primitives.git` | `file://~/Developer/swift-primitives/swift-carrier-primitives` |
+| `https://github.com/swift-primitives/swift-tagged-primitives.git` | `file://~/Developer/swift-primitives/swift-tagged-primitives` |
+| `https://github.com/swift-primitives/swift-ownership-primitives.git` | `file://~/Developer/swift-primitives/swift-ownership-primitives` |
+| `https://github.com/swift-primitives/swift-property-primitives.git` | `file://~/Developer/swift-primitives/swift-property-primitives` |
+| `https://github.com/swiftlang/swift-syntax.git` | `file://~/Developer/swiftlang/swift-syntax` |
 
 After install + clean + `swift build` at swift-foundations/swift-io: build progressed through manifest evaluation, resolution, build planning, and into actual compilation. Generated 2685 `.o` files + 303 `.swiftmodule` files at completion. Compile errors at the source level emerged (real source issues unrelated to the planner; visible only because the planner now runs to completion).
 
 The bug reproduces on BOTH Apple Swift 6.3.1 (Xcode 26.4.1) AND Swift 6.4-dev nightly (DEVELOPMENT-SNAPSHOT-2026-03-16-a). Same `_platform_memmove`-deep recursive hot loop in swift-package's planner code on both. Symptom matches forum-thread / [#9441](https://github.com/swiftlang/swift-package-manager/issues/9441) ("hangs at 'Planning build'") but [PR #9493](https://github.com/swiftlang/swift-package-manager/pull/9493) (Linux/KVM thread-pool starvation, merged 2025-12-12) is NOT the same bug — that PR's fix is present in the 2026-03-16 dev snapshot, and the snapshot still reproduces our stall identically. We are hitting a separate planner-stage bug at a workspace shape that exceeds what SwiftPM's algorithm handles cleanly when URL/local identity-dedup walks are present.
 
-**Source-of-truth repo for the mirror config**: `coenttb/swift-package-mirrors` (scaffolded locally at `/Users/coen/Developer/coenttb/swift-package-mirrors/`, initial commit `82ef956`, awaiting principal authorization to create GitHub remote + push). Contains:
+**Source-of-truth repo for the mirror config**: `coenttb/swift-package-mirrors` (scaffolded locally at `~/Developer/coenttb/swift-package-mirrors/`, initial commit `82ef956`, awaiting principal authorization to create GitHub remote + push). Contains:
 
 - `mirrors.template.json` — canonical URL → local-path mapping with `__WORKSPACE_ROOT__` placeholder (portable across developers)
 - `Scripts/install.sh` — substitutes workspace root + writes to `~/Library/org.swift.swiftpm/configuration/mirrors.json`
@@ -44,7 +44,7 @@ The bug reproduces on BOTH Apple Swift 6.3.1 (Xcode 26.4.1) AND Swift 6.4-dev ni
 
 ## Provenance
 
-Handoff: `/Users/coen/Developer/HANDOFF-spm-stall-duplicate-clock-primitives.md`
+Handoff: `~/Developer/HANDOFF-spm-stall-duplicate-clock-primitives.md`
 (parent conversation post-Path-X workspace cleanup; Wave 4a Sites 1+2+3
 POSIX-side L3 platform-C cleanup committed and pushed but consumer builds
 swift-io + swift-executors blocked by tooling stall, not by the change).
@@ -165,7 +165,7 @@ The build is progressing into the compile phase. Swift-frontend processes are sp
 4. **Toolchain dependency surfaced**: post-Path-X consumer-build verification of the heaviest POSIX consumers requires either (a) the cache-purge workaround, or (b) toolchain upgrade to a Swift version containing PR #9493. The workspace's transitive closure size (~94 packages for swift-io) is at the boundary where SwiftPM's planner thread-pool starvation bug manifests on macOS, even without the Linux/KVM environment cited in the original upstream issue.
 
 ```bash
-# Workspace-wide duplicate-product scan (run from /Users/coen/Developer):
+# Workspace-wide duplicate-product scan (run from ~/Developer):
 for pkgfile in $(find swift-foundations swift-iso swift-primitives swift-microsoft swift-intel swift-arm-ltd -maxdepth 2 -name "Package.swift"); do
   awk -v file="$pkgfile" '
     /\.target\(/ { in_target=1; target_line=NR }
@@ -198,17 +198,17 @@ A non-empty output means at least one target has a duplicate product reference �
 
 ## Phase 3 follow-up — `swift package config set-mirror` mitigation experiment (2026-05-01 08:48–09:14)
 
-**Hypothesis tested**: redirecting swift-syntax's remote URL (`https://github.com/swiftlang/swift-syntax.git`) to a local file:// checkout (`file:///Users/coen/Developer/swiftlang/swift-syntax`) via SwiftPM mirror config mitigates the planning-build stall by reducing the remote-URL surface in the resolved-package graph.
+**Hypothesis tested**: redirecting swift-syntax's remote URL (`https://github.com/swiftlang/swift-syntax.git`) to a local file:// checkout (`file://~/Developer/swiftlang/swift-syntax`) via SwiftPM mirror config mitigates the planning-build stall by reducing the remote-URL surface in the resolved-package graph.
 
 **Procedure**:
 
-1. **Phase 3.1 — Local checkout availability**: `/Users/coen/Developer/swiftlang/swift-syntax` already exists, currently on `main` branch HEAD `901f1c9d` (a dev snapshot tagged `swift-DEVELOPMENT-SNAPSHOT-2026-03-16-a-10`). Tag `602.0.0` (the workspace-expected version) is available in this local repo. Per brief, proceeded with the existing checkout — SwiftPM mirror resolves by identity + tag, not by current HEAD.
+1. **Phase 3.1 — Local checkout availability**: `~/Developer/swiftlang/swift-syntax` already exists, currently on `main` branch HEAD `901f1c9d` (a dev snapshot tagged `swift-DEVELOPMENT-SNAPSHOT-2026-03-16-a-10`). Tag `602.0.0` (the workspace-expected version) is available in this local repo. Per brief, proceeded with the existing checkout — SwiftPM mirror resolves by identity + tag, not by current HEAD.
 
-2. **Phase 3.2 — Mirror config scope**: Probed by setting a per-package mirror, observing where mirrors.json was written, then unsetting. Result: `swift package config set-mirror` writes to **per-package** `.swiftpm/configuration/mirrors.json` by default. The `--config-path` top-level flag was tried as a global-config override but did NOT redirect the write at the version of SwiftPM tested (Apple Swift 6.3.1). Direct file write to the canonical global location `/Users/coen/Library/org.swift.swiftpm/configuration/mirrors.json` (which `~/.swiftpm/configuration/` symlinks to) IS recognized by `swift package config get-mirror` — so global mirror IS feasible by manual file authoring.
+2. **Phase 3.2 — Mirror config scope**: Probed by setting a per-package mirror, observing where mirrors.json was written, then unsetting. Result: `swift package config set-mirror` writes to **per-package** `.swiftpm/configuration/mirrors.json` by default. The `--config-path` top-level flag was tried as a global-config override but did NOT redirect the write at the version of SwiftPM tested (Apple Swift 6.3.1). Direct file write to the canonical global location `~/Library/org.swift.swiftpm/configuration/mirrors.json` (which `~/.swiftpm/configuration/` symlinks to) IS recognized by `swift package config get-mirror` — so global mirror IS feasible by manual file authoring.
 
 3. **Phase 3.3 — Mirror experiments (per-package + global)**:
-   - **Per-package mirror**: configured swift-syntax → local file:// path via `swift package config set-mirror`. Cleaned `.build/`, ran `swift package purge-cache && swift package reset && swift build`. Observed: resolution log confirmed mirror was honored (`Working copy of file:///Users/coen/Developer/swiftlang/swift-syntax resolved at 602.0.0`). After resolution, swift-build went to 99.1% CPU, 0 swift-frontend children, 0 `.o` files — same `_platform_memmove`-deep planner hot loop as the baseline stall. **Mitigation: NO.**
-   - **Global mirror**: removed per-package mirror, wrote `/Users/coen/Library/org.swift.swiftpm/configuration/mirrors.json` directly with the same swift-syntax → local file:// mapping. Verified `swift package config get-mirror` reads it. Cleaned `.build/`, purged cache + reset, ran `swift build`. Observed: same resolution-log mirror confirmation, same 98.8% CPU post-resolution stall, same `_platform_memmove` hot loop. **Mitigation: NO.**
+   - **Per-package mirror**: configured swift-syntax → local file:// path via `swift package config set-mirror`. Cleaned `.build/`, ran `swift package purge-cache && swift package reset && swift build`. Observed: resolution log confirmed mirror was honored (`Working copy of file://~/Developer/swiftlang/swift-syntax resolved at 602.0.0`). After resolution, swift-build went to 99.1% CPU, 0 swift-frontend children, 0 `.o` files — same `_platform_memmove`-deep planner hot loop as the baseline stall. **Mitigation: NO.**
+   - **Global mirror**: removed per-package mirror, wrote `~/Library/org.swift.swiftpm/configuration/mirrors.json` directly with the same swift-syntax → local file:// mapping. Verified `swift package config get-mirror` reads it. Cleaned `.build/`, purged cache + reset, ran `swift build`. Observed: same resolution-log mirror confirmation, same 98.8% CPU post-resolution stall, same `_platform_memmove` hot loop. **Mitigation: NO.**
 
 4. **Phase 3.4 — Cleanup**: removed global `mirrors.json` + per-package `mirrors.json`. Verified `swift package config get-mirror` returns "not found" with exit code 1.
 
@@ -218,7 +218,7 @@ The mirror approach mechanically works at the resolution layer: SwiftPM does red
 
 **Observed scope-flag behavior** (correction to the original brief):
 
-- `swift package config set-mirror` does NOT honor `--config-path` for the write target (verified empirically; help text suggests it should but the write went to per-package regardless). To write a global mirror, edit `/Users/coen/Library/org.swift.swiftpm/configuration/mirrors.json` directly.
+- `swift package config set-mirror` does NOT honor `--config-path` for the write target (verified empirically; help text suggests it should but the write went to per-package regardless). To write a global mirror, edit `~/Library/org.swift.swiftpm/configuration/mirrors.json` directly.
 - `swift package config get-mirror` DOES read both per-package AND global config, with per-package taking precedence.
 
 **Side observation — `swift-package --help` triggers the same stall**:
@@ -240,7 +240,7 @@ A `swift package --help` invocation that ran during the experiment was discovere
 
 The bug reproduces deterministically across all attempted mitigations.
 
-**Note on the user's broader workflow goal — global mirror as permanent dev environment**: the user expressed interest in setting up a global mirror that redirects all remote-URL deps to local checkouts so they can develop offline. This IS feasible (per Phase 3.2) by writing `/Users/coen/Library/org.swift.swiftpm/configuration/mirrors.json` directly. It is orthogonal to the SPM-stall (mirror does not fix the stall, but is independently useful as a dev-environment setup). Surfaced as a separable workflow recommendation; principal disposes whether to commit to a permanent global mirror config setup.
+**Note on the user's broader workflow goal — global mirror as permanent dev environment**: the user expressed interest in setting up a global mirror that redirects all remote-URL deps to local checkouts so they can develop offline. This IS feasible (per Phase 3.2) by writing `~/Library/org.swift.swiftpm/configuration/mirrors.json` directly. It is orthogonal to the SPM-stall (mirror does not fix the stall, but is independently useful as a dev-environment setup). Surfaced as a separable workflow recommendation; principal disposes whether to commit to a permanent global mirror config setup.
 
 ## Phase 2 follow-up — swift-witnesses topology-trigger experiment (2026-05-01 08:39–08:41)
 
@@ -273,13 +273,13 @@ To definitively isolate swift-syntax / macros as the trigger would require remov
 
 - **Filing upstream**: per the handoff's "DO NOT autonomously file upstream Swift issues" boundary, no upstream issue is filed for our specific reproduction (macOS-side trigger of the existing #9441 / PR #9493 bug pattern). If the principal wants the macOS-side reproduction added to the upstream record, this Research note carries the recipe.
 
-- **swift-tagged-primitives URL form for swift-carrier-primitives**: NOT a defect, intentional. `swift-primitives/swift-tagged-primitives/Package.swift:29` declares `swift-carrier-primitives` via remote URL `https://github.com/swift-primitives/swift-carrier-primitives.git`. Both swift-tagged-primitives and swift-carrier-primitives are publicly published packages, so the URL form is the correct shape — it works for both local-checkout development (via SwiftPM's identity-deduplication, which omits the URL fetch when a same-identity local path exists) and CI/public-consumer builds. SwiftPM emits "`swift-carrier-primitives ... was omitted from required dependencies because it has the same identity as the one from /Users/coen/Developer/swift-primitives/swift-carrier-primitives`" four times during swift-io's resolution; this is the deduplication mechanism working correctly, NOT an algorithmic blowup. Confirmed as intentional by principal during this investigation.
+- **swift-tagged-primitives URL form for swift-carrier-primitives**: NOT a defect, intentional. `swift-primitives/swift-tagged-primitives/Package.swift:29` declares `swift-carrier-primitives` via remote URL `https://github.com/swift-primitives/swift-carrier-primitives.git`. Both swift-tagged-primitives and swift-carrier-primitives are publicly published packages, so the URL form is the correct shape — it works for both local-checkout development (via SwiftPM's identity-deduplication, which omits the URL fetch when a same-identity local path exists) and CI/public-consumer builds. SwiftPM emits "`swift-carrier-primitives ... was omitted from required dependencies because it has the same identity as the one from ~/Developer/swift-primitives/swift-carrier-primitives`" four times during swift-io's resolution; this is the deduplication mechanism working correctly, NOT an algorithmic blowup. Confirmed as intentional by principal during this investigation.
 
 ## Cross-references
 
 - `swift-institute/Audits/post-path-x-architecture-review-2026-04-30.md` — Wave 4a Sites 1+2+3 closure section (this investigation closes the consumer-build verification gap via the workaround).
 - `swift-institute/Research/spm-build-parallelism-spurious-module-errors.md` — different SPM defect class (parallel-scheduler artifact, NOT planning-build hang; do NOT conflate the two).
-- Handoff: `/Users/coen/Developer/HANDOFF-spm-stall-duplicate-clock-primitives.md` (parent investigation brief).
+- Handoff: `~/Developer/HANDOFF-spm-stall-duplicate-clock-primitives.md` (parent investigation brief).
 - Skills: **issue-investigation** ([ISSUE-001] dev-toolchain-first, [ISSUE-010] classification, [ISSUE-013] variable isolation), **modularization** ([MOD-*]), **platform** ([PLAT-ARCH-*]).
 - Memory: `feedback_toolchain_versions.md` (Swift 6.3 + 6.4-dev nightly only; no other toolchains tested).
 - Upstream: [PR #9493](https://github.com/swiftlang/swift-package-manager/pull/9493), [Issue #9441](https://github.com/swiftlang/swift-package-manager/issues/9441), [Forum thread](https://forums.swift.org/t/swiftpm-hangs-at-planning-build-on-every-incremental-build-swift-6-2-linux/83562).

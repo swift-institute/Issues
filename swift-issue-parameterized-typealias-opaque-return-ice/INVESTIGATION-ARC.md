@@ -58,7 +58,7 @@ This is Swift's compiler ICE message: the type-checker reached a constraint-fail
 
 ### Reproduction sites
 
-All four sites are in `/Users/coen/Developer/swift-primitives/swift-ascii-parser-primitives/Tests/Declarative Parser Syntax Tests/Declarative Parser Syntax Tests.swift`:
+All four sites are in `~/Developer/swift-primitives/swift-ascii-parser-primitives/Tests/Declarative Parser Syntax Tests/Declarative Parser Syntax Tests.swift`:
 
 | Line | Parser | Opaque return form |
 |---|---|---|
@@ -496,10 +496,10 @@ To preserve investigation evidence, no `git checkout` was performed (the user ex
 To restore to the post-Step-2 cohort state (3 packages landed, ascii-parser-primitives clean at baseline):
 
 ```bash
-cd /Users/coen/Developer/swift-primitives/swift-parser-primitives && git checkout -- .
-cd /Users/coen/Developer/swift-primitives/swift-parser-machine-primitives && git checkout -- .
-cd /Users/coen/Developer/swift-primitives/swift-byte-parser-primitives && git checkout -- .
-cd /Users/coen/Developer/swift-primitives/swift-ascii-parser-primitives && git checkout -- .
+cd ~/Developer/swift-primitives/swift-parser-primitives && git checkout -- .
+cd ~/Developer/swift-primitives/swift-parser-machine-primitives && git checkout -- .
+cd ~/Developer/swift-primitives/swift-byte-parser-primitives && git checkout -- .
+cd ~/Developer/swift-primitives/swift-ascii-parser-primitives && git checkout -- .
 ```
 
 All committed work (`eb01abd`, `64275b1`, `3d32c41`) is preserved; only investigation edits are reverted.

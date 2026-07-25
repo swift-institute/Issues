@@ -198,7 +198,7 @@ fixed** (status re-verified 2026-07-25, ECO-7519FIX lane):
   **Ubuntu (Swift 6.3, release) green**, both nightly axes green, `ci-ok` green — with
   `Compiling RFC_7519` ×4 freshly compiled and zero assertion/stack-dump markers in the leg
   log. Reproduction + fix both **validated locally**
-  2026-07-25 (`/issue-investigation`, ECO-SIL lane): the production shape
+  2026-07-25 (issue investigation): the production shape
   (`struct Parse<Input>` + nested phantom `Error` + `throws(Failure)` member + same-module
   caller) crashes with this exact assertion on macOS 6.3.3-RELEASE **and** Linux x86_64
   under `-O -enable-default-cmo`; hoisting `Error` to non-generic module scope compiles

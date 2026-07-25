@@ -319,7 +319,7 @@ added, cross-reference §A3 and §A7 as the neighbouring-but-distinct records.
 
 ## Provenance
 
-2026-07-25 ECO-SIL fleet lane (`/issue-investigation`). Surfaced while fact-crossing a
-`!type.hasTypeParameter()` report from an arc lane; the two proved to be different bugs in
+2026-07-25 (issue investigation). Surfaced while fact-crossing a
+`!type.hasTypeParameter()` report from a parallel investigation; the two proved to be different bugs in
 different passes. Reduction, ingredient controls, and the toolchain matrix were all run in
 `swiftlang/swift:nightly-main-jammy` (assert-enabled) and `swift:6.3` containers.

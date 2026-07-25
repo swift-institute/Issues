@@ -3,919 +3,919 @@
   "object": [
     {
       "original": "https://github.com/coenttb/swift-html",
-      "mirror": "/Users/coen/Developer/swift-foundations/swift-html"
+      "mirror": "/Users/<user>/Developer/swift-foundations/swift-html"
     },
     {
       "original": "https://github.com/coenttb/swift-html.git",
-      "mirror": "/Users/coen/Developer/swift-foundations/swift-html"
+      "mirror": "/Users/<user>/Developer/swift-foundations/swift-html"
     },
     {
       "original": "https://github.com/coenttb/swift-translating",
-      "mirror": "/Users/coen/Developer/swift-foundations/swift-translating"
+      "mirror": "/Users/<user>/Developer/swift-foundations/swift-translating"
     },
     {
       "original": "https://github.com/coenttb/swift-translating.git",
-      "mirror": "/Users/coen/Developer/swift-foundations/swift-translating"
+      "mirror": "/Users/<user>/Developer/swift-foundations/swift-translating"
     },
     {
       "original": "https://github.com/pointfreeco/swift-dependencies",
-      "mirror": "/Users/coen/Developer/swift-foundations/swift-dependencies"
+      "mirror": "/Users/<user>/Developer/swift-foundations/swift-dependencies"
     },
     {
       "original": "https://github.com/pointfreeco/swift-dependencies.git",
-      "mirror": "/Users/coen/Developer/swift-foundations/swift-dependencies"
+      "mirror": "/Users/<user>/Developer/swift-foundations/swift-dependencies"
     },
     {
       "original": "https://github.com/swift-arm-ltd/swift-arm-standard",
-      "mirror": "/Users/coen/Developer/swift-arm-ltd/swift-arm-standard"
+      "mirror": "/Users/<user>/Developer/swift-arm-ltd/swift-arm-standard"
     },
     {
       "original": "https://github.com/swift-iec/swift-iec-61966",
-      "mirror": "/Users/coen/Developer/swift-iec/swift-iec-61966"
+      "mirror": "/Users/<user>/Developer/swift-iec/swift-iec-61966"
     },
     {
       "original": "https://github.com/swift-iec/swift-iec-80000-13",
-      "mirror": "/Users/coen/Developer/swift-iec/swift-iec-80000-13"
+      "mirror": "/Users/<user>/Developer/swift-iec/swift-iec-80000-13"
     },
     {
       "original": "https://github.com/swift-iec/swift-iec-80000-13.git",
-      "mirror": "/Users/coen/Developer/swift-iec/swift-iec-80000-13"
+      "mirror": "/Users/<user>/Developer/swift-iec/swift-iec-80000-13"
     },
     {
       "original": "https://github.com/swift-ieee/swift-ieee-754",
-      "mirror": "/Users/coen/Developer/swift-ieee/swift-ieee-754"
+      "mirror": "/Users/<user>/Developer/swift-ieee/swift-ieee-754"
     },
     {
       "original": "https://github.com/swift-incits/swift-incits-4-1986",
-      "mirror": "/Users/coen/Developer/swift-incits/swift-incits-4-1986"
+      "mirror": "/Users/<user>/Developer/swift-incits/swift-incits-4-1986"
     },
     {
       "original": "https://github.com/swift-intel/swift-x86-standard",
-      "mirror": "/Users/coen/Developer/swift-intel/swift-x86-standard"
+      "mirror": "/Users/<user>/Developer/swift-intel/swift-x86-standard"
     },
     {
       "original": "https://github.com/swift-linux-foundation/swift-linux-standard",
-      "mirror": "/Users/coen/Developer/swift-linux-foundation/swift-linux-standard"
+      "mirror": "/Users/<user>/Developer/swift-linux-foundation/swift-linux-standard"
     },
     {
       "original": "https://github.com/swift-microsoft/swift-windows-standard",
-      "mirror": "/Users/coen/Developer/swift-microsoft/swift-windows-standard"
+      "mirror": "/Users/<user>/Developer/swift-microsoft/swift-windows-standard"
     },
     {
       "original": "https://github.com/swift-standards/swift-incits-4-1986",
-      "mirror": "/Users/coen/Developer/swift-incits/swift-incits-4-1986"
+      "mirror": "/Users/<user>/Developer/swift-incits/swift-incits-4-1986"
     },
     {
       "original": "https://github.com/swift-standards/swift-incits-4-1986.git",
-      "mirror": "/Users/coen/Developer/swift-incits/swift-incits-4-1986"
+      "mirror": "/Users/<user>/Developer/swift-incits/swift-incits-4-1986"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-1123",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-1123"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-1123"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-1123.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-1123"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-1123"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2045",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2045"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2045"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2045.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2045"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2045"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2822",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2822"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2822"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2822.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2822"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2822"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-3986",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-3986"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-3986"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-3986.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-3986"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-3986"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5321",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5321"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5321"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5321.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5321"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5321"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5322",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5322"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5322"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5322.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5322"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5322"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6531",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6531"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6531"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6531.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6531"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6531"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6570",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6570"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6570"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6570.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6570"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6570"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7636",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7636"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7636"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7636.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7636"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7636"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2388",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2388"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2388"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2388.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2388"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2388"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6585",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6585"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6585"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6585.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6585"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6585"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7230",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7230"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7230"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7230.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7230"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7230"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-4287",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-4287"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-4287"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-4287.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-4287"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-4287"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7405",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7405"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7405"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7405.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7405"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7405"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2183",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2183"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2183"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2183.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2183"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2183"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9562",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9562"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9562"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9562.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9562"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9562"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2387",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2387"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2387"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2387.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2387"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2387"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5952",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5952"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5952"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5952.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5952"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5952"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7231",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7231"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7231"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7231.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7231"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7231"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-3492",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-3492"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-3492"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-3492.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-3492"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-3492"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6891",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6891"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6891"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6891.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6891"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6891"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-3987",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-3987"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-3987"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-3987.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-3987"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-3987"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5280",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5280"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5280"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5280.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5280"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5280"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6068",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6068"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6068"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6068.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6068"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6068"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6265",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6265"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6265"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6265.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6265"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6265"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7515",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7515"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7515"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7515.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7515"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7515"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6238",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6238"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6238"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6238.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6238"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6238"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-768",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-768"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-768"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-768.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-768"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-768"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7578",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7578"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7578"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7578.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7578"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7578"
     },
     {
       "original": "https://github.com/swift-standards/swift-bcp-47",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-bcp-47"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-bcp-47"
     },
     {
       "original": "https://github.com/swift-standards/swift-bcp-47.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-bcp-47"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-bcp-47"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-3596",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-3596"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-3596"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-3596.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-3596"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-3596"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5234",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5234"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5234"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5234.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5234"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5234"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9457",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9457"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9457"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9457.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9457"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9457"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8058",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8058"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8058"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8058.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8058"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8058"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2369",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2369"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2369"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2369.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2369"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2369"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9112",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9112"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9112"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9112.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9112"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9112"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6902",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6902"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6902"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6902.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6902"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6902"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-4007",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-4007"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-4007"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-4007.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-4007"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-4007"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6750",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6750"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6750"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6750.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6750"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6750"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8200",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8200"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8200"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8200.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8200"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8200"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9114",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9114"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9114"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9114.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9114"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9114"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9113",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9113"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9113"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9113.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9113"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9113"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7234",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7234"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7234"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7234.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7234"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7234"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8288",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8288"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8288"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8288.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8288"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8288"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6749",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6749"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6749"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6749.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6749"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6749"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-4648",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-4648"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-4648"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-4648.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-4648"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-4648"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7233",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7233"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7233"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7233.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7233"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7233"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8446",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8446"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8446"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8446.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8446"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8446"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-1951",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-1951"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-1951"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-1951.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-1951"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-1951"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7232",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7232"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7232"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7232.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7232"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7232"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7235",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7235"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7235"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7235.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7235"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7235"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9557",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9557"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9557"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9557.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9557"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9557"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-1950",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-1950"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-1950"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-1950.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-1950"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-1950"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6455",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6455"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6455"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-6455.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-6455"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-6455"
     },
     {
       "original": "https://github.com/swift-standards/.github",
-      "mirror": "/Users/coen/Developer/swift-ietf/.github"
+      "mirror": "/Users/<user>/Developer/swift-ietf/.github"
     },
     {
       "original": "https://github.com/swift-standards/.github.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/.github"
+      "mirror": "/Users/<user>/Developer/swift-ietf/.github"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7516",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7516"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7516"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7516.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7516"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7516"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5646",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5646"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5646"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5646.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5646"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5646"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7517",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7517"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7517"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7517.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7517"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7517"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7519",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7519"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7519"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7519.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7519"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7519"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-791",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-791"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-791"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-791.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-791"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-791"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9000",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9000"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9000"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9000.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9000"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9000"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-4122",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-4122"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-4122"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-4122.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-4122"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-4122"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-1034",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-1034"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-1034"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-1034.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-1034"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-1034"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8949",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8949"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8949"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8949.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8949"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8949"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7301",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7301"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7301"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7301.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7301"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7301"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7396",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7396"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7396"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7396.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7396"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7396"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2046",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2046"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2046"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-2046.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-2046"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-2046"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5890",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5890"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5890"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-5890.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-5890"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-5890"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-3339",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-3339"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-3339"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-3339.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-3339"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-3339"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9293",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9293"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9293"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9293.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9293"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9293"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-1035",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-1035"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-1035"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-1035.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-1035"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-1035"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8030",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8030"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8030"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8030.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8030"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8030"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7616",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7616"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7616"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7616.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7616"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7616"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9111",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9111"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9111"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9111.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9111"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9111"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-template",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-template"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-template"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-template.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-template"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-template"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7617",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7617"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7617"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-7617.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-7617"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-7617"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9110",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9110"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9110"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-9110.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-9110"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-9110"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-4291",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-4291"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-4291"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-4291.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-4291"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-4291"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8259",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8259"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8259"
     },
     {
       "original": "https://github.com/swift-standards/swift-rfc-8259.git",
-      "mirror": "/Users/coen/Developer/swift-ietf/swift-rfc-8259"
+      "mirror": "/Users/<user>/Developer/swift-ietf/swift-rfc-8259"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-9899",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-9899"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-9899"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-9899.git",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-9899"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-9899"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-8601",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-8601"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-8601"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-8601.git",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-8601"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-8601"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-9945",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-9945"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-9945"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-9945.git",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-9945"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-9945"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-32000",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-32000"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-32000"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-32000.git",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-32000"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-32000"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-21320",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-21320"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-21320"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-21320.git",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-21320"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-21320"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-3166",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-3166"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-3166"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-3166.git",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-3166"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-3166"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-639",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-639"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-639"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-639.git",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-639"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-639"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-80000-1",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-80000-1"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-80000-1"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-80000-1.git",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-80000-1"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-80000-1"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-14496-22",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-14496-22"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-14496-22"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-14496-22.git",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-14496-22"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-14496-22"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-15924",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-15924"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-15924"
     },
     {
       "original": "https://github.com/swift-standards/swift-iso-15924.git",
-      "mirror": "/Users/coen/Developer/swift-iso/swift-iso-15924"
+      "mirror": "/Users/<user>/Developer/swift-iso/swift-iso-15924"
     },
     {
       "original": "https://github.com/swift-standards/swift-whatwg-html",
-      "mirror": "/Users/coen/Developer/swift-whatwg/swift-whatwg-html"
+      "mirror": "/Users/<user>/Developer/swift-whatwg/swift-whatwg-html"
     },
     {
       "original": "https://github.com/swift-standards/swift-whatwg-html.git",
-      "mirror": "/Users/coen/Developer/swift-whatwg/swift-whatwg-html"
+      "mirror": "/Users/<user>/Developer/swift-whatwg/swift-whatwg-html"
     },
     {
       "original": "https://github.com/swift-standards/swift-whatwg-url",
-      "mirror": "/Users/coen/Developer/swift-whatwg/swift-whatwg-url"
+      "mirror": "/Users/<user>/Developer/swift-whatwg/swift-whatwg-url"
     },
     {
       "original": "https://github.com/swift-standards/swift-whatwg-url.git",
-      "mirror": "/Users/coen/Developer/swift-whatwg/swift-whatwg-url"
+      "mirror": "/Users/<user>/Developer/swift-whatwg/swift-whatwg-url"
     },
     {
       "original": "https://github.com/swift-standards/swift-ecma-48",
-      "mirror": "/Users/coen/Developer/swift-ecma/swift-ecma-48"
+      "mirror": "/Users/<user>/Developer/swift-ecma/swift-ecma-48"
     },
     {
       "original": "https://github.com/swift-standards/swift-ecma-48.git",
-      "mirror": "/Users/coen/Developer/swift-ecma/swift-ecma-48"
+      "mirror": "/Users/<user>/Developer/swift-ecma/swift-ecma-48"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-svg",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-svg"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-svg"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-svg.git",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-svg"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-svg"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-epub",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-epub"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-epub"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-epub.git",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-epub"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-epub"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-css",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-css"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-css"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-css.git",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-css"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-css"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-xml",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-xml"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-xml"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-xml.git",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-xml"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-xml"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-png",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-png"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-png"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-png.git",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-png"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-png"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-cssom",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-cssom"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-cssom"
     },
     {
       "original": "https://github.com/swift-standards/swift-w3c-cssom.git",
-      "mirror": "/Users/coen/Developer/swift-w3c/swift-w3c-cssom"
+      "mirror": "/Users/<user>/Developer/swift-w3c/swift-w3c-cssom"
     },
     {
       "original": "https://github.com/swift-standards/swift-ieee-754",
-      "mirror": "/Users/coen/Developer/swift-ieee/swift-ieee-754"
+      "mirror": "/Users/<user>/Developer/swift-ieee/swift-ieee-754"
     },
     {
       "original": "https://github.com/swift-standards/swift-ieee-754.git",
-      "mirror": "/Users/coen/Developer/swift-ieee/swift-ieee-754"
+      "mirror": "/Users/<user>/Developer/swift-ieee/swift-ieee-754"
     },
     {
       "original": "https://github.com/swift-standards/swift-iec-80000-13",
-      "mirror": "/Users/coen/Developer/swift-iec/swift-iec-80000-13"
+      "mirror": "/Users/<user>/Developer/swift-iec/swift-iec-80000-13"
     },
     {
       "original": "https://github.com/swift-standards/swift-iec-80000-13.git",
-      "mirror": "/Users/coen/Developer/swift-iec/swift-iec-80000-13"
+      "mirror": "/Users/<user>/Developer/swift-iec/swift-iec-80000-13"
     },
     {
       "original": "https://github.com/swift-standards/swift-iec-61966",
-      "mirror": "/Users/coen/Developer/swift-iec/swift-iec-61966"
+      "mirror": "/Users/<user>/Developer/swift-iec/swift-iec-61966"
     },
     {
       "original": "https://github.com/swift-standards/swift-iec-61966.git",
-      "mirror": "/Users/coen/Developer/swift-iec/swift-iec-61966"
+      "mirror": "/Users/<user>/Developer/swift-iec/swift-iec-61966"
     },
     {
       "original": "https://github.com/swift-standards/swift-x86-standard",
-      "mirror": "/Users/coen/Developer/swift-intel/swift-x86-standard"
+      "mirror": "/Users/<user>/Developer/swift-intel/swift-x86-standard"
     },
     {
       "original": "https://github.com/swift-standards/swift-x86-standard.git",
-      "mirror": "/Users/coen/Developer/swift-intel/swift-x86-standard"
+      "mirror": "/Users/<user>/Developer/swift-intel/swift-x86-standard"
     },
     {
       "original": "https://github.com/swift-standards/swift-windows-32",
-      "mirror": "/Users/coen/Developer/swift-microsoft/swift-windows-32"
+      "mirror": "/Users/<user>/Developer/swift-microsoft/swift-windows-32"
     },
     {
       "original": "https://github.com/swift-standards/swift-windows-32.git",
-      "mirror": "/Users/coen/Developer/swift-microsoft/swift-windows-32"
+      "mirror": "/Users/<user>/Developer/swift-microsoft/swift-windows-32"
     },
     {
       "original": "https://github.com/swift-standards/swift-windows-standard",
-      "mirror": "/Users/coen/Developer/swift-microsoft/swift-windows-standard"
+      "mirror": "/Users/<user>/Developer/swift-microsoft/swift-windows-standard"
     },
     {
       "original": "https://github.com/swift-standards/swift-windows-standard.git",
-      "mirror": "/Users/coen/Developer/swift-microsoft/swift-windows-standard"
+      "mirror": "/Users/<user>/Developer/swift-microsoft/swift-windows-standard"
     },
     {
       "original": "https://github.com/swift-standards/swift-linux-standard",
-      "mirror": "/Users/coen/Developer/swift-linux-foundation/swift-linux-standard"
+      "mirror": "/Users/<user>/Developer/swift-linux-foundation/swift-linux-standard"
     },
     {
       "original": "https://github.com/swift-standards/swift-linux-standard.git",
-      "mirror": "/Users/coen/Developer/swift-linux-foundation/swift-linux-standard"
+      "mirror": "/Users/<user>/Developer/swift-linux-foundation/swift-linux-standard"
     },
     {
       "original": "https://github.com/swift-standards/swift-arm-standard",
-      "mirror": "/Users/coen/Developer/swift-arm-ltd/swift-arm-standard"
+      "mirror": "/Users/<user>/Developer/swift-arm-ltd/swift-arm-standard"
     },
     {
       "original": "https://github.com/swift-standards/swift-arm-standard.git",
-      "mirror": "/Users/coen/Developer/swift-arm-ltd/swift-arm-standard"
+      "mirror": "/Users/<user>/Developer/swift-arm-ltd/swift-arm-standard"
     }
   ]
 }

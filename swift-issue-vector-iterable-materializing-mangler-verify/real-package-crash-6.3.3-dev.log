@@ -6,36 +6,36 @@ Build config: +assertions
 ===== RESOLVE =====
 + swift package resolve --scratch-path /tmp/vb --cache-path /tmp/vc
 + tail -30
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-affine-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-cardinal-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-iterator-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-ownership-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-standard-library-extensions
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-sequence-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-index-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-ordinal-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-tagged-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-property-primitives
-Working copy of /Users/coen/Developer/swift-primitives/swift-iterator-primitives resolved at main (20732fc)
-Working copy of /Users/coen/Developer/swift-primitives/swift-cardinal-primitives resolved at main (176cbe5)
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-hash-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-comparison-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-equation-primitives
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-carrier-primitives
-Working copy of /Users/coen/Developer/swift-primitives/swift-affine-primitives resolved at main (7d9c676)
-Creating working copy for /Users/coen/Developer/swift-primitives/swift-either-primitives
-Working copy of /Users/coen/Developer/swift-primitives/swift-index-primitives resolved at main (ee9aa41)
-Working copy of /Users/coen/Developer/swift-primitives/swift-standard-library-extensions resolved at main (0fbe9c9)
-Working copy of /Users/coen/Developer/swift-primitives/swift-sequence-primitives resolved at main (b17a8fa)
-Working copy of /Users/coen/Developer/swift-primitives/swift-ownership-primitives resolved at main (096df05)
-Working copy of /Users/coen/Developer/swift-primitives/swift-ordinal-primitives resolved at main (a9ff984)
-Working copy of /Users/coen/Developer/swift-primitives/swift-hash-primitives resolved at main (d85e39d)
-Working copy of /Users/coen/Developer/swift-primitives/swift-comparison-primitives resolved at main (428d937)
-Working copy of /Users/coen/Developer/swift-primitives/swift-property-primitives resolved at main (66ef490)
-Working copy of /Users/coen/Developer/swift-primitives/swift-tagged-primitives resolved at main (c3218e3)
-Working copy of /Users/coen/Developer/swift-primitives/swift-either-primitives resolved at main (b95ee83)
-Working copy of /Users/coen/Developer/swift-primitives/swift-equation-primitives resolved at main (622a158)
-Working copy of /Users/coen/Developer/swift-primitives/swift-carrier-primitives resolved at main (badbea4)
+Creating working copy for ~/Developer/swift-primitives/swift-affine-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-cardinal-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-iterator-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-ownership-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-standard-library-extensions
+Creating working copy for ~/Developer/swift-primitives/swift-sequence-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-index-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-ordinal-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-tagged-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-property-primitives
+Working copy of ~/Developer/swift-primitives/swift-iterator-primitives resolved at main (20732fc)
+Working copy of ~/Developer/swift-primitives/swift-cardinal-primitives resolved at main (176cbe5)
+Creating working copy for ~/Developer/swift-primitives/swift-hash-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-comparison-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-equation-primitives
+Creating working copy for ~/Developer/swift-primitives/swift-carrier-primitives
+Working copy of ~/Developer/swift-primitives/swift-affine-primitives resolved at main (7d9c676)
+Creating working copy for ~/Developer/swift-primitives/swift-either-primitives
+Working copy of ~/Developer/swift-primitives/swift-index-primitives resolved at main (ee9aa41)
+Working copy of ~/Developer/swift-primitives/swift-standard-library-extensions resolved at main (0fbe9c9)
+Working copy of ~/Developer/swift-primitives/swift-sequence-primitives resolved at main (b17a8fa)
+Working copy of ~/Developer/swift-primitives/swift-ownership-primitives resolved at main (096df05)
+Working copy of ~/Developer/swift-primitives/swift-ordinal-primitives resolved at main (a9ff984)
+Working copy of ~/Developer/swift-primitives/swift-hash-primitives resolved at main (d85e39d)
+Working copy of ~/Developer/swift-primitives/swift-comparison-primitives resolved at main (428d937)
+Working copy of ~/Developer/swift-primitives/swift-property-primitives resolved at main (66ef490)
+Working copy of ~/Developer/swift-primitives/swift-tagged-primitives resolved at main (c3218e3)
+Working copy of ~/Developer/swift-primitives/swift-either-primitives resolved at main (b95ee83)
+Working copy of ~/Developer/swift-primitives/swift-equation-primitives resolved at main (622a158)
+Working copy of ~/Developer/swift-primitives/swift-carrier-primitives resolved at main (badbea4)
 ===== BUILD (Vector Primitives target) =====
 + echo ===== BUILD (Vector Primitives target) =====
 + swift build --target Vector Primitives --scratch-path /tmp/vb --cache-path /tmp/vc
@@ -580,7 +580,7 @@ Building for debugging...
 [722/760] Emitting module Sequence_Hint_Primitives
 [723/760] Compiling Sequence_Prefix_Primitives Sequence.Prefix.While.swift
 [724/760] Compiling Vector_Primitive Vector.swift
-/Users/coen/Developer/swift-primitives/swift-vector-primitives/Sources/Vector Primitive/Vector.swift:13:8: warning: public import of 'Property_Primitives' was not used in public declarations or inlinable code
+~/Developer/swift-primitives/swift-vector-primitives/Sources/Vector Primitive/Vector.swift:13:8: warning: public import of 'Property_Primitives' was not used in public declarations or inlinable code
  11 | 
  12 | public import Index_Primitives
  13 | public import Property_Primitives
@@ -686,7 +686,7 @@ Abort: function verify at Mangler.cpp:176
 Can't demangle: $s16Vector_Primitive0A0V0A11_PrimitivesE20iterableMakeIterator0f1_B00F0O0f7_Chunk_C0E13MaterializingVy_AcARi_zrlEAGVyx_GAmH0F9_ProtocolE0I0AD_HCg_GyF
 Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
 Stack dump:
-0.	Program arguments: /usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types "/Users/coen/Developer/swift-primitives/swift-vector-primitives/Sources/Vector Primitives/Vector+Iterable.swift" "/Users/coen/Developer/swift-primitives/swift-vector-primitives/Sources/Vector Primitives/Vector+Sequence.Properties.swift" "/Users/coen/Developer/swift-primitives/swift-vector-primitives/Sources/Vector Primitives/Vector+Sequenceable.swift" "/Users/coen/Developer/swift-primitives/swift-vector-primitives/Sources/Vector Primitives/exports.swift" -target aarch64-unknown-linux-gnu -Xllvm -aarch64-use-tbi -disable-objc-interop -I /tmp/vb/aarch64-unknown-linux-gnu/debug/Modules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format=dwarf -dwarf-version=4 -module-cache-path /tmp/vb/aarch64-unknown-linux-gnu/debug/ModuleCache -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature LifetimeDependence -enable-experimental-feature Lifetimes -enable-experimental-feature SuppressedAssociatedTypes -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature LifetimeDependence -strict-memory-safety -empty-abi-descriptor -enable-anonymous-context-mangled-names -file-compilation-dir /Users/coen/Developer/swift-primitives/swift-vector-primitives -Xcc -fPIC -Xcc -g -Xcc -fno-omit-frame-pointer -no-auto-bridging-header-chaining -module-name Vector_Primitives -package-name swift_vector_primitives -in-process-plugin-server-path /usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /usr/lib/swift/host/plugins -plugin-path /usr/local/lib/swift/host/plugins -emit-module-doc-path /tmp/vb/aarch64-unknown-linux-gnu/debug/Modules/Vector_Primitives.swiftdoc -emit-module-source-info-path /tmp/vb/aarch64-unknown-linux-gnu/debug/Modules/Vector_Primitives.swiftsourceinfo -emit-objc-header-path "/tmp/vb/aarch64-unknown-linux-gnu/debug/Vector_Primitives.build/include/Vector Primitives-Swift.h" -serialize-diagnostics-path /tmp/vb/aarch64-unknown-linux-gnu/debug/Vector_Primitives.build/Vector_Primitives.emit-module.dia -emit-dependencies-path /tmp/vb/aarch64-unknown-linux-gnu/debug/Vector_Primitives.build/Vector_Primitives.emit-module.d -parse-as-library -o /tmp/vb/aarch64-unknown-linux-gnu/debug/Modules/Vector_Primitives.swiftmodule
+0.	Program arguments: /usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types "~/Developer/swift-primitives/swift-vector-primitives/Sources/Vector Primitives/Vector+Iterable.swift" "~/Developer/swift-primitives/swift-vector-primitives/Sources/Vector Primitives/Vector+Sequence.Properties.swift" "~/Developer/swift-primitives/swift-vector-primitives/Sources/Vector Primitives/Vector+Sequenceable.swift" "~/Developer/swift-primitives/swift-vector-primitives/Sources/Vector Primitives/exports.swift" -target aarch64-unknown-linux-gnu -Xllvm -aarch64-use-tbi -disable-objc-interop -I /tmp/vb/aarch64-unknown-linux-gnu/debug/Modules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format=dwarf -dwarf-version=4 -module-cache-path /tmp/vb/aarch64-unknown-linux-gnu/debug/ModuleCache -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature LifetimeDependence -enable-experimental-feature Lifetimes -enable-experimental-feature SuppressedAssociatedTypes -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature LifetimeDependence -strict-memory-safety -empty-abi-descriptor -enable-anonymous-context-mangled-names -file-compilation-dir ~/Developer/swift-primitives/swift-vector-primitives -Xcc -fPIC -Xcc -g -Xcc -fno-omit-frame-pointer -no-auto-bridging-header-chaining -module-name Vector_Primitives -package-name swift_vector_primitives -in-process-plugin-server-path /usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /usr/lib/swift/host/plugins -plugin-path /usr/local/lib/swift/host/plugins -emit-module-doc-path /tmp/vb/aarch64-unknown-linux-gnu/debug/Modules/Vector_Primitives.swiftdoc -emit-module-source-info-path /tmp/vb/aarch64-unknown-linux-gnu/debug/Modules/Vector_Primitives.swiftsourceinfo -emit-objc-header-path "/tmp/vb/aarch64-unknown-linux-gnu/debug/Vector_Primitives.build/include/Vector Primitives-Swift.h" -serialize-diagnostics-path /tmp/vb/aarch64-unknown-linux-gnu/debug/Vector_Primitives.build/Vector_Primitives.emit-module.dia -emit-dependencies-path /tmp/vb/aarch64-unknown-linux-gnu/debug/Vector_Primitives.build/Vector_Primitives.emit-module.d -parse-as-library -o /tmp/vb/aarch64-unknown-linux-gnu/debug/Modules/Vector_Primitives.swiftmodule
 1.	Swift version 6.3.3-dev (LLVM 82cdc19fa54d566, Swift c83acbf89dd1298)
 2.	Compiling with the current language version
 3.	While evaluating request ASTLoweringRequest(Lowering AST to SIL for module Vector_Primitives)
