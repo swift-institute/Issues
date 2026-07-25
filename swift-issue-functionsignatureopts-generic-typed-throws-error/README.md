@@ -152,7 +152,7 @@ generic-typed-throws-error shape).
 
 ### Additional production manifestations (`Sources/`-level, whole-module release aborts)
 
-Beyond the test-target hit above, this bug has surfaced twice at library `Sources/`
+Beyond the test-target hit above, this bug has surfaced three times at library `Sources/`
 level — i.e. every consumer's `-c release` of the affected graph aborts:
 
 - **`swift-iso-8601`** — `ISO_8601.DateTime.Parse.parse` (four `<Domain>.Parse.Error`
@@ -166,7 +166,32 @@ level — i.e. every consumer's `-c release` of the affected graph aborts:
   as done for iso-8601). Evidence: CI run
   [28802981666](https://github.com/swift-w3c/swift-w3c-xml/actions/runs/28802981666).
 
+- **`swift-rfc-7519`** — `RFC_7519.JWT.Parse._expectPeriod(_:)` (phantom-generic
+  `Parse<Input>.Error`: a two-case enum nested in generic `Parse<Input>` that never uses
+  `Input`, reached via `typealias Failure = RFC_7519.JWT.Parse<Input>.Error`), CI-surfaced
+  2026-07-25 on **6.3.3** Linux x86_64 `-c release -enable-default-cmo`, pass
+  `FunctionSignatureOpts` #60289. Surfaced in the **consumer** `swift-foundations/swift-server-foundation`
+  (run [30142366879](https://github.com/swift-foundations/swift-server-foundation/actions/runs/30142366879),
+  job 89638021488), which is how the RFC_7519 frame reaches an arc build. **Open** —
+  source remediation is a `swift-rfc-7519` concern (hoist `Parse`'s phantom `Error` to
+  module scope, as done for iso-8601). Reproduction + fix both **validated locally**
+  2026-07-25 (`/issue-investigation`, ECO-SIL lane): the production shape
+  (`struct Parse<Input>` + nested phantom `Error` + `throws(Failure)` member + same-module
+  caller) crashes with this exact assertion on macOS 6.3.3-RELEASE **and** Linux x86_64
+  under `-O -enable-default-cmo`; hoisting `Error` to non-generic module scope compiles
+  clean on both. Source: `swift-rfc-7519/Sources/RFC 7519/RFC_7519.JWT.Parse.swift`
+  (`struct Parse` :16, `enum Error` :37, `typealias Failure` :44, `_expectPeriod` :74,
+  same-module callers :49/:51).
+  > Attribution note: the arc CI log lists `Compiling Serializer_Fail_Primitives` /
+  > `Parser_Fail_Primitives` shortly before the abort, but those are ordinary
+  > build-progress lines for modules that compiled **clean** — `swift-primitives` is not
+  > implicated. The crashing frame is `RFC_7519`. Do not re-attribute this to the
+  > parser/serializer `Fail` primitives.
+
 Full manifestation history + latent-sibling watchlist: catalog **§ A13** manifestations (2)/(3).
+The `swift-rfc-7519` manifestation above is recorded here only — catalog **§ A13** has **not**
+yet been extended with it (that file lives in the PUBLIC `Research/` tree; updating it is a
+separate, deliberate edit).
 
 ## Distinct from neighbouring catalog entries
 
