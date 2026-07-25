@@ -261,6 +261,47 @@ let package = Package(
                 .copy("Crash.swift.txt")
             ]
         ),
+
+        // MARK: - swift-issue-inliner-escaping-mark-dependence-coroutine-token
+        //
+        // NOT FILED (standing policy) — terminal record only. EarlyPerfInliner
+        // aborts at -O on an ESCAPING `mark_dependence` attached to the token
+        // result of a `begin_apply`. `LifetimeDependenceInsertion` puts a
+        // mark_dependence on a coroutine's token when it yields a
+        // lifetime-dependent value; commit 8396a6d8c05 made the inliner delete
+        // those, guarded by `assert(mdi.isNonEscaping())` — i.e. assuming a token
+        // only ever carries a SCOPED dependence. A generic consumer that reads a
+        // `@_lifetime(borrow self) borrowing get` accessor and then CONSTRUCTS AND
+        // RETURNS a value from the yield makes that dependence escaping, tripping
+        // the assert (SILInliner.cpp:167, BeginApplySite::preprocess).
+        //
+        // 6.5-dev-ONLY regression: CLEAN on 6.3.3-RELEASE (the production pin),
+        // 6.4.x-dev, and main 2026-05-27. Architecture-independent. Distinct from
+        // catalog §A3 / #88022 (CopyPropagation, fixed in 6.3) and §A7 (same pass,
+        // different assertion). No source change adopted — see the README.
+        //
+        // The assert aborts the compiler mid-pipeline, so the trigger ships as the
+        // `Crash.swift.txt` resource and both harnesses drive `swiftc` OUT OF
+        // PROCESS ([ISSUE-029]); bare-`swiftc` single-file per [ISSUE-002]. The
+        // probe passes `-enable-experimental-feature Lifetimes` and
+        // `SuppressedAssociatedTypes` — both load-bearing.
+        //
+        // ⚠️ Unlike the other entries, the testTarget's `when:` is VERSION-GATED
+        // (`swift --version` >= 6.5), because `when: { true }` would flip every
+        // green 6.3 leg RED. See the flip-semantics table in the README.
+
+        .testTarget(
+            name: "swift-issue-inliner-escaping-mark-dependence-coroutine-token-Tests",
+            path: "swift-issue-inliner-escaping-mark-dependence-coroutine-token/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-inliner-escaping-mark-dependence-coroutine-token-Repro",
+            path: "swift-issue-inliner-escaping-mark-dependence-coroutine-token/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

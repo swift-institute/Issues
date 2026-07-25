@@ -1,0 +1,26 @@
+// Trigger source for the EarlyPerfInliner escaping-mark_dependence abort.
+//
+// Shipped as a `.txt` RESOURCE, not a compiled target: under `-O` on an
+// assert-enabled 6.5-dev toolchain this aborts swift-frontend (signal 6), which
+// would take the whole Issues package build with it. Both harnesses in this entry
+// stage it as a `.swift` temp and compile it OUT OF PROCESS. See ../../README.md.
+//
+// Requires: -O plus -enable-experimental-feature Lifetimes
+//                    -enable-experimental-feature SuppressedAssociatedTypes
+
+public protocol P<U>: ~Copyable, ~Escapable {
+    associatedtype U: ~Copyable & ~Escapable
+    var u: U { @_lifetime(borrow self) borrowing get }
+    @_lifetime(copy u) init(_ u: consuming U)
+}
+public struct T<U: ~Copyable & ~Escapable>: ~Copyable, ~Escapable {
+    public var u: U
+    @_lifetime(copy u) public init(_ u: consuming U) { self.u = u }
+}
+extension T: Copyable where U: Copyable & ~Escapable {}
+extension T: Escapable where U: Escapable & ~Copyable {}
+extension T: P where U: ~Copyable & ~Escapable {}
+public struct A {
+    @inlinable public func f<C: P>(_ v: C) -> C where C.U: FixedWidthInteger { C(v.u &+ 1) }
+}
+@inlinable public func go(_ x: T<Int64>, _ a: A) -> T<Int64> { a.f(x) }
