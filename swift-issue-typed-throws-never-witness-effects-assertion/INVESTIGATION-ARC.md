@@ -125,7 +125,7 @@ available locally.
 
 ## Provenance
 
-- Investigation: 2026-06-25, `/issue-investigation` per `~/Developer/.handoffs/HANDOFF-windows-compiler-crashes.md`.
+- Investigation: 2026-06-25, `/issue-investigation` per an internal handoff document.
 - Windows evidence: `swift-primitives/swift-input-primitives` CI run `28169939296`, job `83431230550`.
 - Fix confirmation: `swift build --build-tests` on the real package, 6.5-dev (`org.swift.64202605271a`).
 - Sources: crashing conformance `Input.Slice Tests.swift:31`; derived witness `swift-iterator-primitives/Sources/Iterator Chunk Primitives/Iterator.Chunk.Protocol.swift:15-27`; protocol `__IteratorChunkProtocol.swift:42-65`; `Iterable.swift:46`.

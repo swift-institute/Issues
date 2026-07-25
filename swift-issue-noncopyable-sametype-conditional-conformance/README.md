@@ -100,6 +100,6 @@ Protocol-conditional requirements with noncopyable subjects verify correctly at 
 ## House records (not part of the upstream body)
 
 - Catalog: `swift-institute/Research/swift-compiler-bug-catalog.md` §A15.
-- Probes + full bisect record: `~/Developer/.handoffs/probes-2026-06-10/noncopyable-sametype-conformance-crash/FINDINGS.md`.
+- Probes + full bisect record: an internal probe record.
 - Production trigger: `Storage.Generational: Store.Protocol where Allocation == Memory.Allocator<Memory.Heap>.Pool` — the slotmap (LEG 7) DEBUG wall; runtime message there is `subject type x does not conform to protocol __StoreProtocol`.
 - Evidence captures: `evidence/`.

@@ -163,7 +163,7 @@ None of the four involves two Sema-distinct declarations mapping to one mangled 
   a nested-in-extension type "even EXTENSION-HOMED twins collide". Reconstruction in an
   isolated copy of swift-tree-unbounded-primitives **falsifies** this: extension-homed
   twins build clean there (six distinct constructor symbols, evidence in
-  `REPORT-lane-b7.md`); re-homing the `~Copyable` twins into the body reproduces the
+  an internal investigation report); re-homing the `~Copyable` twins into the body reproduces the
   recorded collision exactly (both init pairs, demangle-matched). The demangled
   collision form F2/F3 *renders as* "(extension in …)…" for **both** definitions —
   including the body twin — which explains the "extension-level twins mangle
@@ -192,10 +192,10 @@ re-run the workaround files before relying on either spelling remaining necessar
 ## House records (not part of the §A15-style body)
 
 - Catalog: `swift-institute/Research/swift-compiler-bug-catalog.md` §B7 (entry at
-  Research commit `610e697`; correction proposed above, not applied by this lane).
-- Lane report: `~/Developer/.handoffs/REPORT-lane-b7.md` (constraint-model history,
+  Research commit `610e697`; correction proposed above, not applied here).
+- Internal report: an internal investigation report (constraint-model history,
   package-copy reconstruction record, deviation notes).
 - Probes: `/tmp/b7-{matrix,versions,forms,parent-sweep,severity}/`; early anchors and
-  the tree-unbounded package copy under `~/Developer/.handoffs/probes-2026-06-11/`
+  the tree-unbounded package copy under an internal probe directory
   (pre-lane-brief placement, disclosed in the report).
 - Evidence captures: `evidence/captures.txt` (§1–§11, toolchain of record).

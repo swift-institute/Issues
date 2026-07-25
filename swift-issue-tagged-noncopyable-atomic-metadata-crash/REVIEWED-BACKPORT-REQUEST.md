@@ -68,7 +68,7 @@ If `bc44d42f11` is appropriate for `release/6.3`, we would appreciate a cherry-p
 ## Cross-references (for the author, not part of the posted issue)
 
 - Local catalog entry: `swift-institute/Research/swift-compiler-bug-catalog.md` §A9 (note: §A9 update table labels three snapshots as "Swift 6.5-dev"; empirically two of those snapshots are 6.4-dev — see AUDIT-REPORT.md C-19).
-- Investigation arc: [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md); workspace handoffs `HANDOFF-test-sigsegv-post-cycle-break.md` (Arcs 1–3) and `HANDOFF-tagged-noncopyable-atomic-metadata-crash.md` (Arcs 4–5).
+- Investigation arc: [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md); workspace handoffs an internal handoff document (Arcs 1–3) and an internal handoff document (Arcs 4–5).
 - Audit: [`AUDIT-REPORT.md`](AUDIT-REPORT.md) — pre-post claim audit; this file is the substantiated version.
 
 ## Posting checklist (for orchestrator review)

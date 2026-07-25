@@ -34,7 +34,7 @@ compilation (`swift test`) reaches the ICE site.
 ## Origin
 
 Surfaced 2026-05-16 in `swift-ascii-parser-primitives`'s Step 3 of the
-byte-arc cohort dispatch (`HANDOFF-byte-arc-followups.md` item 2).
+byte-arc cohort dispatch (an internal handoff document item 2).
 Step 3 attempted to migrate consumer references from
 `ByteInput`/`ByteIterator`/`TestBytes` (top-level) to
 `Parser.Test.Input`/`.Iterator`/`.Bytes` (nested), after the parent rename
@@ -153,5 +153,5 @@ zero `failed to produce diagnostic` messages. Verified on snapshot
 
 - `swift-institute/Research/swift-compiler-bug-catalog.md` § A8 (this bug)
 - `INVESTIGATION-ARC.md` — round-by-round investigation, 11 hypothesis tests
-- `HANDOFF-byte-arc-followups.md` item 2 — cohort context
-- `HANDOFF-byte-arc-next-phase-triage.md` — roadmap and D2 cost-shape correction
+- an internal handoff document item 2 — cohort context
+- an internal handoff document — roadmap and D2 cost-shape correction

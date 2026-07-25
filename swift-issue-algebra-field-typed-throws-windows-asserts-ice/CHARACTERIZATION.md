@@ -70,4 +70,4 @@ The library's nested-generic typed-throws API (`Field<Element>.Error`, the archi
 
 ## Source
 
-2026-06-27 swift-algebra-primitives Windows +Asserts investigation (RESOLVE + RECORD; `HANDOFF-dimension-algebra-windows-asserts-ice.md`).
+2026-06-27 swift-algebra-primitives Windows +Asserts investigation (RESOLVE + RECORD; an internal handoff document).

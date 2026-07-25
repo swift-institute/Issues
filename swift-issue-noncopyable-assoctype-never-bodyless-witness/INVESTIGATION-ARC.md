@@ -4,7 +4,7 @@
 
 **Classification**: ICE — SIL verification failure (`SILType.h`-class invariant: a `public/package/shared` SIL function must have a body / "Must have a construct to emit for").
 
-**Standing policy note**: per [ISSUE-008] (principal, 2026-06-11) and `feedback_never_file_upstream_swiftlang.md`, upstream filing at swiftlang does **not** exist as a step. This dossier is the terminal record. The parent handoff (`~/Developer/.handoffs/HANDOFF-windows-compiler-crashes.md`) requested "file the swift.org bug" — that instruction conflicts with standing policy and was **not** executed; the conflict is surfaced to the principal.
+**Standing policy note**: per [ISSUE-008] (principal, 2026-06-11) and `feedback_never_file_upstream_swiftlang.md`, upstream filing at swiftlang does **not** exist as a step. This dossier is the terminal record. The parent handoff (an internal handoff document) requested "file the swift.org bug" — that instruction conflicts with standing policy and was **not** executed; the conflict is surfaced to the principal.
 
 ---
 
@@ -166,7 +166,7 @@ Re-test on each new toolchain via the 2-file reducer with `-sil-verify-all`. The
 
 ## Provenance
 
-- Investigation: 2026-06-25, `/issue-investigation` per `~/Developer/.handoffs/HANDOFF-windows-compiler-crashes.md`.
+- Investigation: 2026-06-25, `/issue-investigation` per an internal handoff document.
 - Windows evidence: `swift-primitives/swift-serializer-primitives` CI run `28169921710`, job `83431175554`.
 - Local repro vehicle: real `Serializer Primitive` + `Serializer Trace Primitives` sources as two `swiftc` modules (Embedded, 6.5-dev) and the 2-file standalone reducer (stock Xcode 6.3.2 + `-sil-verify-all`).
 - Root-cause source: `swift-serializer-primitives/Sources/Serializer Primitive/Serializer.Protocol.swift:73-81` (leaf-default `body`); in-core conformer `Serializer.Witness+Protocol.swift:13-22`.
