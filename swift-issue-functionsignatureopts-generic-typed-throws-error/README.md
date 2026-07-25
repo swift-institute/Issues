@@ -154,7 +154,7 @@ generic-typed-throws-error shape).
 
 Beyond the test-target hit above, this bug has surfaced four times at library `Sources/`
 level — i.e. every consumer's `-c release` of the affected graph aborts. **All four are now
-fixed** (status re-verified 2026-07-25, ECO-7519FIX lane):
+fixed** (status re-verified 2026-07-25):
 
 - **`swift-iso-8601`** — `ISO_8601.DateTime.Parse.parse` (four `<Domain>.Parse.Error`
   enums phantom-nested in generic `Parse<Input>`). **Fixed 2026-06-29** by de-phantoming
@@ -213,7 +213,7 @@ fixed** (status re-verified 2026-07-25, ECO-7519FIX lane):
 
 ### ⚠️ Shape is necessary but NOT sufficient — do not read the watchlist as a damage report
 
-Measured 2026-07-25 (ECO-7519FIX lane). A fleet-wide structural scan — 3,092 packages,
+Measured 2026-07-25. A fleet-wide structural scan — 3,092 packages,
 51,500 `.swift` files, all 34 institute roots — found **326 instances of the phantom shape,
 102 of them reachable as typed throws**. Release-building a sample settled what that means:
 
