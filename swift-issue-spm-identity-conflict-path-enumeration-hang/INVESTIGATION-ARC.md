@@ -72,7 +72,7 @@ mirror table** (see Phase 4) printed exactly one edge:
 
 ```
 XCONFLICT package=swift-multipart-form-coding declares dep identity=swift-rfc-7578
-  declared-canonical=/users/coen/developer/swift-ietf/swift-rfc-7578
+  declared-canonical=/users/<user>/developer/swift-ietf/swift-rfc-7578
   resolved-canonical=github.com/swift-ietf/swift-rfc-7578
 ```
 

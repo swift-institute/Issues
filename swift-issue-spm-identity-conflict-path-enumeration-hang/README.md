@@ -71,7 +71,7 @@ In this workspace the divergence is produced by
 `DependencyMirrors.mirror(for:)` is an **exact-string dictionary
 lookup** (`Sources/PackageGraph/DependencyMirrors.swift`), so
 `https://github.com/swift-ietf/swift-rfc-7578.git` (mirrored → local
-path, canonical `/users/coen/developer/swift-ietf/swift-rfc-7578`) and
+path, canonical `/users/<user>/developer/swift-ietf/swift-rfc-7578`) and
 `https://github.com/swift-ietf/swift-rfc-7578` (bare — misses the
 mirror, stays remote, canonical `github.com/swift-ietf/swift-rfc-7578`)
 are **different canonical locations for the same identity**. Without
@@ -114,7 +114,7 @@ enumeration would have started:
 
 ```
 XCONFLICT package=swift-multipart-form-coding declares dep identity=swift-rfc-7578
-  declared-canonical=/users/coen/developer/swift-ietf/swift-rfc-7578
+  declared-canonical=/users/<user>/developer/swift-ietf/swift-rfc-7578
   declared-location=~/Developer/swift-ietf/swift-rfc-7578
   resolved-canonical=github.com/swift-ietf/swift-rfc-7578
   resolved-location=https://github.com/swift-ietf/swift-rfc-7578
