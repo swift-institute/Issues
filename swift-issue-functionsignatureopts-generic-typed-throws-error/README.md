@@ -152,8 +152,9 @@ generic-typed-throws-error shape).
 
 ### Additional production manifestations (`Sources/`-level, whole-module release aborts)
 
-Beyond the test-target hit above, this bug has surfaced three times at library `Sources/`
-level — i.e. every consumer's `-c release` of the affected graph aborts:
+Beyond the test-target hit above, this bug has surfaced four times at library `Sources/`
+level — i.e. every consumer's `-c release` of the affected graph aborts. **All four are now
+fixed** (status re-verified 2026-07-25, ECO-7519FIX lane):
 
 - **`swift-iso-8601`** — `ISO_8601.DateTime.Parse.parse` (four `<Domain>.Parse.Error`
   enums phantom-nested in generic `Parse<Input>`). **Fixed 2026-06-29** by de-phantoming
@@ -162,9 +163,25 @@ level — i.e. every consumer's `-c release` of the affected graph aborts:
   `Lexer<…>.Error`), CI-surfaced 2026-07-06 on **6.3.3-RELEASE**, Linux x86_64
   `-c release -enable-default-cmo`; macOS debug clean. **Pre-existing** (failed before the
   unrelated ownership-shared rename respell) and **transitively** in consumer `swift-xml`.
-  **Open** — source remediation owned by a w3c-xml session (hoist `Lexer`'s phantom `Error`,
-  as done for iso-8601). Evidence: CI run
+  Evidence: CI run
   [28802981666](https://github.com/swift-w3c/swift-w3c-xml/actions/runs/28802981666).
+  **Fixed** in `da14353` — `Lexer`'s phantom `Error` hoisted to module-scope
+  `__W3CXMLLexerError`, same playbook as iso-8601; landed and pushed. *(This entry read
+  "Open" until 2026-07-25; it had in fact been closed earlier. Only a phantom
+  `Lexer<Input>.State` remains, which is not an error type and is not used in typed throws.)*
+- **`swift-rfc-9110`** — `RFC_9110.Parse.QuotedString.parse` (five phantom-generic parser
+  error enums: `Parse.Token`, `Parse.QuotedString`, `Parse.QualityValue`, `Parse.Parameter`,
+  `MediaType.Parser`). Assertion at pass `FunctionSignatureOpts` **#568261**, SILFunction
+  `@$s8RFC_9110AAO5ParseO12QuotedStringV5parseySay14Byte_Primitive0F0VGxzAF5ErrorOy__x_GYKF`
+  — the mangled `@error` carries `<Input>` as `AF5ErrorOy__x_G`. **Found 2026-07-25 by a
+  fleet-wide shape scan, NOT by CI** — it was crashing unreported, with 6 direct consumers
+  (`swift-http-standard`, `swift-media-type-standard`, `swift-rfc-9112`, `swift-rfc-9111`,
+  `swift-rfc-8288`, `swift-rfc-6797`). **Fixed** by hoisting all five to module scope
+  (`__HTTPTokenParserError`, `__HTTPQuotedStringParserError`, `__HTTPQualityValueParserError`,
+  `__HTTPParameterParserError`, `__HTTPMediaTypeParserError`), each parser keeping a public
+  `typealias Error` so the old spelling still resolves. `Parameter` composes `QuotedString`'s
+  hoisted error directly, as iso-8601's `Interval` does. A/B on the same command: before, the
+  assertion above; after, `Build complete (41.03s)`, 186 tests in 13 suites passing.
 
 - **`swift-rfc-7519`** — `RFC_7519.JWT.Parse._expectPeriod(_:)` (phantom-generic
   `Parse<Input>.Error`: a two-case enum nested in generic `Parse<Input>` that never uses
@@ -172,9 +189,15 @@ level — i.e. every consumer's `-c release` of the affected graph aborts:
   2026-07-25 on **6.3.3** Linux x86_64 `-c release -enable-default-cmo`, pass
   `FunctionSignatureOpts` #60289. Surfaced in the **consumer** `swift-foundations/swift-server-foundation`
   (run [30142366879](https://github.com/swift-foundations/swift-server-foundation/actions/runs/30142366879),
-  job 89638021488), which is how the RFC_7519 frame reaches an arc build. **Open** —
-  source remediation is a `swift-rfc-7519` concern (hoist `Parse`'s phantom `Error` to
-  module scope, as done for iso-8601). Reproduction + fix both **validated locally**
+  job 89638021488), which is how the RFC_7519 frame reaches an arc build. **Fixed
+  2026-07-25** — `Parse`'s phantom `Error` hoisted to module-scope `__JWTParserError`, with
+  a public `typealias Error` preserving `Parse<Input>.Error` for consumers (no public API
+  break; the sole consumer, `swift-json-web-token`, names `JWT.Parse` nowhere). Verified on
+  the real crash configuration by CI run
+  [30146494176](https://github.com/swift-ietf/swift-rfc-7519/actions/runs/30146494176):
+  **Ubuntu (Swift 6.3, release) green**, both nightly axes green, `ci-ok` green — with
+  `Compiling RFC_7519` ×4 freshly compiled and zero assertion/stack-dump markers in the leg
+  log. Reproduction + fix both **validated locally**
   2026-07-25 (`/issue-investigation`, ECO-SIL lane): the production shape
   (`struct Parse<Input>` + nested phantom `Error` + `throws(Failure)` member + same-module
   caller) crashes with this exact assertion on macOS 6.3.3-RELEASE **and** Linux x86_64
@@ -187,6 +210,59 @@ level — i.e. every consumer's `-c release` of the affected graph aborts:
   > build-progress lines for modules that compiled **clean** — `swift-primitives` is not
   > implicated. The crashing frame is `RFC_7519`. Do not re-attribute this to the
   > parser/serializer `Fail` primitives.
+
+### ⚠️ Shape is necessary but NOT sufficient — do not read the watchlist as a damage report
+
+Measured 2026-07-25 (ECO-7519FIX lane). A fleet-wide structural scan — 3,092 packages,
+51,500 `.swift` files, all 34 institute roots — found **326 instances of the phantom shape,
+102 of them reachable as typed throws**. Release-building a sample settled what that means:
+
+| package | shape | `swift build -c release` |
+|---|---|---|
+| `swift-rfc-9110` | 5 instances | **ICE** (now fixed) |
+| `swift-rfc-2045` | 3 instances | **clean** |
+| `swift-rfc-5322` | 2 instances | **clean** |
+
+`swift-rfc-2045` carries the *byte-identical* shape to `swift-rfc-7519` pre-fix — nested
+non-payload `Error` in a generic `Parse<Input>`, `typealias Failure = …Parse<Input>.Error`,
+`Parser.Protocol` conformance — and compiles fine. So the **second precondition in the table
+above (an eliminable/dead argument, letting FSO build the signature-optimized thunk) is
+load-bearing**, not incidental.
+
+Consequences for anyone working this class:
+
+- **The shape census is a CANDIDATE list, not a crash list.** "Shape present" is never
+  "broken". 1 of 3 sampled crashed.
+- **The only reliable test is a release build** (~1–2 min per package). Cheaper than
+  de-phantoming ~50 latent sites that compile correctly today.
+- **`Digit<Input>.Error` in `swift-parser-primitives` is already fixed** — hoisted to
+  module-scope `__DigitError` with `extension Digit { typealias Error = __DigitError }`.
+  It is listed above as the original reducer site; it is not an open item.
+
+Remaining latent candidates (shape present, unbuilt, **not** known broken): `swift-rfc-2822`
+(2), `swift-rfc-2183`, `swift-rfc-2369`, `swift-rfc-5321`, `swift-rfc-6068`, `swift-rfc-7617`,
+`swift-rss-standard`; and outside the spec family `swift-property-primitives` (17),
+`swift-io-primitives` (10, mostly `Experiments/`), `swift-pool-primitives` (7),
+`swift-async-primitives` (4), `swift-binary-cursor-primitives` (3), `swift-vector-primitives`
+(3), `swift-serializer-primitives` (2), `swift-heap-primitives` (2), `swift-http-body` (2),
+`swift-w3c-svg` (2), plus singles elsewhere.
+
+**Scan limits, stated so the numbers are read correctly.** No lint rule exists for this shape,
+so the scan was a purpose-built structural scanner (brace-walking, qualified-name resolution),
+controlled against every known positive and every known fix before use. It was wrong twice
+during development, both times *under*-reporting: (1) it missed transitively-phantom enums
+whose cases reference *other* phantom enums — how iso-8601's `Interval`/`RecurringInterval`
+hid; (2) simple-name resolution either invented 14 false positives on
+`swift-parser-primitives`' `public enum Parser {}` namespace or, when that was "fixed" by
+letting non-generic declarations win, dropped **both** positive controls to zero, because
+`swift-rfc-7519` declares both a namespace `RFC_7519.Parse` and a generic
+`RFC_7519.JWT.Parse<Input>`. Qualified-name resolution was the fix. Ground truth is **n=4
+release builds, macOS arm64 only**; the scanner is source-structural and therefore blind to
+macro-generated code, and it over-approximates typed-throws reachability by owner-name match.
+
+**A lint rule would close this class properly** — catching the shape at author time rather
+than at release-build time, which is the only reason `swift-rfc-9110` went undetected while
+crashing.
 
 Full manifestation history + latent-sibling watchlist: catalog **§ A13** manifestations (2)/(3).
 The `swift-rfc-7519` manifestation above is recorded here only — catalog **§ A13** has **not**
