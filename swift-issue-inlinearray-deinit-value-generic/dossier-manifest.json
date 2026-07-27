@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "packetPublicOrder": 5,
+  "key": "inlinearray-deinit-value-generic",
+  "canonicalObject": "swift-institute/Issues#7",
+  "labels": ["bug"],
+  "runnableHarness": {
+    "justified": true,
+    "kind": "SwiftPM cross-module test harness",
+    "sourceReportedCommand": "swift test",
+    "freshResultIncluded": false
+  },
+  "sourcePolicy": "EXACT_RETAINED_BLOBS",
+  "mergePolicy": "ADD_NEW_DOSSIER"
+}

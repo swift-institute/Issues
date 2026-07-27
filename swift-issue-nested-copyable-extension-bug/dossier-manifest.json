@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "packetPublicOrder": 9,
+  "key": "nested-copyable-extension-bug",
+  "canonicalObject": "swift-institute/Issues#11",
+  "labels": ["bug"],
+  "runnableHarness": {
+    "justified": false,
+    "reason": "The source repository states that the standalone reduction is incomplete; its package does not faithfully reproduce the same-file failure.",
+    "retention": "Exact attempted-reduction resources only",
+    "freshResultIncluded": false
+  },
+  "mergePolicy": "ADD_NEW_DOSSIER"
+}

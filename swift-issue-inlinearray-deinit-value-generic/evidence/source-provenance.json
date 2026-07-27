@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "canonicalIssue": "https://github.com/swift-institute/Issues/issues/7",
+  "currentSource": "coenttb/swift-issue-inlinearray-deinit-value-generic",
+  "repositoryDatabaseID": 1138237600,
+  "repositoryNodeID": "R_kgDOQ9ggoA",
+  "visibility": "PUBLIC",
+  "privacyResult": "PUBLIC_SAFE",
+  "defaultRef": "refs/heads/main",
+  "headOID": "7603c551c9c18ca95b68908a71718c6205cc58cc",
+  "treeOID": "b828daa51c9cda3e0600fcf4327e1c393328e565",
+  "headMatchesPacketPin": true,
+  "retainedBlobs": [
+    {
+      "sourcePath": "Package.swift",
+      "retainedPath": "Package.swift",
+      "blobSHA": "c02d1939d8f40846984e45ad1576e5baaf83d2aa"
+    },
+    {
+      "sourcePath": "Sources/ContainerLib/Container.swift",
+      "retainedPath": "Sources/ContainerLib/Container.swift",
+      "blobSHA": "b91471c9ea54c48869f0fbd89190d33868c0499a"
+    },
+    {
+      "sourcePath": "Tests/ContainerTests/ContainerTests.swift",
+      "retainedPath": "Tests/ContainerTests/ContainerTests.swift",
+      "blobSHA": "f349d9cc88a5a6d8af7a21297600098b685ae279"
+    }
+  ],
+  "omittedSourceBlobs": [
+    {
+      "sourcePath": "README.md",
+      "blobSHA": "21598f39ac19738bc2ae8c7058d83f690996be4e",
+      "reason": "Canonical README replaces source-repository orientation."
+    },
+    {
+      "sourcePath": ".gitignore",
+      "blobSHA": "0023a5340637983755c8c19c18cc2c2bb1dbda1c",
+      "reason": "Generated-build ignore rules are not evidence."
+    }
+  ],
+  "verification": {
+    "method": "Read-only GitHub REST metadata, commit, tree, and tarball APIs",
+    "verifiedOn": "2026-07-27",
+    "treeResponseTruncated": false,
+    "freshCompilerRunPerformed": false,
+    "scope": "Dossier staging; not a deletion receipt."
+  }
+}

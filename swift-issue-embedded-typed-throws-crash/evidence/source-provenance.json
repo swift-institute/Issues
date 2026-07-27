@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "canonicalIssue": "https://github.com/swift-institute/Issues/issues/5",
+  "currentSource": "coenttb/swift-embedded-typed-throws-crash",
+  "repositoryDatabaseID": 1129019096,
+  "repositoryNodeID": "R_kgDOQ0t22A",
+  "visibility": "PUBLIC",
+  "privacyResult": "PUBLIC_SAFE",
+  "defaultRef": "refs/heads/main",
+  "headOID": "da010d81db63a7e4e7bded9f140e64f4829d03d2",
+  "treeOID": "5653c175da0a88c3f84e1879420bdf6064972e2f",
+  "headMatchesPacketPin": true,
+  "retainedBlobs": [
+    {
+      "sourcePath": "Package.swift",
+      "retainedPath": "evidence/source/Package.swift.txt",
+      "blobSHA": "a2fed1f1d149fe69617e535ce1d7737785801389"
+    },
+    {
+      "sourcePath": "Sources/TypedThrowsCrash/TypedThrowsCrash.swift",
+      "retainedPath": "evidence/source/TypedThrowsCrash.swift.txt",
+      "blobSHA": "8d60c91f87c0efc0d53c3b55356f5f61fb314b58"
+    }
+  ],
+  "omittedSourceBlobs": [
+    {
+      "sourcePath": ".gitignore",
+      "blobSHA": "2d9f16e2d276179d73c91ec2022a23834caec180",
+      "reason": "Generated-build ignore rules are not evidence."
+    }
+  ],
+  "verification": {
+    "method": "Read-only GitHub REST metadata, commit, tree, and tarball APIs",
+    "verifiedOn": "2026-07-27",
+    "treeResponseTruncated": false,
+    "freshCompilerRunPerformed": false,
+    "scope": "Dossier staging; Embedded SDK recapture remains required."
+  }
+}

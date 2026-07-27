@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "packetPublicOrder": 6,
+  "key": "irgen-async-typed-throws-noncopyable",
+  "canonicalObject": "swift-institute/Issues#8",
+  "labels": ["bug"],
+  "runnableHarness": {
+    "justified": false,
+    "reason": "Direct compilation is the compiler-crash trigger.",
+    "retention": "Exact source as inert .txt resource",
+    "sourceReportedCommand": "swiftc -parse-as-library -emit-ir Crash.swift",
+    "freshResultIncluded": false
+  },
+  "mergePolicy": "ADD_NEW_DOSSIER"
+}

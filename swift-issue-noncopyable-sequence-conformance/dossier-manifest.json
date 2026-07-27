@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "packetPublicOrder": 10,
+  "key": "noncopyable-sequence-conformance",
+  "canonicalObject": "swift-institute/Issues#12",
+  "labels": ["bug"],
+  "runnableHarness": {
+    "justified": true,
+    "kind": "SwiftPM cross-module rejects-valid harness",
+    "sourceReportedCommand": "swift build",
+    "freshResultIncluded": false
+  },
+  "sourcePolicy": "EXACT_RETAINED_BLOBS",
+  "mergePolicy": "ADD_NEW_DOSSIER"
+}

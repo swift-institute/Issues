@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "canonicalIssue": "https://github.com/swift-institute/Issues/issues/11",
+  "currentSource": "coenttb/swift-nested-copyable-extension-bug",
+  "repositoryDatabaseID": 1128250053,
+  "repositoryNodeID": "R_kgDOQz-6xQ",
+  "visibility": "PUBLIC",
+  "privacyResult": "PUBLIC_SAFE",
+  "defaultRef": "refs/heads/main",
+  "headOID": "b439f94923b068d593528913d3d8eba5a89480d3",
+  "treeOID": "b010f620ff7e8b90b7c5a17dd532b80017890db9",
+  "headMatchesPacketPin": true,
+  "retainedBlobs": [
+    {
+      "sourcePath": "Package.swift",
+      "retainedPath": "evidence/source/Package.swift.txt",
+      "blobSHA": "5c6cef0ddd1d02c2651f0f8d527cfd72894aef4d"
+    },
+    {
+      "sourcePath": "SWIFT_ISSUE.md",
+      "retainedPath": "evidence/source/SWIFT_ISSUE.md",
+      "blobSHA": "665d5f7b0f01948b9901448ccf4b31488c2aa0fa"
+    },
+    {
+      "sourcePath": "Sources/NestedCopyableExtensionBug/Dimension.swift",
+      "retainedPath": "evidence/source/Dimension.swift.txt",
+      "blobSHA": "314eeb36329d560370df8236daca9d521d122ad5"
+    },
+    {
+      "sourcePath": "Sources/NestedCopyableExtensionBug/NestedCopyableExtensionBug.swift",
+      "retainedPath": "evidence/source/NestedCopyableExtensionBug.swift.txt",
+      "blobSHA": "9a34f8a2ddeadae3b39f39959aa71b8540dcd458"
+    }
+  ],
+  "omittedSourceBlobs": [
+    {
+      "sourcePath": "README.md",
+      "blobSHA": "75f9dd0397b49594aa855830a8ce210d5c1e2413",
+      "reason": "Canonical README replaces source-repository orientation."
+    },
+    {
+      "sourcePath": "Tests/NestedCopyableExtensionBugTests/NestedCopyableExtensionBugTests.swift",
+      "blobSHA": "edb92c3eb8e4c62eec079d4b27ca3224e5ddc0b6",
+      "reason": "Empty smoke test does not reproduce or distinguish the defect."
+    },
+    {
+      "sourcePath": ".gitignore",
+      "blobSHA": "0023a5340637983755c8c19c18cc2c2bb1dbda1c",
+      "reason": "Generated-build ignore rules are not evidence."
+    }
+  ],
+  "verification": {
+    "method": "Read-only GitHub REST metadata, commit, tree, and tarball APIs",
+    "verifiedOn": "2026-07-27",
+    "treeResponseTruncated": false,
+    "freshCompilerRunPerformed": false,
+    "scope": "Incomplete-reduction forensic staging."
+  }
+}

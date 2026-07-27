@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "packetPublicOrder": 2,
+  "key": "emit-module-noncopyable-sequence",
+  "canonicalObject": "swift-institute/Issues#4",
+  "labels": ["bug"],
+  "runnableHarness": {
+    "justified": true,
+    "kind": "faithful Swift source/module-emission harness",
+    "command": "swiftc -swift-version 6 -enable-experimental-feature Lifetimes -emit-module -module-name EmitModuleBug Sources/EmitModuleBug/*.swift",
+    "freshResultIncluded": false
+  },
+  "sourcePolicy": "EXACT_RETAINED_BLOBS",
+  "mergePolicy": "ADD_NEW_DOSSIER"
+}

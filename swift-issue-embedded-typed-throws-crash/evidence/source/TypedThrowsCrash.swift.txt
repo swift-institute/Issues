@@ -1,0 +1,85 @@
+// Minimal reproducer for Swift Embedded compiler crash
+//
+// Bug: Compiler crashes with signal 5 in MandatoryPerformanceOptimizations pass
+// when typed throws `throws(E)` is used on protocol witness conformances
+// in Embedded Swift (wasm32).
+//
+// To reproduce:
+//   swift build --swift-sdk swift-6.2.3-RELEASE_wasm-embedded
+//
+// Expected: Successful compilation
+// Actual: Crash in MandatoryPerformanceOptimizations pass (signal 5)
+
+public enum Binary {}
+
+extension Binary {
+    /// Protocol with ~Copyable and typed throws in witness method
+    public protocol Contiguous: ~Copyable {
+        associatedtype Space
+        associatedtype Scalar: FixedWidthInteger & Sendable = Int
+
+        var count: Int { get }
+
+        func withUnsafeBytes<R, E: Swift.Error>(
+            _ body: (UnsafeRawBufferPointer) throws(E) -> R
+        ) throws(E) -> R
+
+        var bytes: Span<UInt8> { get }
+    }
+}
+
+extension Binary {
+    /// Protocol refining Contiguous with mutable access
+    public protocol Mutable: Binary.Contiguous, ~Copyable {
+        mutating func withUnsafeMutableBytes<R, E: Swift.Error>(
+            _ body: (UnsafeMutableRawBufferPointer) throws(E) -> R
+        ) throws(E) -> R
+
+        var mutableBytes: MutableSpan<UInt8> { mutating get }
+    }
+}
+
+public enum BufferSpace {}
+
+/// Conformance that triggers the crash
+extension Array: Binary.Contiguous where Element == UInt8 {
+    public typealias Space = BufferSpace
+    public typealias Scalar = Int
+
+    @inlinable
+    public func withUnsafeBytes<R, E: Swift.Error>(
+        _ body: (UnsafeRawBufferPointer) throws(E) -> R
+    ) throws(E) -> R {
+        try self.withUnsafeBufferPointer { (buffer: UnsafeBufferPointer<UInt8>) throws(E) -> R in
+            try body(UnsafeRawBufferPointer(buffer))
+        }
+    }
+
+    @inlinable
+    public var bytes: Span<UInt8> {
+        @_lifetime(borrow self)
+        borrowing get {
+            self.span
+        }
+    }
+}
+
+extension Array: Binary.Mutable where Element == UInt8 {
+    @inlinable
+    public mutating func withUnsafeMutableBytes<R, E: Swift.Error>(
+        _ body: (UnsafeMutableRawBufferPointer) throws(E) -> R
+    ) throws(E) -> R {
+        try self.withUnsafeMutableBufferPointer {
+            (buffer: inout UnsafeMutableBufferPointer<UInt8>) throws(E) -> R in
+            try body(UnsafeMutableRawBufferPointer(buffer))
+        }
+    }
+
+    @inlinable
+    public var mutableBytes: MutableSpan<UInt8> {
+        @_lifetime(&self)
+        mutating get {
+            self.mutableSpan
+        }
+    }
+}

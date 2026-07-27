@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "canonicalIssue": "https://github.com/swift-institute/Issues/issues/8",
+  "currentSource": "coenttb/swift-issue-irgen-async-typed-throws-noncopyable",
+  "repositoryDatabaseID": 1129687915,
+  "repositoryNodeID": "R_kgDOQ1Wraw",
+  "visibility": "PUBLIC",
+  "privacyResult": "PUBLIC_SAFE",
+  "defaultRef": "refs/heads/main",
+  "headOID": "a99bfa9b2aefdab1e8552ee4dee45fe1a7c53d09",
+  "treeOID": "b04bb02172c861221ab85899b34dfb3461a158e5",
+  "headMatchesPacketPin": true,
+  "retainedBlobs": [
+    {
+      "sourcePath": "Package.swift",
+      "retainedPath": "evidence/source/Package.swift.txt",
+      "blobSHA": "cbfee3cf04c584603f592cb93d0635ded8a58ea6"
+    },
+    {
+      "sourcePath": "Sources/IRGenCrash/Crash.swift",
+      "retainedPath": "evidence/source/Crash.swift.txt",
+      "blobSHA": "3e37db1e6fc0c2af69dd7164d88e101f8af10b7a"
+    }
+  ],
+  "omittedSourceBlobs": [
+    {
+      "sourcePath": "README.md",
+      "blobSHA": "43edf99229764bb435fa20c85a54fc78773c8809",
+      "reason": "Canonical README replaces source-repository orientation."
+    },
+    {
+      "sourcePath": ".gitignore",
+      "blobSHA": "afba51c5ce5275b6d9b46fb8f8061d088dc7df4d",
+      "reason": "Generated-build ignore rules are not evidence."
+    }
+  ],
+  "verification": {
+    "method": "Read-only GitHub REST metadata, commit, tree, and tarball APIs",
+    "verifiedOn": "2026-07-27",
+    "treeResponseTruncated": false,
+    "freshCompilerRunPerformed": false,
+    "scope": "Forensic compiler-crash staging."
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "canonicalIssue": "https://github.com/swift-institute/Issues/issues/6",
+  "currentSource": "coenttb/swift-issue-copypropagation-nonescapable-mark-dependence",
+  "repositoryDatabaseID": 1188896785,
+  "repositoryNodeID": "R_kgDORt0gEQ",
+  "visibility": "PUBLIC",
+  "privacyResult": "PUBLIC_SAFE",
+  "defaultRef": "refs/heads/main",
+  "headOID": "43b6fd1decce16c83b491cc931f3c13f08aeff86",
+  "treeOID": "ed964f1938dbdd037aac306a5c6c94d56fcbb780",
+  "headMatchesPacketPin": true,
+  "retainedBlobs": [
+    {
+      "sourcePath": "Package.swift",
+      "retainedPath": "evidence/source/Package.swift.txt",
+      "blobSHA": "a0f68b71f9d0885921a56bec299422588a9a0a55"
+    },
+    {
+      "sourcePath": "Sources/Consumer/main.swift",
+      "retainedPath": "evidence/source/Consumer-main.swift.txt",
+      "blobSHA": "8ae50c95a2d3004adff9886878689772d86a2502"
+    },
+    {
+      "sourcePath": "Sources/Core/View.swift",
+      "retainedPath": "evidence/source/Core-View.swift.txt",
+      "blobSHA": "2d0532e991a6813e23a8b0e33601a10ba2c794db"
+    },
+    {
+      "sourcePath": "Sources/Middle/Wrapper.swift",
+      "retainedPath": "evidence/source/Middle-Wrapper.swift.txt",
+      "blobSHA": "5439a95079d9dbdf0b48c9e8986e885a3bcd3e83"
+    }
+  ],
+  "omittedSourceBlobs": [
+    {
+      "sourcePath": "README.md",
+      "blobSHA": "c6039c1b912b6f0ddc5bac758c98e5a1962c155f",
+      "reason": "Existing destination orientation and investigation files are authoritative."
+    },
+    {
+      "sourcePath": ".gitignore",
+      "blobSHA": "1327ba964734b4a1a5aa77d4bcc9184ef579db23",
+      "reason": "Generated-build ignore rules are not evidence."
+    }
+  ],
+  "verification": {
+    "method": "Read-only GitHub REST metadata, commit, tree, and tarball APIs",
+    "verifiedOn": "2026-07-27",
+    "treeResponseTruncated": false,
+    "freshCompilerRunPerformed": false,
+    "scope": "Unique-additions staging for an existing dossier."
+  }
+}

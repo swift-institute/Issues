@@ -1,0 +1,66 @@
+/// IRGen Crash: Closure with typed throws using nested Error in generic type
+///
+/// The compiler crashes (signal 6) during IR generation when a closure `{ $0 }`
+/// is assigned to a stored property of type `(T) throws(Error) -> T` where `Error`
+/// is a nested type of the enclosing generic struct, and T is concretized via
+/// a constrained extension.
+///
+/// Assertion: `(hasErrorResult()), function getMutableErrorResult, file Types.h`
+///
+/// Conditions required (ALL must be present):
+/// 1. Generic struct with a nested `Error` type
+/// 2. Stored closure property typed as `throws(Error)` using the nested error
+/// 3. Constrained extension (`where T == ConcreteType`) providing the closure
+/// 4. swift.org open-source toolchain (+assertions build)
+///
+/// Note: Does NOT require @Sendable, cross-module, or ~Copyable.
+
+// MARK: - Minimal Reproduction (8 lines)
+
+public struct Box<T> {
+    public var f: (T) throws(Error) -> T
+    public enum Error: Swift.Error { case e }
+}
+
+public enum E { case a }
+
+extension Box where T == E {
+    public static var id: Self { .init(f: { $0 }) }  // CRASHES
+}
+
+// MARK: - Verified Working Cases
+
+// ✅ WORKS: Top-level error type (not nested) — WORKAROUND
+//public enum TopError: Swift.Error { case e }
+//public struct Box2<T> {
+//    public var f: (T) throws(TopError) -> T
+//}
+//extension Box2 where T == E {
+//    public static var id: Self { .init(f: { $0 }) }
+//}
+
+// ✅ WORKS: Untyped throws
+//public struct Box3<T> {
+//    public var f: (T) throws -> T
+//    public enum Error: Swift.Error { case e }
+//}
+//extension Box3 where T == E {
+//    public static var id: Self { .init(f: { $0 }) }
+//}
+
+// ✅ WORKS: Non-generic container
+//public struct Box4 {
+//    public enum Error: Swift.Error { case e }
+//    public var f: (Int) throws(Error) -> Int
+//}
+//extension Box4 {
+//    public static var id: Self { .init(f: { $0 }) }
+//}
+
+// ✅ WORKS: Non-throwing closure
+//public struct Box5<T> {
+//    public var f: (T) -> T
+//}
+//extension Box5 where T == E {
+//    public static var id: Self { .init(f: { $0 }) }
+//}

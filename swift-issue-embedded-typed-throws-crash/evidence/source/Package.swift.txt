@@ -1,0 +1,19 @@
+// swift-tools-version: 6.0
+// Minimal reproducer for Swift Embedded compiler crash with typed throws on protocol conformances
+
+import PackageDescription
+
+let package = Package(
+    name: "TypedThrowsCrash",
+    products: [
+        .library(name: "TypedThrowsCrash", targets: ["TypedThrowsCrash"]),
+    ],
+    targets: [
+        .target(
+            name: "TypedThrowsCrash",
+            swiftSettings: [
+                .enableExperimentalFeature("Lifetimes"),
+            ]
+        ),
+    ]
+)

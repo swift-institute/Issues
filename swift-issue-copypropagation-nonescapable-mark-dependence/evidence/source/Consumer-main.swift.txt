@@ -1,0 +1,17 @@
+// MARK: - CopyPropagation ~Escapable Mark-Dependence Reproducer
+// Purpose: Verify cross-module ~Escapable + @_lifetime(borrow) + control flow in -O
+// Hypothesis: CopyPropagation generates double end_lifetime ("Found over consume?!")
+//
+// ── Toolchain Results ──────────────────────────────────────────────
+// Swift 6.2.4 (Xcode 26.3): REPRODUCES — "Found over consume?!" in release
+// Swift 6.3   (Xcode 26.4): FIXED — builds and runs clean in release
+//   Tested: 2026-03-25
+//   Output: "OK"
+//   The 6.3 copy propagation non-escapable fixes resolve this bug.
+//   ~Escapable + @_lifetime(borrow) can be re-added to Property.View types.
+
+import Middle
+
+var wrapper = Wrapper<Int>(capacity: 8)
+let _ = wrapper.clearAndCheck()
+print("OK")

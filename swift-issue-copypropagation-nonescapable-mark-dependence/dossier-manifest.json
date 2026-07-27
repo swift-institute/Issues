@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packetPublicOrder": 4,
+  "key": "copypropagation-nonescapable-mark-dependence",
+  "canonicalObject": "swift-institute/Issues#6",
+  "labels": ["bug"],
+  "runnableHarness": {
+    "justified": false,
+    "reason": "The destination already holds the fixed-defect investigation; a live known-issue harness would provide no detection signal on the supported matrix.",
+    "retention": "Compiler-crash source preserved as inert .txt resources",
+    "freshResultIncluded": false
+  },
+  "mergePolicy": "ADD_UNIQUE_FILES_ONLY_NEVER_OVERWRITE",
+  "neverOverwrite": [
+    "README.md",
+    "INVESTIGATION-ARC.md",
+    "PRE-FILING-BUG-REPORT.md"
+  ],
+  "proposedAdds": [
+    "README.canonical-addition.md",
+    "PROVENANCE.md",
+    "dossier-manifest.json",
+    "evidence/source-provenance.json",
+    "evidence/source/Package.swift.txt",
+    "evidence/source/Consumer-main.swift.txt",
+    "evidence/source/Core-View.swift.txt",
+    "evidence/source/Middle-Wrapper.swift.txt"
+  ]
+}

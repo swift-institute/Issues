@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "canonicalIssue": "https://github.com/swift-institute/Issues/issues/9",
+  "currentSource": "coenttb/swift-issue-irgen-typed-throws-nested-error-generic",
+  "repositoryDatabaseID": 1151443168,
+  "repositoryNodeID": "R_kgDORKGg4A",
+  "visibility": "PUBLIC",
+  "privacyResult": "PUBLIC_SAFE",
+  "defaultRef": "refs/heads/main",
+  "headOID": "3cd486df7ec4310a5da819a84e1c33085dae9e3b",
+  "treeOID": "a82249c675261531f767143796bf0a6723fec6b7",
+  "headMatchesPacketPin": true,
+  "retainedBlobs": [
+    {
+      "sourcePath": "Package.swift",
+      "retainedPath": "evidence/source/Package.swift.txt",
+      "blobSHA": "9695e8eb2df8a8a6d1409d974a5818f1df91ee5b"
+    },
+    {
+      "sourcePath": "Sources/IRGenTypedThrowsNestedError/Bug.swift",
+      "retainedPath": "evidence/source/Bug.swift.txt",
+      "blobSHA": "fe4ca83b4197976d126887ff6df8b105e5782574"
+    }
+  ],
+  "omittedSourceBlobs": [
+    {
+      "sourcePath": "README.md",
+      "blobSHA": "c6a57d06e5238bdecfad8752e647e1a32301cc6c",
+      "reason": "Canonical README replaces source-repository orientation."
+    },
+    {
+      "sourcePath": ".gitignore",
+      "blobSHA": "1327ba964734b4a1a5aa77d4bcc9184ef579db23",
+      "reason": "Generated-build ignore rules are not evidence."
+    }
+  ],
+  "verification": {
+    "method": "Read-only GitHub REST metadata, commit, tree, and tarball APIs",
+    "verifiedOn": "2026-07-27",
+    "treeResponseTruncated": false,
+    "freshCompilerRunPerformed": false,
+    "scope": "Forensic compiler-crash staging."
+  }
+}

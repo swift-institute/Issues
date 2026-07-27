@@ -1,0 +1,21 @@
+// swift-tools-version:6.2
+import PackageDescription
+
+let settings: [SwiftSetting] = [
+    .enableExperimentalFeature("Lifetimes"),
+]
+
+let package = Package(
+    name: "CopyPropagationNonEscapable",
+    platforms: [.macOS(.v26)],
+    products: [
+        .library(name: "Core", targets: ["Core"]),
+        .library(name: "Middle", targets: ["Middle"]),
+    ],
+    targets: [
+        .target(name: "Core", swiftSettings: settings),
+        .target(name: "Middle", dependencies: ["Core"], swiftSettings: settings),
+        .executableTarget(name: "Consumer", dependencies: ["Core", "Middle"], swiftSettings: settings),
+    ],
+    swiftLanguageModes: [.v6]
+)

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "packetPublicOrder": 8,
+  "key": "nested-generic-subscript-performance",
+  "canonicalObject": "swift-institute/Issues#10",
+  "labels": ["bug"],
+  "runnableHarness": {
+    "justified": true,
+    "kind": "SwiftPM debug/release benchmark",
+    "sourceReportedCommands": [
+      "swift run -c debug Benchmark",
+      "swift run -c release Benchmark"
+    ],
+    "freshResultIncluded": false
+  },
+  "sourcePolicy": "EXACT_RETAINED_BLOBS",
+  "mergePolicy": "ADD_NEW_DOSSIER"
+}

@@ -1,0 +1,103 @@
+/// CopyPropagation crash: ~Escapable view type with @_lifetime(borrow) across control flow
+///
+/// The compiler crashes (signal 6) during CopyPropagation when a ~Copyable ~Escapable
+/// type with @_lifetime(borrow base) is yielded from a _read coroutine accessor and
+/// used across control flow paths (if/else) in an @inlinable consumer function.
+///
+/// Crash: "Found over consume?!" — double end_lifetime for the same value.
+///
+/// Conditions required (ALL must be present):
+/// 1. ~Copyable, ~Escapable type with @_lifetime(borrow base) init
+/// 2. _read coroutine accessor that yields the type
+/// 3. @inlinable function that uses the yielded value across control flow (if/else, try/catch)
+/// 4. Cross-module: consumer in a different module than the type definition
+/// 5. Release mode (-O)
+
+// MARK: - Type definitions
+
+public enum Remove {}
+public enum Access {}
+
+@safe
+public struct View<Tag, Base: ~Copyable>: ~Copyable, ~Escapable {
+    @usableFromInline
+    internal let _base: UnsafeMutablePointer<Base>
+
+    @inlinable
+    @_lifetime(borrow base)
+    public init(_ base: UnsafeMutablePointer<Base>) {
+        unsafe _base = base
+    }
+
+    @inlinable
+    public var base: UnsafeMutablePointer<Base> {
+        unsafe _base
+    }
+}
+
+extension View where Base: ~Copyable {
+    @safe
+    public struct Typed<Element: ~Copyable>: ~Copyable, ~Escapable {
+        @usableFromInline
+        internal let _base: UnsafeMutablePointer<Base>
+
+        @inlinable
+        @_lifetime(borrow base)
+        public init(_ base: UnsafeMutablePointer<Base>) {
+            unsafe _base = base
+        }
+
+        @inlinable
+        public var base: UnsafeMutablePointer<Base> {
+            unsafe _base
+        }
+    }
+}
+
+// MARK: - Container with _read accessor yielding View
+
+public struct Container<Element: ~Copyable>: ~Copyable {
+    @usableFromInline
+    internal var _storage: UnsafeMutableBufferPointer<Element>
+
+    @usableFromInline
+    internal var _count: Int
+
+    @inlinable
+    public init(capacity: Int) {
+        unsafe _storage = .allocate(capacity: capacity)
+        _count = 0
+    }
+
+    @inlinable
+    public var remove: View<Remove, Self>.Typed<Element> {
+        mutating _read {
+            yield unsafe View.Typed(&self)
+        }
+    }
+
+    @inlinable
+    public var access: View<Access, Self>.Typed<Element> {
+        mutating _read {
+            yield unsafe View.Typed(&self)
+        }
+    }
+}
+
+// MARK: - Methods on View.Typed
+
+extension View.Typed
+where Tag == Remove, Base == Container<Element>, Element: ~Copyable {
+    @inlinable
+    public func all() {
+        unsafe base.pointee._count = 0
+    }
+}
+
+extension View.Typed
+where Tag == Access, Base == Container<Element>, Element: ~Copyable {
+    @inlinable
+    public var count: Int {
+        unsafe base.pointee._count
+    }
+}

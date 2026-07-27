@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "packetPublicOrder": 3,
+  "key": "embedded-typed-throws-crash",
+  "canonicalObject": "swift-institute/Issues#5",
+  "labels": ["bug"],
+  "runnableHarness": {
+    "justified": false,
+    "reason": "The exact Embedded SDK/toolchain is not recaptured; direct compilation could crash the compiler or produce a misleading host-only result.",
+    "retention": "FORensic source resources with .txt suffix",
+    "sourceReportedCommand": "swift build --swift-sdk swift-6.2.3-RELEASE_wasm-embedded",
+    "freshResultIncluded": false
+  },
+  "mergePolicy": "ADD_NEW_DOSSIER"
+}

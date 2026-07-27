@@ -1,0 +1,42 @@
+/// Consumer module that triggers the CopyPropagation crash.
+///
+/// clearAndCheck() uses two View accessor chains across an if/else branch,
+/// causing CopyPropagation to generate double end_lifetime for the View value.
+
+public import Core
+
+// MARK: - Minimal Reproduction
+
+public struct Wrapper<Element: ~Copyable>: ~Copyable {
+    @usableFromInline
+    internal var _buffer: Container<Element>
+
+    @inlinable
+    public init(capacity: Int) {
+        _buffer = Container(capacity: capacity)
+    }
+
+    // CRASHES: two accessor chains + control flow
+    @inlinable
+    public mutating func clearAndCheck() -> Int {
+        let count = _buffer.access.count  // View #1
+        _buffer.remove.all()              // View #2
+
+        if count > 0 {
+            _buffer = Container<Element>(capacity: count)
+        }
+        return count
+    }
+}
+
+// MARK: - Verified Working Cases
+
+// ✅ WORKS: Single accessor chain (no control flow join)
+extension Wrapper where Element: ~Copyable {
+    @inlinable
+    public mutating func clearOnly() {
+        _buffer.remove.all()
+    }
+}
+
+// ✅ WORKS: Debug mode (-Onone) — only crashes with -O

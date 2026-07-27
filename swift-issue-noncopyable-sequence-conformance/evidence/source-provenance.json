@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "canonicalIssue": "https://github.com/swift-institute/Issues/issues/12",
+  "currentSource": "coenttb/swift-issue-noncopyable-sequence-conformance",
+  "repositoryDatabaseID": 1178920527,
+  "repositoryNodeID": "R_kgDORkTmTw",
+  "visibility": "PUBLIC",
+  "privacyResult": "PUBLIC_SAFE",
+  "defaultRef": "refs/heads/main",
+  "headOID": "c6c9ab984b613cf7d48755678337efaaea26fad0",
+  "treeOID": "f90501a5134efb58c4c4d1d295eeb0357ac245c7",
+  "headMatchesPacketPin": true,
+  "retainedBlobs": [
+    {
+      "sourcePath": "Package.swift",
+      "retainedPath": "Package.swift",
+      "blobSHA": "e948e0a76e3dfd7f54a0ff108f46945a273e5d8d"
+    },
+    {
+      "sourcePath": "Sources/Core/Buffer.swift",
+      "retainedPath": "Sources/Core/Buffer.swift",
+      "blobSHA": "2dbd466ae11f98a5e47262cc80c7492fd688beda"
+    },
+    {
+      "sourcePath": "Sources/Core/Storage.swift",
+      "retainedPath": "Sources/Core/Storage.swift",
+      "blobSHA": "4a7bca886f6345a87c177309e1fb0acad84f234d"
+    },
+    {
+      "sourcePath": "Sources/Ring/Buffer.Ring+Sequence.swift",
+      "retainedPath": "Sources/Ring/Buffer.Ring+Sequence.swift",
+      "blobSHA": "30c4f54f1a71558bcd256acfe485d8b15c443c02"
+    },
+    {
+      "sourcePath": "Sources/Ring/Buffer.Ring.swift",
+      "retainedPath": "Sources/Ring/Buffer.Ring.swift",
+      "blobSHA": "b75a4d12af613f7b162ce80339afb447f5b3d701"
+    }
+  ],
+  "omittedSourceBlobs": [
+    {
+      "sourcePath": "README.md",
+      "blobSHA": "1cf17176f8c279867b72370d1570823e46397ac1",
+      "reason": "Canonical README replaces source-repository orientation."
+    },
+    {
+      "sourcePath": ".gitignore",
+      "blobSHA": "1327ba964734b4a1a5aa77d4bcc9184ef579db23",
+      "reason": "Generated-build ignore rules are not evidence."
+    }
+  ],
+  "verification": {
+    "method": "Read-only GitHub REST metadata, commit, tree, and tarball APIs",
+    "verifiedOn": "2026-07-27",
+    "treeResponseTruncated": false,
+    "freshCompilerRunPerformed": false,
+    "scope": "Dossier staging; not a deletion receipt."
+  }
+}

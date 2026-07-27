@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "canonicalIssue": "https://github.com/swift-institute/Issues/issues/4",
+  "originalSourceCoordinate": "coenttb/swift-issue-emit-module-noncopyable-sequence",
+  "currentSource": "swift-institute/swift-issue-emit-module-noncopyable-sequence",
+  "repositoryDatabaseID": 1138475887,
+  "repositoryNodeID": "R_kgDOQ9vDbw",
+  "visibility": "PUBLIC",
+  "privacyResult": "PUBLIC_SAFE",
+  "defaultRef": "refs/heads/main",
+  "headOID": "32e8dd732910d0ce64b2a36d6c53c4932e898a87",
+  "treeOID": "f85ae483256464be628a28fa4626eb9ddb634413",
+  "headMatchesPacketPin": true,
+  "retainedBlobs": [
+    {
+      "sourcePath": "Package.swift",
+      "retainedPath": "Package.swift",
+      "blobSHA": "c487d5f6ce2e2791fe9dc301c49a4302022cc2c0"
+    },
+    {
+      "sourcePath": "Sources/EmitModuleBug/Container.Bounded.swift",
+      "retainedPath": "Sources/EmitModuleBug/Container.Bounded.swift",
+      "blobSHA": "2e42cede3a0d082084bbc48e3c5cf153f4bf91ae"
+    },
+    {
+      "sourcePath": "Sources/EmitModuleBug/Container.swift",
+      "retainedPath": "Sources/EmitModuleBug/Container.swift",
+      "blobSHA": "806708b246f46599cbd25a52bcdf952d06c146b5"
+    }
+  ],
+  "omittedSourceBlobs": [
+    {
+      "sourcePath": "README.md",
+      "blobSHA": "9dd12ec41240d51d446d4974758b106c3e99f97c",
+      "reason": "Canonical README replaces source-repository orientation."
+    },
+    {
+      "sourcePath": ".gitignore",
+      "blobSHA": "1327ba964734b4a1a5aa77d4bcc9184ef579db23",
+      "reason": "Generated-build ignore rules are not evidence."
+    }
+  ],
+  "verification": {
+    "method": "Read-only GitHub REST metadata, commit, tree, and tarball APIs",
+    "verifiedOn": "2026-07-27",
+    "treeResponseTruncated": false,
+    "freshCompilerRunPerformed": false,
+    "scope": "Dossier staging; not a deletion or cold-archive receipt."
+  }
+}

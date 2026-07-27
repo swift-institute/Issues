@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "packetPublicOrder": 7,
+  "key": "irgen-typed-throws-nested-error-generic",
+  "canonicalObject": "swift-institute/Issues#9",
+  "labels": ["bug"],
+  "runnableHarness": {
+    "justified": false,
+    "reason": "Direct compilation on the affected assertions toolchain is the compiler-crash trigger and the local default toolchain is a passing control.",
+    "retention": "Exact source as inert .txt resource",
+    "sourceReportedCommand": "swift build",
+    "freshResultIncluded": false
+  },
+  "mergePolicy": "ADD_NEW_DOSSIER"
+}

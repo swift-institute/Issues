@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "canonicalIssue": "https://github.com/swift-institute/Issues/issues/10",
+  "currentSource": "coenttb/swift-issue-nested-generic-subscript-performance",
+  "repositoryDatabaseID": 1138462129,
+  "repositoryNodeID": "R_kgDOQ9uNsQ",
+  "visibility": "PUBLIC",
+  "privacyResult": "PUBLIC_SAFE",
+  "defaultRef": "refs/heads/main",
+  "headOID": "c1e5e85a635cf7cad55377928d129ff7ac60088b",
+  "treeOID": "26600a42339facea079c142407e439f0f56ae754",
+  "headMatchesPacketPin": true,
+  "retainedBlobs": [
+    {
+      "sourcePath": "Package.swift",
+      "retainedPath": "Package.swift",
+      "blobSHA": "1071db00d8ebaef44ca365bd8eeab07c91aacdce"
+    },
+    {
+      "sourcePath": "SIL.md",
+      "retainedPath": "SIL.md",
+      "blobSHA": "5f2514e9c2449aee5fd7458bc76f9917ac9df614"
+    },
+    {
+      "sourcePath": "Sources/Benchmark/main.swift",
+      "retainedPath": "Sources/Benchmark/main.swift",
+      "blobSHA": "e74e52ef70d1f568e966acc29efdfb2a77956dc9"
+    },
+    {
+      "sourcePath": "Sources/NestedGenericPerformance/NestedGenericPerformance.swift",
+      "retainedPath": "Sources/NestedGenericPerformance/NestedGenericPerformance.swift",
+      "blobSHA": "40fe47f84e25879ca4aa00bbd83c21361cfaa68a"
+    }
+  ],
+  "omittedSourceBlobs": [
+    {
+      "sourcePath": "README.md",
+      "blobSHA": "cdfa14c14f6949ea17d19b4587efb70d64be18b6",
+      "reason": "Canonical README replaces source-repository orientation."
+    },
+    {
+      "sourcePath": ".gitignore",
+      "blobSHA": "84fd1073f9ab8cf7223b842f795072dbd23c17fe",
+      "reason": "Generated-build ignore rules are not evidence."
+    }
+  ],
+  "verification": {
+    "method": "Read-only GitHub REST metadata, commit, tree, and tarball APIs",
+    "verifiedOn": "2026-07-27",
+    "treeResponseTruncated": false,
+    "freshCompilerRunPerformed": false,
+    "scope": "Benchmark dossier staging."
+  }
+}
