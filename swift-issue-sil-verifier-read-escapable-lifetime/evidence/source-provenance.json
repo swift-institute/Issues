@@ -1,0 +1,120 @@
+{
+  "approvedImpactSHA256" : "0e8d24930dd248a2f7db2929c06bf240317030656fe829563029ae94bd6e5b68",
+  "approvedModelSHA256" : "1064ae5eb1a20c786caf7bb337f0451bed3a7fab0a9094217a54d4259c3f4514",
+  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-sil-verifier-read-escapable-lifetime",
+  "canonicalIssueKey" : "sil-verifier-read-escapable-lifetime",
+  "canonicalIssueNumber" : 15,
+  "canonicalIssueURL" : "https:\/\/github.com\/swift-institute\/Issues\/issues\/15",
+  "contentMode" : "CLEAN_COPY_EXACT_PINNED_BLOBS",
+  "dossier" : "swift-issue-sil-verifier-read-escapable-lifetime",
+  "frozenPlanSHA256" : "b96d5afd1f53f8009a916a844540f9d12548df847f28e32e733756e3160b3a31",
+  "generated" : "2026-07-27",
+  "githubMutationPerformed" : false,
+  "labels" : [
+    "bug"
+  ],
+  "noSourceAncestryImported" : true,
+  "repositoryMutationPerformed" : false,
+  "schemaVersion" : 1,
+  "sources" : [
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 2,
+      "currentSource" : "coenttb\/swift-issue-sil-verifier-read-escapable-lifetime",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "ec00d3dc2e537fe1b87d39e5e1071340d982e9af"
+      },
+      "headTreeOID" : "b7ba86de1c5b9a94b603c733a9d362d02fb7b36c",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "ec00d3dc2e537fe1b87d39e5e1071340d982e9af",
+      "originalSource" : "coenttb\/swift-issue-sil-verifier-read-escapable-lifetime",
+      "planHeadOID" : "ec00d3dc2e537fe1b87d39e5e1071340d982e9af",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 6,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/swift-issue-sil-verifier-read-escapable-lifetime.git",
+        "created_at" : "2026-02-06T13:25:51Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/swift-issue-sil-verifier-read-escapable-lifetime",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/swift-issue-sil-verifier-read-escapable-lifetime",
+        "id" : 1151443132,
+        "license" : null,
+        "name" : "swift-issue-sil-verifier-read-escapable-lifetime",
+        "node_id" : "R_kgDORKGgvA",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2026-02-06T13:33:48Z",
+        "size" : 3,
+        "updated_at" : "2026-04-30T21:03:04Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "61c66bcc49470100c9a2a1e8f5444a6d23f7a6c9",
+      "sourceFiles" : [
+        {
+          "action" : "EXCLUDE_NONREPRODUCER_INFRASTRUCTURE",
+          "copied" : false,
+          "destinationPath" : null,
+          "plannedBlobSHA1" : "1327ba964734b4a1a5aa77d4bcc9184ef579db23",
+          "reason" : "PLAN_EXCLUDES_NONREPRODUCER_INFRASTRUCTURE",
+          "sourcePath" : ".gitignore"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Package.swift",
+          "contentSHA256" : "1e0ec0e5dc5eba9c98847f0273c2f3e6325bc20455b807a2adb515c194b74c93",
+          "copied" : true,
+          "destinationPath" : "swift-issue-sil-verifier-read-escapable-lifetime\/evidence\/source-package\/Package.swift",
+          "plannedBlobSHA1" : "e474605fdf1b23b17ad17d607e64f51d85ca0b79",
+          "sourcePath" : "Package.swift",
+          "verifiedGitBlobSHA1" : "e474605fdf1b23b17ad17d607e64f51d85ca0b79"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/README.md",
+          "contentSHA256" : "2af553071080526e188e46712b5c95a92a0c8c0c2d435e179d48e71a41d790bd",
+          "copied" : true,
+          "destinationPath" : "swift-issue-sil-verifier-read-escapable-lifetime\/evidence\/source-package\/README.md",
+          "plannedBlobSHA1" : "b38d099d5f8a696ec7f96208aa329366f335c66e",
+          "sourcePath" : "README.md",
+          "verifiedGitBlobSHA1" : "b38d099d5f8a696ec7f96208aa329366f335c66e"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Sources\/SILVerifierReadEscapable\/Bug.swift",
+          "contentSHA256" : "5afeb7457f4f5dc77348fffc5d6af75e24b35d5c6580085dc8a9762c3a3824c7",
+          "copied" : true,
+          "destinationPath" : "swift-issue-sil-verifier-read-escapable-lifetime\/evidence\/source-package\/Sources\/SILVerifierReadEscapable\/Bug.swift",
+          "plannedBlobSHA1" : "764d5c36712e3ff455190b041bdbdd6e08a07251",
+          "sourcePath" : "Sources\/SILVerifierReadEscapable\/Bug.swift",
+          "verifiedGitBlobSHA1" : "764d5c36712e3ff455190b041bdbdd6e08a07251"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED",
+      "tags" : {
+
+      },
+      "terminalDisposition" : "DO_NOT_TRANSFER_PROCESS_THEN_DELETE_ONLY_AFTER_SEPARATE_AUTHORIZATION",
+      "visibility" : "PUBLIC"
+    }
+  ],
+  "title" : "[Compiler][ICE] _read yielding a ~Escapable lifetime-dependent value fails SIL ownership verification"
+}

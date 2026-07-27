@@ -1,0 +1,18 @@
+{
+  "authoritativeCommand" : "swift test",
+  "authoritativeEvidenceRoot" : "evidence\/source-package",
+  "canonicalIssueKey" : "silgen-property-wrapper-noncopyable",
+  "environment" : "Swift 6.2.3; arm64-apple-macosx26.0; cross-module trigger verified.",
+  "generatedIndexFiles" : [
+    "Sources\/Reproducer\/main.swift",
+    "Tests\/Reproducer.swift"
+  ],
+  "generatedIndexFilesAreAuthoritativeReproducer" : false,
+  "issueNumber" : "17",
+  "negativeControlOrExpectedBehavior" : "The cross-module wrapped property access compiles.",
+  "positiveTrigger" : "The frontend exits on signal 11 in getBaseAccessKind.",
+  "reason" : "The trigger depends on cross-module, cross-package, toolchain, platform, or test-discovery structure. A flattened synthetic package would not be evidence-equivalent.",
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+}

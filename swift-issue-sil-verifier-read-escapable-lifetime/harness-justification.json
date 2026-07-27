@@ -1,0 +1,18 @@
+{
+  "authoritativeCommand" : "swift build",
+  "authoritativeEvidenceRoot" : "evidence\/source-package",
+  "canonicalIssueKey" : "sil-verifier-read-escapable-lifetime",
+  "environment" : "Swift.org 6.2.3 assertions toolchain; arm64 macOS 26; Xcode-bundled toolchain is the negative control.",
+  "generatedIndexFiles" : [
+    "Sources\/Reproducer\/main.swift",
+    "Tests\/Reproducer.swift"
+  ],
+  "generatedIndexFilesAreAuthoritativeReproducer" : false,
+  "issueNumber" : "15",
+  "negativeControlOrExpectedBehavior" : "The borrow-scoped yielded value passes SIL ownership verification.",
+  "positiveTrigger" : "Assertions toolchains report Found over consume and abort compilation.",
+  "reason" : "The trigger depends on cross-module, cross-package, toolchain, platform, or test-discovery structure. A flattened synthetic package would not be evidence-equivalent.",
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+}

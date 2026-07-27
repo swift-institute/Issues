@@ -1,0 +1,18 @@
+{
+  "authoritativeCommand" : "swift build",
+  "authoritativeEvidenceRoot" : "evidence\/source-package",
+  "canonicalIssueKey" : "silgen-pack-expansion-cross-module",
+  "environment" : "Swift 6.2.3; arm64-apple-macosx26.0; source controls verified.",
+  "generatedIndexFiles" : [
+    "Sources\/Reproducer\/main.swift",
+    "Tests\/Reproducer.swift"
+  ],
+  "generatedIndexFilesAreAuthoritativeReproducer" : false,
+  "issueNumber" : "16",
+  "negativeControlOrExpectedBehavior" : "The cross-module call emits SIL like the same-module control.",
+  "positiveTrigger" : "The frontend exits on signal 11 in emitPackExpansionIntoPack.",
+  "reason" : "The trigger depends on cross-module, cross-package, toolchain, platform, or test-discovery structure. A flattened synthetic package would not be evidence-equivalent.",
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+}

@@ -1,0 +1,130 @@
+{
+  "approvedImpactSHA256" : "0e8d24930dd248a2f7db2929c06bf240317030656fe829563029ae94bd6e5b68",
+  "approvedModelSHA256" : "1064ae5eb1a20c786caf7bb337f0451bed3a7fab0a9094217a54d4259c3f4514",
+  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-silgen-pack-expansion-cross-module",
+  "canonicalIssueKey" : "silgen-pack-expansion-cross-module",
+  "canonicalIssueNumber" : 16,
+  "canonicalIssueURL" : "https:\/\/github.com\/swift-institute\/Issues\/issues\/16",
+  "contentMode" : "CLEAN_COPY_EXACT_PINNED_BLOBS",
+  "dossier" : "swift-issue-silgen-pack-expansion-cross-module",
+  "frozenPlanSHA256" : "b96d5afd1f53f8009a916a844540f9d12548df847f28e32e733756e3160b3a31",
+  "generated" : "2026-07-27",
+  "githubMutationPerformed" : false,
+  "labels" : [
+    "bug"
+  ],
+  "noSourceAncestryImported" : true,
+  "repositoryMutationPerformed" : false,
+  "schemaVersion" : 1,
+  "sources" : [
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 1,
+      "currentSource" : "coenttb\/swift-issue-silgen-pack-expansion-cross-module",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "91a29d39618873524f65606915e3cf581de6a05f"
+      },
+      "headTreeOID" : "1c3b8ff225fbea972b7abce7f6b204185770b21c",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "91a29d39618873524f65606915e3cf581de6a05f",
+      "originalSource" : "coenttb\/swift-issue-silgen-pack-expansion-cross-module",
+      "planHeadOID" : "91a29d39618873524f65606915e3cf581de6a05f",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 8,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/swift-issue-silgen-pack-expansion-cross-module.git",
+        "created_at" : "2026-01-07T13:29:45Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/swift-issue-silgen-pack-expansion-cross-module",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/swift-issue-silgen-pack-expansion-cross-module",
+        "id" : 1129711828,
+        "license" : null,
+        "name" : "swift-issue-silgen-pack-expansion-cross-module",
+        "node_id" : "R_kgDOQ1YI1A",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2026-01-07T13:29:47Z",
+        "size" : 3,
+        "updated_at" : "2026-04-30T21:03:38Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "91a29d39618873524f65606915e3cf581de6a05f",
+      "sourceFiles" : [
+        {
+          "action" : "EXCLUDE_NONREPRODUCER_INFRASTRUCTURE",
+          "copied" : false,
+          "destinationPath" : null,
+          "plannedBlobSHA1" : "0023a5340637983755c8c19c18cc2c2bb1dbda1c",
+          "reason" : "PLAN_EXCLUDES_NONREPRODUCER_INFRASTRUCTURE",
+          "sourcePath" : ".gitignore"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Package.swift",
+          "contentSHA256" : "4172f551b9e41fadd8b2b625913aba5780f277bae879a7fadd32daaa47e10743",
+          "copied" : true,
+          "destinationPath" : "swift-issue-silgen-pack-expansion-cross-module\/evidence\/source-package\/Package.swift",
+          "plannedBlobSHA1" : "8f2a054a3ccb53e65e84af29b91341209b082bd8",
+          "sourcePath" : "Package.swift",
+          "verifiedGitBlobSHA1" : "8f2a054a3ccb53e65e84af29b91341209b082bd8"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/README.md",
+          "contentSHA256" : "f66c9952d78b8eb10f2f4bb2da3922e7c5efa4b1453c7ca2ed7146ce7678ea66",
+          "copied" : true,
+          "destinationPath" : "swift-issue-silgen-pack-expansion-cross-module\/evidence\/source-package\/README.md",
+          "plannedBlobSHA1" : "c0c29ef27d2fda08124250d85f6c8a77f1a68392",
+          "sourcePath" : "README.md",
+          "verifiedGitBlobSHA1" : "c0c29ef27d2fda08124250d85f6c8a77f1a68392"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Sources\/LibraryA\/Tuple.swift",
+          "contentSHA256" : "22321117c1df26b9cd746d2d55a6acb074e3567ef124dfc15ba025b28e1139d4",
+          "copied" : true,
+          "destinationPath" : "swift-issue-silgen-pack-expansion-cross-module\/evidence\/source-package\/Sources\/LibraryA\/Tuple.swift",
+          "plannedBlobSHA1" : "c2babc9185cff815695390c3d46748c950aea76a",
+          "sourcePath" : "Sources\/LibraryA\/Tuple.swift",
+          "verifiedGitBlobSHA1" : "c2babc9185cff815695390c3d46748c950aea76a"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Sources\/LibraryB\/Caller.swift",
+          "contentSHA256" : "9f6d3e25afe7ec01cda388608d96ff69c2abcc9cd3c2440b4de12b155146683d",
+          "copied" : true,
+          "destinationPath" : "swift-issue-silgen-pack-expansion-cross-module\/evidence\/source-package\/Sources\/LibraryB\/Caller.swift",
+          "plannedBlobSHA1" : "53d4cfd82db60a54ec3213cceafae678efc118c9",
+          "sourcePath" : "Sources\/LibraryB\/Caller.swift",
+          "verifiedGitBlobSHA1" : "53d4cfd82db60a54ec3213cceafae678efc118c9"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED",
+      "tags" : {
+
+      },
+      "terminalDisposition" : "DO_NOT_TRANSFER_PROCESS_THEN_DELETE_ONLY_AFTER_SEPARATE_AUTHORIZATION",
+      "visibility" : "PUBLIC"
+    }
+  ],
+  "title" : "[Compiler][ICE] cross-module parameter-pack expansion call crashes SILGen"
+}

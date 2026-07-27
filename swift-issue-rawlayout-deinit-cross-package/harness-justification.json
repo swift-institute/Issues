@@ -1,0 +1,18 @@
+{
+  "authoritativeCommand" : "swift test",
+  "authoritativeEvidenceRoot" : "evidence\/source-package",
+  "canonicalIssueKey" : "rawlayout-deinit-cross-package",
+  "environment" : "Swift 6.2.x; source cross-package and single-module controls retained.",
+  "generatedIndexFiles" : [
+    "Sources\/Reproducer\/main.swift",
+    "Tests\/Reproducer.swift"
+  ],
+  "generatedIndexFilesAreAuthoritativeReproducer" : false,
+  "issueNumber" : "14",
+  "negativeControlOrExpectedBehavior" : "Destroying the container invokes every initialized element's deinit.",
+  "positiveTrigger" : "The cross-package test misses the deinit while the same-module control succeeds.",
+  "reason" : "The trigger depends on cross-module, cross-package, toolchain, platform, or test-discovery structure. A flattened synthetic package would not be evidence-equivalent.",
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+}

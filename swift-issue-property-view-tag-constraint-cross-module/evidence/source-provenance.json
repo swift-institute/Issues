@@ -1,0 +1,150 @@
+{
+  "approvedImpactSHA256" : "0e8d24930dd248a2f7db2929c06bf240317030656fe829563029ae94bd6e5b68",
+  "approvedModelSHA256" : "1064ae5eb1a20c786caf7bb337f0451bed3a7fab0a9094217a54d4259c3f4514",
+  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-property-view-tag-constraint-cross-module",
+  "canonicalIssueKey" : "property-view-tag-constraint-cross-module",
+  "canonicalIssueNumber" : 13,
+  "canonicalIssueURL" : "https:\/\/github.com\/swift-institute\/Issues\/issues\/13",
+  "contentMode" : "CLEAN_COPY_EXACT_PINNED_BLOBS",
+  "dossier" : "swift-issue-property-view-tag-constraint-cross-module",
+  "frozenPlanSHA256" : "b96d5afd1f53f8009a916a844540f9d12548df847f28e32e733756e3160b3a31",
+  "generated" : "2026-07-27",
+  "githubMutationPerformed" : false,
+  "labels" : [
+    "bug"
+  ],
+  "noSourceAncestryImported" : true,
+  "repositoryMutationPerformed" : false,
+  "schemaVersion" : 1,
+  "sources" : [
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 3,
+      "currentSource" : "coenttb\/swift-issue-property-view-tag-constraint-cross-module",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "36e3c71a9bd69c28a0f6da0dc8dca6d9e59764e7"
+      },
+      "headTreeOID" : "c33b41c48f24768a0de44e88bf585497b9e23128",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "36e3c71a9bd69c28a0f6da0dc8dca6d9e59764e7",
+      "originalSource" : "coenttb\/swift-issue-property-view-tag-constraint-cross-module",
+      "planHeadOID" : "36e3c71a9bd69c28a0f6da0dc8dca6d9e59764e7",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 11,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/swift-issue-property-view-tag-constraint-cross-module.git",
+        "created_at" : "2026-01-22T16:36:56Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/swift-issue-property-view-tag-constraint-cross-module",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/swift-issue-property-view-tag-constraint-cross-module",
+        "id" : 1139960097,
+        "license" : null,
+        "name" : "swift-issue-property-view-tag-constraint-cross-module",
+        "node_id" : "R_kgDOQ_JpIQ",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2026-01-22T17:07:44Z",
+        "size" : 6,
+        "updated_at" : "2026-04-30T21:03:06Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "6b7c31c2f837c77d28427d2f1a1f14fb4e2dbd6e",
+      "sourceFiles" : [
+        {
+          "action" : "EXCLUDE_NONREPRODUCER_INFRASTRUCTURE",
+          "copied" : false,
+          "destinationPath" : null,
+          "plannedBlobSHA1" : "1327ba964734b4a1a5aa77d4bcc9184ef579db23",
+          "reason" : "PLAN_EXCLUDES_NONREPRODUCER_INFRASTRUCTURE",
+          "sourcePath" : ".gitignore"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Package.swift",
+          "contentSHA256" : "1efc09842789e59b70bf51c5cf014a806ce5b7bc1ef007ce25303dcd46f16aa8",
+          "copied" : true,
+          "destinationPath" : "swift-issue-property-view-tag-constraint-cross-module\/evidence\/source-package\/Package.swift",
+          "plannedBlobSHA1" : "9a298f644c65ccf9288de26c4940ae064ea338fc",
+          "sourcePath" : "Package.swift",
+          "verifiedGitBlobSHA1" : "9a298f644c65ccf9288de26c4940ae064ea338fc"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/README.md",
+          "contentSHA256" : "e64bffa1074c5804ee14519a863553d7d40a4987db220055cb4c050fcdc61f04",
+          "copied" : true,
+          "destinationPath" : "swift-issue-property-view-tag-constraint-cross-module\/evidence\/source-package\/README.md",
+          "plannedBlobSHA1" : "53db13a7ea7e22d741cafdf237ae678a3a0e462e",
+          "sourcePath" : "README.md",
+          "verifiedGitBlobSHA1" : "53db13a7ea7e22d741cafdf237ae678a3a0e462e"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Sources\/CollectionLib\/Collection.swift",
+          "contentSHA256" : "baa13828a0bcfcfebc3fd8bcf36035e6a115da6ce9ee654643ba60380549e78f",
+          "copied" : true,
+          "destinationPath" : "swift-issue-property-view-tag-constraint-cross-module\/evidence\/source-package\/Sources\/CollectionLib\/Collection.swift",
+          "plannedBlobSHA1" : "facd64c62f900fc03c390b496375e2f8553145a8",
+          "sourcePath" : "Sources\/CollectionLib\/Collection.swift",
+          "verifiedGitBlobSHA1" : "facd64c62f900fc03c390b496375e2f8553145a8"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Sources\/CollectionLib\/Workaround.swift",
+          "contentSHA256" : "2af612a476f2ff5f05b84dc96e7afbba6bfb1c05879d87cbc8c90aa13e076d96",
+          "copied" : true,
+          "destinationPath" : "swift-issue-property-view-tag-constraint-cross-module\/evidence\/source-package\/Sources\/CollectionLib\/Workaround.swift",
+          "plannedBlobSHA1" : "16cfb38a948f2c17ba6faff0bcd1a117a211cdac",
+          "sourcePath" : "Sources\/CollectionLib\/Workaround.swift",
+          "verifiedGitBlobSHA1" : "16cfb38a948f2c17ba6faff0bcd1a117a211cdac"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Sources\/PropertyLib\/Property.swift",
+          "contentSHA256" : "173f537240fdcb4bab69b18d8050778093945a5439e1dbfa75acc41836147523",
+          "copied" : true,
+          "destinationPath" : "swift-issue-property-view-tag-constraint-cross-module\/evidence\/source-package\/Sources\/PropertyLib\/Property.swift",
+          "plannedBlobSHA1" : "263564b5501b7765ef8b62b2956bd82b968ececd",
+          "sourcePath" : "Sources\/PropertyLib\/Property.swift",
+          "verifiedGitBlobSHA1" : "263564b5501b7765ef8b62b2956bd82b968ececd"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Sources\/SequenceLib\/Sequence.swift",
+          "contentSHA256" : "2797f8b4a6badaef57bea40c85177afa43050c7af4c487d13e428060af426e6c",
+          "copied" : true,
+          "destinationPath" : "swift-issue-property-view-tag-constraint-cross-module\/evidence\/source-package\/Sources\/SequenceLib\/Sequence.swift",
+          "plannedBlobSHA1" : "b3a826057b05827533aeb251997345f2a5feff6d",
+          "sourcePath" : "Sources\/SequenceLib\/Sequence.swift",
+          "verifiedGitBlobSHA1" : "b3a826057b05827533aeb251997345f2a5feff6d"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED",
+      "tags" : {
+
+      },
+      "terminalDisposition" : "DO_NOT_TRANSFER_PROCESS_THEN_DELETE_ONLY_AFTER_SEPARATE_AUTHORIZATION",
+      "visibility" : "PUBLIC"
+    }
+  ],
+  "title" : "[Compiler][Rejects valid] constrained Property.View extensions report invalid redeclaration cross-module"
+}

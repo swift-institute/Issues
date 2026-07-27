@@ -1,0 +1,17 @@
+{
+  "authoritativeCommand" : "Run swift-institute\/Experiments\/github-url-spm-resolution with all three dependencies at 0.1.0.",
+  "authoritativeHarness" : "swift-institute\/Experiments\/github-url-spm-resolution",
+  "canonicalIssueKey" : "spm-repository-url-identity",
+  "deletionPermitted" : false,
+  "issueNumber" : "22",
+  "reason" : "Repository URL, tag, redirect, and basename identity are the subject under test. Clean-copying or flattening the fixtures would erase the behavior being measured.",
+  "remoteFixturesRetainedWhileActive" : [
+    "coenttb\/test-algebra-primitives",
+    "coenttb\/test-buffer-foundations",
+    "coenttb\/test-buffer-primitives"
+  ],
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "strategy" : "REMOTE_IDENTITY_PARENT_METADATA_ONLY",
+  "syntheticFixtureReposCreated" : false
+}

@@ -1,0 +1,219 @@
+{
+  "approvedImpactSHA256" : "0e8d24930dd248a2f7db2929c06bf240317030656fe829563029ae94bd6e5b68",
+  "approvedModelSHA256" : "1064ae5eb1a20c786caf7bb337f0451bed3a7fab0a9094217a54d4259c3f4514",
+  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-windows-existential-crash",
+  "canonicalIssueKey" : "windows-existential-crash",
+  "canonicalIssueNumber" : 21,
+  "canonicalIssueURL" : "https:\/\/github.com\/swift-institute\/Issues\/issues\/21",
+  "contentMode" : "CLEAN_COPY_EXACT_PINNED_BLOBS",
+  "dossier" : "swift-issue-windows-existential-crash",
+  "frozenPlanSHA256" : "b96d5afd1f53f8009a916a844540f9d12548df847f28e32e733756e3160b3a31",
+  "generated" : "2026-07-27",
+  "githubMutationPerformed" : false,
+  "labels" : [
+    "bug"
+  ],
+  "noSourceAncestryImported" : true,
+  "repositoryMutationPerformed" : false,
+  "schemaVersion" : 1,
+  "sources" : [
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 17,
+      "currentSource" : "coenttb\/swift-issue-windows-existential-crash",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/cross-module-attempt" : "ac83d1f936f4d0aa21abfd80eeb306bca640d3f9",
+        "refs\/heads\/main" : "e34286bd84d33256ec6b3348a1b365f21b24eba6",
+        "refs\/heads\/with-dependencies" : "f5b02e675546c901e3f0126c364c745d7f65c259"
+      },
+      "headTreeOID" : "f96ca00f6915cefb32d31338d23524c06a00af65",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "e34286bd84d33256ec6b3348a1b365f21b24eba6",
+      "originalSource" : "coenttb\/swift-issue-windows-existential-crash",
+      "planHeadOID" : "e34286bd84d33256ec6b3348a1b365f21b24eba6",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 10,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/swift-issue-windows-existential-crash.git",
+        "created_at" : "2025-12-24T07:57:08Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/swift-issue-windows-existential-crash",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/swift-issue-windows-existential-crash",
+        "id" : 1122165479,
+        "license" : null,
+        "name" : "swift-issue-windows-existential-crash",
+        "node_id" : "R_kgDOQuLi5w",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2025-12-29T15:22:01Z",
+        "size" : 479,
+        "updated_at" : "2025-12-29T15:22:04Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "662acbb4108779b9435bf828fe9325f414037099",
+      "sourceFiles" : [
+        {
+          "action" : "EXCLUDE_NONREPRODUCER_INFRASTRUCTURE",
+          "copied" : false,
+          "destinationPath" : null,
+          "plannedBlobSHA1" : "ad70260a82e04e7276684c9da47f137844596015",
+          "reason" : "PLAN_EXCLUDES_NONREPRODUCER_INFRASTRUCTURE",
+          "sourcePath" : ".github\/workflows\/ci.yml"
+        },
+        {
+          "action" : "EXCLUDE_NONREPRODUCER_INFRASTRUCTURE",
+          "copied" : false,
+          "destinationPath" : null,
+          "plannedBlobSHA1" : "30bcfa4ed5ccf1f8ec2345e2662ac64067336180",
+          "reason" : "PLAN_EXCLUDES_NONREPRODUCER_INFRASTRUCTURE",
+          "sourcePath" : ".gitignore"
+        },
+        {
+          "action" : "EXCLUDE_NONREPRODUCER_INFRASTRUCTURE",
+          "copied" : false,
+          "destinationPath" : null,
+          "plannedBlobSHA1" : "e66ec0178ed18c5e332e4bfc6bec1f57d9d4782a",
+          "reason" : "PLAN_EXCLUDES_NONREPRODUCER_INFRASTRUCTURE",
+          "sourcePath" : "Package.resolved"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/primary\/Package.swift",
+          "contentSHA256" : "d2b964f7745cf7454635c8a706a6a98a68ed431f565aaad2335ff4ad09df5f01",
+          "copied" : true,
+          "destinationPath" : "swift-issue-windows-existential-crash\/evidence\/source-package\/primary\/Package.swift",
+          "plannedBlobSHA1" : "abf8ae94d2899aa009f35f5aab4a9d021fb83c11",
+          "sourcePath" : "Package.swift",
+          "verifiedGitBlobSHA1" : "abf8ae94d2899aa009f35f5aab4a9d021fb83c11"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/primary\/README.md",
+          "contentSHA256" : "38e5661e588acf9189fd3e63b50d59f8c5bfe801003cecd605f2f1be267c11af",
+          "copied" : true,
+          "destinationPath" : "swift-issue-windows-existential-crash\/evidence\/source-package\/primary\/README.md",
+          "plannedBlobSHA1" : "b7e4cb5a6ce4782ccc3d48b7b0c2d4f714636acd",
+          "sourcePath" : "README.md",
+          "verifiedGitBlobSHA1" : "b7e4cb5a6ce4782ccc3d48b7b0c2d4f714636acd"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/primary\/Sources\/ExistentialCrash\/Crash.swift",
+          "contentSHA256" : "b7520c0bf1e8c8c12aabefc51c735488dcc0ea2a46fc5dd080305eceb64e5ac7",
+          "copied" : true,
+          "destinationPath" : "swift-issue-windows-existential-crash\/evidence\/source-package\/primary\/Sources\/ExistentialCrash\/Crash.swift",
+          "plannedBlobSHA1" : "13eaaab6706067232b3feff781d0168d0d31b9fc",
+          "sourcePath" : "Sources\/ExistentialCrash\/Crash.swift",
+          "verifiedGitBlobSHA1" : "13eaaab6706067232b3feff781d0168d0d31b9fc"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED_WINDOWS_PRIMARY",
+      "tags" : {
+
+      },
+      "terminalDisposition" : "DO_NOT_TRANSFER_PROCESS_WITH_COMPANION_THEN_DELETE_ONLY_AFTER_SEPARATE_AUTHORIZATION",
+      "visibility" : "PUBLIC"
+    },
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 2,
+      "currentSource" : "coenttb\/swift-issue-windows-existential-crash-other-package",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "eb3ee03f3ce67e9d01ad2d864ede5009401ed43c"
+      },
+      "headTreeOID" : "4f1fe60f9c964ee290515ff5b52dc571792603e7",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "eb3ee03f3ce67e9d01ad2d864ede5009401ed43c",
+      "originalSource" : "coenttb\/swift-issue-windows-existential-crash-other-package",
+      "planHeadOID" : "eb3ee03f3ce67e9d01ad2d864ede5009401ed43c",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 4,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/swift-issue-windows-existential-crash-other-package.git",
+        "created_at" : "2025-12-24T09:23:44Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/swift-issue-windows-existential-crash-other-package",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/swift-issue-windows-existential-crash-other-package",
+        "id" : 1122204697,
+        "license" : null,
+        "name" : "swift-issue-windows-existential-crash-other-package",
+        "node_id" : "R_kgDOQuN8GQ",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2025-12-24T09:38:28Z",
+        "size" : 1,
+        "updated_at" : "2025-12-24T09:38:32Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "33a799fe7a5be7169df5e90442c9008a189db49c",
+      "sourceFiles" : [
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/fixtures\/other-package\/Package.swift",
+          "contentSHA256" : "246af88928855c6124003024f6682d1d66b3bf8400a3d78c90135d6beecdc050",
+          "copied" : true,
+          "destinationPath" : "swift-issue-windows-existential-crash\/evidence\/fixtures\/other-package\/Package.swift",
+          "plannedBlobSHA1" : "50fff3fba047ad9a6ef0f85624bfa3194eb7d7b1",
+          "sourcePath" : "Package.swift",
+          "verifiedGitBlobSHA1" : "50fff3fba047ad9a6ef0f85624bfa3194eb7d7b1"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/fixtures\/other-package\/Sources\/BaseModule\/BaseModule.swift",
+          "contentSHA256" : "b0ab127becbdffa55772acc041d1bec3ed5685cf3506761d948e3041e24772d3",
+          "copied" : true,
+          "destinationPath" : "swift-issue-windows-existential-crash\/evidence\/fixtures\/other-package\/Sources\/BaseModule\/BaseModule.swift",
+          "plannedBlobSHA1" : "fce03b7097b1c14054790c664c657d4168ac43c0",
+          "sourcePath" : "Sources\/BaseModule\/BaseModule.swift",
+          "verifiedGitBlobSHA1" : "fce03b7097b1c14054790c664c657d4168ac43c0"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED_WINDOWS_COMPANION",
+      "tags" : {
+        "refs\/tags\/0.1.0" : "33a799fe7a5be7169df5e90442c9008a189db49c",
+        "refs\/tags\/0.2.0" : "eb3ee03f3ce67e9d01ad2d864ede5009401ed43c"
+      },
+      "terminalDisposition" : "DO_NOT_TRANSFER_NEST_UNDER_PRIMARY_PROCESS_THEN_DELETE_ONLY_AFTER_SEPARATE_AUTHORIZATION",
+      "visibility" : "PUBLIC"
+    }
+  ],
+  "title" : "[Compiler][ICE] Windows debug-info mangling crashes for a cross-package existential type"
+}

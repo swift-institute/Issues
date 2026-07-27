@@ -1,0 +1,18 @@
+{
+  "authoritativeCommand" : "swift build -c debug",
+  "authoritativeEvidenceRoot" : "evidence\/source-package",
+  "canonicalIssueKey" : "windows-existential-crash",
+  "environment" : "Swift 6.0.3+; x86_64-unknown-windows-msvc; macOS\/Linux negative controls; three primary branches and companion tags 0.1.0\/0.2.0 must remain archived.",
+  "generatedIndexFiles" : [
+    "Sources\/Reproducer\/main.swift",
+    "Tests\/Reproducer.swift"
+  ],
+  "generatedIndexFilesAreAuthoritativeReproducer" : false,
+  "issueNumber" : "21",
+  "negativeControlOrExpectedBehavior" : "The two-package source compiles with DWARF debug information on Windows.",
+  "positiveTrigger" : "Swift 6.0.3 assertions build fails isActuallyCanonicalOrNull while mangling the existential; macOS\/Linux and -gnone controls pass.",
+  "reason" : "The trigger depends on cross-module, cross-package, toolchain, platform, or test-discovery structure. A flattened synthetic package would not be evidence-equivalent.",
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+}

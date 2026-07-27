@@ -1,0 +1,18 @@
+{
+  "authoritativeCommand" : "swift build",
+  "authoritativeEvidenceRoot" : "evidence\/source-package",
+  "canonicalIssueKey" : "property-view-tag-constraint-cross-module",
+  "environment" : "Swift 6.2.x; cross-module source package and workaround control retained.",
+  "generatedIndexFiles" : [
+    "Sources\/Reproducer\/main.swift",
+    "Tests\/Reproducer.swift"
+  ],
+  "generatedIndexFilesAreAuthoritativeReproducer" : false,
+  "issueNumber" : "13",
+  "negativeControlOrExpectedBehavior" : "Mutually constrained extension members coexist and overload resolution selects the applicable one.",
+  "positiveTrigger" : "The client compilation reports an invalid redeclaration despite distinct constraints.",
+  "reason" : "The trigger depends on cross-module, cross-package, toolchain, platform, or test-discovery structure. A flattened synthetic package would not be evidence-equivalent.",
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+}

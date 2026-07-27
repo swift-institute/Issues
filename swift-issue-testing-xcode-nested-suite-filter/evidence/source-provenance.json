@@ -1,0 +1,120 @@
+{
+  "approvedImpactSHA256" : "0e8d24930dd248a2f7db2929c06bf240317030656fe829563029ae94bd6e5b68",
+  "approvedModelSHA256" : "1064ae5eb1a20c786caf7bb337f0451bed3a7fab0a9094217a54d4259c3f4514",
+  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-testing-xcode-nested-suite-filter",
+  "canonicalIssueKey" : "testing-xcode-nested-suite-filter",
+  "canonicalIssueNumber" : 19,
+  "canonicalIssueURL" : "https:\/\/github.com\/swift-institute\/Issues\/issues\/19",
+  "contentMode" : "CLEAN_COPY_EXACT_PINNED_BLOBS",
+  "dossier" : "swift-issue-testing-xcode-nested-suite-filter",
+  "frozenPlanSHA256" : "b96d5afd1f53f8009a916a844540f9d12548df847f28e32e733756e3160b3a31",
+  "generated" : "2026-07-27",
+  "githubMutationPerformed" : false,
+  "labels" : [
+    "bug"
+  ],
+  "noSourceAncestryImported" : true,
+  "repositoryMutationPerformed" : false,
+  "schemaVersion" : 1,
+  "sources" : [
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 2,
+      "currentSource" : "coenttb\/swift-issue-testing-xcode-nested-suite-filter",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "55c3dee1dc46dfd3276ad0e1e799ba3d9a64acd3"
+      },
+      "headTreeOID" : "c990d0dd7ca5bdfd192261583810fc4969494b04",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "55c3dee1dc46dfd3276ad0e1e799ba3d9a64acd3",
+      "originalSource" : "coenttb\/swift-issue-testing-xcode-nested-suite-filter",
+      "planHeadOID" : "55c3dee1dc46dfd3276ad0e1e799ba3d9a64acd3",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 6,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/swift-issue-testing-xcode-nested-suite-filter.git",
+        "created_at" : "2026-03-03T14:07:37Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/swift-issue-testing-xcode-nested-suite-filter",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/swift-issue-testing-xcode-nested-suite-filter",
+        "id" : 1171695368,
+        "license" : null,
+        "name" : "swift-issue-testing-xcode-nested-suite-filter",
+        "node_id" : "R_kgDORdanCA",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2026-03-03T14:08:11Z",
+        "size" : 2,
+        "updated_at" : "2026-04-30T21:02:56Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "0850b4585992fc357bee11a6fa31e60387ca67ea",
+      "sourceFiles" : [
+        {
+          "action" : "EXCLUDE_NONREPRODUCER_INFRASTRUCTURE",
+          "copied" : false,
+          "destinationPath" : null,
+          "plannedBlobSHA1" : "1327ba964734b4a1a5aa77d4bcc9184ef579db23",
+          "reason" : "PLAN_EXCLUDES_NONREPRODUCER_INFRASTRUCTURE",
+          "sourcePath" : ".gitignore"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Package.swift",
+          "contentSHA256" : "5053703de09d72c76c8b6a7c8a5c033b4c705b382d8cbe0e74421e820ac653ef",
+          "copied" : true,
+          "destinationPath" : "swift-issue-testing-xcode-nested-suite-filter\/evidence\/source-package\/Package.swift",
+          "plannedBlobSHA1" : "fcf062c509952674b118a5808c89407e28bb910a",
+          "sourcePath" : "Package.swift",
+          "verifiedGitBlobSHA1" : "fcf062c509952674b118a5808c89407e28bb910a"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/README.md",
+          "contentSHA256" : "567e7bc65e9ccef3bd82a08a1b807d97d05c6763904af214586c9bd05eb25970",
+          "copied" : true,
+          "destinationPath" : "swift-issue-testing-xcode-nested-suite-filter\/evidence\/source-package\/README.md",
+          "plannedBlobSHA1" : "a260e405f2b2077b36623b766c516f492af54d9d",
+          "sourcePath" : "README.md",
+          "verifiedGitBlobSHA1" : "a260e405f2b2077b36623b766c516f492af54d9d"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Tests\/Tests\/Tests.swift",
+          "contentSHA256" : "b5c9cb2cf907622f77aee0144762557c2ccf13a1f11221338cbaffe38b3595eb",
+          "copied" : true,
+          "destinationPath" : "swift-issue-testing-xcode-nested-suite-filter\/evidence\/source-package\/Tests\/Tests\/Tests.swift",
+          "plannedBlobSHA1" : "28a7abe9c380a2d452be455146247daab2850c1e",
+          "sourcePath" : "Tests\/Tests\/Tests.swift",
+          "verifiedGitBlobSHA1" : "28a7abe9c380a2d452be455146247daab2850c1e"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED",
+      "tags" : {
+
+      },
+      "terminalDisposition" : "DO_NOT_TRANSFER_PROCESS_THEN_DELETE_ONLY_AFTER_SEPARATE_AUTHORIZATION",
+      "visibility" : "PUBLIC"
+    }
+  ],
+  "title" : "[Compiler][Runtime] Xcode gutter action reports zero tests for deeply nested Swift Testing suites"
+}

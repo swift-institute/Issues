@@ -1,0 +1,140 @@
+{
+  "approvedImpactSHA256" : "0e8d24930dd248a2f7db2929c06bf240317030656fe829563029ae94bd6e5b68",
+  "approvedModelSHA256" : "1064ae5eb1a20c786caf7bb337f0451bed3a7fab0a9094217a54d4259c3f4514",
+  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-rawlayout-deinit-cross-package",
+  "canonicalIssueKey" : "rawlayout-deinit-cross-package",
+  "canonicalIssueNumber" : 14,
+  "canonicalIssueURL" : "https:\/\/github.com\/swift-institute\/Issues\/issues\/14",
+  "contentMode" : "CLEAN_COPY_EXACT_PINNED_BLOBS",
+  "dossier" : "swift-issue-rawlayout-deinit-cross-package",
+  "frozenPlanSHA256" : "b96d5afd1f53f8009a916a844540f9d12548df847f28e32e733756e3160b3a31",
+  "generated" : "2026-07-27",
+  "githubMutationPerformed" : false,
+  "labels" : [
+    "bug"
+  ],
+  "noSourceAncestryImported" : true,
+  "repositoryMutationPerformed" : false,
+  "schemaVersion" : 1,
+  "sources" : [
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 4,
+      "currentSource" : "coenttb\/swift-issue-rawlayout-deinit-cross-package",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "5cf48c7cb505e3aaaa2e55fd6cd147034194fa76"
+      },
+      "headTreeOID" : "9f1ed85302236c853fc0431790e9244d130a0586",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "5cf48c7cb505e3aaaa2e55fd6cd147034194fa76",
+      "originalSource" : "coenttb\/swift-issue-rawlayout-deinit-cross-package",
+      "planHeadOID" : "5cf48c7cb505e3aaaa2e55fd6cd147034194fa76",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 11,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/swift-issue-rawlayout-deinit-cross-package.git",
+        "created_at" : "2026-02-05T17:34:44Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/swift-issue-rawlayout-deinit-cross-package",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/swift-issue-rawlayout-deinit-cross-package",
+        "id" : 1150789124,
+        "license" : null,
+        "name" : "swift-issue-rawlayout-deinit-cross-package",
+        "node_id" : "R_kgDORJemBA",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2026-03-20T11:25:34Z",
+        "size" : 7,
+        "updated_at" : "2026-04-30T21:02:52Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "785b051c42c481a40c150d273b50062d45631f60",
+      "sourceFiles" : [
+        {
+          "action" : "EXCLUDE_NONREPRODUCER_INFRASTRUCTURE",
+          "copied" : false,
+          "destinationPath" : null,
+          "plannedBlobSHA1" : "1327ba964734b4a1a5aa77d4bcc9184ef579db23",
+          "reason" : "PLAN_EXCLUDES_NONREPRODUCER_INFRASTRUCTURE",
+          "sourcePath" : ".gitignore"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Package.swift",
+          "contentSHA256" : "0236814d7589ddef0424a3a034aa3f039a7632a26d4491a8c2c35a41945f644f",
+          "copied" : true,
+          "destinationPath" : "swift-issue-rawlayout-deinit-cross-package\/evidence\/source-package\/Package.swift",
+          "plannedBlobSHA1" : "b4c317db1f5eefd9d3ff6e35d8e10cee23cfc261",
+          "sourcePath" : "Package.swift",
+          "verifiedGitBlobSHA1" : "b4c317db1f5eefd9d3ff6e35d8e10cee23cfc261"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/README.md",
+          "contentSHA256" : "4cdf420c91f039eea3eebda7e3331b80e1fb126a3997a68eb7f1b07c9a922931",
+          "copied" : true,
+          "destinationPath" : "swift-issue-rawlayout-deinit-cross-package\/evidence\/source-package\/README.md",
+          "plannedBlobSHA1" : "fb9f7285ee16aad5e25658245aac3f3f69bc4593",
+          "sourcePath" : "README.md",
+          "verifiedGitBlobSHA1" : "fb9f7285ee16aad5e25658245aac3f3f69bc4593"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Sources\/ContainerLib\/Container.swift",
+          "contentSHA256" : "8e3d24cd8c39db17329c3413fc5da7f7e5128a77f18fba87e4e29bd37afbc900",
+          "copied" : true,
+          "destinationPath" : "swift-issue-rawlayout-deinit-cross-package\/evidence\/source-package\/Sources\/ContainerLib\/Container.swift",
+          "plannedBlobSHA1" : "dca0e0b2cb236b2cee951aba716c4ff72439407f",
+          "sourcePath" : "Sources\/ContainerLib\/Container.swift",
+          "verifiedGitBlobSHA1" : "dca0e0b2cb236b2cee951aba716c4ff72439407f"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Sources\/SingleModuleTest\/main.swift",
+          "contentSHA256" : "c499f7585a819a5d3a68328ee9371a97a132ae013ff0c22da37ec50e46616172",
+          "copied" : true,
+          "destinationPath" : "swift-issue-rawlayout-deinit-cross-package\/evidence\/source-package\/Sources\/SingleModuleTest\/main.swift",
+          "plannedBlobSHA1" : "237a209dde2770c62546d4ab1ba7d8e4e81f5d3d",
+          "sourcePath" : "Sources\/SingleModuleTest\/main.swift",
+          "verifiedGitBlobSHA1" : "237a209dde2770c62546d4ab1ba7d8e4e81f5d3d"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Tests\/ContainerTests\/ContainerTests.swift",
+          "contentSHA256" : "bc2891487cade7f16c2ac045e6e7705270ecda4a955d09b4437e1bf3e1d1c0b2",
+          "copied" : true,
+          "destinationPath" : "swift-issue-rawlayout-deinit-cross-package\/evidence\/source-package\/Tests\/ContainerTests\/ContainerTests.swift",
+          "plannedBlobSHA1" : "cc216335d919de36c0b27eb9a9e94b9ff201c268",
+          "sourcePath" : "Tests\/ContainerTests\/ContainerTests.swift",
+          "verifiedGitBlobSHA1" : "cc216335d919de36c0b27eb9a9e94b9ff201c268"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED",
+      "tags" : {
+
+      },
+      "terminalDisposition" : "DO_NOT_TRANSFER_PROCESS_THEN_DELETE_ONLY_AFTER_SEPARATE_AUTHORIZATION",
+      "visibility" : "PUBLIC"
+    }
+  ],
+  "title" : "[Compiler][Miscompile] @_rawLayout element deinit is skipped across package boundaries"
+}

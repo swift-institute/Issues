@@ -1,0 +1,18 @@
+{
+  "authoritativeCommand" : "swift test, then invoke the Xcode 26 gutter action for A.B.C.bug()",
+  "authoritativeEvidenceRoot" : "evidence\/source-package",
+  "canonicalIssueKey" : "testing-xcode-nested-suite-filter",
+  "environment" : "Swift 6.2.4; Xcode 26.0 beta; arm64 macOS 26.",
+  "generatedIndexFiles" : [
+    "Sources\/Reproducer\/main.swift",
+    "Tests\/Reproducer.swift"
+  ],
+  "generatedIndexFilesAreAuthoritativeReproducer" : false,
+  "issueNumber" : "19",
+  "negativeControlOrExpectedBehavior" : "The Xcode gutter action selects and runs the nested test.",
+  "positiveTrigger" : "Depth four yields zero tests; depth three succeeds.",
+  "reason" : "The trigger depends on cross-module, cross-package, toolchain, platform, or test-discovery structure. A flattened synthetic package would not be evidence-equivalent.",
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+}

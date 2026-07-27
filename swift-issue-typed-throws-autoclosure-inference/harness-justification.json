@@ -1,0 +1,18 @@
+{
+  "authoritativeCommand" : "swift build",
+  "authoritativeEvidenceRoot" : "evidence\/source-package",
+  "canonicalIssueKey" : "typed-throws-autoclosure-inference",
+  "environment" : "Swift 6.2.3; all platforms per source report.",
+  "generatedIndexFiles" : [
+    "Sources\/Reproducer\/main.swift",
+    "Tests\/Reproducer.swift"
+  ],
+  "generatedIndexFilesAreAuthoritativeReproducer" : false,
+  "issueNumber" : "20",
+  "negativeControlOrExpectedBehavior" : "The nonthrowing autoclosure infers Never and compiles.",
+  "positiveTrigger" : "The compiler reports generic parameter E could not be inferred.",
+  "reason" : "The trigger depends on cross-module, cross-package, toolchain, platform, or test-discovery structure. A flattened synthetic package would not be evidence-equivalent.",
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+}

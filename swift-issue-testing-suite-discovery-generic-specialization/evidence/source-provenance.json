@@ -1,0 +1,120 @@
+{
+  "approvedImpactSHA256" : "0e8d24930dd248a2f7db2929c06bf240317030656fe829563029ae94bd6e5b68",
+  "approvedModelSHA256" : "1064ae5eb1a20c786caf7bb337f0451bed3a7fab0a9094217a54d4259c3f4514",
+  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-testing-suite-discovery-generic-specialization",
+  "canonicalIssueKey" : "testing-suite-discovery-generic-specialization",
+  "canonicalIssueNumber" : 18,
+  "canonicalIssueURL" : "https:\/\/github.com\/swift-institute\/Issues\/issues\/18",
+  "contentMode" : "CLEAN_COPY_EXACT_PINNED_BLOBS",
+  "dossier" : "swift-issue-testing-suite-discovery-generic-specialization",
+  "frozenPlanSHA256" : "b96d5afd1f53f8009a916a844540f9d12548df847f28e32e733756e3160b3a31",
+  "generated" : "2026-07-27",
+  "githubMutationPerformed" : false,
+  "labels" : [
+    "bug"
+  ],
+  "noSourceAncestryImported" : true,
+  "repositoryMutationPerformed" : false,
+  "schemaVersion" : 1,
+  "sources" : [
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 2,
+      "currentSource" : "coenttb\/swift-issue-testing-suite-discovery-generic-specialization",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "cd08564ec00beeab5dd6ecba7c1d5de36159be75"
+      },
+      "headTreeOID" : "3b410ac2b202fbf2c09218a7876a75370c356cbf",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "cd08564ec00beeab5dd6ecba7c1d5de36159be75",
+      "originalSource" : "coenttb\/swift-issue-testing-suite-discovery-generic-specialization",
+      "planHeadOID" : "cd08564ec00beeab5dd6ecba7c1d5de36159be75",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 6,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/swift-issue-testing-suite-discovery-generic-specialization.git",
+        "created_at" : "2026-01-28T21:57:44Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/swift-issue-testing-suite-discovery-generic-specialization",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/swift-issue-testing-suite-discovery-generic-specialization",
+        "id" : 1144636927,
+        "license" : null,
+        "name" : "swift-issue-testing-suite-discovery-generic-specialization",
+        "node_id" : "R_kgDORDnF_w",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2026-01-28T21:58:53Z",
+        "size" : 2,
+        "updated_at" : "2026-04-30T21:03:05Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "105219447aa5215fdbf31cfe9f5cd9e93ce432ab",
+      "sourceFiles" : [
+        {
+          "action" : "EXCLUDE_NONREPRODUCER_INFRASTRUCTURE",
+          "copied" : false,
+          "destinationPath" : null,
+          "plannedBlobSHA1" : "1327ba964734b4a1a5aa77d4bcc9184ef579db23",
+          "reason" : "PLAN_EXCLUDES_NONREPRODUCER_INFRASTRUCTURE",
+          "sourcePath" : ".gitignore"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Package.swift",
+          "contentSHA256" : "c0755459d866b0ace1123a44fda2b5b0b1a021a981f826cecbb7ef6ad6759f28",
+          "copied" : true,
+          "destinationPath" : "swift-issue-testing-suite-discovery-generic-specialization\/evidence\/source-package\/Package.swift",
+          "plannedBlobSHA1" : "80a03eb48cf40322051b97879dd31d58dee63c67",
+          "sourcePath" : "Package.swift",
+          "verifiedGitBlobSHA1" : "80a03eb48cf40322051b97879dd31d58dee63c67"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/README.md",
+          "contentSHA256" : "d10be26d46ee5d207e5072dcedcb3b3bfa4a62ae2016c07c72ab89a3bf2c82bb",
+          "copied" : true,
+          "destinationPath" : "swift-issue-testing-suite-discovery-generic-specialization\/evidence\/source-package\/README.md",
+          "plannedBlobSHA1" : "4f562098705e542eff4bc14f23152d9df53adb53",
+          "sourcePath" : "README.md",
+          "verifiedGitBlobSHA1" : "4f562098705e542eff4bc14f23152d9df53adb53"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Tests\/DiscoveryTests\/SuiteDiscoveryTests.swift",
+          "contentSHA256" : "5e441ca8fa0848aa5a4b6c190feb4964afa5d7ea9e9cc8736123e984250c8684",
+          "copied" : true,
+          "destinationPath" : "swift-issue-testing-suite-discovery-generic-specialization\/evidence\/source-package\/Tests\/DiscoveryTests\/SuiteDiscoveryTests.swift",
+          "plannedBlobSHA1" : "eb3b8b438dfc50459cfd385dbc49067cce2c184c",
+          "sourcePath" : "Tests\/DiscoveryTests\/SuiteDiscoveryTests.swift",
+          "verifiedGitBlobSHA1" : "eb3b8b438dfc50459cfd385dbc49067cce2c184c"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED",
+      "tags" : {
+
+      },
+      "terminalDisposition" : "DO_NOT_TRANSFER_PROCESS_THEN_DELETE_ONLY_AFTER_SEPARATE_AUTHORIZATION",
+      "visibility" : "PUBLIC"
+    }
+  ],
+  "title" : "[Compiler][Runtime] Swift Testing silently omits suites in generic-specialization extensions"
+}

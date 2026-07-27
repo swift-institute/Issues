@@ -1,0 +1,130 @@
+{
+  "approvedImpactSHA256" : "0e8d24930dd248a2f7db2929c06bf240317030656fe829563029ae94bd6e5b68",
+  "approvedModelSHA256" : "1064ae5eb1a20c786caf7bb337f0451bed3a7fab0a9094217a54d4259c3f4514",
+  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-silgen-property-wrapper-noncopyable",
+  "canonicalIssueKey" : "silgen-property-wrapper-noncopyable",
+  "canonicalIssueNumber" : 17,
+  "canonicalIssueURL" : "https:\/\/github.com\/swift-institute\/Issues\/issues\/17",
+  "contentMode" : "CLEAN_COPY_EXACT_PINNED_BLOBS",
+  "dossier" : "swift-issue-silgen-property-wrapper-noncopyable",
+  "frozenPlanSHA256" : "b96d5afd1f53f8009a916a844540f9d12548df847f28e32e733756e3160b3a31",
+  "generated" : "2026-07-27",
+  "githubMutationPerformed" : false,
+  "labels" : [
+    "bug"
+  ],
+  "noSourceAncestryImported" : true,
+  "repositoryMutationPerformed" : false,
+  "schemaVersion" : 1,
+  "sources" : [
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 2,
+      "currentSource" : "coenttb\/swift-issue-silgen-property-wrapper-noncopyable",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "c660e30961a88f899a7b73d2a4cbd3a8a8350fdd"
+      },
+      "headTreeOID" : "3afcf3bc1f74dad87cfcfa05d390848908273ac4",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "c660e30961a88f899a7b73d2a4cbd3a8a8350fdd",
+      "originalSource" : "coenttb\/swift-issue-silgen-property-wrapper-noncopyable",
+      "planHeadOID" : "c660e30961a88f899a7b73d2a4cbd3a8a8350fdd",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 9,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/swift-issue-silgen-property-wrapper-noncopyable.git",
+        "created_at" : "2026-01-28T12:43:56Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/swift-issue-silgen-property-wrapper-noncopyable",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/swift-issue-silgen-property-wrapper-noncopyable",
+        "id" : 1144218886,
+        "license" : null,
+        "name" : "swift-issue-silgen-property-wrapper-noncopyable",
+        "node_id" : "R_kgDORDNlBg",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2026-01-28T12:45:05Z",
+        "size" : 2,
+        "updated_at" : "2026-04-30T21:03:05Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "7170b5c54f2d629b0c9657af855fc816e96300a1",
+      "sourceFiles" : [
+        {
+          "action" : "EXCLUDE_NONREPRODUCER_INFRASTRUCTURE",
+          "copied" : false,
+          "destinationPath" : null,
+          "plannedBlobSHA1" : "1327ba964734b4a1a5aa77d4bcc9184ef579db23",
+          "reason" : "PLAN_EXCLUDES_NONREPRODUCER_INFRASTRUCTURE",
+          "sourcePath" : ".gitignore"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Package.swift",
+          "contentSHA256" : "5921bb2de19fd1783e04c6437172fb1c5a8aacf152417422cc3239a9c3018cd3",
+          "copied" : true,
+          "destinationPath" : "swift-issue-silgen-property-wrapper-noncopyable\/evidence\/source-package\/Package.swift",
+          "plannedBlobSHA1" : "dbb6b6d30e4af2cd91d6134c98910f1c304747dd",
+          "sourcePath" : "Package.swift",
+          "verifiedGitBlobSHA1" : "dbb6b6d30e4af2cd91d6134c98910f1c304747dd"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/README.md",
+          "contentSHA256" : "6b5317b74d24f559c42e6f2e841fdf495ad8702fdddfb57fc384260535efbb7c",
+          "copied" : true,
+          "destinationPath" : "swift-issue-silgen-property-wrapper-noncopyable\/evidence\/source-package\/README.md",
+          "plannedBlobSHA1" : "935006af8acd2b994c06920a5734f4963ade4044",
+          "sourcePath" : "README.md",
+          "verifiedGitBlobSHA1" : "935006af8acd2b994c06920a5734f4963ade4044"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Sources\/Lib\/Lib.swift",
+          "contentSHA256" : "d0db7cf12eaa02bfda0998d3685b9e963f5d476cd933a69c10688ff69f9c98ca",
+          "copied" : true,
+          "destinationPath" : "swift-issue-silgen-property-wrapper-noncopyable\/evidence\/source-package\/Sources\/Lib\/Lib.swift",
+          "plannedBlobSHA1" : "f7149a580b51ed71db6e0afec2a0f152bc845a6a",
+          "sourcePath" : "Sources\/Lib\/Lib.swift",
+          "verifiedGitBlobSHA1" : "f7149a580b51ed71db6e0afec2a0f152bc845a6a"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "batchRelativeDestination" : "evidence\/source-package\/Tests\/Tests\/Crash.swift",
+          "contentSHA256" : "732c1993493ac0c5c76b4691472b669b85b08780fc531b3aa27b6e2725f1fcbe",
+          "copied" : true,
+          "destinationPath" : "swift-issue-silgen-property-wrapper-noncopyable\/evidence\/source-package\/Tests\/Tests\/Crash.swift",
+          "plannedBlobSHA1" : "97f8aa59d4b08cb83d2f825414e35e3e9daa21a3",
+          "sourcePath" : "Tests\/Tests\/Crash.swift",
+          "verifiedGitBlobSHA1" : "97f8aa59d4b08cb83d2f825414e35e3e9daa21a3"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED",
+      "tags" : {
+
+      },
+      "terminalDisposition" : "DO_NOT_TRANSFER_PROCESS_THEN_DELETE_ONLY_AFTER_SEPARATE_AUTHORIZATION",
+      "visibility" : "PUBLIC"
+    }
+  ],
+  "title" : "[Compiler][ICE] cross-module property-wrapper access on a ~Copyable type crashes SILGen"
+}

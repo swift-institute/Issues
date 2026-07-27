@@ -1,0 +1,18 @@
+{
+  "authoritativeCommand" : "swift test list",
+  "authoritativeEvidenceRoot" : "evidence\/source-package",
+  "canonicalIssueKey" : "testing-suite-discovery-generic-specialization",
+  "environment" : "Apple Swift 6.2.3; arm64-apple-macosx26.0; source discovery control verified.",
+  "generatedIndexFiles" : [
+    "Sources\/Reproducer\/main.swift",
+    "Tests\/Reproducer.swift"
+  ],
+  "generatedIndexFilesAreAuthoritativeReproducer" : false,
+  "issueNumber" : "18",
+  "negativeControlOrExpectedBehavior" : "The specialized-extension suite is listed and executed.",
+  "positiveTrigger" : "Only the non-generic control suite appears; no warning is emitted.",
+  "reason" : "The trigger depends on cross-module, cross-package, toolchain, platform, or test-discovery structure. A flattened synthetic package would not be evidence-equivalent.",
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+}

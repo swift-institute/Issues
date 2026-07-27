@@ -1,0 +1,250 @@
+{
+  "approvedImpactSHA256" : "0e8d24930dd248a2f7db2929c06bf240317030656fe829563029ae94bd6e5b68",
+  "approvedModelSHA256" : "1064ae5eb1a20c786caf7bb337f0451bed3a7fab0a9094217a54d4259c3f4514",
+  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-spm-repository-url-identity",
+  "canonicalIssueKey" : "spm-repository-url-identity",
+  "canonicalIssueNumber" : 22,
+  "canonicalIssueURL" : "https:\/\/github.com\/swift-institute\/Issues\/issues\/22",
+  "contentMode" : "REMOTE_IDENTITY_PARENT_METADATA_ONLY",
+  "dossier" : "swift-issue-spm-repository-url-identity",
+  "frozenPlanSHA256" : "b96d5afd1f53f8009a916a844540f9d12548df847f28e32e733756e3160b3a31",
+  "generated" : "2026-07-27",
+  "githubMutationPerformed" : false,
+  "labels" : [
+    "bug"
+  ],
+  "noSourceAncestryImported" : true,
+  "repositoryMutationPerformed" : false,
+  "schemaVersion" : 1,
+  "sources" : [
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 1,
+      "currentSource" : "coenttb\/test-algebra-primitives",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "121c092331e624a627d76979c62d006dead1d752"
+      },
+      "headTreeOID" : "8d5223a4029e65826ce9f46924e423c7d3cd79b9",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "121c092331e624a627d76979c62d006dead1d752",
+      "originalSource" : "coenttb\/test-algebra-primitives",
+      "planHeadOID" : "121c092331e624a627d76979c62d006dead1d752",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 4,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/test-algebra-primitives.git",
+        "created_at" : "2026-02-23T16:10:38Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/test-algebra-primitives",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/test-algebra-primitives",
+        "id" : 1164910896,
+        "license" : null,
+        "name" : "test-algebra-primitives",
+        "node_id" : "R_kgDORW8hMA",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2026-02-23T16:10:50Z",
+        "size" : 0,
+        "updated_at" : "2026-04-30T21:02:59Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "121c092331e624a627d76979c62d006dead1d752",
+      "sourceFiles" : [
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "copied" : false,
+          "destinationPath" : "swift-issue-spm-repository-url-identity\/evidence\/fixtures\/test-algebra-primitives\/Package.swift",
+          "plannedBlobSHA1" : "8bea8dd0248060e0dbea03c468a05acc572990dc",
+          "reason" : "REMOTE_IDENTITY_FIXTURE_RETAINED_METADATA_ONLY",
+          "sourcePath" : "Package.swift"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "copied" : false,
+          "destinationPath" : "swift-issue-spm-repository-url-identity\/evidence\/fixtures\/test-algebra-primitives\/Sources\/TestAlgebraPrimitives\/Identity.swift",
+          "plannedBlobSHA1" : "8d9ecb91e78603eb1e2f8f93512411801ea3a00d",
+          "reason" : "REMOTE_IDENTITY_FIXTURE_RETAINED_METADATA_ONLY",
+          "sourcePath" : "Sources\/TestAlgebraPrimitives\/Identity.swift"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED_REMOTE_IDENTITY_FIXTURE_RETAIN_WHILE_ACTIVE_MAIN_AND_TAG_0_1_0_121c092331e624a627d76979c62d006dead1d752",
+      "tags" : {
+        "refs\/tags\/0.1.0" : "121c092331e624a627d76979c62d006dead1d752"
+      },
+      "terminalDisposition" : "RETAIN_REMOTE_IDENTITY_WHILE_ACTIVE_DELETE_ONLY_WHEN_NO_LONGER_CONSUMED_AND_SEPARATELY_AUTHORIZED",
+      "visibility" : "PUBLIC"
+    },
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 1,
+      "currentSource" : "coenttb\/test-buffer-foundations",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "9ee5b23e84e2ab27a6e891c0b200bd8bd39e7b07"
+      },
+      "headTreeOID" : "7b798ed431732704097a0b2811e31e1cde3a35e3",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "9ee5b23e84e2ab27a6e891c0b200bd8bd39e7b07",
+      "originalSource" : "coenttb\/test-buffer-foundations",
+      "planHeadOID" : "9ee5b23e84e2ab27a6e891c0b200bd8bd39e7b07",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 4,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/test-buffer-foundations.git",
+        "created_at" : "2026-02-23T16:12:04Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/test-buffer-foundations",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/test-buffer-foundations",
+        "id" : 1164912001,
+        "license" : null,
+        "name" : "test-buffer-foundations",
+        "node_id" : "R_kgDORW8lgQ",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2026-02-23T16:12:11Z",
+        "size" : 0,
+        "updated_at" : "2026-04-30T21:02:57Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "9ee5b23e84e2ab27a6e891c0b200bd8bd39e7b07",
+      "sourceFiles" : [
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "copied" : false,
+          "destinationPath" : "swift-issue-spm-repository-url-identity\/evidence\/fixtures\/test-buffer-foundations\/Package.swift",
+          "plannedBlobSHA1" : "1be9d0ed7df9a607689faf45bab9c9f681d7fac6",
+          "reason" : "REMOTE_IDENTITY_FIXTURE_RETAINED_METADATA_ONLY",
+          "sourcePath" : "Package.swift"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "copied" : false,
+          "destinationPath" : "swift-issue-spm-repository-url-identity\/evidence\/fixtures\/test-buffer-foundations\/Sources\/TestBufferFoundations\/Identity.swift",
+          "plannedBlobSHA1" : "74740cd19960f964f8529176c8f3018fe971eb8f",
+          "reason" : "REMOTE_IDENTITY_FIXTURE_RETAINED_METADATA_ONLY",
+          "sourcePath" : "Sources\/TestBufferFoundations\/Identity.swift"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED_REMOTE_IDENTITY_FIXTURE_RETAIN_WHILE_ACTIVE_MAIN_AND_TAG_0_1_0_9ee5b23e84e2ab27a6e891c0b200bd8bd39e7b07",
+      "tags" : {
+        "refs\/tags\/0.1.0" : "9ee5b23e84e2ab27a6e891c0b200bd8bd39e7b07"
+      },
+      "terminalDisposition" : "RETAIN_REMOTE_IDENTITY_WHILE_ACTIVE_DELETE_ONLY_WHEN_NO_LONGER_CONSUMED_AND_SEPARATELY_AUTHORIZED",
+      "visibility" : "PUBLIC"
+    },
+    {
+      "authors" : [
+        "coenttb"
+      ],
+      "coldArchive" : {
+        "bundleSHA256" : null,
+        "locator" : null,
+        "status" : "REQUIRED_BEFORE_ANY_SOURCE_DELETION_NOT_CREATED_BY_THIS_STAGING_RUN"
+      },
+      "commitCountOnDefaultBranch" : 1,
+      "currentSource" : "coenttb\/test-buffer-primitives",
+      "deleteAuthorized" : false,
+      "headMatchesFrozenPlan" : true,
+      "heads" : {
+        "refs\/heads\/main" : "ba3b1233b4c5001779acbe76767dd2480b8e8414"
+      },
+      "headTreeOID" : "38112ed7999a157d1a05a1f83de8975aeeec97ce",
+      "issueCountExcludingPullRequests" : 0,
+      "liveDefaultBranch" : "main",
+      "liveHeadOID" : "ba3b1233b4c5001779acbe76767dd2480b8e8414",
+      "originalSource" : "coenttb\/test-buffer-primitives",
+      "planHeadOID" : "ba3b1233b4c5001779acbe76767dd2480b8e8414",
+      "pullRequestCount" : 0,
+      "recursiveHeadTreeEntryCount" : 4,
+      "releaseCount" : 0,
+      "repository" : {
+        "archived" : false,
+        "clone_url" : "https:\/\/github.com\/coenttb\/test-buffer-primitives.git",
+        "created_at" : "2026-02-23T16:10:42Z",
+        "default_branch" : "main",
+        "disabled" : false,
+        "fork" : false,
+        "full_name" : "coenttb\/test-buffer-primitives",
+        "has_discussions" : false,
+        "has_issues" : true,
+        "has_pages" : false,
+        "has_projects" : true,
+        "has_wiki" : true,
+        "html_url" : "https:\/\/github.com\/coenttb\/test-buffer-primitives",
+        "id" : 1164910948,
+        "license" : null,
+        "name" : "test-buffer-primitives",
+        "node_id" : "R_kgDORW8hZA",
+        "open_issues_count" : 0,
+        "private" : false,
+        "pushed_at" : "2026-02-23T16:10:51Z",
+        "size" : 0,
+        "updated_at" : "2026-04-30T21:03:00Z",
+        "visibility" : "public"
+      },
+      "rootOID" : "ba3b1233b4c5001779acbe76767dd2480b8e8414",
+      "sourceFiles" : [
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "copied" : false,
+          "destinationPath" : "swift-issue-spm-repository-url-identity\/evidence\/fixtures\/test-buffer-primitives\/Package.swift",
+          "plannedBlobSHA1" : "ff8f01110e26b9296c9f1b9678f6c8cda3586cba",
+          "reason" : "REMOTE_IDENTITY_FIXTURE_RETAINED_METADATA_ONLY",
+          "sourcePath" : "Package.swift"
+        },
+        {
+          "action" : "COPY_VERBATIM_CLEAN_CONTENT",
+          "copied" : false,
+          "destinationPath" : "swift-issue-spm-repository-url-identity\/evidence\/fixtures\/test-buffer-primitives\/Sources\/TestBufferPrimitives\/Identity.swift",
+          "plannedBlobSHA1" : "725268a93b2bc076c8f2fd13c7c41ecf28ee0d91",
+          "reason" : "REMOTE_IDENTITY_FIXTURE_RETAINED_METADATA_ONLY",
+          "sourcePath" : "Sources\/TestBufferPrimitives\/Identity.swift"
+        }
+      ],
+      "sourceState" : "UNTRANSFERRED_REMOTE_IDENTITY_FIXTURE_RETAIN_WHILE_ACTIVE_MAIN_AND_TAG_0_1_0_ba3b1233b4c5001779acbe76767dd2480b8e8414",
+      "tags" : {
+        "refs\/tags\/0.1.0" : "ba3b1233b4c5001779acbe76767dd2480b8e8414"
+      },
+      "terminalDisposition" : "RETAIN_REMOTE_IDENTITY_WHILE_ACTIVE_DELETE_ONLY_WHEN_NO_LONGER_CONSUMED_AND_SEPARATELY_AUTHORIZED",
+      "visibility" : "PUBLIC"
+    }
+  ],
+  "title" : "[SwiftPM][Resolution] repository URL identity and redirects change package identity resolution"
+}
