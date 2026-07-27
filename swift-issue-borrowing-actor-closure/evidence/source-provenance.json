@@ -1,0 +1,34 @@
+{
+  "canonicalIssue": "https://github.com/swift-institute/Issues/issues/3",
+  "sourceRepository": {
+    "databaseId": 1132057032,
+    "nodeId": "R_kgDOQ3nRyA",
+    "originalUrl": "https://github.com/coenttb/swift-issue-borrowing-actor-closure",
+    "transitionalUrl": "https://github.com/swift-institute/swift-issue-borrowing-actor-closure",
+    "visibility": "PUBLIC",
+    "defaultBranch": "main",
+    "rootCommit": "eafd1e9c826ed95f5fcc6d51706ecb96e4dd6821",
+    "headCommit": "d296ccf8b2ce0d3346a98fac96732deccc152c9c",
+    "headTree": "498b1cb7a364a1ead6d7ae5f8988145d5bddb1f4",
+    "commitCount": 3,
+    "branches": {
+      "main": "d296ccf8b2ce0d3346a98fac96732deccc152c9c"
+    },
+    "tags": {},
+    "authors": [
+      "Coen ten Thije Boonkkamp <coen@coenttb.com>"
+    ],
+    "licenseFile": null
+  },
+  "contentMapping": {
+    "README.md": "swift-issue-borrowing-actor-closure/README.md",
+    "Sources/BorrowingActorClosure/BorrowingActorClosure.swift": "swift-issue-borrowing-actor-closure/Sources/Reproducer/Crash.swift.txt"
+  },
+  "historyPolicy": "clean-content consolidation; source ancestry not merged",
+  "privacyReview": "public compiler reproducer; no credentials, customer data, or private implementation details",
+  "temporaryBundleReceipt": {
+    "sha256": "90422c04c38098613b45b5fe478661efaa21a20e387b6e83ec0ba7a430a5a776",
+    "sizeBytes": 4608,
+    "status": "temporary migration verification; source repository remains live until deletion gate"
+  }
+}

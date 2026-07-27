@@ -62,6 +62,27 @@ let package = Package(
 
     targets: [
 
+        // MARK: - swift-issue-borrowing-actor-closure
+        //
+        // swift-institute/Issues#3 — `swift-frontend` crashes in
+        // MoveOnlyTypeEliminator when an actor method captures a `borrowing`
+        // class parameter in a non-escaping closure. The triggering source is
+        // compiled out of process so the compiler crash does not abort the
+        // Issues package build itself.
+
+        .testTarget(
+            name: "swift-issue-borrowing-actor-closure-Tests",
+            path: "swift-issue-borrowing-actor-closure/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-borrowing-actor-closure-Repro",
+            path: "swift-issue-borrowing-actor-closure/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
+
         // MARK: - swift-issue-pointer-arithmetic-linux-miscompile
         //
         // swiftlang/swift#77558 — pointer arithmetic release-mode

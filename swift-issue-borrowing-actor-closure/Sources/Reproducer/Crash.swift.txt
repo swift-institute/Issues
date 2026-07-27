@@ -1,0 +1,11 @@
+public actor State {
+    public var subscriptions: [Subscription] = []
+
+    public init() {}
+
+    public func unsubscribe(_ subscription: borrowing Subscription) {
+        subscriptions.removeAll { $0 === subscription }
+    }
+}
+
+public final class Subscription: Sendable {}
