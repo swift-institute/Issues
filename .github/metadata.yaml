@@ -1,0 +1,5 @@
+# .github/metadata.yaml
+description: "Minimum reproducers for Swift toolchain & compiler bugs encountered while developing the Swift Institute ecosystem."
+homepage: "https://swift-institute.org"
+readme:
+  family: C
