@@ -86,7 +86,8 @@ public struct Vec<Bound: ~Copyable> {
 
         @inlinable
         // swift-linter:disable:next inlinable internal access
-        // REASON: This internal initializer is part of the cross-module mangler reproducer; changing its visibility alters the compiler trigger's access surface.
+        // REASON: This internal initializer is part of the cross-module mangler
+        // trigger; changing its visibility alters the reproducer's access surface.
         init(current: Int, end: Int, transform: @escaping @Sendable (Int) -> Bound) {
             self.current = current
             self.end = end

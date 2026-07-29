@@ -8,7 +8,7 @@ Lint.run(dependencies: [
         url: "https://github.com/swift-foundations/swift-institute-linter-rules.git",
         branch: "main",
         products: ["Linter Institute Rules"]
-    ),
+    )
 ]) {
     Lint.Rule.Bundle.institute
 }

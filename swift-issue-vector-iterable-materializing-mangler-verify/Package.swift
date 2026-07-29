@@ -12,7 +12,7 @@ let package = Package(
             swiftSettings: [
                 .enableExperimentalFeature("SuppressedAssociatedTypes"),
                 .enableExperimentalFeature("Lifetimes"),
-                .unsafeFlags(["-whole-module-optimization"]),
+                .unsafeFlags(["-whole-module-optimization"])
             ]
         ),
         .target(
@@ -23,9 +23,9 @@ let package = Package(
             swiftSettings: [
                 .enableExperimentalFeature("SuppressedAssociatedTypes"),
                 .enableExperimentalFeature("Lifetimes"),
-                .unsafeFlags(["-whole-module-optimization"]),
+                .unsafeFlags(["-whole-module-optimization"])
             ]
-        ),
+        )
     ],
     swiftLanguageModes: [.v6]
 )
