@@ -16,7 +16,7 @@ public struct Container<Value> {
 
 @inline(never)
 public func makeContainer() -> Container<Bool> {
-    Container(transform: { _ in false })
+    Container<Bool>(transform: { _ in false })
 }
 
 _ = makeContainer()

@@ -66,9 +66,11 @@ struct `IRGen Tests` {
         #endif
     }
 
-    static func bugFires(sourceName: String) -> Bool? {
+    static func bugFires(
+        sourceName: String
+    ) -> (fired: Bool?, diagnostic: String?) {
         guard let compiler = compilerURL(named: "swiftc") else {
-            return nil
+            return (nil, "swiftc was not found on PATH.")
         }
 
         let source = URL(fileURLWithPath: #filePath)
@@ -78,7 +80,7 @@ struct `IRGen Tests` {
             .appendingPathComponent(sourceName)
 
         guard FileManager.default.fileExists(atPath: source.path) else {
-            return nil
+            return (nil, "\(sourceName) was not found.")
         }
 
         let identifier = sourceName.replacingOccurrences(of: ".swift.txt", with: "")
@@ -91,7 +93,7 @@ struct `IRGen Tests` {
 
         try? FileManager.default.removeItem(at: swiftSource)
         guard (try? FileManager.default.copyItem(at: source, to: swiftSource)) != nil else {
-            return nil
+            return (nil, "\(sourceName) could not be copied for compilation.")
         }
         defer {
             try? FileManager.default.removeItem(at: swiftSource)
@@ -115,7 +117,7 @@ struct `IRGen Tests` {
         do {
             try process.run()
         } catch {
-            return nil
+            return (nil, "swiftc could not be launched: \(error)")
         }
         process.waitUntilExit()
 
@@ -126,12 +128,18 @@ struct `IRGen Tests` {
 
         if errorText.contains("hasErrorResult()")
             && errorText.contains("IRGenRequest") {
-            return true
+            return (true, nil)
         }
         if process.terminationStatus == 0 {
-            return false
+            return (false, nil)
         }
-        return nil
+        return (
+            nil,
+            """
+            swiftc exited with status \(process.terminationStatus):
+            \(errorText)
+            """
+        )
     }
 
     @Test(
@@ -139,8 +147,14 @@ struct `IRGen Tests` {
         arguments: sources
     )
     func conversion(sourceName: String) {
-        guard let fired = Self.bugFires(sourceName: sourceName) else {
-            Issue.record("The Swift compiler subprocess could not be evaluated for \(sourceName).")
+        let result = Self.bugFires(sourceName: sourceName)
+        guard let fired = result.fired else {
+            Issue.record(
+                """
+                The Swift compiler subprocess could not be evaluated for \(sourceName).
+                \(result.diagnostic ?? "No compiler diagnostic was emitted.")
+                """
+            )
             return
         }
 
