@@ -1,0 +1,22 @@
+// swiftlang/swift#87030
+//
+// This direct-initialization form preserves a second manifestation of the same
+// non-throwing-to-typed-throws conversion failure without its discovery domain.
+
+public struct Container<Value> {
+    public var transform: (Value) throws(Failure) -> Value
+    public enum Failure: Swift.Error { case invalid }
+
+    public init(
+        transform: @escaping (Value) throws(Failure) -> Value
+    ) {
+        self.transform = transform
+    }
+}
+
+@inline(never)
+public func makeContainer() -> Container<Bool> {
+    Container(transform: { _ in false })
+}
+
+_ = makeContainer()
