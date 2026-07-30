@@ -17,7 +17,7 @@
 /// 4. Conditional `Copyable` conformance on the nested struct
 /// 5. Conformance to a protocol with `associatedtype Element` (same name as generic param)
 
-import Core
+import swift_issue_noncopyable_sequence_conformance_Core
 
 // MARK: - Minimal Reproduction
 

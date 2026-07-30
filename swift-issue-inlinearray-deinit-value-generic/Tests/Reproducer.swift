@@ -1,5 +1,9 @@
 import Testing
-@testable import ContainerLib
+// The reproducer library target is `swift-issue-inlinearray-deinit-value-generic-Repro`;
+// SwiftPM exposes it under the C99-mangled module name below. The
+// cross-module boundary (TrackedElement defined HERE, Container there) is
+// load-bearing for the original defect report.
+@testable import swift_issue_inlinearray_deinit_value_generic_Repro
 
 /// Thread-safe tracker for deinit order
 final class Tracker: @unchecked Sendable {

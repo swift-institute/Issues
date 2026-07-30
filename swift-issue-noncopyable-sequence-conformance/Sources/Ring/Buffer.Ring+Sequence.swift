@@ -10,7 +10,7 @@
 /// Protocols without an `Element` associated type (e.g. Equatable, Hashable,
 /// CustomStringConvertible) do NOT trigger it.
 
-import Core
+import swift_issue_noncopyable_sequence_conformance_Core
 
 // MARK: - Minimal Trigger (3 lines)
 

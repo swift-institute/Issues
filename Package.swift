@@ -539,6 +539,221 @@ let package = Package(
                 .copy("Crash.swift.txt")
             ]
         ),
+
+        // MARK: - Batch A Group 1 — dossier index pairs (Issues#73)
+        //
+        // Nine dossier directories whose authoritative reproducer lives
+        // under evidence/source-package (see each directory's
+        // harness-justification.json; generatedIndexFilesAreAuthoritative-
+        // Reproducer is false). The Repro executables print where the
+        // authoritative reproduction lives; the tests pin the evidence
+        // layout contract. Wiring them makes each directory reachable by
+        // the per-reproducer filter convention without flattening the
+        // source boundary the justification files preserve.
+
+        .testTarget(
+            name: "swift-issue-property-view-tag-constraint-cross-module-Tests",
+            path: "swift-issue-property-view-tag-constraint-cross-module/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-property-view-tag-constraint-cross-module-Repro",
+            path: "swift-issue-property-view-tag-constraint-cross-module/Sources/Reproducer"
+        ),
+
+        .testTarget(
+            name: "swift-issue-rawlayout-deinit-cross-package-Tests",
+            path: "swift-issue-rawlayout-deinit-cross-package/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-rawlayout-deinit-cross-package-Repro",
+            path: "swift-issue-rawlayout-deinit-cross-package/Sources/Reproducer"
+        ),
+
+        .testTarget(
+            name: "swift-issue-sil-verifier-read-escapable-lifetime-Tests",
+            path: "swift-issue-sil-verifier-read-escapable-lifetime/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-sil-verifier-read-escapable-lifetime-Repro",
+            path: "swift-issue-sil-verifier-read-escapable-lifetime/Sources/Reproducer"
+        ),
+
+        .testTarget(
+            name: "swift-issue-silgen-pack-expansion-cross-module-Tests",
+            path: "swift-issue-silgen-pack-expansion-cross-module/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-silgen-pack-expansion-cross-module-Repro",
+            path: "swift-issue-silgen-pack-expansion-cross-module/Sources/Reproducer"
+        ),
+
+        .testTarget(
+            name: "swift-issue-silgen-property-wrapper-noncopyable-Tests",
+            path: "swift-issue-silgen-property-wrapper-noncopyable/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-silgen-property-wrapper-noncopyable-Repro",
+            path: "swift-issue-silgen-property-wrapper-noncopyable/Sources/Reproducer"
+        ),
+
+        .testTarget(
+            name: "swift-issue-testing-suite-discovery-generic-specialization-Tests",
+            path: "swift-issue-testing-suite-discovery-generic-specialization/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-testing-suite-discovery-generic-specialization-Repro",
+            path: "swift-issue-testing-suite-discovery-generic-specialization/Sources/Reproducer"
+        ),
+
+        .testTarget(
+            name: "swift-issue-testing-xcode-nested-suite-filter-Tests",
+            path: "swift-issue-testing-xcode-nested-suite-filter/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-testing-xcode-nested-suite-filter-Repro",
+            path: "swift-issue-testing-xcode-nested-suite-filter/Sources/Reproducer"
+        ),
+
+        .testTarget(
+            name: "swift-issue-typed-throws-autoclosure-inference-Tests",
+            path: "swift-issue-typed-throws-autoclosure-inference/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-typed-throws-autoclosure-inference-Repro",
+            path: "swift-issue-typed-throws-autoclosure-inference/Sources/Reproducer"
+        ),
+
+        // The Windows-only ICE's platform gate lives in the evidence
+        // package (the local target compiles everywhere; the defect needs
+        // x86_64-unknown-windows-msvc, per the harness justification).
+        .testTarget(
+            name: "swift-issue-windows-existential-crash-Tests",
+            path: "swift-issue-windows-existential-crash/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-windows-existential-crash-Repro",
+            path: "swift-issue-windows-existential-crash/Sources/Reproducer"
+        ),
+
+        // MARK: - Batch A Group 2 — migrated nested packages (Issues#73)
+        //
+        // Four directories previously carried standalone nested manifests;
+        // their sources now live in the convention layout and the nested
+        // Package.swift files are deleted. Where the defect was a
+        // rejects-valid or emit-module failure now FIXED on every current
+        // line (re-verified 2026-07-30 via bare swiftc on 6.3.3 and Apple
+        // 6.4), the live library target IS the regression probe — a
+        // regression turns the package build red.
+
+        // emit-module rejects-valid (~Copyable & Protocol compound
+        // constraint + conditional Sequence conformance, Lifetimes) —
+        // library-shaped Repro because -emit-module is the trigger surface.
+        .testTarget(
+            name: "swift-issue-emit-module-noncopyable-sequence-Tests",
+            path: "swift-issue-emit-module-noncopyable-sequence/Tests"
+        ),
+        .target(
+            name: "swift-issue-emit-module-noncopyable-sequence-Repro",
+            path: "swift-issue-emit-module-noncopyable-sequence/Sources/Reproducer",
+            swiftSettings: [
+                .enableExperimentalFeature("Lifetimes")
+            ]
+        ),
+
+        // InlineArray + value-generic capacity deinit miss (runtime).
+        // Cross-module: TrackedElement lives in the test module, Container
+        // in the library — the reported shape. Re-verified 2026-07-30:
+        // deinits run correctly on 6.3.3 and Apple 6.4 (fixed since the
+        // 6.2-era report), so the behavioral expectations pass unguarded.
+        .testTarget(
+            name: "swift-issue-inlinearray-deinit-value-generic-Tests",
+            dependencies: [
+                .target(name: "swift-issue-inlinearray-deinit-value-generic-Repro")
+            ],
+            path: "swift-issue-inlinearray-deinit-value-generic/Tests"
+        ),
+        .target(
+            name: "swift-issue-inlinearray-deinit-value-generic-Repro",
+            path: "swift-issue-inlinearray-deinit-value-generic/Sources/Reproducer"
+        ),
+
+        // Nested-generic subscript performance (upstream
+        // swiftlang/swift#86666). The executable is the measurement
+        // vehicle; the library-shaped reduced sources are a third target
+        // because the benchmark file is self-contained and the two carry
+        // the same type names in separate modules.
+        .testTarget(
+            name: "swift-issue-nested-generic-subscript-performance-Tests",
+            path: "swift-issue-nested-generic-subscript-performance/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-nested-generic-subscript-performance-Repro",
+            path: "swift-issue-nested-generic-subscript-performance/Sources/Reproducer"
+        ),
+        .target(
+            name: "swift-issue-nested-generic-subscript-performance-Repro-Library",
+            path: "swift-issue-nested-generic-subscript-performance/Sources/NestedGenericPerformance"
+        ),
+
+        // Cross-module rejects-valid (associatedtype Element vs generic
+        // parameter Element confusion under conditional Sequence
+        // conformance). The Ring-imports-Core module boundary is the
+        // reported shape, so it is preserved as two library targets — a
+        // third target beside the pair, per the boundary's load-bearing
+        // role. Re-verified fixed 2026-07-30 (6.3.3, Apple 6.4).
+        .testTarget(
+            name: "swift-issue-noncopyable-sequence-conformance-Tests",
+            path: "swift-issue-noncopyable-sequence-conformance/Tests"
+        ),
+        .target(
+            name: "swift-issue-noncopyable-sequence-conformance-Core",
+            path: "swift-issue-noncopyable-sequence-conformance/Sources/Core"
+        ),
+        .target(
+            name: "swift-issue-noncopyable-sequence-conformance-Repro",
+            dependencies: [
+                .target(name: "swift-issue-noncopyable-sequence-conformance-Core")
+            ],
+            path: "swift-issue-noncopyable-sequence-conformance/Sources/Ring"
+        ),
+
+        // MARK: - Batch A Group 3 — wrapped loose reducers (Issues#73)
+        //
+        // Three directories whose reduced sources are loose files under
+        // Sources/ that CANNOT be live targets: the mangling collision and
+        // the rawlayout rejection fail compilation by design, and the
+        // sametype reproducer SIGSEGVs at runtime. The loose files stay
+        // exactly where they are (no renames — sibling sub-issues own
+        // naming); the new Reproducer/Tests pairs drive them OUT OF
+        // PROCESS via bare swiftc, with withKnownIssue flip semantics.
+        // All three still fire on Apple Swift 6.4 (verified 2026-07-30).
+
+        .testTarget(
+            name: "swift-issue-noncopyable-extension-member-mangling-collision-Tests",
+            path: "swift-issue-noncopyable-extension-member-mangling-collision/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-noncopyable-extension-member-mangling-collision-Repro",
+            path: "swift-issue-noncopyable-extension-member-mangling-collision/Sources/Reproducer"
+        ),
+
+        .testTarget(
+            name: "swift-issue-noncopyable-sametype-conditional-conformance-Tests",
+            path: "swift-issue-noncopyable-sametype-conditional-conformance/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-noncopyable-sametype-conditional-conformance-Repro",
+            path: "swift-issue-noncopyable-sametype-conditional-conformance/Sources/Reproducer"
+        ),
+
+        .testTarget(
+            name: "swift-issue-rawlayout-noncopyable-extension-rejection-Tests",
+            path: "swift-issue-rawlayout-noncopyable-extension-rejection/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-rawlayout-noncopyable-extension-rejection-Repro",
+            path: "swift-issue-rawlayout-noncopyable-extension-rejection/Sources/Reproducer"
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
