@@ -1,0 +1,48 @@
+// SILGenCleanup ownership-verifier abort: a closure-typed value's closure
+// LITERAL contains a nested local closure that also captures the outer
+// closure's `borrowing ~Copyable` parameter.
+//
+// Load-bearing ingredients (each removal was A/B-tested):
+//   - The OUTER context must itself be a closure LITERAL assigned to (or
+//     returned as) a value of closure type — a plain top-level `func` with
+//     the identical body is instead correctly REJECTED at typecheck
+//     ("cannot be captured by an escaping closure since it is a borrowed
+//     parameter"), which is a distinct, correct diagnostic. The escaping-
+//     closure-capture check that fires for a `func`'s borrowing parameter
+//     does not fire when the parameter belongs to a closure literal, and
+//     the resulting malformed capture reaches SILGen instead of being
+//     rejected.
+//   - The NESTED closure must actually capture the borrowing parameter (or
+//     a value derived from it); a nested closure that captures nothing
+//     from the outer scope does not crash.
+//   - Two levels of closure nesting are required (outer closure containing
+//     `let emit = { ... capture ... }`); a single level (the borrowing
+//     parameter's field used directly in the outer closure's body, with no
+//     intermediate closure) does not crash.
+//
+// NOT load-bearing (present here only because the field report described
+// them; removing them still crashes — see README "Empirical correction"):
+//   - The early-return `guard`/loop branches. `@Sendable`. `Sendable`
+//     conformance on the borrowing type. A `Rule`-style wrapper struct.
+//     A second (severity) parameter.
+
+struct Parsed: ~Copyable, Sendable {
+    let path: String
+    let tree: [Int]
+}
+
+struct Rule {
+    let findings: @Sendable (borrowing Parsed, Int) -> [Int]
+}
+
+let rule = Rule(
+    findings: { source, severity in
+        let emit: (String) -> [Int] = { basename in
+            source.tree.filter { $0 == severity }
+        }
+        guard source.path.isEmpty == false else {
+            return emit(source.path)
+        }
+        return emit("x")
+    }
+)

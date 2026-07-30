@@ -754,6 +754,52 @@ let package = Package(
             name: "swift-issue-rawlayout-noncopyable-extension-rejection-Repro",
             path: "swift-issue-rawlayout-noncopyable-extension-rejection/Sources/Reproducer"
         ),
+
+        // MARK: - swift-issue-unbound-generic-typealias-member-lookup (Issues#81)
+        //
+        // Member-type lookup does not look through an unbound GENERIC
+        // typealias, though it does through the unbound generic nominal
+        // type the alias refers to, the bound form of the same alias, a
+        // non-generic alias to a concrete instantiation, and (per
+        // swift-institute/.github#122 W8) a non-generic alias to an
+        // unbound generic nominal. Rejects-valid; not a regression (no
+        // known-good toolchain). The trigger is a TYPE-CHECK rejection,
+        // not a codegen fault, so `Sources/reproducer.swift` fails to
+        // typecheck by design and is NOT a live target — both harnesses
+        // drive it out of process via `swiftc -typecheck -swift-version 6`.
+
+        .testTarget(
+            name: "swift-issue-unbound-generic-typealias-member-lookup-Tests",
+            path: "swift-issue-unbound-generic-typealias-member-lookup/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-unbound-generic-typealias-member-lookup-Repro",
+            path: "swift-issue-unbound-generic-typealias-member-lookup/Sources/Reproducer"
+        ),
+
+        // MARK: - swift-issue-silgencleanup-nested-closure-borrowing-noncopyable (Issues#80)
+        //
+        // swift-frontend aborts (signal 6, SIL ownership verifier, mandatory
+        // SILGenCleanup pass) compiling a closure LITERAL whose body defines
+        // a nested local closure that also captures the outer closure's
+        // `borrowing ~Copyable` parameter. The identical body as a plain
+        // top-level `func` is instead correctly rejected at typecheck — the
+        // escaping-closure-capture check does not fire when the borrowing
+        // parameter belongs to a closure literal rather than a `func`
+        // declaration. Because the bug aborts the COMPILER, the trigger
+        // ships as the `Crash.swift.txt` resource compiled OUT OF PROCESS.
+
+        .testTarget(
+            name: "swift-issue-silgencleanup-nested-closure-borrowing-noncopyable-Tests",
+            path: "swift-issue-silgencleanup-nested-closure-borrowing-noncopyable/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-silgencleanup-nested-closure-borrowing-noncopyable-Repro",
+            path: "swift-issue-silgencleanup-nested-closure-borrowing-noncopyable/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
