@@ -1,18 +1,18 @@
-/// Suboptimal Codegen: Nested Generic Type with ~Copyable Constraint
-///
-/// Subscript access on a nested generic type with ~Copyable constraint generates
-/// code that is ~1.6x slower than an equivalent flat struct with identical implementation.
-///
-/// Performance issue: Nested type under generic enum with ~Copyable generates
-/// suboptimal code compared to flat struct.
-///
-/// Conditions required (ALL must be present):
-/// 1. Nested type inside generic enum: `Outer<Element, N>.Inner`
-/// 2. ~Copyable suppression: `where Element: ~Copyable`
-/// 3. Value generic parameter: `let N: Int`
-///
-/// Note: The `_read` accessor is NOT the cause. A flat struct with identical
-/// `_read { yield _elements[index] }` has only 8% overhead vs 60% for nested type.
+// Suboptimal Codegen: Nested Generic Type with ~Copyable Constraint
+//
+// Subscript access on a nested generic type with ~Copyable constraint generates
+// code that is ~1.6x slower than an equivalent flat struct with identical implementation.
+//
+// Performance issue: Nested type under generic enum with ~Copyable generates
+// suboptimal code compared to flat struct.
+//
+// Conditions required (ALL must be present):
+// 1. Nested type inside generic enum: `Outer<Element, N>.Inner`
+// 2. ~Copyable suppression: `where Element: ~Copyable`
+// 3. Value generic parameter: `let N: Int`
+//
+// Note: The `_read` accessor is NOT the cause. A flat struct with identical
+// `_read { yield _elements[index] }` has only 8% overhead vs 60% for nested type.
 
 // MARK: - Slow: Nested Generic Type with ~Copyable (60% overhead)
 

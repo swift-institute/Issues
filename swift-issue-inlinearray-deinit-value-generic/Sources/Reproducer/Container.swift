@@ -1,9 +1,9 @@
-/// Minimal reproduction of InlineArray deinit bug with value generic parameter.
-///
-/// Bug: When a ~Copyable struct uses `InlineArray<capacity, ...>` where `capacity`
-/// is a value generic parameter, and contains only value-type properties, the
-/// compiler fails to generate deinit dispatch for cross-module ~Copyable elements.
-/// Elements are silently leaked.
+// Minimal reproduction of InlineArray deinit bug with value generic parameter.
+//
+// Bug: When a ~Copyable struct uses `InlineArray<capacity, ...>` where `capacity`
+// is a value generic parameter, and contains only value-type properties, the
+// compiler fails to generate deinit dispatch for cross-module ~Copyable elements.
+// Elements are silently leaked.
 
 // MARK: - Buggy: InlineArray with value generic capacity
 
@@ -55,7 +55,15 @@ public struct Container<Element: ~Copyable, let capacity: Int>: ~Copyable {
 public struct ContainerFixed<Element: ~Copyable, let capacity: Int>: ~Copyable {
     var _storage: InlineArray<capacity, (Int, Int, Int, Int, Int, Int, Int, Int)>
     var _count: Int
-    var _deinitWorkaround: AnyObject? = nil  // WORKAROUND: Reference type property
+    // WORKAROUND: Reference type property
+    // WHY: forces the enclosing struct to carry a class-typed field, which
+    //   sidesteps the value-generic InlineArray deinit-elision bug this
+    //   reproducer demonstrates on the unfixed Container above.
+    // WHEN TO REMOVE: once the upstream compiler defect (deinit not invoked
+    //   for InlineArray<capacity, Element> fields under a value-generic
+    //   capacity) is fixed and this repository's reproducer is closed.
+    // TRACKING: this reproducer's own tracking issue in swift-institute/Issues.
+    var _deinitWorkaround: AnyObject? = nil
 
     public init() {
         self._storage = InlineArray(repeating: (0, 0, 0, 0, 0, 0, 0, 0))

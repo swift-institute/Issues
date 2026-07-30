@@ -1,0 +1,22 @@
+# SwiftLint configuration
+# Inherits from the Swift Institute ecosystem-wide canonical configuration
+
+parent_config: https://raw.githubusercontent.com/swift-institute/.github/main/.swiftlint.yml
+
+# Package-specific overrides: this repository is a monorepo of independent
+# reproducer packages (each its own Sources/Tests, or a bare top-level
+# reproducer.swift), not a single Sources/Tests pair at the root, so the
+# parent config's `included: [Sources, Tests]` matches nothing here. Widen
+# back to the whole repository, keeping the parent's `excluded:`.
+included:
+  - .
+
+# `evidence/` trees are frozen upstream-bug reproduction artifacts (verbatim
+# minimized reproducers filed against swiftlang/swift), not maintained
+# Institute source — editing them for style compliance risks altering the
+# exact shape that triggers the compiler defect they document. Excluded from
+# lint, same rationale as a fixtures directory.
+excluded:
+  - .build
+  - "**/.build"
+  - "**/evidence/**"

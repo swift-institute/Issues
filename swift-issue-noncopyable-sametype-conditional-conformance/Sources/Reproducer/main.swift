@@ -1,3 +1,7 @@
+// This harness stages/compiles/cleans up temp reproducer files; failures in
+// best-effort cleanup or staging checks are handled via guard/defer control
+// flow, not silently swallowed, so the optional-chaining form is the correct idiom here.
+// swiftlint:disable no_try_optional
 // Standalone exit-code probe for the ~Copyable same-type conditional
 // conformance runtime crash.
 //
@@ -64,3 +68,5 @@ exit(0)
 #else
 exit(0)
 #endif
+
+// swiftlint:enable no_try_optional

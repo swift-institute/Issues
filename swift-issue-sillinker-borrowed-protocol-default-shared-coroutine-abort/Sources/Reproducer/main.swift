@@ -1,3 +1,7 @@
+// This harness stages/compiles/cleans up temp reproducer files; failures in
+// best-effort cleanup or staging checks are handled via guard/defer control
+// flow, not silently swallowed, so the optional-chaining form is the correct idiom here.
+// swiftlint:disable no_try_optional
 // Standalone exit-code probe for swiftlang/swift#90406.
 //
 // Mirrors the Swift Testing harness in ../../Tests/Reproducer.swift without the
@@ -79,3 +83,5 @@ inconclusive("the importing module failed for an unrelated reason:\n\(importing.
 #else
 exit(2)
 #endif
+
+// swiftlint:enable no_try_optional

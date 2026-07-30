@@ -1,3 +1,7 @@
+// This harness stages/compiles/cleans up temp reproducer files; failures in
+// best-effort cleanup or staging checks are handled via guard/defer control
+// flow, not silently swallowed, so the optional-chaining form is the correct idiom here.
+// swiftlint:disable no_try_optional
 // swiftlang/swift#89617 — standalone exit-code reproducer.
 //
 // The bug is a COMPILE-TIME abort: compiling `Crash.swift.txt` under `-O`
@@ -88,3 +92,5 @@ if bugFired {
 print("subprocess probe unavailable on this platform; skipping")
 
 #endif
+
+// swiftlint:enable no_try_optional

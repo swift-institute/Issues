@@ -1,22 +1,22 @@
-/// Emit-Module Crash: ~Copyable Constraint Propagation Failure with Sequence Conformance
-///
-/// The compiler fails during module emission (`-emit-module`) when a generic type with
-/// compound constraint (`~Copyable & Protocol`) has a nested type containing
-/// `UnsafeMutablePointer<Element>`, combined with conditional `Sequence` conformance
-/// and `borrowing Element` closures in extension files.
-///
-/// Error: "type 'Element' does not conform to protocol 'Copyable'"
-///
-/// Conditions required (ALL must be present):
-/// 1. Compound generic constraint: `Element: ~Copyable & Protocol`
-/// 2. Nested type with `UnsafeMutablePointer<Element>` stored property
-/// 3. Conditional Sequence conformance: `extension Type: Sequence where Element: Copyable`
-/// 4. Extension FILE with `(borrowing Element)` closure parameter
-/// 5. Library target (uses `-emit-module`)
-/// 6. `-enable-experimental-feature Lifetimes` flag
-///
-/// Note: Single constraint (`Element: ~Copyable`) does NOT trigger this bug.
-///       Custom protocol conformances do NOT trigger this bug - only `Sequence`.
+// Emit-Module Crash: ~Copyable Constraint Propagation Failure with Sequence Conformance
+//
+// The compiler fails during module emission (`-emit-module`) when a generic type with
+// compound constraint (`~Copyable & Protocol`) has a nested type containing
+// `UnsafeMutablePointer<Element>`, combined with conditional `Sequence` conformance
+// and `borrowing Element` closures in extension files.
+//
+// Error: "type 'Element' does not conform to protocol 'Copyable'"
+//
+// Conditions required (ALL must be present):
+// 1. Compound generic constraint: `Element: ~Copyable & Protocol`
+// 2. Nested type with `UnsafeMutablePointer<Element>` stored property
+// 3. Conditional Sequence conformance: `extension Type: Sequence where Element: Copyable`
+// 4. Extension FILE with `(borrowing Element)` closure parameter
+// 5. Library target (uses `-emit-module`)
+// 6. `-enable-experimental-feature Lifetimes` flag
+//
+// Note: Single constraint (`Element: ~Copyable`) does NOT trigger this bug.
+//       Custom protocol conformances do NOT trigger this bug - only `Sequence`.
 
 // MARK: - Minimal Reproduction (60 lines)
 

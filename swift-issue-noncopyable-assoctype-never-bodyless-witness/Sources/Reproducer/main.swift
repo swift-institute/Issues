@@ -1,3 +1,7 @@
+// This harness stages/compiles/cleans up temp reproducer files; failures in
+// best-effort cleanup or staging checks are handled via guard/defer control
+// flow, not silently swallowed, so the optional-chaining form is the correct idiom here.
+// swiftlint:disable no_try_optional
 // Standalone exit-code probe for the bodyless `shared [serialized]`
 // default-witness `read` accessor abort (`~Copyable` associated type bound to
 // `Never`, cross-module).
@@ -95,3 +99,5 @@ inconclusive("the consumer module failed for an unrelated reason:\n\(importing.s
 #else
 exit(2)
 #endif
+
+// swiftlint:enable no_try_optional

@@ -1,3 +1,7 @@
+// This harness stages/compiles/cleans up temp reproducer files; failures in
+// best-effort cleanup or staging checks are handled via guard/defer control
+// flow, not silently swallowed, so the optional-chaining form is the correct idiom here.
+// swiftlint:disable no_try_optional
 // Standalone exit-code probe for the @_rawLayout ~Copyable extension
 // REJECTS-VALID defect.
 //
@@ -92,3 +96,5 @@ inconclusive("module B failed for an unrelated reason:\n\(moduleB.stderr)")
 #else
 exit(0)
 #endif
+
+// swiftlint:enable no_try_optional

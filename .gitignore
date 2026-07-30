@@ -9,3 +9,7 @@ DerivedData/
 Package.resolved
 
 *.pdf
+
+
+# SwiftLint Remote Config Cache
+.swiftlint/RemoteConfigCache

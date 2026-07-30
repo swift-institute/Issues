@@ -1,3 +1,7 @@
+// This harness stages/compiles/cleans up temp reproducer files; failures in
+// best-effort cleanup or staging checks are handled via guard/defer control
+// flow, not silently swallowed, so the optional-chaining form is the correct idiom here.
+// swiftlint:disable no_try_optional
 // Standalone exit-code probe for the ~Copyable extension-member mangling
 // collision ("multiple definitions of symbol").
 //
@@ -7,7 +11,7 @@
 // by design on every tested toolchain, so a live target would break the
 // whole package build. This probe compiles it OUT OF PROCESS.
 //
-//   exit 1 — the bug FIRES ("multiple definitions of symbol" on emit-object)
+//   exit 1 — the bug FIRES ("multiple definitions of symbol" on emit-objectFileect)
 //   exit 0 — the reproducer compiled cleanly: the fix has landed — OR the
 //            probe was inconclusive (no reachable compiler / unrelated error)
 
@@ -25,12 +29,12 @@ guard FileManager.default.fileExists(atPath: source.path) else {
 }
 
 let pid = ProcessInfo.processInfo.processIdentifier
-let obj = URL(fileURLWithPath: NSTemporaryDirectory())
+let objectFile = URL(fileURLWithPath: NSTemporaryDirectory())
     .appendingPathComponent("mangling-collision-\(pid).o")
 
 let process = Process()
 process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-process.arguments = ["swiftc", "-emit-object", source.path, "-o", obj.path]
+process.arguments = ["swiftc", "-emit-objectFileect", source.path, "-o", objectFile.path]
 let stderr = Pipe()
 process.standardError = stderr
 process.standardOutput = Pipe()
@@ -44,7 +48,7 @@ let errText = String(
     data: stderr.fileHandleForReading.readDataToEndOfFile(),
     encoding: .utf8
 ) ?? ""
-try? FileManager.default.removeItem(at: obj)
+try? FileManager.default.removeItem(at: objectFile)
 
 if errText.contains("multiple definitions of symbol") {
     FileHandle.standardError.write(Data("BUG FIRES: extension-member mangling collision.\n".utf8))
@@ -59,3 +63,5 @@ exit(0)
 #else
 exit(0)
 #endif
+
+// swiftlint:enable no_try_optional
