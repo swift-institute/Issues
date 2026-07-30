@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import Dispatch
 
 @Suite
 struct `IRGen Tests` {
@@ -29,41 +30,6 @@ struct `IRGen Tests` {
             }
         }
         return nil
-    }
-
-    static func compilerHasAssertions() -> Bool {
-        guard let compiler = compilerURL(named: "swiftc") else {
-            return false
-        }
-
-        let process = Process()
-        process.executableURL = compiler
-        process.arguments = ["--version"]
-
-        let output = Pipe()
-        process.standardOutput = output
-        process.standardError = output
-
-        do {
-            try process.run()
-        } catch {
-            return false
-        }
-        process.waitUntilExit()
-
-        let text = String(
-            data: output.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
-        return text.contains("Build config: +assertions")
-    }
-
-    static func isKnownAffectedToolchain() -> Bool {
-        #if compiler(<6.5)
-        compilerHasAssertions()
-        #else
-        false
-        #endif
     }
 
     static func bugFires(
@@ -111,18 +77,32 @@ struct `IRGen Tests` {
         ]
 
         let errorOutput = Pipe()
+        let standardOutput = Pipe()
         process.standardError = errorOutput
-        process.standardOutput = Pipe()
+        process.standardOutput = standardOutput
 
         do {
             try process.run()
         } catch {
             return (nil, "swiftc could not be launched: \(error)")
         }
+        let outputGroup = DispatchGroup()
+        outputGroup.enter()
+        DispatchQueue.global().async {
+            _ = standardOutput.fileHandleForReading.readDataToEndOfFile()
+            outputGroup.leave()
+        }
+        outputGroup.enter()
+        var errorData = Data()
+        DispatchQueue.global().async {
+            errorData = errorOutput.fileHandleForReading.readDataToEndOfFile()
+            outputGroup.leave()
+        }
         process.waitUntilExit()
+        outputGroup.wait()
 
         let errorText = String(
-            data: errorOutput.fileHandleForReading.readDataToEndOfFile(),
+            data: errorData,
             encoding: .utf8
         ) ?? ""
 
@@ -163,9 +143,7 @@ struct `IRGen Tests` {
             {
                 #expect(fired == false)
             },
-            when: {
-                Self.isKnownAffectedToolchain()
-            }
+            when: { fired }
         )
     }
 }

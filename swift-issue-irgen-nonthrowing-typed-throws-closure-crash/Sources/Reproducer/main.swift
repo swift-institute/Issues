@@ -1,4 +1,5 @@
 import Foundation
+import Dispatch
 
 #if canImport(Darwin)
 import Darwin
@@ -79,18 +80,32 @@ func bugFires(sourceName: String) -> Bool? {
     ]
 
     let errorOutput = Pipe()
+    let standardOutput = Pipe()
     process.standardError = errorOutput
-    process.standardOutput = Pipe()
+    process.standardOutput = standardOutput
 
     do {
         try process.run()
     } catch {
         return nil
     }
+    let outputGroup = DispatchGroup()
+    outputGroup.enter()
+    DispatchQueue.global().async {
+        _ = standardOutput.fileHandleForReading.readDataToEndOfFile()
+        outputGroup.leave()
+    }
+    outputGroup.enter()
+    var errorData = Data()
+    DispatchQueue.global().async {
+        errorData = errorOutput.fileHandleForReading.readDataToEndOfFile()
+        outputGroup.leave()
+    }
     process.waitUntilExit()
+    outputGroup.wait()
 
     let errorText = String(
-        data: errorOutput.fileHandleForReading.readDataToEndOfFile(),
+        data: errorData,
         encoding: .utf8
     ) ?? ""
 
