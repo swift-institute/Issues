@@ -800,6 +800,46 @@ let package = Package(
                 .copy("Crash.swift.txt")
             ]
         ),
+
+        // MARK: - swift-issue-noncopyable-assoctype-second-protocol-bodyless-witness (Issues#82)
+        //
+        // A type conforming, in its OWN module, to a protocol with
+        // `associatedtype Body: ~Copyable` plus a `body` property
+        // requirement gets a `read` accessor with `shared` linkage, which
+        // is therefore not carried in that module's `.swiftmodule`. A
+        // CONSUMER module that declares a SECOND conformance of the same
+        // type to a protocol with an equivalent requirement emits that
+        // accessor as a bodyless `shared [serialized]` SIL function, and
+        // verification rejects it ("Must have a construct to emit for" /
+        // "shared function must have a body"). Latent (emitted,
+        // unverified) on NoAsserts RELEASE toolchains; fires on every
+        // +Asserts / Embedded / Windows / `-sil-verify-all` configuration
+        // tested (6.3.3, Apple 6.4, 6.4.x-snapshot-2026-07-23,
+        // main-snapshot-2026-07-11). Single-module combination is clean,
+        // so the module boundary is load-bearing and is expressed as two
+        // out-of-process frontend invocations.
+        //
+        // Same "bodyless shared [serialized] coroutine across a module
+        // boundary" verifier class as swiftlang/swift#90406 (the sillinker
+        // entry) and the `Body == Never` entry above — but a different
+        // trigger: there the bodyless function is a protocol EXTENSION
+        // DEFAULT; here there is no extension default at all and the
+        // bodyless function is the CONCRETE type's own accessor.
+        //
+        // Reduced from swift-primitives/swift-coder-primitives#2.
+
+        .testTarget(
+            name: "swift-issue-noncopyable-assoctype-second-protocol-bodyless-witness-Tests",
+            path: "swift-issue-noncopyable-assoctype-second-protocol-bodyless-witness/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-noncopyable-assoctype-second-protocol-bodyless-witness-Repro",
+            path: "swift-issue-noncopyable-assoctype-second-protocol-bodyless-witness/Sources/Reproducer",
+            resources: [
+                .copy("Core.swift.txt"),
+                .copy("Consumer.swift.txt"),
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

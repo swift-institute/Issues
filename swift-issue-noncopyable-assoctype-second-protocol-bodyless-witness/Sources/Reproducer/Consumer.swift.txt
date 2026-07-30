@@ -1,0 +1,25 @@
+// Consumer.swift  —  module "N" (models Coder_Parser_Primitives)
+//
+// See Core.swift for the build sequence. Compiling THIS file is what aborts.
+//
+// The consumer declares a SECOND conformance of M's `Box` to a protocol with
+// an equivalent `associatedtype Body: ~Copyable` + property requirement. The
+// witness for that requirement is `Box`'s EXISTING property, so the consumer
+// must emit a reference to M's `Box.body.read` — which has `shared` linkage
+// and is therefore not carried in M.swiftmodule. The consumer emits it as a
+// bodyless `shared [serialized]` declaration and SIL verification rejects it.
+
+public import M
+
+// `associatedtype Body: ~Copyable` is load-bearing here too: a Copyable `Body`
+// on the SECOND protocol is clean even though the first protocol still has the
+// suppressed one. `borrowing get` and plain `get` both crash.
+public protocol S {
+    associatedtype Body: ~Copyable
+    var body: Body { borrowing get }
+}
+
+// The crash site. Declaring this same conformance in module M instead is clean
+// — the module boundary between the property and the second conformance is
+// what the defect needs.
+extension Box: S where Body: S {}

@@ -1,0 +1,44 @@
+// Core.swift  —  module "M" (models Parser_OneOf_Primitives)
+//
+// Minimal reproducer (1 of 2) for the bodyless `shared [serialized]` `read`
+// accessor of a CONCRETE conforming type, emitted into a consumer module that
+// adds a SECOND conformance witnessed by the same property.
+//
+// Build sequence (both invocations bare `swiftc`, no dependencies):
+//
+//   swiftc -enable-experimental-feature SuppressedAssociatedTypes \
+//          -wmo -parse-as-library -emit-module \
+//          -emit-module-path M.swiftmodule -module-name M Core.swift
+//
+//   swiftc -enable-experimental-feature SuppressedAssociatedTypes \
+//          -Xfrontend -sil-verify-all \
+//          -wmo -parse-as-library -c Consumer.swift -I . -module-name N
+//
+// The second command aborts:
+//   SIL verification failed: public/package/shared function must have a body
+//   // Box.body.read
+//   sil shared [serialized] @$s1M3BoxV4bodyxvr : $@yield_once ...
+//
+// On a NoAsserts RELEASE toolchain the malformed SIL is emitted but never
+// verified, so the build silently succeeds — the bug is latent there, not
+// absent. `-sil-verify-all` stands in for the +Asserts / Embedded / Windows
+// configurations where verification is on by default.
+
+// `associatedtype Body: ~Copyable` is load-bearing: with a Copyable `Body` the
+// property is accessed directly and no `read` coroutine is involved at all.
+public protocol P {
+    associatedtype Body: ~Copyable
+    var body: Body { borrowing get }
+}
+
+// A type in THIS (defining) module conforming to `P`. The conformance is
+// load-bearing: it is what gives `Box.body` a `read` accessor with `shared`
+// linkage. Dropping `: P` here makes the consumer compile clean.
+//
+// The property may be stored (as here) or computed — both crash. Its type is
+// an ordinary generic parameter, NOT `Never`; this entry is not the
+// `Body == Never` extension-default case (see README, "Differentiation").
+public struct Box<Body: P>: P {
+    public let body: Body
+    public init(body: Body) { self.body = body }
+}
