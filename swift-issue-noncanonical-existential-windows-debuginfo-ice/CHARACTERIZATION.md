@@ -295,7 +295,7 @@ on the CI toolchain.
 
 - Catalog §A20 (`swift-issue-vector-iterable-materializing-mangler-verify`) — sibling class, `Mangler::verify` at SILGen.
 - Catalog §A21 (`swift-issue-dimension-axis-typealias-windows-asserts-ice`) — sibling class, `getMangledName` at IRGen debug-info.
-- Catalog §A22 (`swift-issue-algebra-field-typed-throws-windows-asserts-ice`) — sibling class, `hasErrorResult()` SIL function-type invariant.
+- Catalog §A22 (`swift-issue-irgen-nonthrowing-typed-throws-closure-crash`) — sibling class, `hasErrorResult()` SIL function-type invariant.
 - Catalog §A23 (`swift-issue-file-system-streaming-write-ownership`) — unrelated mechanism (CopyPropagation borrow-scope), also was blocking a swift-pdf release; FIXED on 6.5-dev.
 - `swift-foundations/swift-html-render` commit `100bd63` — Manifestation A fix.
 - `swift-foundations/swift-pdf/.github/workflows/windows-6.4-proof.yml` — advisory proof job; header comment's causal-chain claim is superseded by §Verification Notes above.

@@ -13,12 +13,12 @@
   "retainedBlobs": [
     {
       "sourcePath": "Package.swift",
-      "retainedPath": "evidence/source/Package.swift.txt",
+      "retainedPath": "evidence/constrained-extension/Package.swift.txt",
       "blobSHA": "9695e8eb2df8a8a6d1409d974a5818f1df91ee5b"
     },
     {
       "sourcePath": "Sources/IRGenTypedThrowsNestedError/Bug.swift",
-      "retainedPath": "evidence/source/Bug.swift.txt",
+      "retainedPath": "evidence/constrained-extension/Bug.swift.txt",
       "blobSHA": "fe4ca83b4197976d126887ff6df8b105e5782574"
     }
   ],
@@ -39,6 +39,6 @@
     "verifiedOn": "2026-07-27",
     "treeResponseTruncated": false,
     "freshCompilerRunPerformed": false,
-    "scope": "Forensic compiler-crash staging."
+    "scope": "Supplemental provenance for the constrained-extension manifestation."
   }
 }
