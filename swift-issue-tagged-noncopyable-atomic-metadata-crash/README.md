@@ -22,9 +22,10 @@ feature — not the runtime demangler (see Correction above).
 **Upstream filing posture**: sibling-comment on
 [`swiftlang/swift#74303`](https://github.com/swiftlang/swift/issues/74303)
 — a data-point comment on the existing open `__swift_instantiateConcreteTypeFromMangledName`-null-return issue,
-NOT a new issue and NOT a backport request. The draft is staged at
-[`SIBLING-COMMENT-DRAFT.md`](SIBLING-COMMENT-DRAFT.md); posting
-requires orchestrator authorization per [`ISSUE-008`].
+NOT a new issue and NOT a backport request. Posting
+requires orchestrator authorization per [`ISSUE-008`]. See
+"Upstream status and process-document consolidation" below for the
+audited draft content and current upstream link states.
 
 **Classification**: Runtime miscompile / crash (per
 [`ISSUE-010`]). The compiler accepts the source and emits a binary; at
@@ -50,7 +51,8 @@ than the snapshot bisection captured: by `2026-03-16-a` (the earliest
 nightly we sampled past the 6.3.2 cut), the bug no longer fires. The
 6.4-dev nightly stream between 6.3.2's ship date and `2026-03-16-a`
 contains the fix; pinpointing the exact commit is deferred to upstream
-filing (see [`PRE-FILING-BUG-REPORT.md`](PRE-FILING-BUG-REPORT.md)).
+filing (fix identification: `bc44d42f11` in PR #87066 — see the
+consolidation section below).
 
 ---
 
@@ -283,12 +285,61 @@ which will carry the fix to all consumers.
 
 ---
 
+## Upstream status and process-document consolidation (2026-07-30)
+
+This section consolidates the durable facts from five process-draft
+documents that previously lived beside this README
+(`SIBLING-COMMENT-DRAFT.md`, `AUDIT-REPORT.md`,
+`BACKPORT-REQUEST-DRAFT.md`, `REVIEWED-BACKPORT-REQUEST.md`,
+`REVIEWED-SIBLING-COMMENT.md`); the drafts themselves are workflow
+artifacts, removed under Issues#79 with their content preserved in git
+history at the removing commit's parent.
+
+**Upstream links, re-verified 2026-07-30:**
+
+| Link | State (2026-07-30) | Role |
+|---|---|---|
+| [swiftlang/swift#74303](https://github.com/swiftlang/swift/issues/74303) | open | parent family issue (`__swift_instantiateConcreteTypeFromMangledName` null return); intended sibling-comment target |
+| [swiftlang/swift#69615](https://github.com/swiftlang/swift/issues/69615) | open | related family member (`TypeLookupError` from `getTypeByMangledNameInContext`) |
+| [swiftlang/swift#74333](https://github.com/swiftlang/swift/issues/74333) | closed (completed) | NOT a duplicate of #74303 — closed via PR #74604; the audit (C-22) corrected the earlier "closed dupe" claim |
+| [swiftlang/swift PR #87066](https://github.com/swiftlang/swift/pull/87066) | merged (2026-02-10) | carries `bc44d42f11` (+14/−0, `lib/Demangling/Demangler.cpp`: `'j'`/`'J'` inverse-assoc demangler cases); on `release/6.4.x` and `main`, absent from `release/6.3`/`6.3.1` |
+| [swiftlang/swift#89389](https://github.com/swiftlang/swift/issues/89389) | open | our filed `[release/6.3]` backport request for `bc44d42f11` — **withdrawn in substance** by the 2026-05-28 codegen correction above (`bc44d42f11` would not fix 6.3-compiled code); any upstream state change there is principal-gated |
+
+**Durable audit conclusions (from the 2026-05-23 pre-post audit, 27
+claims verified):**
+
+- The fix-identification chain held: PR #87066 / commit `bc44d42f11` /
+  branch containment verified via `gh api compare` (absent from
+  `release/6.3` and `release/6.3.1`, ancestor of `release/6.4.x`).
+  The 2026-05-28 correction then re-attributed the *defect* from the
+  demangler to `SuppressedAssociatedTypes` codegen, superseding the
+  backport ask without invalidating the containment facts.
+- Cross-platform CI matrix (run
+  [26326702012](https://github.com/swift-institute/Issues/actions/runs/26326702012),
+  reproducer commit `d85cfcc`): Apple Xcode 6.3.2 macOS arm64 debug —
+  CRASH (signal 11); swift.org `swift-6.3.2-RELEASE` Ubuntu x86_64
+  release — NO CRASH on the same source tag (`cd8d8ad001`); Windows
+  6.3.2 debug — inconclusive (exit 1, no SwiftTesting summary);
+  swift.org main nightly Ubuntu release — PASS.
+- Surfaced confound: the macOS/Linux legs differ on both platform and
+  build configuration, so CI alone does not isolate the discriminator;
+  local Apple 6.3.2 testing crashed under both `-Onone` and `-O`.
+- Surfaced open question: the macOS-only pattern under one source tag
+  suggests the defect locus may be Apple-downstream toolchain
+  artifacts rather than `release/6.3` source.
+- Snapshot labeling correction (C-19): `2026-03-16-a` and `2026-05-07-a`
+  are 6.4-dev, not 6.5-dev; `2026-05-12-a` is 6.5-dev.
+- Sibling-comment relationship: whether `bc44d42f11` also closes
+  #74303 (DiscordBM `IntBitField<Flag>?`) and #69615 (opaque return
+  type) is a determination for the runtime maintainers; the drafts
+  deliberately did not claim it.
+
+Any posting, filing, or withdrawal action at swiftlang/swift remains
+principal-gated; this section records state only.
+
 ## See also
 
 - [`INVESTIGATION-ARC.md`](INVESTIGATION-ARC.md) — full 4-arc convergence record
-- [`SIBLING-COMMENT-DRAFT.md`](SIBLING-COMMENT-DRAFT.md) — staged
-  data-point comment for posting on
-  [`swiftlang/swift#74303`](https://github.com/swiftlang/swift/issues/74303)
 - `swift-institute/Research/swift-compiler-bug-catalog.md` §A9 — the
   ecosystem-wide canonical entry for this defect
 - `swift-foundations/swift-executors/Experiments/sigsegv-repro/` — the

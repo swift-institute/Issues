@@ -56,7 +56,26 @@ Workaround: Use canonical, uniform repository URLs and avoid two locations for o
 
 ## Upstream
 
-Institute terminal record; no upstream filing proven.
+**Upstream destination**: `swiftlang/swift-package-manager` (adjudicated
+2026-07-30 under Issues#69/#79: SwiftPM reproducers stay in this repository;
+only the upstream target differs from the compiler entries).
+
+**Upstream search (2026-07-30, swiftlang/swift-package-manager issues)**:
+"repository URL identity redirect" and `canonicalPackageLocation` — no issue
+reports the URL-identity/redirect resolution behavior these fixtures
+exercise; the closest hits are #7001 (closed; canonical-location checkout
+paths, a different mechanism) and #8604 (open; same-name dependencies across
+owners, an identity-collision UX report, not redirect behavior). **No match
+recorded.**
+
+**Eligibility: NOT YET ELIGIBLE for upstream filing.** The observed-behavior
+section below is intentionally blank pending the experiment run
+(`swift-institute/Experiments/github-url-spm-resolution` with all three
+fixtures at 0.1.0); an upstream report without the recorded exact behavior
+would not satisfy the general-report bar. The fixture contract stands
+unchanged: the three remote repositories remain live and are not
+clean-copied here. Filing remains principal-gated once the experiment's
+assertions are recorded.
 
 ## Evidence and provenance
 

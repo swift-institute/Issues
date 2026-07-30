@@ -10,11 +10,19 @@
 > whole reproducer offline (39 tiny local git repos, no network, no
 > mirrors, no institute packages).
 
-**Status**: **STAGED terminal record — not filed** (standing policy:
-upstream filing does not exist as a resolution step).
-**Resolution**: root-caused; structural workaround validated and already
-productionized on this machine (comprehensive dual-spelling mirror
-table); per-manifest spelling hygiene is the durable fix.
+**Upstream destination**: `swiftlang/swift-package-manager` (adjudicated
+2026-07-30 under Issues#69/#79: SwiftPM reproducers stay in this
+repository; only the upstream target differs from the compiler entries).
+**Upstream search (2026-07-30, swiftlang/swift-package-manager issues)**:
+`findAllTransitiveDependencies` — 0 hits; "conflicting identity" — 3 hits
+(#10054 folder-name identity conflicts, #8604 same-name dependencies
+across owners, #8390 the PR that introduced the enumeration), none
+reporting the exponential path-enumeration hang. **No match — ELIGIBLE
+for upstream filing** (the scripted `evidence/gen-synthetic.sh` generator
+is the minimal reproduction; filing itself remains principal-gated).
+**Status**: root-caused; structural workaround validated and already
+productionized (comprehensive dual-spelling mirror table); per-manifest
+spelling hygiene is the durable fix.
 
 ---
 
@@ -312,7 +320,8 @@ Verify with `swift build`.
   stage and mitigated by comprehensive mirroring; this record is the
   *load-stage* exponential with an identified function and shape.
 - No upstream issue found reporting the exponential behavior of
-  `findAllTransitiveDependencies` (searched 2026-07-10).
+  `findAllTransitiveDependencies` (searched 2026-07-10; re-searched
+  2026-07-30 — still no match, see the status block).
 
 **Upstream fix shape (for reference only — not filed)**: memoized
 reachability / visited set (or Deque) in
