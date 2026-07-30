@@ -1,0 +1,13 @@
+// Minimum trigger. Compiled OUT OF PROCESS as `main.swift` (top-level code)
+// with `-O`; the produced binary dies with SIGSEGV on Swift 6.3.3.
+//
+//   swiftc -O -swift-version 6 main.swift -o probe && ./probe
+//
+// The task local's value type is a FUNCTION type. That is the whole trigger:
+// the same shape with `Int?`, `String?`, or a nominal wrapper around the
+// closure is clean.
+
+@TaskLocal var handler: (@Sendable () -> Void)?
+
+$handler.withValue({}, operation: {})
+print("ok")

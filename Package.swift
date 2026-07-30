@@ -875,6 +875,46 @@ let package = Package(
                 .copy("Crash.swift.txt")
             ]
         ),
+
+        // MARK: - swift-issue-tasklocal-function-value-null-metadata (Issues#84)
+        //
+        // A `@TaskLocal` whose VALUE TYPE IS A FUNCTION TYPE makes the optimizer
+        // emit the value type's metadata request as a LOWERED mangled name — an
+        // `ImplFunctionType` carrying `ImplPatternSubstitutions` over a dependent
+        // generic signature — through
+        // `__swift_instantiateConcreteTypeFromMangledName`, the entry point that
+        // admits only fully concrete names. Instantiation returns null and
+        // `swift_task_localValuePush` faults reading the value witness table at
+        // `metadata - 8` (`Bad pointer dereference at 0xfffffffffffffff8`).
+        //
+        // Load-bearing: `-O`, and a function-typed value. `Int?`/`String?` are
+        // clean, so optionality is not part of the trigger. NOT required: async,
+        // a surrounding Task, a current task at all, reading the task local in
+        // the `operation:` body, a test framework, or more than one module.
+        //
+        // signal 11 on 6.3.3 (macOS arm64, Linux arm64, Linux x86_64); clean on
+        // Apple Swift 6.4, the 6.4.x snapshot, and 6.5-dev main. Because the bug
+        // crashes the PRODUCED BINARY and would take the test runner down with
+        // it, the trigger ships as `Crash.swift.txt` and is compiled AND run OUT
+        // OF PROCESS. `when:` is version-gated rather than `{ true }`: active
+        // below 6.4 (backport detection), inactive at 6.4+ (regression
+        // detection).
+        //
+        // Reduced from swift-primitives/swift-structured-queries-primitives#2,
+        // whose `Ubuntu (Swift 6.3, release)` leg crashed in a swift-testing
+        // test binding a `(@Sendable (String) -> Void)?` task local.
+
+        .testTarget(
+            name: "swift-issue-tasklocal-function-value-null-metadata-Tests",
+            path: "swift-issue-tasklocal-function-value-null-metadata/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-tasklocal-function-value-null-metadata-Repro",
+            path: "swift-issue-tasklocal-function-value-null-metadata/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
