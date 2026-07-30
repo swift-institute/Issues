@@ -83,6 +83,31 @@ let package = Package(
             ]
         ),
 
+        // MARK: - swift-issue-irgen-nonthrowing-typed-throws-closure-crash
+        //
+        // swiftlang/swift#87030 — an assertions-enabled compiler aborts in
+        // IRGen when debug information describes an error-result slot for a
+        // non-throwing closure converted to a nested-generic typed-throws
+        // function. Fixed on main by swiftlang/swift#90789.
+        //
+        // The compiler-aborting sources are resources compiled out of process.
+        // Pre-6.5 assertions toolchains remain known-affected; 6.5+ exercises
+        // the merged fix as ordinary regression coverage.
+
+        .testTarget(
+            name: "swift-issue-irgen-nonthrowing-typed-throws-closure-crash-Tests",
+            path: "swift-issue-irgen-nonthrowing-typed-throws-closure-crash/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-irgen-nonthrowing-typed-throws-closure-crash-Repro",
+            path: "swift-issue-irgen-nonthrowing-typed-throws-closure-crash/Sources/Reproducer",
+            resources: [
+                .copy("ConstrainedExtension.swift.txt"),
+                .copy("DirectInitialization.swift.txt")
+            ]
+        ),
+
         // MARK: - swift-issue-pointer-arithmetic-linux-miscompile
         //
         // swiftlang/swift#77558 — pointer arithmetic release-mode

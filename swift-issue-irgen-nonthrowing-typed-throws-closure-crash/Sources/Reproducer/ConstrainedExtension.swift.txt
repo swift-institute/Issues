@@ -1,0 +1,20 @@
+// swiftlang/swift#87030
+//
+// A non-throwing closure is converted to a typed-throws function whose error
+// type is nested in a generic container. On affected assertions toolchains,
+// debug IR emission aborts because the lowered closure has no error-result slot.
+
+public struct Container<Value> {
+    public var transform: (Value) throws(Failure) -> Value
+    public enum Failure: Swift.Error { case invalid }
+}
+
+public enum Token { case value }
+
+extension Container where Value == Token {
+    public static var identity: Self {
+        .init(transform: { $0 })
+    }
+}
+
+_ = Container<Token>.identity

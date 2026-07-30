@@ -18,7 +18,7 @@
 ## Observed
 
 ```
-swift-frontend: /home/build-user/swift/include/swift/AST/Types.h:5274:
+swift-frontend: <toolchain-root>/swift/include/swift/AST/Types.h:5274:
     SILResultInfo &swift::SILFunctionType::getMutableErrorResult(): Assertion `hasErrorResult()' failed.
 3.  While evaluating request IRGenRequest(IR Generation for file ".../Algebra.Law Tests.swift")
 4.  ... for expression at [Algebra.Law Tests.swift:100:25 - line:100:38] RangeText="{ _ in false "
