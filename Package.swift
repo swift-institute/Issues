@@ -348,6 +348,49 @@ let package = Package(
                 .copy("Crash.swift.txt")
             ]
         ),
+
+        // MARK: - swift-issue-silcloner-pack-conformance-forabstract-abort
+        //
+        // swiftlang/swift#90275 — SILCloner, remapping a substitution map that
+        // carries a pack conformance inside an active pack expansion, projects
+        // a pack element lane onto the conforming pack archetype;
+        // ProtocolConformanceRef::forAbstract cannot represent the resulting
+        // PackElementType subject and swift-frontend aborts (signal 6) with
+        // "Abort: function forAbstract at ASTContext.cpp:5924 / Abstract
+        // conformance with bad subject type". Fires on the 6.3 line (verified
+        // 6.3.3-RELEASE, pass CapturePromotion in the minimal shape;
+        // CrossModuleOptimization in the Institute production shape — see
+        // swift-institute/Issues#58). Fixed by swiftlang/swift#89916
+        // ([SILCloner] Preserve expansion level when cloning pack
+        // conformances), merged to release/6.4.x only — clean on Apple Swift
+        // 6.4, 6.4.x-snapshot-2026-07-23 and main-snapshot-2026-07-11 (both
+        // +assertions). Load-bearing: `sending` on the escaping closure
+        // parameter, the `false || …` autoclosure nesting inside the pack
+        // expansion, and the `each o != each o` apply carrying the pack
+        // conformance.
+        //
+        // Because the bug aborts the COMPILER, the triggering source ships as
+        // the `Crash.swift.txt` resource; both harnesses compile it OUT OF
+        // PROCESS via `swiftc -emit-sil` and report the abort. The test wraps
+        // the probe in `withKnownIssue` VERSION-GATED to probed-compiler
+        // < 6.4 (the fix is on 6.4+; an ungated `when: { true }` would flip
+        // every 6.4+ leg red today). The red flip on a 6.3-line leg is the
+        // signal that the #89916 fix (or a backport) reached that line — the
+        // event Issues#58's blocked Swift 6.3 release gates wait on. No
+        // external dependencies — bare-`swiftc` single-file per [ISSUE-002].
+
+        .testTarget(
+            name: "swift-issue-silcloner-pack-conformance-forabstract-abort-Tests",
+            path: "swift-issue-silcloner-pack-conformance-forabstract-abort/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-silcloner-pack-conformance-forabstract-abort-Repro",
+            path: "swift-issue-silcloner-pack-conformance-forabstract-abort/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

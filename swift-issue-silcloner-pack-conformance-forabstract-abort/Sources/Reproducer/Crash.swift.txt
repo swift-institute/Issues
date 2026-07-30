@@ -1,0 +1,37 @@
+// swiftlang/swift#90275 — SILCloner, while remapping a substitution map that
+// carries a pack conformance inside an active pack expansion, projects a pack
+// element lane onto the conforming pack archetype. The resulting
+// PackElementType subject reaches ProtocolConformanceRef::forAbstract, which
+// cannot represent it, and swift-frontend aborts (signal 6):
+//
+//   Abort: function forAbstract at ASTContext.cpp:5924
+//   Abstract conformance with bad subject type:
+//   (element_type level=1
+//     (pack=pack_archetype_type conforms_to="Swift.(file).Equatable" name="each V"
+//       (interface_type=generic_type_param_type depth=0 index=0 name="V" param_kind=pack)))
+//
+// Probe: `swiftc -emit-sil -swift-version 6 <this file>` — on 6.3.3-RELEASE the
+// abort fires in the mandatory-pipeline SILModuleTransform "CapturePromotion"
+// while cloning the closure below (its partial_apply of `!=` carries the
+// `Pack{repeat each V}: Equatable` pack conformance).
+//
+// Load-bearing ingredients — each verified by an A/B pair on 6.3.3-RELEASE
+// (removing exactly that ingredient compiles clean):
+//   1. `sending` on the escaping closure parameter
+//   2. the `false || …` autoclosure nesting inside the pack expansion
+//      (a nested closure capturing the pack expansion)
+//   3. the `each o != each o` apply inside the `repeat` expansion, whose
+//      substitution map carries the pack conformance
+//
+// Provenance: reduced from the regression test added by the upstream fix,
+// swiftlang/swift#89834 (test/SILOptimizer/capture_promotion_pack_conformance.swift);
+// `Sendable` on the pack elements is NOT load-bearing and is dropped here.
+
+public func trigger<each V: Equatable>(
+  action: sending @escaping (repeat (each V, Bool)) -> ()
+) -> ((repeat each V)) -> ()
+{
+  { o in
+    action(repeat (each o, false || (each o != each o)))
+  }
+}
