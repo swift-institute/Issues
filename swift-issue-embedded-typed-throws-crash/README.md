@@ -17,3 +17,28 @@ To avoid accidental compilation on an unsuitable host lane, the manifest and sou
 Workaround: avoid this typed-throws conformance shape until a failing/fixed matrix is verified.
 
 Upstream: not filed. Privacy screen: `PUBLIC_SAFE`.
+
+## Re-verification (2026-07-30) — does not reproduce on current toolchains
+
+The retained source (`evidence/source/TypedThrowsCrash.swift.txt`, staged as
+`TypedThrowsCrash.swift`) was recompiled with bare `swiftc`, each row
+`swift --version`-confirmed:
+
+| Invocation | Toolchain | Result |
+|---|---|---|
+| `swiftc -enable-experimental-feature Embedded -enable-experimental-feature Lifetimes -wmo -c` (host arm64) | 6.3.3-RELEASE | exit 0, clean |
+| same host-embedded invocation | main-snapshot-2026-07-11 (+assertions) | exit 0, clean |
+| `swiftc -target wasm32-unknown-wasip1 -enable-experimental-feature Embedded -enable-experimental-feature Lifetimes -wmo -sdk <WASI.sdk> -resource-dir <embedded swift resources> -c` (swift-6.3.3-RELEASE wasm SDK bundle) | 6.3.3-RELEASE | exit 0, clean |
+
+The wasm32 row exercises the same Embedded configuration class the source
+report named (`swift build --swift-sdk swift-6.2.3-RELEASE_wasm-embedded`),
+through bare `swiftc` against the SDK bundle's WASI sysroot and embedded Swift
+resources. `MandatoryPerformanceOptimizations` runs in every Embedded-mode
+compile, including the passing host rows.
+
+**Eligibility statement:** the crash was reported on Swift 6.2.3 and does not
+reproduce on 6.3.3-RELEASE or a 6.5-dev main snapshot in either the host or
+wasm32 Embedded configuration. There is nothing to file upstream: the defect
+is absent from every currently supported toolchain line. No reproducer target
+is added; this directory remains a closed evidence record, and the only event
+that would reopen it is the signature reappearing on a current toolchain.
