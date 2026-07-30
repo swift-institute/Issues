@@ -4,8 +4,15 @@
 > `swift-DEVELOPMENT-SNAPSHOT-2026-05-12-a`). Still firing on Swift 6.3.2
 > (the current Xcode default toolchain).
 >
-> **Upstream**: not yet filed (fix is already in 6.4-dev; verification of
-> matching swiftlang/swift commit pending).
+> **Upstream destination**: `swiftlang/swift`. Not yet filed (fix is already
+> in 6.4-dev; verification of matching swiftlang/swift commit pending).
+> **Search (2026-07-30)**: `"failed to produce diagnostic" typealias opaque`
+> over swiftlang/swift issues — 0 hits for this trigger surface.
+> **Eligibility: NOT YET ELIGIBLE** — no self-contained reducer exists (the
+> standalone shape below compiles clean on every tested toolchain), so a
+> filing could only point at the in-cohort case, which does not meet the
+> general-report bar. The path to eligibility is the canary in this entry's
+> `Tests/` flipping red, i.e. the standalone shape starting to reproduce.
 > **Workaround on 6.3.2**: file-split — keep parser declarations in a file
 > that does NOT import the test-support module exposing the parameterized
 > typealias; keep test-method bodies in a sibling file that imports the
@@ -55,8 +62,14 @@ Full investigation: 11 hypotheses tested, 8 disconfirmed. See
 
 ## Minimal Reproducer Status
 
-A single-file `swiftc`-buildable reproducer was attempted ([reproducer.swift](reproducer.swift))
-but does NOT reproduce the ICE on Swift 6.3.2. The shape (parameterized
+A single-file `swiftc`-buildable reproducer was attempted
+([`Sources/Reproducer/Crash.swift.txt`](Sources/Reproducer/Crash.swift.txt);
+converted 2026-07-30 from the loose `reproducer.swift` into the repository's
+two-target layout, where `Tests/Reproducer.swift` runs it as an
+out-of-process CANARY — green while the standalone shape stays clean, red if
+it ever starts reproducing) but it does NOT reproduce the ICE on Swift 6.3.2.
+Re-verified 2026-07-30: compiles clean on 6.3.3-RELEASE, Apple Swift 6.4, and
+main-snapshot-2026-07-11 (+assertions). The shape (parameterized
 protocol with 3 primary associated types, parameterized typealias for a
 generic instantiation, consumer with `var body: some P<I, O, F>` opaque
 return) compiles cleanly when all declarations are in one module.

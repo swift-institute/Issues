@@ -429,6 +429,116 @@ let package = Package(
                 .copy("Consumer.swift.txt"),
             ]
         ),
+
+        // MARK: - swift-issue-embedded-wasm-mandatory-perf-crash
+        //
+        // Swift 6.3.x wasm32 Embedded: signal 11 in the
+        // MandatoryPerformanceOptimizations pass (eliminateDeadAllocations,
+        // `isLegalSILType()` assertion) compiling a consumer of
+        // swift-index-primitives' cross-Tagged `+` operator. Fixed on
+        // 6.4-dev Embedded. The trigger irreducibly needs the production
+        // dependency chain plus the wasm-embedded SDK, neither of which this
+        // dependency-free package can carry — so the targets are honest
+        // stubs: the Repro exits 2 (inconclusive) pointing at the README's
+        // verified container invocation, and the test checks fixture
+        // integrity only. See the entry README for the reduction log.
+
+        .testTarget(
+            name: "swift-issue-embedded-wasm-mandatory-perf-crash-Tests",
+            path: "swift-issue-embedded-wasm-mandatory-perf-crash/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-embedded-wasm-mandatory-perf-crash-Repro",
+            path: "swift-issue-embedded-wasm-mandatory-perf-crash/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
+
+        // MARK: - swift-issue-file-system-streaming-write-ownership
+        //
+        // CopyPropagation shortens the begin_borrow/end_borrow scope of a
+        // borrowed `~Copyable` parameter so the end_borrow precedes the
+        // apply consuming its projected `~Copyable` field; the SIL ownership
+        // verifier aborts swift-frontend (signal 6, "Found outside of
+        // lifetime use?!") at -O. Fires on 6.3.3-RELEASE; clean on Apple 6.4,
+        // 6.4.x-snapshot-2026-07-23 and main-snapshot-2026-07-11. Because
+        // the bug aborts the COMPILER at -O, the trigger ships as the
+        // `Crash.swift.txt` resource compiled OUT OF PROCESS via `swiftc -O`;
+        // the test's withKnownIssue is VERSION-GATED to probed-compiler
+        // < 6.4, so a red flip on a 6.3-line leg signals the fix (or a
+        // backport) reaching that line. `Workaround.swift.txt` is the
+        // retained passing counterpart (@_optimize(none)).
+
+        .testTarget(
+            name: "swift-issue-file-system-streaming-write-ownership-Tests",
+            path: "swift-issue-file-system-streaming-write-ownership/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-file-system-streaming-write-ownership-Repro",
+            path: "swift-issue-file-system-streaming-write-ownership/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt"),
+                .copy("Workaround.swift.txt"),
+            ]
+        ),
+
+        // MARK: - swift-issue-noncopyable-assoctype-never-bodyless-witness
+        //
+        // A `Body == Never` extension default for a protocol's
+        // `associatedtype Body: ~Copyable` property requirement is emitted
+        // into consumer modules as a bodiless `shared [serialized]` `read`
+        // accessor; wherever SIL verification runs (+Asserts, Embedded,
+        // -sil-verify-all) the consumer module's compile aborts ("Must have
+        // a construct to emit for" / "shared function must have a body").
+        // Latent (emitted, unverified) on NoAsserts RELEASE toolchains. NOT
+        // fixed anywhere tested (6.3.3, Apple 6.4, main-snapshot-2026-07-11
+        // all abort); single-module combination is clean, so the module
+        // boundary is load-bearing and expressed as two out-of-process
+        // frontend invocations. Same "bodiless shared [serialized]
+        // extension-default coroutine" verifier class as swiftlang/swift
+        // #90406 (the sillinker entry above), different trigger.
+
+        .testTarget(
+            name: "swift-issue-noncopyable-assoctype-never-bodyless-witness-Tests",
+            path: "swift-issue-noncopyable-assoctype-never-bodyless-witness/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-noncopyable-assoctype-never-bodyless-witness-Repro",
+            path: "swift-issue-noncopyable-assoctype-never-bodyless-witness/Sources/Reproducer",
+            resources: [
+                .copy("Core.swift.txt"),
+                .copy("Consumer.swift.txt"),
+            ]
+        ),
+
+        // MARK: - swift-issue-parameterized-typealias-opaque-return-ice
+        //
+        // Swift 6.3.2 in-cohort ICE ("failed to produce diagnostic for
+        // expression") at `var body: some P<I, O, F>` declarations in files
+        // importing a module exposing a parameterized typealias or a
+        // Base-constrained generic extension. Fixed on 6.4-dev. The retained
+        // single-file shape has NEVER reproduced standalone (re-verified
+        // clean 2026-07-30 on 6.3.3, Apple 6.4, main snapshot), so the test
+        // is a CANARY, not a withKnownIssue reproducer: green while the
+        // standalone shape stays clean, red the day it starts reproducing —
+        // which is also the day the entry becomes upstream-fileable.
+
+        .testTarget(
+            name: "swift-issue-parameterized-typealias-opaque-return-ice-Tests",
+            path: "swift-issue-parameterized-typealias-opaque-return-ice/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-parameterized-typealias-opaque-return-ice-Repro",
+            path: "swift-issue-parameterized-typealias-opaque-return-ice/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

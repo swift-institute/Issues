@@ -15,21 +15,9 @@
 // Expected: signal 11 SIGSEGV during pass `MandatoryPerformanceOptimizations`
 // while evaluating ExecuteSILPipelineRequest on the Consumer module's SIL.
 //
-// Package.swift:
-//   // swift-tools-version: 6.3
-//   import PackageDescription
-//   let package = Package(
-//       name: "repro",
-//       targets: [
-//           .target(name: "Consumer", dependencies: [
-//               .product(name: "Index Primitives", package: "swift-index-primitives"),
-//           ]),
-//       ],
-//       dependencies: [
-//           .package(url: "https://github.com/swift-primitives/swift-index-primitives.git",
-//                    branch: "main"),
-//       ]
-//   )
+// The wrapping SwiftPM manifest (a single `Consumer` target depending on the
+// `Index Primitives` product of `swift-index-primitives`) is documented in
+// this entry's README provenance section — it is background, not live code.
 //
 // Sources/Consumer/Consumer.swift (this file):
 
