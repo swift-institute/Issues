@@ -1,0 +1,9 @@
+// Importing module. Its own conformance to the imported protocol is what forces
+// the `sil shared [serialized]` `.read` coroutine of the extension default to be
+// linked — and that function has no body, so MandatorySILLinker aborts.
+
+import LibA
+
+struct VectorImpl: MyVector {
+    typealias Element = Int
+}

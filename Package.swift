@@ -391,6 +391,44 @@ let package = Package(
                 .copy("Crash.swift.txt")
             ]
         ),
+
+        // MARK: - swift-issue-sillinker-borrowed-protocol-default-shared-coroutine-abort
+        //
+        // swiftlang/swift#90406 — swift-frontend aborts (signal 6) compiling a
+        // module that adds its own conformance to a protocol imported from another
+        // module, when that protocol has a coroutine-accessor (`@_borrowed`)
+        // requirement whose default implementation lives in a protocol extension of
+        // the DEFINING module, and the defining module also declares a conformer.
+        // The extension default's `.read` coroutine is emitted
+        // `sil shared [serialized]` with NO body; the importing module's
+        // MandatorySILLinker deserializes it and trips
+        // `(!hasSharedVisibility(F->getLinkage()) || F->hasForeignBody())` at
+        // Linker.cpp:88. Assertions-enabled toolchains catch the same malformed
+        // function earlier, in the SIL verifier during ASTLoweringRequest.
+        //
+        // Ingredient 1 also fires WITHOUT `@_borrowed` in source, by refining a
+        // stdlib collection protocol whose subscript is already `@_borrowed`.
+        //
+        // NOT optimization-, CMO-, whole-module-, SwiftPM- or architecture-dependent
+        // (6.3.3 on macOS arm64 / Linux aarch64 / Linux x86_64, Apple 6.4,
+        // 6.4.x-snapshot and main-snapshot all abort). Inherently cross-module, so
+        // the trigger ships as two `.txt` resources compiled out of process.
+        //
+        // Reduced while characterizing the fourth signature on Issues#58.
+
+        .testTarget(
+            name: "swift-issue-sillinker-borrowed-protocol-default-shared-coroutine-abort-Tests",
+            path: "swift-issue-sillinker-borrowed-protocol-default-shared-coroutine-abort/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-sillinker-borrowed-protocol-default-shared-coroutine-abort-Repro",
+            path: "swift-issue-sillinker-borrowed-protocol-default-shared-coroutine-abort/Sources/Reproducer",
+            resources: [
+                .copy("LibA.swift.txt"),
+                .copy("Consumer.swift.txt"),
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

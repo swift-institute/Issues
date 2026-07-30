@@ -1,0 +1,21 @@
+// Defining module. Three ingredients, each load-bearing (A/B verified):
+//   1. a coroutine-accessor protocol requirement — `@_borrowed` written directly,
+//      or inherited by refining a stdlib protocol whose requirement is `@_borrowed`
+//      (`Collection.subscript(position:)`);
+//   2. a protocol extension in THIS module providing the default implementation;
+//   3. at least one conforming type in THIS module.
+// This module always compiles. Only an importing module that adds its own
+// conformance crashes.
+
+public protocol MyVector {
+    associatedtype Element
+    @_borrowed subscript(position: Int) -> Element { get }
+}
+
+public extension MyVector {
+    subscript(position: Int) -> Element { fatalError() }
+}
+
+struct ArrayVector: MyVector {
+    typealias Element = Int
+}
