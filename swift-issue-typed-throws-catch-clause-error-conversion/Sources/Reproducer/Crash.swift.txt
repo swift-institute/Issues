@@ -1,0 +1,44 @@
+// Crash.swift  —  the whole trigger. One file, no dependencies, no modules.
+//
+//   swiftc -swift-version 6 -parse-as-library -c Crash.swift -o Crash.o
+//
+// aborts swift-frontend during SILGen of `g()`:
+//
+//   6.3.3-RELEASE .......... signal 11 in SILGenFunction::emitExistentialErasure,
+//                            reached from emitThrow inside emitCatchDispatch
+//   Apple Swift 6.4 ........ Assertion failed:
+//                            (FormalConcreteType->isBridgeableObjectType()),
+//                            createInitExistentialRef, SILBuilder.h:2244
+//   6.4.x/main snapshots ... Assertion failed:
+//                            (destErrorType == SILType::getExceptionType(...)),
+//                            emitThrow, SILGenStmt.cpp:1758
+//   6.5-dev main-snapshot .. no crash, but a hard
+//                            "INTERNAL ERROR: feature not implemented:
+//                            throw conversion from 'Inner' to 'Outer'"
+//
+// All four are the same defect: SILGen emits the `throw` inside the catch
+// clause against the DO-BLOCK's thrown type (`Inner`) instead of the
+// enclosing function's (`Outer`). Not optimization-dependent — `-Onone` and
+// `-O` behave identically.
+
+enum Inner: Error { case a }
+
+enum Outer: Error { case x }
+
+func make() throws(Inner) { throw .a }
+
+// Load-bearing: `throws(Outer)` — an untyped `throws` here is clean.
+func g() throws(Outer) {
+    do {
+        try make()
+    // Load-bearing: a concrete-type catch pattern (`as Inner`, or `is Inner`).
+    // A bare `catch` is clean. The pattern must be exhaustive for the do
+    // block's thrown type; `catch Inner.a` is not, and is diagnosed rather
+    // than crashing.
+    } catch let error as Inner {
+        _ = error
+        // The crash site: the enclosing function's error type, thrown from
+        // inside a catch clause whose do block throws a different one.
+        throw Outer.x
+    }
+}

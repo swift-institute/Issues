@@ -840,6 +840,41 @@ let package = Package(
                 .copy("Consumer.swift.txt"),
             ]
         ),
+
+        // MARK: - swift-issue-typed-throws-catch-clause-error-conversion (Issues#83)
+        //
+        // Throwing the ENCLOSING function's typed error from inside a `catch`
+        // clause whose `do` block throws a DIFFERENT concrete error type
+        // crashes SILGen: the throw is emitted against the do block's thrown
+        // type instead of the function's, and SILGen then tries to erase a
+        // non-class concrete type into an existential error box. 6.3.3
+        // dereferences a bad pointer (signal 11) in emitExistentialErasure;
+        // Apple 6.4 asserts in createInitExistentialRef; the 6.4.x snapshot
+        // asserts on `destErrorType == SILType::getExceptionType(...)` in
+        // emitThrow; 6.5-dev main emits a hard "INTERNAL ERROR: feature not
+        // implemented: throw conversion" diagnostic instead of crashing. All
+        // four are the same defect and the program is uncompilable on each.
+        //
+        // Load-bearing: the enclosing function's TYPED throws, and a
+        // concrete-type catch pattern (`as T` / `is T`). NOT required: an
+        // initializer, optimization, whole-module, or more than one module.
+        // Because the bug aborts the COMPILER, the trigger ships as the
+        // `Crash.swift.txt` resource compiled OUT OF PROCESS.
+        //
+        // Reduced from swift-standards/swift-sockets-standard#2, whose abort
+        // is in the swift-ietf/swift-rfc-9293 dependency.
+
+        .testTarget(
+            name: "swift-issue-typed-throws-catch-clause-error-conversion-Tests",
+            path: "swift-issue-typed-throws-catch-clause-error-conversion/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-typed-throws-catch-clause-error-conversion-Repro",
+            path: "swift-issue-typed-throws-catch-clause-error-conversion/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
