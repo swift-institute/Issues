@@ -349,6 +349,51 @@ let package = Package(
             ]
         ),
 
+        // MARK: - swift-issue-inliner-escaping-carrier-bitwise-underlying
+        //
+        // NOT FILED (standing policy) — terminal record only. swift-institute/Issues#99.
+        // SAME root cause and SAME assertion as
+        // swift-issue-inliner-escaping-mark-dependence-coroutine-token above
+        // (SILInliner.cpp:167, BeginApplySite::preprocess, assert
+        // mdi.isNonEscaping()) — a second, independently observed trigger, not a
+        // new bug. Here EarlyPerfInliner inlines Carrier.`Protocol`'s `underlying`
+        // borrowing-get coroutine witness (Byte's conformance, UInt8-carrying)
+        // into the generic bitwise `&(_:_:)` operator, which CONSTRUCTS AND
+        // RETURNS a new carrier from the yielded values — an escaping
+        // dependence, tripping the same assert.
+        //
+        // Observed live in production CI: swift-standards/swift-github-standard
+        // PR #15 (run 30742912862) and PR #17 (run 30744204332), Ubuntu
+        // main-nightly (Swift 6.5-dev) leg, while compiling the dependency
+        // swift-binary-parser-primitives (not that package's own source — the
+        // crash is entirely inside the swift-carrier-primitives ×
+        // swift-byte-primitives dependency edge). See README for the full
+        // disposition: structurally red for every consumer reaching this call
+        // shape until the toolchain moves; no source workaround adopted.
+        //
+        // ⚠️ UNVERIFIED-locally: no 6.5-dev/main-nightly toolchain or working
+        // docker daemon was available in the isolation lane that filed this
+        // entry. Verified CLEAN on the local 6.4 toolchain (expected — this bug
+        // is 6.5-dev-only per the neighbouring entry's toolchain matrix). See
+        // README "Verification status" for the pending docker command.
+        //
+        // Bare-`swiftc` single-file per [ISSUE-002]; OUT-OF-PROCESS harness via
+        // Crash.swift.txt per [ISSUE-029]. `when:` is VERSION-GATED identically
+        // to the neighbouring entry — do not revert to `{ true }`.
+
+        .testTarget(
+            name: "swift-issue-inliner-escaping-carrier-bitwise-underlying-Tests",
+            path: "swift-issue-inliner-escaping-carrier-bitwise-underlying/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-inliner-escaping-carrier-bitwise-underlying-Repro",
+            path: "swift-issue-inliner-escaping-carrier-bitwise-underlying/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
+
         // MARK: - swift-issue-silcloner-pack-conformance-forabstract-abort
         //
         // swiftlang/swift#90275 — SILCloner, remapping a substitution map that
