@@ -1,0 +1,203 @@
+# Automated toolchain-clearance recheck for swift-institute/Issues#105.
+#
+# Issues#105 is the canonical record for the Swift 6.4-era runtime defect:
+# generic-metadata lookup fails for a generic type nested inside a
+# value-generic (`let N: Int`) type. Introduced upstream by
+# swiftlang/swift#89965 (main) / #89995 (release/6.4.x); fixed on main by
+# swiftlang/swift#91267 (merged 2026-08-07). Reduction:
+# swift-institute/Experiments PR #3. First affected package:
+# swift-primitives/swift-link-primitives#2.
+#
+# This workflow watches the three propagation channels and posts ONE comment
+# on Issues#105 per state transition. A quiet run posts nothing. It never
+# closes issues, never dispatches fleet CI, and never edits pins — those are
+# coordinator actions; the comment names them.
+#
+# Channels:
+#   linux-main   swiftlang/swift:nightly-main-noble   (fix expected: first
+#                image whose Swift revision postdates 2026-08-07)
+#   linux-6.4.x  swiftlang/swift:nightly-6.4.x-noble  (fix requires a
+#                cherry-pick of #91267 to release/6.4.x; none open 2026-08-09)
+#   macos        hosted macOS runner's Apple toolchain (fix arrives via
+#                Xcode/macOS updates; runner image is an unpinnable input —
+#                the resolved image version is recorded, never claimed pinned)
+#
+# The trigger key is the image's SWIFT REVISION, not its registry digest:
+# nightly tags are rebuilt (base-layer refresh) without new Swift content, so
+# digests churn while the toolchain stands still. Baseline (defective)
+# identities are pinned below; a pull happens only when the registry digest
+# leaves the baseline, and a comment happens only when the revision or verdict
+# is one #105 has not seen (dedupe via an HTML marker in the comment body).
+#
+# Governance: this file is a bespoke scheduled workflow in a control-plane
+# repository, outside the uniform generated-caller topology. Its typed
+# whitelist exemption and the Swift-owned successor (institute-ci-control
+# recheck lane) are tracked in swift-institute/.github — see the issue linked
+# from Issues#105. Retirement condition: all three channels reported cleared,
+# or the Swift-owned recheck lane supersedes it. No third-party actions are
+# used, so there is nothing to SHA-pin; the pin boundary is the hosted runner
+# image itself, which is recorded per run.
+
+name: issue-105-toolchain-recheck
+
+on:
+  schedule:
+    - cron: "23 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: issue-105-recheck
+  cancel-in-progress: false
+
+env:
+  ISSUE: "105"
+  # Baseline DEFECTIVE identities, verified 2026-08-09 (Issues#105).
+  BASELINE_MAIN_DIGEST: "sha256:1b2f1f3944dba1f6e52ad81ab3e7ff4dff25c86cd6791dc595db63b675a63867"
+  BASELINE_MAIN_REVISION: "83c32e02f71e4bb"
+  BASELINE_64X_DIGEST: "sha256:8d614165059587ce9dcf6727a76aeff4cbf1cde41fde9a9281a43803be736224"
+  BASELINE_64X_REVISION: "db4e13695491982"
+  FIX_MAIN_COMMIT: "a0937689757f6dbf20a532d5d0aa6411de5962e9"
+  FIX_GREP: "Reject more integer/metadata mixups"
+
+jobs:
+  linux:
+    name: recheck / linux nightlies
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Write reduction
+        run: |
+          cat > /tmp/repro.swift <<'EOF'
+          enum Link<let N: Int> {}
+          extension Link {
+              struct Node<Element> { var element: Element }
+          }
+          print(_typeName(Link<1>.Node<Int>.self))
+          EOF
+
+      - name: Recheck linux channels
+        run: |
+          set -u
+          report() {
+            # $1 channel, $2 identity, $3 verdict, $4 detail
+            marker="<!-- issue-105-recheck: $1 $2 $3 -->"
+            if gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}/comments" \
+                 --paginate --jq '.[].body' | grep -qF "$marker"; then
+              echo "already reported: $1 $2 $3"; return 0
+            fi
+            run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body "$(printf '%s\n' \
+              "$marker" \
+              "## Automated recheck: channel \`$1\` — **$3**" \
+              "" \
+              "$4" \
+              "" \
+              "Reduction: swift-institute/Experiments PR #3. Fix: swiftlang/swift#91267 (main, 2026-08-07). First affected package: swift-primitives/swift-link-primitives#2." \
+              "Run: $run_url")"
+          }
+
+          check_channel() {
+            # $1 channel-name, $2 tag, $3 baseline-digest, $4 baseline-revision
+            digest=$(curl -sf "https://hub.docker.com/v2/repositories/swiftlang/swift/tags/$2" \
+                     | jq -r .digest) || { echo "$1: registry unreachable"; return 0; }
+            echo "$1: registry digest $digest"
+            if [ "$digest" = "$3" ]; then
+              echo "$1: baseline (defective) image still current; nothing to do"
+              return 0
+            fi
+            docker pull -q "swiftlang/swift@$digest" >/dev/null || { echo "$1: pull failed"; return 0; }
+            version=$(docker run --rm "swiftlang/swift@$digest" swift --version 2>&1 | head -2)
+            revision=$(printf '%s' "$version" | grep -oE 'Swift [0-9a-f]{15,17}' | awk '{print $2}')
+            revision="${revision:-unknown}"
+            echo "$1: swift revision $revision"
+            if [ "$revision" = "$4" ]; then
+              echo "$1: rebuilt image, same defective toolchain; nothing to do"
+              return 0
+            fi
+            if docker run --rm -v /tmp/repro.swift:/repro.swift:ro \
+                 "swiftlang/swift@$digest" \
+                 bash -c 'cd /tmp && swiftc -Onone -module-name main /repro.swift -o repro && ./repro' \
+                 > /tmp/out.txt 2>&1; then
+              report "$1" "$revision" "CLEARED" "$(printf '%s\n' \
+                "The reduction now passes in \`swiftlang/swift@$digest\` (tag \`$2\`):" \
+                '```' "$version" "$(cat /tmp/out.txt)" '```' \
+                "Coordinator actions: bump the corresponding digest pin in swift-institute/.github swift-ci.yml, then dispatch the full tier on swift-primitives/swift-link-primitives and read the run conclusion before unblocking #2.")"
+            else
+              report "$1" "$revision" "STILL-DEFECTIVE" "$(printf '%s\n' \
+                "A NEW toolchain published (\`swiftlang/swift@$digest\`, tag \`$2\`) but the reduction still fails:" \
+                '```' "$version" "$(tail -5 /tmp/out.txt)" '```' \
+                "For \`linux-main\` this is unexpected after 2026-08-07 and warrants re-opening the analysis on this record.")"
+            fi
+          }
+
+          check_channel "linux-main"  "nightly-main-noble"  "$BASELINE_MAIN_DIGEST" "$BASELINE_MAIN_REVISION"
+          check_channel "linux-6.4.x" "nightly-6.4.x-noble" "$BASELINE_64X_DIGEST"  "$BASELINE_64X_REVISION"
+
+      - name: Recheck 6.4.x backport
+        run: |
+          set -u
+          git clone -q --filter=blob:none --single-branch --branch release/6.4.x \
+            --depth 300 https://github.com/swiftlang/swift.git /tmp/swift-64x || exit 0
+          pick=$(git -C /tmp/swift-64x log --oneline --grep "$FIX_GREP" | head -1 || true)
+          if [ -n "$pick" ]; then
+            marker="<!-- issue-105-recheck: backport-6.4.x ${pick%% *} found -->"
+            if ! gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}/comments" \
+                 --paginate --jq '.[].body' | grep -qF "$marker"; then
+              gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body "$(printf '%s\n' \
+                "$marker" \
+                "## Automated recheck: swiftlang/swift#91267 backport landed on \`release/6.4.x\`" \
+                "" \
+                "\`$pick\`" \
+                "" \
+                "The next \`nightly-6.4.x\` image should clear the \`linux-6.4.x\` channel; this monitor will verify it and report.")"
+            fi
+          else
+            echo "no backport on release/6.4.x yet"
+          fi
+
+  macos:
+    name: recheck / hosted macOS
+    runs-on: macos-latest
+    permissions:
+      issues: write
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Recheck Apple toolchain channel
+        run: |
+          set -u
+          cat > /tmp/repro.swift <<'EOF'
+          enum Link<let N: Int> {}
+          extension Link {
+              struct Node<Element> { var element: Element }
+          }
+          print(_typeName(Link<1>.Node<Int>.self))
+          EOF
+          identity="$(sw_vers -productVersion)-$(xcodebuild -version | tr '\n' ' ' | awk '{print $2}')"
+          resolved_image="${ImageVersion:-unrecorded}"
+          echo "macOS $(sw_vers -productVersion), Xcode $(xcodebuild -version | head -1), runner image $resolved_image"
+          if swiftc -Onone -module-name main /tmp/repro.swift -o /tmp/repro && /tmp/repro > /tmp/out.txt 2>&1; then
+            marker="<!-- issue-105-recheck: macos $identity CLEARED -->"
+            if ! gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}/comments" \
+                 --paginate --jq '.[].body' | grep -qF "$marker"; then
+              run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+              gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body "$(printf '%s\n' \
+                "$marker" \
+                "## Automated recheck: channel \`macos\` — **CLEARED**" \
+                "" \
+                "The reduction passes on hosted macOS $(sw_vers -productVersion), $(xcodebuild -version | tr '\n' ' ') (runner image $resolved_image — recorded, not pinned):" \
+                '```' "$(cat /tmp/out.txt)" '```' \
+                "The Apple channel clears per machine via macOS/Xcode updates; local development Macs must update to at least this version." \
+                "Run: $run_url")"
+            fi
+          else
+            echo "Apple toolchain channel still defective on $identity (expected; silent)"
+          fi
