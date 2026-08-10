@@ -1,0 +1,55 @@
+// Each declaration below carries an explicit memberwise initializer that
+// `unneeded_synthesized_initializer` considers redundant. `swiftlint --fix`
+// deletes ALL SIX. `swiftlint lint --strict` reports only the three marked
+// CONTROL. The three marked HAZARD are corrected without ever being reported.
+//
+// The discriminator is the ENCLOSING declaration of the type, not the type
+// itself: a type nested in an `enum`, or declared inside an `extension`, is
+// silently corrected. Both shapes are Swift Institute house idiom — the
+// `Nest.Name` namespace enum and extension-hosted nesting.
+
+// CONTROL — top level. Reported.
+internal struct A {
+    internal let value: Int
+    internal init(value: Int) { self.value = value }
+}
+
+// HAZARD — nested in a public enum. Corrected, never reported.
+public enum PubEnum {
+    internal struct B {
+        internal let value: Int
+        internal init(value: Int) { self.value = value }
+    }
+}
+
+// CONTROL — nested in a struct. Reported.
+public struct PubStruct {
+    internal struct C {
+        internal let value: Int
+        internal init(value: Int) { self.value = value }
+    }
+}
+
+// HAZARD — nested in an internal enum. Corrected, never reported.
+internal enum IntEnum {
+    internal struct D {
+        internal let value: Int
+        internal init(value: Int) { self.value = value }
+    }
+}
+
+// HAZARD — declared inside an extension. Corrected, never reported.
+extension PubStruct {
+    internal struct E {
+        internal let value: Int
+        internal init(value: Int) { self.value = value }
+    }
+}
+
+// CONTROL — nested in a class. Reported.
+public final class PubClass {
+    internal struct F {
+        internal let value: Int
+        internal init(value: Int) { self.value = value }
+    }
+}

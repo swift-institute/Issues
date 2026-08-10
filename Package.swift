@@ -475,6 +475,74 @@ let package = Package(
             ]
         ),
 
+        // MARK: - swift-issue-swiftlint-redundant-nil-coalescing-double-optional (linter-rules#70)
+        //
+        // NOT a compiler defect. The instrument under test is SwiftLint itself —
+        // the built-in `redundant_nil_coalescing` rule, enabled fleet-wide by the
+        // Tier 1 `.swiftlint.yml` in swift-institute/.github.
+        //
+        // The rule matches `?? nil` on syntax alone and never consults the type of
+        // the left-hand expression, so it cannot distinguish `T? ?? nil` (dead
+        // code) from `T?? ?? nil` (the flattening step on the double optional that
+        // `withContiguousStorageIfAvailable` returns). `--fix` deletes the
+        // flattening operator, the file stops compiling, and the very next
+        // `swiftlint lint --strict` reports the broken file clean.
+        //
+        // The post-correction state does not compile by construction, so the
+        // fixture cannot be a member of this target: it ships as
+        // `Fixture.swift.txt` and is linted, corrected and typechecked out of
+        // process. Both harnesses report INCONCLUSIVE when no `swiftlint` is on
+        // PATH — this repository's CI installs it in the lint job only, so that is
+        // the ordinary outcome under `swift test`.
+
+        .testTarget(
+            name: "swift-issue-swiftlint-redundant-nil-coalescing-double-optional-Tests",
+            path: "swift-issue-swiftlint-redundant-nil-coalescing-double-optional/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-swiftlint-redundant-nil-coalescing-double-optional-Repro",
+            path: "swift-issue-swiftlint-redundant-nil-coalescing-double-optional/Sources/Reproducer",
+            resources: [
+                .copy("Fixture.swift.txt"),
+                .copy("Config.yml.txt"),
+            ]
+        ),
+
+        // MARK: - swift-issue-swiftlint-synthesized-initializer-fix-beyond-lint (swift-linter#47)
+        //
+        // NOT a compiler defect. The instrument under test is SwiftLint itself —
+        // the built-in, default-enabled `unneeded_synthesized_initializer` rule.
+        //
+        // The rule's REPORTING path visits only types that are top level or nested
+        // in a struct/class. Its CORRECTION path additionally descends into types
+        // nested in an `enum` and types declared inside an `extension` — both Swift
+        // Institute house idiom. `--fix` therefore mutates strictly more sites than
+        // `--strict` reports, and the standard sweep protocol (measure, fix,
+        // re-measure) sees clean on both sides while unmeasured deletions ride
+        // along between them.
+        //
+        // The six fixtures differ only in enclosing declaration, isolating the
+        // discriminator by construction. The measurement diffs the WORKING TREE
+        // against the measured violation set rather than trusting SwiftLint's own
+        // `Corrected N times` line, since the claim is that report and mutation
+        // disagree. Both harnesses report INCONCLUSIVE when no `swiftlint` is on
+        // PATH, and treat a zero report as inconclusive rather than as fixed.
+
+        .testTarget(
+            name: "swift-issue-swiftlint-synthesized-initializer-fix-beyond-lint-Tests",
+            path: "swift-issue-swiftlint-synthesized-initializer-fix-beyond-lint/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-swiftlint-synthesized-initializer-fix-beyond-lint-Repro",
+            path: "swift-issue-swiftlint-synthesized-initializer-fix-beyond-lint/Sources/Reproducer",
+            resources: [
+                .copy("Fixture.swift.txt"),
+                .copy("Config.yml.txt"),
+            ]
+        ),
+
         // MARK: - swift-issue-embedded-wasm-mandatory-perf-crash
         //
         // Swift 6.3.x wasm32 Embedded: signal 11 in the
