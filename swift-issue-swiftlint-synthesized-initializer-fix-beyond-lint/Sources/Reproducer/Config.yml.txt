@@ -1,0 +1,2 @@
+only_rules:
+  - unneeded_synthesized_initializer

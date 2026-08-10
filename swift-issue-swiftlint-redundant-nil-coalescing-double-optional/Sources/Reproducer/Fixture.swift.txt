@@ -1,0 +1,20 @@
+public enum Probe {
+    // HAZARD SHAPE. `withContiguousStorageIfAvailable` returns `Int??`: the
+    // OUTER optional is `nil` when the collection has no contiguous storage,
+    // the INNER optional is the closure's own result. `?? nil` FLATTENS the
+    // double optional to `Int?`. It is load-bearing, not dead code.
+    public static func doubleOptional<C: Collection>(_ bytes: C) -> Int? where C.Element == UInt8 {
+        let fast: Int? =
+            bytes.withContiguousStorageIfAvailable { (buffer: UnsafeBufferPointer<UInt8>) -> Int? in
+                buffer.isEmpty ? nil : Int(buffer[0])
+            } ?? nil
+        return fast
+    }
+
+    // POSITIVE CONTROL. An ordinary single optional: `?? nil` here IS dead
+    // code, the rule is right to fire, and the correction is sound. Its
+    // presence proves the instrument ran and the rule was enabled.
+    public static func singleOptional(_ value: Int?) -> Int? {
+        return value ?? nil
+    }
+}
