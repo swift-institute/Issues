@@ -62,6 +62,27 @@ let package = Package(
 
     targets: [
 
+        // MARK: - swift-issue-callable-syntax-escaped-parameter-label
+        //
+        // swift-institute/Issues#114; swiftlang/swift#86058 — callable
+        // initializer syntax selects an unlabeled overload instead of the
+        // matching backtick-escaped label across a module boundary.
+
+        .testTarget(
+            name: "swift-issue-callable-syntax-escaped-parameter-label-Tests",
+            path: "swift-issue-callable-syntax-escaped-parameter-label/Tests"
+        ),
+
+        .executableTarget(
+            name: "swift-issue-callable-syntax-escaped-parameter-label-Repro",
+            path: "swift-issue-callable-syntax-escaped-parameter-label/Sources/Reproducer",
+            resources: [
+                .copy("Fixture.swift.txt"),
+                .copy("Callable.swift.txt"),
+                .copy("ExplicitInit.swift.txt"),
+            ]
+        ),
+
         // MARK: - swift-issue-borrowing-actor-closure
         //
         // swift-institute/Issues#3 — `swift-frontend` crashes in

@@ -1,0 +1,9 @@
+{
+  "sourceRepository": "https://github.com/swift-foundations/swift-splat",
+  "sourceRevision": "a6a4905eae1d96327bd0d1526890b62e6ad3e32e",
+  "migratedReport": "SWIFT_BUG_REPORT.md",
+  "migratedFixture": "Sources/SplatTestFixtures/TypedThrowsFixture.swift",
+  "migratedTest": "Tests/SplatTests/InitSyntaxTests.swift",
+  "upstreamIssue": "https://github.com/swiftlang/swift/issues/86058",
+  "reduction": "Replaces the @Splat expansion with its portable initializer shape while preserving the cross-module callable-syntax failure and explicit-.init control."
+}
