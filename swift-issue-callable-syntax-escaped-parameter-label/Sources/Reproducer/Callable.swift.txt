@@ -1,0 +1,4 @@
+import Fixture
+
+let example = Example(`the condition is satisfied`: true)
+_ = example

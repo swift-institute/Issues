@@ -1,0 +1,19 @@
+public struct Example: Sendable {
+    public let arguments: Arguments
+
+    public init(_ arguments: Arguments) {
+        self.arguments = arguments
+    }
+
+    public init(`the condition is satisfied`: Bool?) {
+        self.arguments = Arguments(`the condition is satisfied`: `the condition is satisfied`)
+    }
+
+    public struct Arguments: Sendable {
+        public let `the condition is satisfied`: Bool?
+
+        public init(`the condition is satisfied`: Bool? = nil) {
+            self.`the condition is satisfied` = `the condition is satisfied`
+        }
+    }
+}
