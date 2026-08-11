@@ -65,6 +65,13 @@ on:
     - cron: '0 6 * * 1'
   workflow_dispatch:
 
+# The reusable workflow's `ci-ok` job reads its own Actions state.  This
+# caller must explicitly delegate that capability; GitHub otherwise caps the
+# nested call at `actions: none` before any job can start.
+permissions:
+  actions: read
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
