@@ -1,0 +1,9 @@
+// swift-tools-version: 6.4
+import PackageDescription
+
+// Requesting X alone fails to resolve; requesting Y (or X and Y) resolves.
+let package = Package(
+    name: "root",
+    dependencies: [.package(url: "file://@ROOT@/a", branch: "main", traits: ["X"])],
+    targets: [.target(name: "Root", dependencies: [.product(name: "A", package: "a")])]
+)

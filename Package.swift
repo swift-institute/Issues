@@ -42,6 +42,22 @@ let package = Package(
 
     targets: [
 
+        // MARK: - swift-issue-spm-implied-trait-conditional-dependency
+        //
+        // SwiftPM does not activate a conditional dependency trait request when
+        // the condition's trait is enabled only by implication (`enabledTraits`),
+        // so resolution fails with "exhausted attempts". The fixture packages are
+        // staged and resolved out of process.
+        .testTarget(
+            name: "swift-issue-spm-implied-trait-conditional-dependency-Tests",
+            path: "swift-issue-spm-implied-trait-conditional-dependency/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-spm-implied-trait-conditional-dependency-Repro",
+            path: "swift-issue-spm-implied-trait-conditional-dependency/Sources/Reproducer",
+            exclude: ["Fixture"]
+        ),
+
         // MARK: - swift-issue-borrowing-actor-closure
         //
         // swift-institute/Issues#3 — `swift-frontend` crashes in

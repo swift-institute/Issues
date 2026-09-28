@@ -1,0 +1,20 @@
+// swift-tools-version: 6.4
+import PackageDescription
+
+// X implies Y. Y conditionally forwards trait Z to b, and Z gates b's dependency on c.
+let package = Package(
+    name: "a",
+    products: [.library(name: "A", targets: ["A"])],
+    traits: [
+        .trait(name: "X", enabledTraits: ["Y"]),
+        .trait(name: "Y"),
+    ],
+    dependencies: [
+        .package(
+            url: "file://@ROOT@/b",
+            branch: "main",
+            traits: [.trait(name: "Z", condition: .when(traits: ["Y"]))]
+        ),
+    ],
+    targets: [.target(name: "A", dependencies: [.product(name: "B", package: "b")])]
+)
