@@ -1,5 +1,13 @@
 # Swift Issue: FunctionSignatureOpts asserts on a generic function with a generic typed-throws error type
 
+> **UPDATE 2026-09-28 — fixed on 6.4.** Re-verified on macOS arm64 with the staged
+> `Crash.swift.txt` (`swiftc -O -swift-version 6 -c`): **6.3.3-RELEASE still aborts**
+> on `ASSERT(!type.hasTypeParameter())`; **Apple Swift 6.4 (swiftlang-6.4.0.34.1)**,
+> the **6.4.x snapshot 2026-07-23** and the **6.5-dev snapshot 2026-07-11** compile it
+> cleanly. The earlier 6.4-dev / 6.5-dev CRASH rows below predate the fix. The test's
+> `when:` is now version-gated (active below 6.4), like
+> `swift-issue-tasklocal-function-value-null-metadata`.
+
 **Upstream:** **FILED — [swiftlang/swift#89617](https://github.com/swiftlang/swift/issues/89617)** (2026-06-02). Standalone single-file `swiftc -O` reducer per the [ISSUE-002] gold standard. Closest existing reports are **distinct** (see *Duplicate search* below).
 
 **Classification:** ICE / compiler crash (signal 6, assertion failure) in the SIL optimizer.

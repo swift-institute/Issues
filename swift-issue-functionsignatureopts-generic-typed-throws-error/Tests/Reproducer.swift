@@ -27,12 +27,27 @@ import Foundation
 //   6.2 / 6.2.3 (asserts off) ... CRASH via the SIL verifier (try_apply error dest)
 //   6.3.1 / 6.3.2 (Xcode default) CRASH via ASSERT(!type.hasTypeParameter())
 //   6.3-dev / 6.4-dev / 6.5-dev . CRASH via the same assertion
-// The bug is present on EVERY tested toolchain 6.2 -> 6.5-dev — it is NOT a 6.3
-// regression (6.3 only added the earlier, louder SILArgument assertion). So the
-// `when:` precondition is the unconditional "a compiler is reachable" probe.
+// The bug is NOT a 6.3 regression (6.3 only added the earlier, louder
+// SILArgument assertion).
+//
+// FIXED ON 6.4 (re-verified 2026-09-28, macOS arm64): 6.3.3-RELEASE still aborts
+// on the assertion; Apple Swift 6.4 (swiftlang-6.4.0.34.1), the 6.4.x snapshot
+// 2026-07-23 and the 6.5-dev snapshot 2026-07-11 compile it cleanly. So `when:`
+// is version-gated like swift-issue-tasklocal-function-value-null-metadata:
+//   below 6.4 — matching ACTIVE: green while it fires, RED on a backport.
+//   6.4+      — matching INACTIVE: green while fixed, RED on a regression.
 
 @Suite
 struct FunctionSignatureOptsGenericTypedThrowsErrorReproducer {
+
+    /// True when this target was built by a compiler that predates the fix.
+    static var expectsBug: Bool {
+        #if compiler(>=6.4)
+        false
+        #else
+        true
+        #endif
+    }
 
     /// Compiles `Crash.swift.txt` with `swiftc -O` in a child process and
     /// reports whether FunctionSignatureOpts aborted. Returns `nil` if no
@@ -103,12 +118,9 @@ struct FunctionSignatureOptsGenericTypedThrowsErrorReproducer {
         withKnownIssue(
             "swiftlang/swift#89617 — FunctionSignatureOpts !type.hasTypeParameter() on a generic typed-throws error result",
             { #expect(fired == false) },
-            // `when: { true }`, NOT `{ fired }`: the `guard let fired … else { return }`
-            // above already skips unreachable / N-A platforms, so known-issue matching must
-            // stay ACTIVE when the bug stops firing — that is what flips the leg RED on an
-            // upstream fix (the cron's whole purpose). `{ fired }` disables matching on a fix,
-            // leaves the body passing, and stays GREEN forever (empirically verified).
-            when: { true }
+            // Version-gated, NOT `{ fired }`: `{ fired }` would disable matching
+            // exactly when the bug stops firing and hide a fix or a regression.
+            when: { Self.expectsBug }
         )
     }
 }

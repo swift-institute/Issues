@@ -6,7 +6,7 @@ import Foundation
 
 // A body member and a redundant-with-default `where Element: Copyable`
 // extension member of an extension-nested type mangle to the SAME symbol,
-// and `swiftc -emit-objectFileect` fails with "multiple definitions of symbol".
+// and `swiftc -emit-object` fails with "multiple definitions of symbol".
 // Still fires on 6.3.3-RELEASE and Apple Swift 6.4 (verified 2026-07-30).
 //
 // The reduced sources are the loose files at ../Sources/*.swift (reproducer,
@@ -19,7 +19,7 @@ import Foundation
 @Suite
 struct NoncopyableExtensionMemberManglingCollisionReproducer {
 
-    /// Compiles `Sources/reproducer.swift` with `swiftc -emit-objectFileect` in a
+    /// Compiles `Sources/reproducer.swift` with `swiftc -emit-object` in a
     /// child process. Returns `true` if the mangling collision fired,
     /// `false` if it compiled cleanly, `nil` if inconclusive.
     static func bugFires() -> Bool? {
@@ -37,7 +37,7 @@ struct NoncopyableExtensionMemberManglingCollisionReproducer {
 
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["swiftc", "-emit-objectFileect", source.path, "-o", objectFile.path]
+        process.arguments = ["swiftc", "-emit-object", source.path, "-o", objectFile.path]
         let stderr = Pipe()
         process.standardError = stderr
         process.standardOutput = Pipe()

@@ -167,8 +167,9 @@ let package = Package(
         // interface type `E<T>` (still carrying the type parameter). On 6.3.1+ the
         // always-on ASSERT(!type.hasTypeParameter()) (SILArgument.cpp:40) fires; on
         // 6.2/6.2.3 (asserts off) the SIL verifier rejects the try_apply error
-        // destination. Present on EVERY tested toolchain 6.2 -> 6.5-dev — NOT a 6.3
-        // regression, NOT fixed on latest dev. Distinct from #87030 (IRGen, clean on
+        // destination. NOT a 6.3 regression. FIXED on 6.4 (re-verified
+        // 2026-09-28: 6.3.3 aborts; Apple 6.4, 6.4.x and 6.5-dev snapshots clean),
+        // so the test's `when:` is version-gated below 6.4. Distinct from #87030 (IRGen, clean on
         // 6.3.2) and its fix #88931 (SILGen/IRGen, not FunctionSignatureOpts).
         //
         // Because the bug aborts the COMPILER, the triggering source ships as the

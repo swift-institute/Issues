@@ -34,7 +34,7 @@ let objectFile = URL(fileURLWithPath: NSTemporaryDirectory())
 
 let process = Process()
 process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-process.arguments = ["swiftc", "-emit-objectFileect", source.path, "-o", objectFile.path]
+process.arguments = ["swiftc", "-emit-object", source.path, "-o", objectFile.path]
 let stderr = Pipe()
 process.standardError = stderr
 process.standardOutput = Pipe()
