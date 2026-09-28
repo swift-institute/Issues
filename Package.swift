@@ -33,32 +33,12 @@ import PackageDescription
 let package = Package(
     name: "Issues",
 
-    // The macOS platform minimum mirrors the swift-primitives
-    // ecosystem's deployment target (`.v26`) so that targets depending
-    // on `swift-tagged-primitives` / `swift-ordinal-primitives` /
-    // `swift-cardinal-primitives` resolve cleanly. Targets that do NOT
-    // depend on swift-primitives products (e.g.
-    // `swift-issue-pointer-arithmetic-linux-miscompile-*`) are
-    // unaffected on Linux/Windows where the `platforms:` minimum is
-    // not consulted.
+    // The platform minimum is the Swift Institute deployment target.
+    // The Issues package has NO external dependencies: every entry is a
+    // bare-`swiftc` / out-of-process reproducer per [ISSUE-002]. (The one
+    // former exception, swift-issue-tagged-noncopyable-atomic-metadata-crash,
+    // was retired 2026-09-28 — see its MARK below.)
     platforms: [.macOS(.v26), .iOS(.v26), .tvOS(.v26), .watchOS(.v26), .visionOS(.v26)],
-
-    // External dependencies are unusual for the Issues repo — the
-    // per-issue convention prefers bare-`swiftc` single-file
-    // reproducers per [ISSUE-002]. They are accommodated for issues
-    // that are NOT reducible to bare `swiftc`. Currently the only
-    // such issue is the Tagged + Atomic + `~Copyable` metadata
-    // SIGSEGV, which is specific to the production
-    // `Tagged_Primitives.Tagged` symbol's runtime materialization
-    // and cannot be reduced to a local-copy reproducer (see
-    // `swift-issue-tagged-noncopyable-atomic-metadata-crash/INVESTIGATION-ARC.md`
-    // Arc 4 §`[ISSUE-002]`). The three deps below back ONLY that issue's
-    // targets — every other issue MUST remain dependency-free.
-    dependencies: [
-        .package(url: "https://github.com/swift-primitives/swift-tagged-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-ordinal-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-cardinal-primitives.git", branch: "main"),
-    ],
 
     targets: [
 
@@ -131,49 +111,17 @@ let package = Package(
             path: "swift-issue-pointer-arithmetic-linux-miscompile/Sources/Reproducer"
         ),
 
-        // MARK: - swift-issue-tagged-noncopyable-atomic-metadata-crash
+        // MARK: - swift-issue-tagged-noncopyable-atomic-metadata-crash (RETIRED)
         //
-        // swiftlang/swift (pending filing — see PRE-FILING-BUG-REPORT.md
-        // in the issue directory) — `Atomic<Tagged<Tag, Ordinal>>.advance(within:)`
-        // SIGSEGVs at runtime on Apple Swift 6.3.x (Xcode 26.4.1)
-        // because the type-metadata cache stub
-        // `__swift_instantiateConcreteTypeFromMangledNameV2` returns
-        // null for `Atomic<Tagged_Primitives.Tagged<…>>`. The runtime
-        // demangler returns `TypeLookupError("unknown error")` for the
-        // symbolic-mangled name's inline-encoded module-identifier
-        // fragment referencing the
-        // `Tagged_Primitives_Standard_Library_Integration` submodule
-        // where the conditional `AtomicRepresentable` conformance lives.
-        //
-        // Fixed on Swift 6.4-dev nightly `2026-03-16-a` and later.
-        //
-        // This issue is the sole reason the Issues package declares
-        // external `.package(...)` dependencies — the bug is specific
-        // to the production `Tagged_Primitives.Tagged` symbol's
-        // runtime materialization and cannot be reduced to a
-        // local-copy / bare-`swiftc` reproducer. The reproducer
-        // therefore preserves `import Tagged_Primitives` per
-        // [ISSUE-002]'s "If the issue requires SwiftPM" branch.
-
-        .testTarget(
-            name: "swift-issue-tagged-noncopyable-atomic-metadata-crash-Tests",
-            dependencies: [
-                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
-                .product(name: "Ordinal Primitives", package: "swift-ordinal-primitives"),
-                .product(name: "Cardinal Primitives", package: "swift-cardinal-primitives"),
-            ],
-            path: "swift-issue-tagged-noncopyable-atomic-metadata-crash/Tests"
-        ),
-
-        .executableTarget(
-            name: "swift-issue-tagged-noncopyable-atomic-metadata-crash-Repro",
-            dependencies: [
-                .product(name: "Tagged Primitives", package: "swift-tagged-primitives"),
-                .product(name: "Ordinal Primitives", package: "swift-ordinal-primitives"),
-                .product(name: "Cardinal Primitives", package: "swift-cardinal-primitives"),
-            ],
-            path: "swift-issue-tagged-noncopyable-atomic-metadata-crash/Sources/Reproducer"
-        ),
+        // No targets since 2026-09-28. The entry's README records the bug as
+        // fixed from Swift 6.4-dev (a 6.3.x SuppressedAssociatedTypes codegen
+        // defect), and its trigger — `Atomic<Tagged<Tag, Ordinal>>.advance(within:)`
+        // from swift-primitives/swift-{tagged,ordinal,cardinal}-primitives —
+        // no longer exists: those repos were renamed to swift-atoms/swift-{tagged,
+        // ordinal,cardinal}, whose API has no such member. Keeping the targets
+        // pinned the package to three external packages whose identities now
+        // clash with the atoms and blocked resolution for every entry. The
+        // directory stays as the historical record; sources are unchanged.
 
         // MARK: - swift-issue-noncopyable-rawlayout-trailing-field-miscompile
         //
@@ -742,24 +690,14 @@ let package = Package(
 
         // Cross-module rejects-valid (associatedtype Element vs generic
         // parameter Element confusion under conditional Sequence
-        // conformance). The Ring-imports-Core module boundary is the
-        // reported shape, so it is preserved as two library targets — a
-        // third target beside the pair, per the boundary's load-bearing
-        // role. Re-verified fixed 2026-07-30 (6.3.3, Apple 6.4).
+        // conformance). Still fires on the -emit-module path on 6.3.3 and
+        // Apple Swift 6.4 (2026-09-28; the 2026-07-30 "fixed" reading used
+        // -typecheck only, which is clean). The Core/Ring sources are
+        // therefore no longer live targets — they broke the package build —
+        // and the test emits both modules OUT OF PROCESS per [ISSUE-029].
         .testTarget(
             name: "swift-issue-noncopyable-sequence-conformance-Tests",
             path: "swift-issue-noncopyable-sequence-conformance/Tests"
-        ),
-        .target(
-            name: "swift-issue-noncopyable-sequence-conformance-Core",
-            path: "swift-issue-noncopyable-sequence-conformance/Sources/Core"
-        ),
-        .target(
-            name: "swift-issue-noncopyable-sequence-conformance-Repro",
-            dependencies: [
-                .target(name: "swift-issue-noncopyable-sequence-conformance-Core")
-            ],
-            path: "swift-issue-noncopyable-sequence-conformance/Sources/Ring"
         ),
 
         // MARK: - Batch A Group 3 — wrapped loose reducers (Issues#73)
