@@ -1,0 +1,10 @@
+// swift-tools-version: 6.4
+import PackageDescription
+
+// Requests b without traits.
+let package = Package(
+    name: "n",
+    products: [.library(name: "N", targets: ["N"])],
+    dependencies: [.package(url: "file://@ROOT@/b", branch: "main")],
+    targets: [.target(name: "N", dependencies: [.product(name: "B", package: "b")])]
+)

@@ -1,0 +1,15 @@
+// swift-tools-version: 6.4
+import PackageDescription
+
+// Reaches b through n (no traits) and m (T). Adding b with traits ["T"] here resolves.
+let package = Package(
+    name: "root",
+    dependencies: [
+        .package(url: "file://@ROOT@/n", branch: "main"),
+        .package(url: "file://@ROOT@/m", branch: "main"),
+    ],
+    targets: [.target(name: "Root", dependencies: [
+        .product(name: "N", package: "n"),
+        .product(name: "M", package: "m"),
+    ])]
+)

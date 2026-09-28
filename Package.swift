@@ -42,6 +42,21 @@ let package = Package(
 
     targets: [
 
+        // MARK: - swift-issue-spm-diamond-trait-conditional-dependency
+        //
+        // SwiftPM leaves a trait-gated dependency unresolved when the graph reaches
+        // the package both with and without the trait. The fixture packages are
+        // staged and resolved out of process.
+        .testTarget(
+            name: "swift-issue-spm-diamond-trait-conditional-dependency-Tests",
+            path: "swift-issue-spm-diamond-trait-conditional-dependency/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-spm-diamond-trait-conditional-dependency-Repro",
+            path: "swift-issue-spm-diamond-trait-conditional-dependency/Sources/Reproducer",
+            exclude: ["Fixture"]
+        ),
+
         // MARK: - swift-issue-spm-implied-trait-conditional-dependency
         //
         // SwiftPM does not activate a conditional dependency trait request when

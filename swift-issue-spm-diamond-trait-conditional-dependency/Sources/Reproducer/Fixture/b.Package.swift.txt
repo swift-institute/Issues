@@ -1,0 +1,15 @@
+// swift-tools-version: 6.4
+import PackageDescription
+
+// Trait T gates b's product dependency on c.
+let package = Package(
+    name: "b",
+    products: [.library(name: "B", targets: ["B"])],
+    traits: [.trait(name: "T")],
+    dependencies: [.package(url: "file://@ROOT@/c", branch: "main")],
+    targets: [
+        .target(name: "B", dependencies: [
+            .product(name: "C", package: "c", condition: .when(traits: ["T"])),
+        ]),
+    ]
+)
