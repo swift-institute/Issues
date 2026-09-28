@@ -960,6 +960,30 @@ let package = Package(
                 .copy("Crash.swift.txt")
             ]
         ),
+
+        // MARK: - swift-issue-nested-ambiguity-failed-to-produce-diagnostic
+        //
+        // NOT FILED. The type checker emits "failed to produce diagnostic for
+        // expression" instead of an ambiguity error when an ambiguous call
+        // (generic `T` vs tuple-pack `(repeat each T)` overloads) is the argument
+        // of a call overloaded on two unrelated protocols. Fails on 6.3.3, 6.4
+        // and 6.5-dev alike — long-standing, not a regression. Found in swift-sql
+        // as `assertInlineSnapshot(of: Values { "Hello"; "Goodbye" }, as: .sql)`.
+        //
+        // The source is ill-formed on purpose, so it ships as `Crash.swift.txt`
+        // and is type-checked OUT OF PROCESS per [ISSUE-029]; `when: { true }`.
+
+        .testTarget(
+            name: "swift-issue-nested-ambiguity-failed-to-produce-diagnostic-Tests",
+            path: "swift-issue-nested-ambiguity-failed-to-produce-diagnostic/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-nested-ambiguity-failed-to-produce-diagnostic-Repro",
+            path: "swift-issue-nested-ambiguity-failed-to-produce-diagnostic/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
