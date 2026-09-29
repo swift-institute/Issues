@@ -1,0 +1,2 @@
+only_rules:
+  - redundant_nil_coalescing
