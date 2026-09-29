@@ -1,0 +1,6 @@
+public protocol Marked {
+    associatedtype Storage
+}
+
+@attached(extension, conformances: Marked, names: named(Storage))
+public macro Marked<T>(_ storage: T.Type) = #externalMacro(module: "MarkerMacros", type: "MarkedMacro")

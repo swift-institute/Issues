@@ -1,0 +1,22 @@
+// swift-tools-version: 6.3
+import PackageDescription
+import CompilerPluginSupport
+
+let package = Package(
+    name: "mcpi",
+    platforms: [.macOS(.v26)],
+    dependencies: [.package(url: "https://github.com/swiftlang/swift-syntax.git", from: "603.0.0")],
+    targets: [
+        .target(name: "Lib"),
+        .macro(name: "MarkerMacros", dependencies: [
+            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+            .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+        ]),
+        .target(name: "Marker", dependencies: ["MarkerMacros"]),
+        .target(name: "Client", dependencies: ["Lib", "Marker"], swiftSettings: [
+            .enableUpcomingFeature("InternalImportsByDefault"),
+            .enableUpcomingFeature("MemberImportVisibility"),
+            .treatAllWarnings(as: .error),
+        ]),
+    ]
+)

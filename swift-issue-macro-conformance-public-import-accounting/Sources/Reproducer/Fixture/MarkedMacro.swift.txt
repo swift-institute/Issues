@@ -1,0 +1,24 @@
+import SwiftCompilerPlugin
+import SwiftSyntax
+import SwiftSyntaxMacros
+
+public struct MarkedMacro: ExtensionMacro {
+    public static func expansion(
+        of node: AttributeSyntax,
+        attachedTo declaration: some DeclGroupSyntax,
+        providingExtensionsOf type: some TypeSyntaxProtocol,
+        conformingTo protocols: [TypeSyntax],
+        in context: some MacroExpansionContext
+    ) throws -> [ExtensionDeclSyntax] {
+        guard
+            case .argumentList(let arguments) = node.arguments,
+            let storage = arguments.first?.expression.as(MemberAccessExprSyntax.self)?.base
+        else { return [] }
+        return [try ExtensionDeclSyntax("extension \(type.trimmed): Marker.Marked { public typealias Storage = \(storage.trimmed) }")]
+    }
+}
+
+@main
+struct Plugin: CompilerPlugin {
+    let providingMacros: [any Macro.Type] = [MarkedMacro.self]
+}

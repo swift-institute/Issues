@@ -42,6 +42,22 @@ let package = Package(
 
     targets: [
 
+        // MARK: - swift-issue-macro-conformance-public-import-accounting
+        //
+        // A public conformance added by an extension macro, naming a type from a
+        // second module, does not count toward `public import` use: `public import`
+        // is reported unused and a plain import fails in the expansion. The fixture
+        // package is staged and built out of process.
+        .testTarget(
+            name: "swift-issue-macro-conformance-public-import-accounting-Tests",
+            path: "swift-issue-macro-conformance-public-import-accounting/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-macro-conformance-public-import-accounting-Repro",
+            path: "swift-issue-macro-conformance-public-import-accounting/Sources/Reproducer",
+            exclude: ["Fixture"]
+        ),
+
         // MARK: - swift-issue-spm-diamond-trait-conditional-dependency
         //
         // SwiftPM leaves a trait-gated dependency unresolved when the graph reaches

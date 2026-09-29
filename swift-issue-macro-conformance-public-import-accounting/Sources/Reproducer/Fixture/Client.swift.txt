@@ -1,0 +1,5 @@
+@IMPORT@ Lib
+public import Marker
+
+@Marked(Lib.Wrapper.self)
+public struct Paper {}
