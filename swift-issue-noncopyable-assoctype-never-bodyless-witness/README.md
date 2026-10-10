@@ -18,8 +18,10 @@ sil shared [serialized] @… : $@yield_once @convention(method)
   (@in_guaranteed τ_0_0) -> @yields Never
 ```
 
-On a NoAsserts RELEASE toolchain (stock macOS/Linux) the malformed SIL is
-emitted but never verified — the bug is **latent**, not absent. That is why
+On a NoAsserts RELEASE toolchain (stock macOS/Linux) in a debug build the
+malformed SIL is emitted but never verified — the bug is **latent**, not
+absent. Under `-O` the same toolchains abort in the mandatory SIL linker
+("cannot deserialize shared function"; see the 2026-10-10 re-test below). That is why
 macOS/Linux CI legs pass while Windows (+Asserts) and Embedded legs crash on
 identical code.
 
@@ -79,6 +81,32 @@ Earlier records additionally confirmed: stock Xcode 6.3.2, 6.5-dev snapshot
 2026-05-27 (both Embedded and non-Embedded), and Windows 6.3.2-RELEASE
 (+Asserts). **Not fixed on any tested toolchain.**
 
+### Re-test 2026-10-10: release toolchains abort under `-O` without any verification flag
+
+The bug is not only latent on release toolchains. With `-O -wmo` (which turns
+on default cross-module optimization), the consumer compile aborts in the
+mandatory SIL linker on stock release compilers, no `-sil-verify-all` needed:
+
+```
+Assertion failed: ((!hasSharedVisibility(F->getLinkage()) || F->hasForeignBody())
+  && "cannot deserialize shared function"), function deserializeAndPushToWorklist at Linker.cpp:88.
+While running pass #69 SILModuleTransform "MandatorySILLinker".
+```
+
+| Toolchain | `-Onone` | `-O` | `-Onone` + verify | `-O` + verify |
+|---|---|---|---|---|
+| Apple Swift 6.4 (Xcode 27.1, swiftlang-6.4.0.34.1), macOS arm64 | clean | **abort** (linker) | **abort** | **abort** |
+| swift:6.4 (6.4-RELEASE), Linux aarch64 | clean | **abort** (linker) | **abort** | **abort** |
+| swiftlang/swift 6.4-dev db4e136 (+assertions), Linux aarch64 | **abort** | **abort** | **abort** | **abort** |
+
+Same signature in a production release build: Issues #93 (swift-products
+`Products Live`, MandatorySILLinker, "cannot deserialize shared function").
+
+Transitive consumers are **not** affected when the defining module has no
+`Body == Never` conformer: a chain A (protocol + default, no conformer) →
+B (conformer) → C (imports A and B, own conformer) is clean on Xcode 6.4 in
+`-Onone` and `-O`, with and without `-sil-verify-all`.
+
 ## Harness
 
 Repository two-target convention with the sillinker entry's out-of-process
@@ -113,6 +141,30 @@ moved to a `Serializer Witness Primitives` target), verified clean on stock
 6.3.2 + `-sil-verify-all` and Embedded 6.5-dev. Attribute suppressions
 (`@_optimize(none)`, `@inline(never)`, `@_alwaysEmitIntoClient`) do not help —
 the failure is verification of emitted SIL, not optimization.
+
+**2026-10-10, atoms layer.** After the absorption into `swift-atoms`, the leaf
+conformers sat in the defining modules again (`Parser`, `Serializer`,
+`Coder`), and a 2026-10-05 workaround gave roughly 480 leaf conformers in 46
+repositories an explicit `var body: Never { fatalError(…) }`. By owner
+requirement those explicit bodies are gone; the structural fix replaces them:
+
+- `swift-atoms/swift-parser` 077b27a, `swift-serializer` 7d28333,
+  `swift-coder` b748ebf: the protocol, its `Body == Never` default and the core
+  result builder live in a `Parser Core` / `Serializer Core` / `Coder Core`
+  target that contains no conformer, re-exported by the existing module.
+- Verified with `-sil-verify-all` (debug and release, all traits) on the three
+  producers and on the chain parser → binary → binary-parser → ascii →
+  rfc-791-coder with every explicit body removed.
+
+Other variants measured on 2026-10-10 (two-module probe, conformer in the
+defining module):
+
+| Variant of the default | Result |
+|---|---|
+| `@_optimize(none)` | fixes only the unverified `-O` linker abort; still aborts under verification |
+| `@_alwaysEmitIntoClient`, `@_transparent`, `@inline(never)` | abort |
+| `_read`, `unsafeAddress`, `borrow` accessor | rejected by the compiler for a `Never` property |
+| `yielding borrow { fatalError() }` (experimental `CoroutineAccessors` in the defining module) | **clean** on all three toolchains, with and without verification — but the feature switches every caller in that module to `yielding_borrow` entry points of standard-library accessors (`Collection.subscript.yielding_borrow`), which the Linux 6.4 runtime does not export; tests then fail to load. Not usable module-wide. |
 
 ## Provenance (Institute discovery context)
 
