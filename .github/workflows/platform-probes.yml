@@ -41,7 +41,7 @@ jobs:
           path: ${{ runner.temp }}/probe-logs
 
   linux-stack-nesting:
-    name: "Issues#85 · Linux 6.4 · swift-linux-standard at 66fea99"
+    name: "Issues#85 · Linux 6.4 · io_uring probe shape from 66fea99"
     runs-on: ubuntu-latest
     container: swift:6.4.0-noble
     timeout-minutes: 60
@@ -53,14 +53,20 @@ jobs:
         shell: bash
         run: |
           swift --version
+          d=swift-issue-stacknesting-catch-pattern-noncopyable-discard
+          sig='StackNesting|fixNesting|MandatoryAllocBoxToStack'
+          cp "$d/Reduced.swift.txt" "$RUNNER_TEMP/Reduced.swift"
+          bash .github/workflows/probe.sh "neutral reduction -Onone" "$RUNNER_TEMP" 600 "$sig" swiftc -parse-as-library -Onone -c Reduced.swift -o Reduced.o
+          bash .github/workflows/probe.sh "neutral reduction -O" "$RUNNER_TEMP" 600 "$sig" swiftc -parse-as-library -O -c Reduced.swift -o Reduced.o
           git clone -q https://github.com/swift-linux-foundation/swift-linux-standard.git "$RUNNER_TEMP/sls"
-          git -C "$RUNNER_TEMP/sls" checkout -q 66fea995e8f95f2ee516c82568758dd0c4fc88d0
-          bash .github/workflows/probe.sh "swift-linux-standard@66fea99 debug" "$RUNNER_TEMP/sls" 1800 \
-            'StackNesting|fixNesting|MandatoryAllocBoxToStack' \
-            swift build
-          bash .github/workflows/probe.sh "swift-linux-standard@66fea99 release" "$RUNNER_TEMP/sls" 1800 \
-            'StackNesting|fixNesting|MandatoryAllocBoxToStack' \
-            swift build -c release
+          git -C "$RUNNER_TEMP/sls" log -1 --format='swift-linux-standard main %H'
+          file="$RUNNER_TEMP/sls/Tests/Linux Kernel Standard Tests/Linux.Kernel.IO.Uring Tests.swift"
+          perl "$d/restore-original-probe.pl" < "$file" > "$file.new" && mv "$file.new" "$file"
+          git -C "$RUNNER_TEMP/sls" diff --stat
+          bash .github/workflows/probe.sh "swift-linux-standard main with the 66fea99 probe, debug" "$RUNNER_TEMP/sls" 1800 "$sig" \
+            swift build --build-tests
+          bash .github/workflows/probe.sh "swift-linux-standard main with the 66fea99 probe, release" "$RUNNER_TEMP/sls" 1800 "$sig" \
+            swift build --build-tests -c release
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:

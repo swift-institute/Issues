@@ -1,0 +1,22 @@
+struct Descriptor: ~Copyable {
+    let fd: Int32
+    deinit {}
+}
+
+enum Failure: Error, Equatable {
+    case setup(Int32)
+}
+
+func setup(entries: Int, params: inout Int) throws(Failure) -> Descriptor {
+    Descriptor(fd: 3)
+}
+
+func probe() throws -> Bool {
+    var params = 0
+    do {
+        _ = try setup(entries: 1, params: &params)
+        return true
+    } catch Failure.setup(let code) where code == 1 || code == 38 {
+        return false
+    }
+}
