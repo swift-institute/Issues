@@ -1,0 +1,153 @@
+name: platform-probes
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux-release-fso:
+    name: "Issues#86 · Linux 6.4 release · swift-rfc-6068, swift-rfc-2369"
+    runs-on: ubuntu-latest
+    container: swift:6.4.0-noble
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Probe
+        shell: bash
+        run: |
+          swift --version
+          for repo in swift-ietf/swift-rfc-6068 swift-ietf/swift-rfc-2369; do
+            name="${repo#*/}"
+            git clone -q "https://github.com/$repo.git" "$RUNNER_TEMP/$name"
+            bash .github/workflows/probe.sh "$name release" "$RUNNER_TEMP/$name" 2400 \
+              'hasTypeParameter|SILArgument.cpp|FunctionSignatureOpts' \
+              swift build -c release
+          done
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: probe-86
+          path: ${{ runner.temp }}/probe-logs
+
+  linux-stack-nesting:
+    name: "Issues#85 · Linux 6.4 · swift-linux-standard at 66fea99"
+    runs-on: ubuntu-latest
+    container: swift:6.4.0-noble
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Probe
+        shell: bash
+        run: |
+          swift --version
+          git clone -q https://github.com/swift-linux-foundation/swift-linux-standard.git "$RUNNER_TEMP/sls"
+          git -C "$RUNNER_TEMP/sls" checkout -q 66fea995e8f95f2ee516c82568758dd0c4fc88d0
+          bash .github/workflows/probe.sh "swift-linux-standard@66fea99 debug" "$RUNNER_TEMP/sls" 1800 \
+            'StackNesting|fixNesting|MandatoryAllocBoxToStack' \
+            swift build
+          bash .github/workflows/probe.sh "swift-linux-standard@66fea99 release" "$RUNNER_TEMP/sls" 1800 \
+            'StackNesting|fixNesting|MandatoryAllocBoxToStack' \
+            swift build -c release
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: probe-85
+          path: ${{ runner.temp }}/probe-logs
+
+  linux-release-cmo:
+    name: "Issues#58 · Linux 6.4 release · swift-sql"
+    runs-on: ubuntu-latest
+    container: swift:6.4.0-noble
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Probe
+        shell: bash
+        run: |
+          swift --version
+          git clone -q https://github.com/swift-compositions/swift-sql.git "$RUNNER_TEMP/swift-sql"
+          bash .github/workflows/probe.sh "swift-sql release" "$RUNNER_TEMP/swift-sql" 3600 \
+            'forAbstract|cannot deserialize shared function|Stack dump|signal [0-9]+' \
+            swift build -c release
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: probe-58
+          path: ${{ runner.temp }}/probe-logs
+
+  windows-debuginfo:
+    name: "Issues#21 · Windows 6.4 debug · cross-package existential"
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: SwiftyLab/setup-swift@38f54a76b70d989321de9dc7c840618c08cf56e9 # v1.14.0
+        with:
+          swift-version: "6.4"
+          cache-snapshot: false
+      - name: Probe
+        shell: bash
+        run: |
+          swift --version
+          evidence="swift-issue-windows-existential-crash/evidence"
+          base="$RUNNER_TEMP/other-package"
+          cp -R "$evidence/fixtures/other-package" "$base"
+          git -C "$base" init -q -b main
+          git -C "$base" add -A
+          git -C "$base" -c user.name=probe -c user.email=probe@example.com commit -qm fixture
+          git -C "$base" tag 0.2.0
+          primary="$RUNNER_TEMP/primary"
+          cp -R "$evidence/source-package/primary" "$primary"
+          url="file:///$(cygpath -m "$base")"
+          sed -i "s|https://github.com/coenttb/swift-issue-windows-existential-crash-other-package|$url|" "$primary/Package.swift"
+          sed -i 's|package: "swift-issue-windows-existential-crash-other-package"|package: "other-package"|' "$primary/Package.swift"
+          grep -n "url:\|package:" "$primary/Package.swift"
+          bash .github/workflows/probe.sh "cross-package existential debug" "$primary" 1800 \
+            'mangl|DebugInfo|Stack dump|Assertion failed' \
+            swift build -c debug
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: probe-21
+          path: ${{ runner.temp }}/probe-logs
+
+  wasm-embedded:
+    name: "Issues#65 · Wasm Embedded 6.4 · swift-index, swift-text"
+    runs-on: ubuntu-latest
+    container: swift:6.4.0-noble
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Probe
+        shell: bash
+        run: |
+          swift --version
+          swift sdk install \
+            "https://download.swift.org/swift-6.4.0-release/wasm-sdk/swift-6.4.0-RELEASE/swift-6.4.0-RELEASE_wasm.artifactbundle.tar.gz" \
+            --checksum "f07b7be3c586d92d7a07051fc6d303b87ebea67eadc40640ba59d5a8b79aa86d"
+          swift sdk list
+          sdk="$(swift sdk list | grep -m1 'wasm-embedded')"
+          sig='MandatoryPerformanceOptimizations|isLegalSILType|eliminateDeadAllocations|Stack dump'
+          for repo in swift-atoms/swift-index:Index swift-atoms/swift-text:Text; do
+            path="${repo%%:*}"; target="${repo##*:}"; name="${path#*/}"
+            git clone -q "https://github.com/$path.git" "$RUNNER_TEMP/$name"
+            bash .github/workflows/probe.sh "$name target $target ($sdk)" "$RUNNER_TEMP/$name" 1800 "$sig" \
+              swift build --swift-sdk "$sdk" --target "$target"
+          done
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: probe-65
+          path: ${{ runner.temp }}/probe-logs
