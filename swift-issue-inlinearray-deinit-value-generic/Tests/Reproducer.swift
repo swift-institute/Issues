@@ -29,7 +29,7 @@ struct TrackedElement: ~Copyable {
 @Suite("InlineArray Deinit Bug")
 struct InlineArrayDeinitTests {
 
-    @Test("Container with value generic capacity - BUG: deinit NOT called")
+    @Test("Container with value generic capacity runs every element deinit (fixed in Swift 6.4)")
     func containerWithValueGeneric() {
         let tracker = Tracker()
         do {
@@ -38,9 +38,7 @@ struct InlineArrayDeinitTests {
             container.push(TrackedElement(1, tracker: tracker))
             container.push(TrackedElement(2, tracker: tracker))
         }
-        // BUG: deinitOrder == [] (elements leaked)
-        // Expected: deinitOrder == [0, 1, 2]
-        #expect(tracker.deinitOrder == [0, 1, 2], "BUG: Elements leaked (deinitOrder was \(tracker.deinitOrder))")
+        #expect(tracker.deinitOrder == [0, 1, 2], "Elements leaked (deinitOrder was \(tracker.deinitOrder))")
     }
 
     @Test("ContainerFixed with AnyObject? workaround - deinit IS called")

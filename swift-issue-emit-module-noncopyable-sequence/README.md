@@ -29,3 +29,9 @@ Workaround: expose `forEach` instead of `Sequence`, or co-locate borrowing metho
 Upstream: [swiftlang/swift#86669](https://github.com/swiftlang/swift/issues/86669).
 
 Privacy screen: `PUBLIC_SAFE`.
+
+## Fixed in Swift 6.4 (re-verified 2026-10-11)
+
+Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), Xcode toolchain, arm64-apple-macosx27.2.
+
+The recorded command, `swiftc -swift-version 6 -enable-experimental-feature Lifetimes -emit-module -module-name EmitModuleBug` over `Sources/Reproducer/*.swift`, exits 0. The `-Repro` target stays as a regression fixture: building the package is the probe. The `forEach`-instead-of-`Sequence` workaround can be retired in the packages that carry it. Closed as fixed; upstream swiftlang/swift#86669.

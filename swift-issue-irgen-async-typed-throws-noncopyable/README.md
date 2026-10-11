@@ -41,3 +41,9 @@ evidence record. The overlap noted in Batch F with the linked typed-throws
 reproducers is moot for the same reason: this trigger family
 (async + typed throws + generic-nested error) no longer fails anywhere it
 was probed.
+
+## Fixed in Swift 6.4 (re-verified 2026-10-11)
+
+Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), Xcode toolchain, arm64-apple-macosx27.2.
+
+The retained `evidence/source/Crash.swift.txt`, staged as `Crash.swift`, compiles with `swiftc -parse-as-library -emit-ir` and with `-c`, at both `-Onone` and `-O`, exit 0. This includes both crashing shapes (`Box<T>` and `CopyableBox<T: ~Copyable>`). The hoisted-error workaround can be retired. Closed as fixed.

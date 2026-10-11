@@ -75,3 +75,9 @@ Close only after the upstream fix or local resolution is verified on the require
 ## Execution gate
 
 Replace `15` only after the canonical Issue is created and read back. Replace `https://github.com/swift-institute/Issues/tree/main/swift-issue-sil-verifier-read-escapable-lifetime` only after this dossier lands by normal push and the commit-pinned path is readable. Before any later source deletion, create and independently read back a cold archive bundle and update `evidence/source-provenance.json`; deletion is not authorized by this dossier.
+
+## Fixed in Swift 6.4 (re-verified 2026-10-11)
+
+Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), Xcode toolchain, arm64-apple-macosx27.2.
+
+Against `evidence/source-package`: `swift build` and `swift build -c release` both succeed. A bare `swiftc -swift-version 6 -enable-experimental-feature Lifetimes -Xfrontend -sil-verify-all -emit-sil` of `Bug.swift` exits 0, with no "Found over consume". Closed as fixed; upstream swiftlang/swift#87029.

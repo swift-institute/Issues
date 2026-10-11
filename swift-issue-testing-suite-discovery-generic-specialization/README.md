@@ -75,3 +75,9 @@ Close only after the upstream fix or local resolution is verified on the require
 ## Execution gate
 
 Replace `18` only after the canonical Issue is created and read back. Replace `https://github.com/swift-institute/Issues/tree/main/swift-issue-testing-suite-discovery-generic-specialization` only after this dossier lands by normal push and the commit-pinned path is readable. Before any later source deletion, create and independently read back a cold archive bundle and update `evidence/source-provenance.json`; deletion is not authorized by this dossier.
+
+## Fixed in Swift 6.4 (re-verified 2026-10-11)
+
+Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), Xcode toolchain, arm64-apple-macosx27.2.
+
+The behaviour changed. The suite is no longer silently omitted: building `evidence/source-package` (`swift test list`) now fails at compile time with "Attribute 'Suite' cannot be applied to a structure within a generic extension to type 'Container<Int>'". A matching error appears for `@Test`. This replaces the silent omission with a diagnostic, which is what swiftlang/swift-testing#1508 asked for. The expected result of the evidence package is now that compile error, not a missing suite. The non-generic suite container stays the required shape. Closed as fixed.

@@ -48,3 +48,9 @@ with a working single-file reducer, and
 [`swift-issue-rawlayout-noncopyable-extension-rejection`](../swift-issue-rawlayout-noncopyable-extension-rejection/README.md)
 is a compile-time rejection with no name-lookup doubling; neither exhibits the
 `Binary.Binary` namespace-doubling signature recorded here.
+
+## Fixed in Swift 6.4 (re-verified 2026-10-11)
+
+Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), Xcode toolchain, arm64-apple-macosx27.2.
+
+The in-package trigger named above was rebuilt. In swift-standards at `dca7bfc78c9d34f9ae2b8049febc81afa67df930`, the parent of the commit that removed the commented line, `extension Binary.Cursor.Set.Reader {}` was restored in `Sources/Binary/Binary.Cursor.swift`. `swift build --target Binary` then completes with no `Binary.Binary` lookup error. One unrelated 6.4 change had to be patched around first: an "ambiguous use of `withUnsafeBytes`" in `FixedWidthInteger+Binary.swift:235`. Before that patch, the same build reported only the ambiguity, and nothing in `Binary.Cursor.swift`. Closed as fixed: the original trigger no longer fails.
