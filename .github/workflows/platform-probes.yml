@@ -16,6 +16,13 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Assertions in this compiler
+        shell: bash
+        run: |
+          f="$(dirname "$(readlink -f "$(command -v swift)")")/swift-frontend"
+          for text in 'hasTypeParameter' 'Forming a CanType out of a non-canonical type' 'witness has more effects than requirement' 'cannot deserialize shared function' 'isLegalSILType'; do
+            echo "$text: $(grep -c -a -F "$text" "$f")" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
       - name: Probe
         shell: bash
         run: |
