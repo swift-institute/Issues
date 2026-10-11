@@ -185,3 +185,9 @@ is compiled **out of process** by both harnesses:
 - [`Sources/Reproducer/main.swift`](Sources/Reproducer/main.swift) — standalone
   executable. `exit(1)` if the subprocess build aborts (bug fired), `exit(0)` if
   it compiles cleanly (bug fixed) or the probe was inconclusive.
+
+## Swift 6.4 re-test (2026-10-11)
+
+This still aborts on Apple Swift 6.4 (swiftlang-6.4.0.34.1), 6.4-dev 2026-07-23 and 6.5-dev 2026-07-11. A slightly smaller trigger, with no caller and a top-level raw-layout type, is [`Sources/Reproducer/Reduced.swift.txt`](Sources/Reproducer/Reduced.swift.txt). Compile it with `swiftc -swift-version 6 -parse-as-library -enable-experimental-feature RawLayout -O -c`. Each of these makes it compile: reordering the fields, removing the `deinit`, using `like:` instead of `likeArrayOf:`, or using a concrete element type with a generic count.
+
+This is also the release-mode failure that Issues#14's source package hits: its `BoxWithToken` (raw storage, then a `Token` field, plus a `deinit`) and the single-module executable's copy of it. With those removed, Issues#14's own cross-package deinit test passes in debug and in release, so that issue is closed as fixed. This record is now tracked by its own GitHub issue. The upstream draft is [UPSTREAM-DRAFT.md](UPSTREAM-DRAFT.md) and waits for Coen.

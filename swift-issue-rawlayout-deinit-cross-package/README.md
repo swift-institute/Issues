@@ -75,3 +75,11 @@ Close only after the upstream fix or local resolution is verified on the require
 ## Execution gate
 
 Replace `14` only after the canonical Issue is created and read back. Replace `https://github.com/swift-institute/Issues/tree/main/swift-issue-rawlayout-deinit-cross-package` only after this dossier lands by normal push and the commit-pinned path is readable. Before any later source deletion, create and independently read back a cold archive bundle and update `evidence/source-provenance.json`; deletion is not authorized by this dossier.
+
+## Fixed in Swift 6.4 (re-verified 2026-10-11)
+
+Toolchain: Apple Swift 6.4 (swiftlang-6.4.0.34.1), arm64 macOS 27.2.
+
+`swift test` on `evidence/source-package` prints `Box.deinit` for every case, in debug and in release (`-c release -Xswiftc -enable-testing`). Upstream swiftlang/swift#86652 was closed on 2026-07-07 with the runtime fix swiftlang/swift#89809. Because it is a runtime fix, it needs an OS runtime that ships it; this host's macOS 27.2 does. Removing the `_deinitWorkaround: AnyObject?` fields is safe only for deployment targets whose runtime includes the fix.
+
+The release build of the unmodified source package still aborts. The cause is the `BoxWithToken` type: generic raw storage followed by another stored field, plus a `deinit`. That is the separate trailing-field LLVM verifier defect in [`swift-issue-noncopyable-rawlayout-trailing-field-miscompile`](../swift-issue-noncopyable-rawlayout-trailing-field-miscompile/README.md). With `BoxWithToken` and the single-module executable removed, the release tests pass.

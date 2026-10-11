@@ -1,0 +1,8 @@
+@_rawLayout(likeArrayOf: T, count: 2)
+struct Raw<T>: ~Copyable { init() {} }
+struct S<T>: ~Copyable {
+    var raw: Raw<T>
+    var x: Int
+    init() { raw = Raw(); x = 0 }
+    deinit {}
+}
