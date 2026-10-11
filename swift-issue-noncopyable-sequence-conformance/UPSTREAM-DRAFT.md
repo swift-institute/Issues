@@ -37,8 +37,12 @@ final class Box<Element: ~Copyable> {}
 ```
 $ swiftc -swift-version 6 -parse-as-library -c Reduced.swift
 Reduced.swift:11:26: error: type 'Element' does not conform to protocol 'Copyable'
-        var storage: Box<Element>
-                         `- error: type 'Element' does not conform to protocol 'Copyable'
+ 9 | extension Outer where Element: ~Copyable {
+10 |     public struct Inner: ~Copyable {
+11 |         var storage: Box<Element>
+   |                          `- error: type 'Element' does not conform to protocol 'Copyable'
+12 |     }
+13 | }
 ```
 
 `-typecheck` alone is clean. In a package, the same thing happens when the conformance is in a file that sorts first (`Outer.Inner+P.swift` before `Outer.Inner.swift`).
