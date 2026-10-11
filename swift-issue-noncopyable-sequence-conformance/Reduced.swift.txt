@@ -1,0 +1,17 @@
+protocol P {
+    associatedtype Element
+}
+
+extension Outer.Inner: P where Element: Copyable {}
+
+public enum Outer<Element: ~Copyable> {}
+
+extension Outer where Element: ~Copyable {
+    public struct Inner: ~Copyable {
+        var storage: Box<Element>
+    }
+}
+
+extension Outer.Inner: Copyable where Element: Copyable {}
+
+final class Box<Element: ~Copyable> {}
