@@ -41,3 +41,7 @@ Assertion failed: ((path.size() == 1 && path[0].getKind() == ConstraintLocator::
 ## Where it came from
 
 In swift-molecules/swift-structured-queries, `extension TableDraft`'s `static subscript(dynamicMember: KeyPath<PrimaryTable.Type, some Statement<PrimaryTable>>)` applied `PrimaryTable.self[keyPath: keyPath]`. `Table` has a static dynamic-member subscript rooted at `TableColumns`, and `TableDefinition` is itself `@dynamicMemberLookup`. The package now routes the application through a generic helper, `project(_:through:)` in `PrimaryKeyedProtocols.swift`, which hides the bug. Restoring the direct expression (verified 2026-10-11 on the 6.4 snapshot, with a probe confirming the body was type-checked) brings the assertion back. Keep the helper until #87174 is fixed.
+
+## Also hit by swift-sql on Linux (2026-10-11)
+
+On `swiftlang/swift:nightly-6.4.x-noble` (6.4.4-dev, assertions), `swift build -c release` of swift-compositions/swift-sql aborts with this assertion. The location is `Sources/SQL/PrimaryKeyed.swift:27`, `SQLQueryExpression("\(SourceTable.self[keyPath: keyPath])")`, in platform-probes runs 38139210966 and 38139500995. swift-sql does not use the `project(_:through:)` workaround. On any assertions-enabled compiler, swift-sql's build crashes here; that includes the fleet's Windows legs and the Swift nightlies. This is where Issues#58's Linux 6.4-dev "signal 6" came from.
