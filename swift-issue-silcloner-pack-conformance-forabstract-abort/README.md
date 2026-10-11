@@ -145,3 +145,7 @@ the instrument that reports when the wait is over.
 [swiftlang/swift#90275]: https://github.com/swiftlang/swift/issues/90275
 [swiftlang/swift#89916]: https://github.com/swiftlang/swift/pull/89916
 [swiftlang/swift#89834]: https://github.com/swiftlang/swift/pull/89834
+
+## Swift 6.4 (2026-10-11)
+
+`swiftc -emit-sil -swift-version 6 Crash.swift` exits 0 on Apple Swift 6.4 (swiftlang-6.4.0.34.1), consistent with the merged upstream fix. The sibling linker reproducer (`swift-issue-sillinker-borrowed-protocol-default-shared-coroutine-abort`, swiftlang/swift#90406) still aborts on 6.4 with "cannot deserialize shared function" in MandatorySILLinker. The Linux release-plus-CMO crashes in Issues#58 have no local reproducer; they are requested from fleet tests on Linux 6.4.

@@ -42,3 +42,14 @@ wasm32 Embedded configuration. There is nothing to file upstream: the defect
 is absent from every currently supported toolchain line. No reproducer target
 is added; this directory remains a closed evidence record, and the only event
 that would reopen it is the signature reappearing on a current toolchain.
+
+## Re-verified through SwiftPM, closed (2026-10-11)
+
+The source report's own command, `swift build --swift-sdk <wasm-embedded SDK>`, was run on the retained `Package.swift` and source. The verbose log confirms `-target wasm32-unknown-wasip1` and `-enable-experimental-feature Embedded`. Results:
+
+| Toolchain | Swift SDK | Result |
+|---|---|---|
+| swift-6.3.3-RELEASE | swift-6.3.3-RELEASE_wasm-embedded | Build complete, exit 0 |
+| swift-DEVELOPMENT-SNAPSHOT-2026-07-11-a (6.5-dev) | matching wasm-embedded SDK | Build complete, exit 0 |
+
+No 6.4 Wasm SDK is installed. The release lines before and after 6.4 are both clean, and the 2026-07-30 bare-`swiftc` rows agree. Closed as fixed since 6.3.3.
