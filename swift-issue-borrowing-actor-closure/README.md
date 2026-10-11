@@ -58,3 +58,7 @@ source
 [`swift-institute/swift-issue-borrowing-actor-closure`](https://github.com/swift-institute/swift-issue-borrowing-actor-closure).
 Its ancestry was not merged. Exact repository and ref facts are recorded in
 [`evidence/source-provenance.json`](evidence/source-provenance.json).
+
+## Upstream and Swift 6.4 (2026-10-11)
+
+This was already filed as swiftlang/swift#86458 (2026-01-11). It was closed as completed on 2026-08-08 by swiftlang/swift#90656 ("Fixes #86458 and #86530"), merged to `main`. No cherry-pick to a 6.4 release branch was found. On Apple Swift 6.4 (swiftlang-6.4.0.34.1), `swiftc -parse-as-library -swift-version 6 -c` of `Crash.swift` still exits with signal 5 at the same place: "Unhandled SIL Instruction: init_existential_ref" in `MoveOnlyTypeEliminator`. Nothing to file. Re-run on the first toolchain cut from `main` after 2026-08-08 (6.5), then close as fixed.

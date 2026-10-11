@@ -75,3 +75,7 @@ Close only after the upstream fix or local resolution is verified on the require
 ## Execution gate
 
 Replace `20` only after the canonical Issue is created and read back. Replace `https://github.com/swift-institute/Issues/tree/main/swift-issue-typed-throws-autoclosure-inference` only after this dossier lands by normal push and the commit-pinned path is readable. Before any later source deletion, create and independently read back a cold archive bundle and update `evidence/source-provenance.json`; deletion is not authorized by this dossier.
+
+## Upstream and Swift 6.4 (2026-10-11)
+
+This was already filed as swiftlang/swift#86596 (2026-01-16, open). The older swiftlang/swift#75674 ("autoclosures do not provide explicit typed throw information", 2024, open) reports the same inference gap, and #75430 is related. On Apple Swift 6.4 (swiftlang-6.4.0.34.1), `swiftc -swift-version 6 -typecheck` of `BugTrigger.swift` still fails with "generic parameter 'E' could not be inferred". The explicit-closure control compiles. Nothing to file.

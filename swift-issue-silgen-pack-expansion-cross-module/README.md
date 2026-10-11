@@ -75,3 +75,16 @@ Close only after the upstream fix or local resolution is verified on the require
 ## Execution gate
 
 Replace `16` only after the canonical Issue is created and read back. Replace `https://github.com/swift-institute/Issues/tree/main/swift-issue-silgen-pack-expansion-cross-module` only after this dossier lands by normal push and the commit-pinned path is readable. Before any later source deletion, create and independently read back a cold archive bundle and update `evidence/source-provenance.json`; deletion is not authorized by this dossier.
+
+## Upstream and Swift 6.4 (2026-10-11)
+
+This was already filed as swiftlang/swift#86348 (2026-01-07, open). On Apple Swift 6.4 (swiftlang-6.4.0.34.1) it still crashes SILGen (signal 11, `emitDynamicPackLoop`, then `OpenPackElementInst::create`).
+
+The crash does not need two modules. The 6.4 reduction below crashes in a single file with `swiftc -swift-version 6 -parse-as-library -c`:
+
+```swift
+func f<each T>(_ t: (repeat each T)) {}
+func g<each T>(_ t: (repeat each T)) { f(t) }
+```
+
+Re-expanding the argument, `f((repeat each t))`, compiles. That is the workaround, and it also explains why the "inline" form in the original report worked: it re-expanded the tuple. The `@inlinable`, library-evolution and second-module ingredients are not needed. This changes the record's earlier statement that the same-module control compiles. The original package shape is equivalent to the single-file form, which crashes too.
