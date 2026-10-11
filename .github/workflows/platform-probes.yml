@@ -64,6 +64,8 @@ jobs:
           for text in '!type.hasTypeParameter()' 'Forming a CanType out of a non-canonical type' 'witness has more effects than requirement' 'cannot deserialize shared function' 'constructing SILType with type that should have been' 'Instruction does not dominate all uses'; do
             echo "$text: $(grep -c -a -F "$text" "$f")" | tee -a "$GITHUB_STEP_SUMMARY"
           done
+      - name: System libraries
+        run: apt-get update -qq && apt-get install -y -qq uuid-dev > /dev/null
       - name: Probe
         shell: bash
         run: |
