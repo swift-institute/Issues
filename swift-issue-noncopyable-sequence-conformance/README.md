@@ -25,6 +25,6 @@ Every one of these is required:
 
 `-typecheck` alone is clean. The error appears once declarations are checked for code generation or module emission.
 
-**Relation to upstream.** swiftlang/swift#87448 is the case where an extension without `where T: ~Copyable` declares the nested type. A maintainer explained that one as intended under SE-0427. This record is different: the extension does write `where Element: ~Copyable`, and the result depends on declaration order and access level. Coen's January comment on #87448 described this trigger, but the "intended" explanation does not cover it. A separate upstream report is drafted in [UPSTREAM-DRAFT.md](UPSTREAM-DRAFT.md) and waits for Coen's decision.
+**Relation to upstream.** swiftlang/swift#87448 is the case where an extension without `where T: ~Copyable` declares the nested type. A maintainer explained that one as intended under SE-0427. This record is different: the extension does write `where Element: ~Copyable`, and the result depends on declaration order and access level. Coen's January comment on #87448 described this trigger, but the "intended" explanation does not cover it. A report was drafted in [UPSTREAM-DRAFT.md](UPSTREAM-DRAFT.md). Per Coen's 2026-10-11 ruling it is not filed upstream; this record is the report.
 
 Workaround: declare the conformance after the type (put it in a file that sorts later), or give the protocol's associated type another name.

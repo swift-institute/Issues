@@ -1,6 +1,6 @@
 # Draft for swiftlang/swift (not filed)
 
-Status: draft, waiting for Coen's decision. Nothing has been filed.
+Status: not to be filed. Coen ruled on 2026-10-11 that there are no new upstream filings; this record in swift-institute/Issues is the report. The text below is kept for reference.
 
 Duplicate search (2026-10-11): swiftlang/swift#87448 is the nearest report. Its original case was answered as intended under SE-0427: there the extension lacks `where T: ~Copyable`. This case has that clause and depends on declaration order and access level. Coen described the trigger in a comment on #87448 in January, but nobody has answered that part.
 

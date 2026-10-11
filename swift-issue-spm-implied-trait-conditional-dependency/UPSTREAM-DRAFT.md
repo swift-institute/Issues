@@ -1,6 +1,6 @@
 # Draft for swiftlang/swift-package-manager (not filed)
 
-Status: draft, waiting for Coen's approval. Nothing has been filed.
+Status: not to be filed. Coen ruled on 2026-10-11 that there are no new upstream filings; this record in swift-institute/Issues is the report. The text below is kept for reference.
 
 Duplicate search (2026-10-11) of swiftlang/swift-package-manager issues and pull requests (open and closed) for "traits", "enabledTraits", "implied traits" and "conditional trait dependency". Also searched swiftlang/swift for "traits". None of the trait resolution reports involves an implied trait (`enabledTraits:`) feeding a conditional trait request:
 

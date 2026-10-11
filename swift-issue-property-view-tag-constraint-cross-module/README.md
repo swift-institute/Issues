@@ -93,4 +93,4 @@ Two functions named `all` in those extensions compile, and so do two properties 
 
 **This is the compiler's documented rule.** `swift::conflicting` in `lib/AST/Decl.cpp` says "Functions always conflict with non-functions with the same signature. In practice, this only applies for zero argument functions." It also says variables always conflict with non-variables. The generic signature of the extension is not consulted. Before Swift 5, a variable in an extension of a generic type was exempt; that exemption was removed deliberately.
 
-**Disposition.** Closed as not a defect. Give the property and the method different base names, or use the separate view types in `Workaround.swift`. The upstream report swiftlang/swift#86707 (Coen's) is still open. Whether to add this finding there, or close it, is Coen's call.
+**Disposition.** Closed as not a defect. Give the property and the method different base names, or use the separate view types in `Workaround.swift`. The upstream report swiftlang/swift#86707 (Coen's) is still open. Per Coen's 2026-10-11 ruling nothing is posted upstream; the finding lives in this record.

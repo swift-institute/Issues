@@ -1,6 +1,6 @@
 # Draft for swiftlang/swift (not filed)
 
-Status: draft, waiting for Coen's decision. Nothing has been filed.
+Status: not to be filed. Coen ruled on 2026-10-11 that there are no new upstream filings; this record in swift-institute/Issues is the report. The text below is kept for reference.
 
 Duplicate search (2026-10-11) of swiftlang/swift for "_rawLayout", "rawLayout Instruction does not dominate" and "rawLayout likeArrayOf release crash": no report of this crash on its own. It was described in comments on swiftlang/swift#86652, but that issue was closed for the separate cross-module deinit bug (runtime fix #89809), and this crash remains.
 
