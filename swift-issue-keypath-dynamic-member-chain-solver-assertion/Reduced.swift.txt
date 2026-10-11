@@ -1,0 +1,13 @@
+@dynamicMemberLookup
+struct C {
+    subscript<M>(dynamicMember keyPath: KeyPath<C, M>) -> M { fatalError() }
+}
+
+@dynamicMemberLookup
+struct S {
+    subscript<M>(dynamicMember keyPath: KeyPath<C, M>) -> M { fatalError() }
+}
+
+func f<R>(_ s: S, _ keyPath: KeyPath<S, R>) -> R {
+    s[keyPath: keyPath]
+}

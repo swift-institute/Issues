@@ -135,3 +135,9 @@ available locally.
 - [ISSUE-001] Check Dev Toolchain First (bug passes on 6.5-dev) · [ISSUE-008] Resolution Paths · [ISSUE-022] Ask before designing the fix · [ISSUE-026] Negative-experiment coverage scope · [ISSUE-028] Compiler Bug Catalog (amended)
 - Related (distinct, UNFIXED): `swift-issue-noncopyable-assoctype-never-bodyless-witness` (the sibling serializer crash)
 - The sibling typed-throws-in-`#expect` SIL crash already worked around in `Input.Buffer Tests.swift` / `Input.Slice Tests.swift:377-381` is a *third*, distinct bug.
+
+## 2026-10-11: 6.4 line checked with an assertions toolchain
+
+`repro.swift` was built unchanged, except for imports updated to today's module names (`Iterator`, `Carrier`, `Cardinal`). It was built as a SwiftPM target against swift-atoms/swift-iterator main, with the ecosystem settings, on swift-6.4.x-DEVELOPMENT-SNAPSHOT-2026-07-23-a. That `swift-frontend` contains the "witness has more effects than requirement" assertion. Result: Build complete, no assertion. The 6.4 line is fixed as well as 6.5-dev.
+
+A neutral stand-in (a `Chunked` protocol with a defaulted `next() throws(Failure)`, co-conformed with `IteratorProtocol` in one extension, single-module and cross-module) is also clean on the 6.4 and 6.5 snapshots. It cannot be confirmed to trigger the old bug: no installed toolchain both predates the fix and has assertions (6.3.3-RELEASE has none). So no neutral reproducer is claimed. This record is closed as fixed: only the Windows 6.3.2 assertions toolchain ever showed it.
