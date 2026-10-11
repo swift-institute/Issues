@@ -64,8 +64,6 @@ if process.terminationStatus == 0 {
 FileHandle.standardError.write(Data("inconclusive: swiftc failed for an unrelated reason:\n\(errText)\n".utf8))
 exit(0)
 
-#else
-exit(0)
 #endif
 
 // swiftlint:enable no_try_optional

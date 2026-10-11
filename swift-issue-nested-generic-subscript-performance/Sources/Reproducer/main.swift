@@ -15,6 +15,8 @@
 // nested call site is being specialized or not.
 // ============================================================================
 
+#if canImport(Darwin)
+
 import Foundation
 
 // MARK: - Timing utilities
@@ -273,3 +275,5 @@ func _anchor() {
 
 runBenchmarks()
 _anchor()
+
+#endif

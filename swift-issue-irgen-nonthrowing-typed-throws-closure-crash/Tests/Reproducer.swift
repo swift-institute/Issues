@@ -92,12 +92,7 @@ struct `IRGen Tests` {
             _ = standardOutput.fileHandleForReading.readDataToEndOfFile()
             outputGroup.leave()
         }
-        outputGroup.enter()
-        var errorData = Data()
-        DispatchQueue.global().async {
-            errorData = errorOutput.fileHandleForReading.readDataToEndOfFile()
-            outputGroup.leave()
-        }
+        let errorData = errorOutput.fileHandleForReading.readDataToEndOfFile()
         process.waitUntilExit()
         outputGroup.wait()
 
