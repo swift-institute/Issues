@@ -37,3 +37,7 @@ Spell the implication out in every condition: a conditional request list names e
 trait that implies the trait it depends on, e.g. `.when(traits: ["Y", "X"])`.
 The Swift Institute packages that use `enabledTraits` do this
 (first found through swift-finite's `Algebra`/`Comparison`/`Iterator` ⇒ `Tagged` ⇒ swift-ordinal `Tagged`).
+
+## Upstream (2026-10-11)
+
+No upstream report found. The duplicate search and the drafted filing text are in [UPSTREAM-DRAFT.md](UPSTREAM-DRAFT.md); nothing is filed until Coen approves it. The draft's steps were re-run as written on Swift 6.4 (swiftlang-6.4.0.34.1) and fail as shown there. Its workaround, `.when(traits: ["Y", "X"])`, resolves.

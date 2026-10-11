@@ -39,3 +39,9 @@ Dropping `n` resolves. Adding `.package(url: …/b, branch: "main", traits: ["T"
 A root that reaches a package through two paths requests the union of its traits itself.
 First found through swift-sql, which reaches swift-ascii through swift-rfc-4122 (no traits)
 and swift-iso-9075 → swift-iso-8601 (`["Parser"]`).
+
+## Upstream (2026-10-11)
+
+This is swiftlang/swift-package-manager#10485 (open): the failure depends on order. With `root` listing `m` (requests `T`) before `n` (no traits), the same fixture resolves on Swift 6.4 (swiftlang-6.4.0.34.1). Listing `n` first fails as above. No new upstream report is needed.
+
+A fix has merged: swiftlang/swift-package-manager#10550 on main (2026-09-21), cherry-picked to `release/6.4.2` as #10570. Its description matches this graph: one parent names a trait, the other names none, and the shared package's guarded dependency is dropped. The neighbouring 6.4.2 fixes #10569 (seed root manifest traits) and #10579 (repeat the trait pass until nothing changes) touch the same path. None of them is in Swift 6.4.0. Re-run this reproducer on the first 6.4.2 or later toolchain: when it resolves, the test flips and the `.when(traits:)` conditions listed in Issues#123 can come back.
