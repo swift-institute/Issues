@@ -146,6 +146,21 @@ jobs:
             bash .github/workflows/probe.sh "$name target $target ($sdk)" "$RUNNER_TEMP/$name" 1800 "$sig" \
               swift build --swift-sdk "$sdk" --target "$target"
           done
+          consumer="$RUNNER_TEMP/consumer"
+          mkdir -p "$consumer/Sources/Consumer"
+          cat > "$consumer/Package.swift" <<'EOF'
+          // swift-tools-version: 6.4
+          import PackageDescription
+          let package = Package(
+              name: "Consumer",
+              dependencies: [.package(url: "https://github.com/swift-atoms/swift-index.git", branch: "main")],
+              targets: [.target(name: "Consumer", dependencies: [.product(name: "Index", package: "swift-index")])]
+          )
+          EOF
+          sed -i 's/^          //' "$consumer/Package.swift"
+          printf 'public import Index\npublic let x: Index<Int> = .zero + .zero\n' > "$consumer/Sources/Consumer/Crash.swift"
+          bash .github/workflows/probe.sh "consumer Index zero plus zero ($sdk)" "$consumer" 1800 "$sig" \
+            swift build --swift-sdk "$sdk"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
