@@ -77,3 +77,16 @@ Close only after the upstream fix or local resolution is verified on the require
 ## Execution gate
 
 Replace `21` only after the canonical Issue is created and read back. Replace `https://github.com/swift-institute/Issues/tree/main/swift-issue-windows-existential-crash` only after this dossier lands by normal push and the commit-pinned path is readable. Before any later source deletion, create and independently read back a cold archive bundle and update `evidence/source-provenance.json`; deletion is not authorized by this dossier.
+
+## Windows Swift 6.4.0 (2026-10-11)
+
+This still crashes on Windows with Swift 6.4.0, installed by `SwiftyLab/setup-swift`; the compiler was built from `swift-6.4.0-windows-toolchain` with assertions enabled. It was run by `.github/workflows/platform-probes.yml`, job "Issues#21", in runs 38137662398 and 38138335935. Both runs:
+
+```
+Assertion failed: isActuallyCanonicalOrNull() && "Forming a CanType out of a non-canonical type!", file …\swift\include\swift/AST/Type.h, line 421
+3.	While evaluating request IRGenRequest(IR Generation for file "…\primary\Sources\ExistentialCrash\Crash.swift")
+4.	While emitting IR SIL function "@$s10BaseModule11WHATWG_HTMLO16ExistentialCrashE7AnyViewVyAfcDE0H0_pcfC".
+5.	While mangling type for debugger type 'any HTML.View'
+```
+
+The second package, `coenttb/swift-issue-windows-existential-crash-other-package`, no longer exists on GitHub. The probe rebuilds it on the runner from `evidence/fixtures/other-package`, as a local git repository tagged `0.2.0`, and points the primary package at it with a `file://` URL. Upstream swiftlang/swift#86202 is unchanged. The `-Xswiftc -gnone` workaround stands. The record stays open.
