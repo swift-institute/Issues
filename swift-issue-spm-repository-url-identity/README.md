@@ -98,3 +98,16 @@ Close only after the upstream fix or local resolution is verified on the require
 ## Execution gate
 
 Replace `22` only after the canonical Issue is created and read back. Replace `https://github.com/swift-institute/Issues/tree/main/swift-issue-spm-repository-url-identity` only after this dossier lands by normal push and the commit-pinned path is readable. Before any later source deletion, create and independently read back a cold archive bundle and update `evidence/source-provenance.json`; deletion is not authorized by this dossier.
+
+## Closed as not a defect (2026-10-11)
+
+**The fixtures are gone.** All three fixture repositories (`coenttb/test-algebra-primitives`, `coenttb/test-buffer-primitives`, `coenttb/test-buffer-foundations`) now return 404 on GitHub, so the experiment can no longer be re-run as written.
+
+**The behaviour was already recorded.** The named experiment, `swift-institute/Experiments/github-url-spm-resolution/Sources/main.swift`, records the result of every variant (6.2.3, revalidated on 6.3.1):
+- Two packages from one organisation resolve.
+- A GitHub rename redirect is followed transparently.
+- Two repositories with the same `Package.name` but different URLs resolve without conflict, because SwiftPM's package identity is the last path component of the URL, not `Package.name`.
+
+**This is SwiftPM's specified design, not a defect.** URL-based package identity was introduced by SE-0292. The real constraint is the one the experiment derived: repository names must be unique across every organisation in a dependency graph (`github.com/a/algebra` and `github.com/b/algebra` collide). There is no observed-versus-expected gap to report upstream.
+
+If URL-identity behaviour ever needs a regression fixture, it can be built locally with `file://` packages whose last path components clash. Redirects cannot be tested locally.
