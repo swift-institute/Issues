@@ -75,3 +75,7 @@ Close only after the upstream fix or local resolution is verified on the require
 ## Execution gate
 
 Replace `17` only after the canonical Issue is created and read back. Replace `https://github.com/swift-institute/Issues/tree/main/swift-issue-silgen-property-wrapper-noncopyable` only after this dossier lands by normal push and the commit-pinned path is readable. Before any later source deletion, create and independently read back a cold archive bundle and update `evidence/source-provenance.json`; deletion is not authorized by this dossier.
+
+## Swift 6.4 re-test (2026-10-11)
+
+This still crashes on Apple Swift 6.4 (swiftlang-6.4.0.34.1): signal 11 in SILGen, `getBaseAccessKind`, while emitting `crash()`. The module boundary is not needed. Putting `Lib.swift` and the test function in one file and compiling with `swiftc -swift-version 6 -parse-as-library -c` crashes in the same place. This is therefore the original upstream report, swiftlang/swift#81624 (open), and not a cross-module variant. `swift build` of the source package passes only because the crashing call lives in the test target. Keep open until #81624 is fixed.
