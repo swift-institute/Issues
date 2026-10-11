@@ -149,3 +149,23 @@ the instrument that reports when the wait is over.
 ## Swift 6.4 (2026-10-11)
 
 `swiftc -emit-sil -swift-version 6 Crash.swift` exits 0 on Apple Swift 6.4 (swiftlang-6.4.0.34.1), consistent with the merged upstream fix. The sibling linker reproducer (`swift-issue-sillinker-borrowed-protocol-default-shared-coroutine-abort`, swiftlang/swift#90406) still aborts on 6.4 with "cannot deserialize shared function" in MandatorySILLinker. The Linux release-plus-CMO crashes in Issues#58 have no local reproducer; they are requested from fleet tests on Linux 6.4.
+
+## Linux 6.4 (2026-10-11): Issues#58 resolved into existing records
+
+Run by `.github/workflows/platform-probes.yml`, job "Issues#58" (`swift build -c release` of swift-compositions/swift-sql), in runs 38139210966 and 38139500995:
+
+| Image | Compiler | Result |
+|---|---|---|
+| `swift:6.4.0-noble` | Swift 6.4 (swift-6.4-RELEASE) | Build complete (exit 0) |
+| `swiftlang/swift:nightly-6.4.x-noble` | 6.4.4-dev (Swift 337447f0d839cb2), assertions | aborts |
+
+The nightly abort is not a cross-module-optimization defect. It is the type-checker assertion of Issues#61 (upstream swiftlang/swift#87174):
+
+```
+CSSimplify.cpp:16247: addKeyPathApplicationRootConstraint: Assertion `(path.size() == 1 && …KeyPathDynamicMember)' failed.
+While type-checking … swift-sql/Sources/SQL/PrimaryKeyed.swift:27:9 RangeText="SQLQueryExpression("\(SourceTable.self[keyPath: keyPath])""
+```
+
+swift-sql still applies `SourceTable.self[keyPath: keyPath]` directly. swift-structured-queries avoids the same crash with its `project(_:through:)` helper. The release toolchain builds clean only because it has no Sema assertions: the "Forming a CanType…" and "witness has more effects…" texts are absent from its `swift-frontend`, while the nightly has them.
+
+So Issues#58's Linux 6.4-dev and 6.5-dev "signal 6, frontend crash" signatures match Issues#61. The 6.3.3 `forAbstract` abort is fixed (see above). The shared-coroutine linker abort is its own record, upstream swiftlang/swift#90406.

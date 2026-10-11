@@ -108,3 +108,14 @@ the ~50-line production shape to the two-line consumer above; the bug lives
 in `swift-index-primitives`' dep chain, not `swift-vector-primitives`. Full
 reduction log, ingredient verification, and failed-workaround table:
 [INVESTIGATION-ARC.md](INVESTIGATION-ARC.md).
+
+## Swift 6.4.0 Wasm Embedded (2026-10-11): fixed
+
+Run by `.github/workflows/platform-probes.yml`, job "Issues#65", in runs 38138335935, 38139006312 and 38139500995. Container `swift:6.4.0-noble`, Swift SDK `swift-6.4.0-RELEASE_wasm-embedded`, installed from swift.org with checksum `f07b7be3…aa86d`.
+- The original two-line consumer, `public import Index` / `public let x: Index<Int> = .zero + .zero`, now against swift-atoms/swift-index (the renamed swift-index-primitives; `Index` is `Tagged<Element, Ordinal>`), builds clean.
+- `swift build --target Index` of swift-atoms/swift-index builds clean.
+- This compiler contains the assertion text "constructing SILType with type that should have been", so a clean build means the check ran and passed.
+
+Closed as fixed in 6.4.
+
+**Not this bug.** `swift build --target Text` of swift-atoms/swift-text fails for Wasm Embedded with "public import of 'Tagged' / 'Cardinal' was not used in public declarations or inlinable code" in `Text.Location+Swift.Codable.swift`. The Codable conformance is compiled out under Embedded, so those imports go unused. That is a package defect in swift-text, not a compiler crash.
