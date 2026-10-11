@@ -211,3 +211,11 @@ swift-io worktree branch `adt-tower-io-crash` (committed, not landed).
 - `swift-institute/Research/swift-compiler-bug-catalog.md` §A9 — canonical ecosystem entry (addendum drafted this leg)
 - `swift-issue-tagged-noncopyable-atomic-metadata-crash/` — the §A9 sibling Issues entry (Atomic/`.advance` + `Set.Ordered` sites)
 - swift-io `Tests/Support/Toolchain.swift` (staged) — the `compiler(<6.4)` gate, mirroring graph's guard
+
+## 2026-10-11: disposition for Issues#75
+
+**The reducer can no longer be built.** Its three dependencies have moved or are gone. `swift-primitives/swift-hash-primitives` returns 404, `swift-primitives/swift-dictionary-primitives` now resolves to `swift-molecules/swift-dictionary`, and the Tagged layer moved to `swift-atoms/swift-tagged`. The `ISO_9945.Kernel.Event.ID` key and the `__Dictionary`/`__HashIndexed` engine it exercised are not the current API.
+
+**A neutral reduction is not attempted, and the reasons are recorded here.** The defect belongs to the same family as `swift-issue-tagged-noncopyable-atomic-metadata-crash`: null type metadata from 6.3.x code generation under `SuppressedAssociatedTypes`. That record documents it as fixed from Swift 6.4-dev, and it was retired on 2026-09-28. A reduction needs a toolchain where the bug fires, which means 6.3.x, and current Institute packages no longer build on 6.3.x (platform floor 27, tools 6.4). A dependency-free form would have to be rebuilt from the mechanism alone, and the sibling record's standalone attempts did not reproduce. Without a firing standalone form, there is nothing eligible to file.
+
+**Status:** not yet eligible, fixed from 6.4-dev by family evidence, kept as the historical record. Reopen only if the `failed type lookup … unknown error` null-metadata signature appears on 6.4 or later.
