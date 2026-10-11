@@ -83,7 +83,7 @@ jobs:
           bash .github/workflows/probe.sh "swift-linux-standard main with the 66fea99 probe, debug" "$RUNNER_TEMP/sls" 1800 "$sig" \
             swift build --build-tests
           bash .github/workflows/probe.sh "swift-linux-standard main with the 66fea99 probe, release" "$RUNNER_TEMP/sls" 1800 "$sig" \
-            swift build --build-tests -c release
+            swift build --build-tests -c release -Xswiftc -enable-testing
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
