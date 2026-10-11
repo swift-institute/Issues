@@ -1038,6 +1038,23 @@ let package = Package(
                 .copy("Crash.swift.txt")
             ]
         ),
+
+        // MARK: - swift-issue-testing-foundation-overlay-package-system-module
+        //
+        // NOT FILED. A test file importing Testing and Foundation makes the driver build
+        // the _Testing_Foundation overlay for macOS 14; it resolves the package's own
+        // System module (floor 27) instead of the SDK's and fails on the deployment
+        // target. Found through swift-atoms/swift-system in swift-stripe-standard's tests.
+        // The fixture package is staged and built out of process.
+        .testTarget(
+            name: "swift-issue-testing-foundation-overlay-package-system-module-Tests",
+            path: "swift-issue-testing-foundation-overlay-package-system-module/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-testing-foundation-overlay-package-system-module-Repro",
+            path: "swift-issue-testing-foundation-overlay-package-system-module/Sources/Reproducer",
+            exclude: ["Fixture"]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

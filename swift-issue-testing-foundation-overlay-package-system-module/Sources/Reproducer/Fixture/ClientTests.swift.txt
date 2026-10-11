@@ -1,0 +1,7 @@
+@IMPORT@
+import Testing
+import System
+
+@Test func `marker`() {
+    _ = Marker()
+}
