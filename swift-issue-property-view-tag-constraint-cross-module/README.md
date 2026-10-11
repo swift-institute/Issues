@@ -75,3 +75,22 @@ Close only after the upstream fix or local resolution is verified on the require
 ## Execution gate
 
 Replace `13` only after the canonical Issue is created and read back. Replace `https://github.com/swift-institute/Issues/tree/main/swift-issue-property-view-tag-constraint-cross-module` only after this dossier lands by normal push and the commit-pinned path is readable. Before any later source deletion, create and independently read back a cold archive bundle and update `evidence/source-provenance.json`; deletion is not authorized by this dossier.
+
+## Swift 6.4 re-test: a language rule, not a compiler defect (2026-10-11)
+
+**The drift.** The source package no longer builds on Apple Swift 6.4 (swiftlang-6.4.0.34.1). `Workaround.swift` puts `@_lifetime(&self)` on a `mutating func` that returns `Void`, which 6.4 rejects ("invalid lifetime dependence on an Escapable result"). With that attribute removed, the package builds. Restoring the two commented extensions in `Collection.swift` then reproduces "invalid redeclaration of 'all()'", unchanged.
+
+**It needs none of the recorded conditions.** No second module, no `~Copyable`/`~Escapable`, no protocol refinement. This single file is enough:
+
+```swift
+struct V<Tag> {}
+enum A {}; enum B {}
+extension V where Tag == A { var all: Int { 42 } }
+extension V where Tag == B { func all() {} }
+```
+
+Two functions named `all` in those extensions compile, and so do two properties named `all`. Only a property paired with a zero-argument function conflicts.
+
+**This is the compiler's documented rule.** `swift::conflicting` in `lib/AST/Decl.cpp` says "Functions always conflict with non-functions with the same signature. In practice, this only applies for zero argument functions." It also says variables always conflict with non-variables. The generic signature of the extension is not consulted. Before Swift 5, a variable in an extension of a generic type was exempt; that exemption was removed deliberately.
+
+**Disposition.** Closed as not a defect. Give the property and the method different base names, or use the separate view types in `Workaround.swift`. The upstream report swiftlang/swift#86707 (Coen's) is still open. Whether to add this finding there, or close it, is Coen's call.
