@@ -96,7 +96,8 @@ if importing.status == 0 {
     exit(0)
 }
 inconclusive("the consumer module failed for an unrelated reason:\n\(importing.stderr)")
-#else
+#elseif canImport(ucrt)
+import ucrt
 exit(2)
 #endif
 

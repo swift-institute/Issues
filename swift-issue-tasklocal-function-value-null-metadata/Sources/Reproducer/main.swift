@@ -92,7 +92,8 @@ if sawUnrelatedFailure.isEmpty {
     exit(0)
 }
 inconclusive("the probe binary failed for an unrelated reason:\n\(sawUnrelatedFailure)")
-#else
+#elseif canImport(ucrt)
+import ucrt
 exit(2)
 #endif
 

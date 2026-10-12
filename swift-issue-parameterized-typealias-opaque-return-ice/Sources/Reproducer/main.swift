@@ -73,8 +73,6 @@ if errText.contains("failed to produce diagnostic") {
     exit(0)
 }
 
-#else
-exit(0)
 #endif
 
 // swiftlint:enable no_try_optional

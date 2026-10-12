@@ -93,8 +93,6 @@ if moduleB.status == 0 {
     exit(0)
 }
 inconclusive("module B failed for an unrelated reason:\n\(moduleB.stderr)")
-#else
-exit(0)
 #endif
 
 // swiftlint:enable no_try_optional

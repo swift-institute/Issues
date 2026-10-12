@@ -89,7 +89,8 @@ if lastFailure.isEmpty {
     exit(0)
 }
 inconclusive("swiftc failed for an unrelated reason:\n\(lastFailure)")
-#else
+#elseif canImport(ucrt)
+import ucrt
 exit(2)
 #endif
 

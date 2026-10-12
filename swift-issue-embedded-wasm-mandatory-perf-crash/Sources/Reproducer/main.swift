@@ -27,6 +27,7 @@ FileHandle.standardError.write(Data(
     """.utf8
 ))
 exit(2)
-#else
+#elseif canImport(ucrt)
+import ucrt
 exit(2)
 #endif
