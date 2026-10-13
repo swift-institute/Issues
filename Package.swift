@@ -140,8 +140,8 @@ let package = Package(
         // swiftlang/swift#77558 — pointer arithmetic release-mode
         // miscompile. ≥2 chained `.advanced(by:)` calls on
         // UnsafeMutablePointer<Int> with at least one negative offset
-        // misload at `-O` / `-Osize`. Cross-platform (macOS arm64 +
-        // Linux x86_64); fixed on 6.4-dev nightly-main.
+        // misload at `-O` / `-Osize`. Not fixed on Swift 6.4: fires in
+        // release on macOS arm64 and Linux aarch64 + x86_64.
 
         // Target names match the issue directory so `swift test --filter
         // <issue-dir-underscored>` selects exactly this issue's tests via

@@ -1,13 +1,21 @@
 # Swift Issue: Pointer Arithmetic Release-Mode Miscompile
 
-**Upstream:** [`swiftlang/swift#77558`](https://github.com/swiftlang/swift/issues/77558) — filed 2024-11-12, **fixed on 6.4-dev nightly-main**, awaiting backport / 6.4 release.
+**Upstream:** [`swiftlang/swift#77558`](https://github.com/swiftlang/swift/issues/77558) — filed 2024-11-12. **Not fixed on Swift 6.4.**
 
-A `.pointee` load after a pair of chained `.advanced(by:)` calls on
-`UnsafeMutablePointer<Int>` — at least one with a negative offset —
-reads from the wrong address under SwiftPM `swift test -c release`
-on Linux 6.3.1 release. The defect is at SIL optimization or LLVM
-codegen and is fixed upstream on `swiftlang/swift:nightly-main` (Swift
-6.4-dev).
+**Status 2026-10-13 (Swift 6.4, swiftlang-6.4.0.34.1):** the misload
+reproduces under `swift test -c release` on macOS 27 arm64 and on the
+`swift:6.4` Linux image on aarch64 and x86_64. Debug builds are correct
+everywhere. It fires whether the load sits inside an `#expect` closure
+or in plain code, so the test computes the value in plain code and
+wraps only the comparison in `withKnownIssue`, gated on release builds
+(Windows excluded until its CI leg shows whether it fires). The earlier
+6.3-era analysis below, including "fixed on 6.4-dev nightly-main", is
+kept as history and no longer describes the current toolchain.
+
+The original 6.3-era summary: a `.pointee` load after a pair of chained
+`.advanced(by:)` calls on `UnsafeMutablePointer<Int>` — at least one
+with a negative offset — reads from the wrong address under SwiftPM
+`swift test -c release` on Linux 6.3.1 release.
 
 ## Trigger characterization
 
@@ -67,17 +75,14 @@ Two harnesses cover complementary surfaces:
 From the Issues repo root:
 
 ```bash
-# Test harness — green on macOS (when:-predicate false on macOS); green on
-# Linux release with `withKnownIssue` catching the firing bug; red on Linux
-# nightly = fix landed upstream.
-swift test --filter swift_issue_pointer_arithmetic_linux_miscompile                  # debug
-swift test -c release --filter swift_issue_pointer_arithmetic_linux_miscompile       # fires on Linux
+# Debug: passes. Release: the bug fires and withKnownIssue records it.
+swift test --filter swift_issue_pointer_arithmetic_linux_miscompile
+swift test -c release --filter swift_issue_pointer_arithmetic_linux_miscompile
 
-# Linux release through SwiftPM test runner — fires the bug, withKnownIssue catches it:
-docker run --rm -v $(pwd):/work -w /work swift:6.3-jammy \
+docker run --rm -v $(pwd):/work -w /work swift:6.4 \
     swift test -c release --filter swift_issue_pointer_arithmetic_linux_miscompile
-# → "Test reproducer() recorded a known issue at Reproducer.swift:62:21:
-#    Expectation failed: unsafe backed.pointee == 20"
+# → "Test reproducer() recorded a known issue at Reproducer.swift:…:
+#    Expectation failed: loaded == 20"
 ```
 
 ### Standalone executable
@@ -153,16 +158,16 @@ nightly / Windows + format + lint + advisory linters) with `test-filter:
 swift-issue-pointer-arithmetic-linux-miscompile`. Per-leg status checks
 are named `swift-issue-pointer-arithmetic-linux-miscompile / <reusable-job>`.
 
-Expected leg outcomes while the bug is live upstream:
+Expected leg outcomes while the bug is live (Swift 6.4):
 
-- **macOS**: GREEN — `withKnownIssue`'s `when:` predicate is false on
-  macOS; wrapped block runs unguarded and passes.
-- **Linux release**: GREEN with 1 known issue — bug fires under `-O`;
-  `withKnownIssue` catches it; suite passes.
+- **Debug legs**: GREEN — the bug does not fire; `when:` is false.
+- **macOS release, Linux release**: GREEN with 1 known issue — the bug
+  fires under `-O`; `withKnownIssue` records it.
 - **Linux nightly** (`continue-on-error: true`): GREEN with 1 known issue
-  until upstream fix propagates to `swiftlang/swift:nightly-main-jammy`;
-  RED (withKnownIssue flip) after fix lands.
-- **Windows**: GREEN — bug is Linux-specific.
+  while the bug fires there; RED ("Known issue was not recorded") once a
+  fix lands.
+- **Windows**: not gated; GREEN if the bug does not fire there, RED if it
+  does (then add Windows to the gate).
 
 The **weekly cron** (Monday 06:00 UTC) re-runs the matrix specifically to
 detect the Linux-nightly flip without depending on unrelated pushes.

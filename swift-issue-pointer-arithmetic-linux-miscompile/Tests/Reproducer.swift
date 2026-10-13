@@ -13,56 +13,52 @@ private func - (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointe
     unsafe lhs.advanced(by: -rhs.raw)
 }
 
-// Release-mode + Linux probe.
+// Release-mode probe.
 //
-// Detection uses `assert`'s autoclosure: in `-O` (release) the autoclosure
-// body is never executed, so the side-effect closure cannot flip `debug`;
-// in `-Onone` (debug) the autoclosure runs and `debug` becomes true.
-//
-// The probe is the gate for `withKnownIssue` below — on Linux release the
-// bug fires and `withKnownIssue` catches it (green); on every other
-// platform/configuration the bug doesn't fire, the precondition returns
-// false, and the wrapped block runs unguarded (also green).
-private func isLinuxRelease() -> Bool {
-    #if os(Linux)
+// In `-O` the autoclosure passed to `assert` never runs, so `debug`
+// stays false; in `-Onone` it runs and `debug` becomes true. Windows is
+// left out until its CI leg shows whether the bug fires there.
+private func isRelease() -> Bool {
+    #if os(Windows)
+    return false
+    #else
     var debug = false
     assert({ debug = true; return true }())
     return !debug
-    #else
-    return false
     #endif
 }
 
 @Suite
 struct PointerArithmeticReproducer {
 
-    /// swiftlang/swift#77558 — Linux release-mode pointer arithmetic
+    /// swiftlang/swift#77558 — release-mode pointer arithmetic
     /// miscompile. A `.pointee` load after a user-authored `+`/`-`
     /// operator wrapping `.advanced(by:)` returns the value at the
-    /// wrong address. Fires on Swift 6.3 stable + 6.4-dev nightly
-    /// Linux release; does not fire on macOS / Windows / Linux debug.
+    /// wrong address. Not fixed on Swift 6.4 (swiftlang-6.4.0.34.1):
+    /// fires under `swift test -c release` on macOS 27 arm64 and on
+    /// `swift:6.4` Linux aarch64 and x86_64; debug is correct.
     ///
-    /// `withKnownIssue` flip semantics: green while the bug fires on
-    /// Linux release (current state); red the moment upstream lands a
-    /// fix and the bug stops firing. The red flip IS the fix-detection
-    /// signal — see `.github/workflows/nightly.yml`.
+    /// The load runs in plain code, outside any `withKnownIssue` or
+    /// `#expect` closure, so the test harness cannot perturb the
+    /// codegen under test. Only the comparison is wrapped. Green while
+    /// the bug fires; "Known issue was not recorded" (red) once a
+    /// toolchain fixes it — that flip is the fix-detection signal.
     @Test
     func reproducer() {
+        var values: [Int] = [0, 10, 20, 30, 40]
+        let loaded = values.withUnsafeMutableBufferPointer { buf in
+            let base = buf.baseAddress!
+            let advanced = unsafe base + Vec(4)
+            let backed = unsafe advanced - Vec(2)
+            return unsafe backed.pointee
+        }
         // Body passed as positional (NOT trailing) — with `when:` after,
         // Swift's forward-scan rule binds a trailing closure to `matching:`
         // instead of `body`, producing a contextual-type mismatch.
         withKnownIssue(
-            "swiftlang/swift#77558 — Linux release-mode pointer arithmetic miscompile",
-            {
-                var values: [Int] = [0, 10, 20, 30, 40]
-                unsafe values.withUnsafeMutableBufferPointer { buf in
-                    let base = buf.baseAddress!
-                    let advanced = unsafe base + Vec(4)
-                    let backed = unsafe advanced - Vec(2)
-                    #expect(unsafe backed.pointee == 20)
-                }
-            },
-            when: { isLinuxRelease() }
+            "swiftlang/swift#77558 — release-mode pointer arithmetic miscompile",
+            { #expect(loaded == 20) },
+            when: { isRelease() }
         )
     }
 }
