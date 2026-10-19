@@ -744,6 +744,18 @@ let package = Package(
             path: "swift-issue-windows-existential-crash/Sources/Reproducer"
         ),
 
+        // The Windows-only ICE's trigger lives in the evidence packages
+        // (two packages, so the namespace typealias crosses a package
+        // boundary); these targets only index them.
+        .testTarget(
+            name: "swift-issue-noncanonical-existential-windows-debuginfo-ice-Tests",
+            path: "swift-issue-noncanonical-existential-windows-debuginfo-ice/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-noncanonical-existential-windows-debuginfo-ice-Repro",
+            path: "swift-issue-noncanonical-existential-windows-debuginfo-ice/Sources/Reproducer"
+        ),
+
         // MARK: - Batch A Group 2 — migrated nested packages (Issues#73)
         //
         // Four directories previously carried standalone nested manifests;

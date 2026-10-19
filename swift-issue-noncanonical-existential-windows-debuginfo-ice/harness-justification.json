@@ -1,0 +1,27 @@
+{
+  "authoritativeCommand" : "swift build -c debug --package-path evidence\/source\/cross-package\/crash --target CrashModule",
+  "authoritativeEvidenceRoot" : "evidence\/source",
+  "canonicalIssueKey" : "noncanonical-existential-windows-debuginfo-ice",
+  "environment" : "x86_64-unknown-windows-msvc, Swift 6.3.3 and 6.4 (+Asserts toolchains), debug with DWARF; macOS and Linux, and -gnone, are negative controls.",
+  "generatedIndexFiles" : [
+    "Sources\/Reproducer\/main.swift",
+    "Tests\/Reproducer.swift"
+  ],
+  "generatedIndexFilesAreAuthoritativeReproducer" : false,
+  "negativeControlOrExpectedBehavior" : "RespellModule (the same downcasts spelled through the canonical root ISO_32000) and the single-module noncanonical-existential-debuginfo.swift compile cleanly.",
+  "positiveTrigger" : "CrashModule aborts with Assertion isActuallyCanonicalOrNull() (AST\/Type.h:421) while mangling the debugger type of any PDF.HTML.Style.Modifier, where PDF is a typealias declared in another package.",
+  "reason" : "The trigger needs a namespace typealias from another package; a single-module copy does not fire, so the two-package layout is kept exactly.",
+  "rootPackageManifestCreated" : false,
+  "schemaVersion" : 1,
+  "source" : {
+    "repository" : "swift-compositions\/swift-pdf",
+    "revision" : "9d576dabb05d41b73de2a9199c97d6fc4d5c8040",
+    "paths" : [
+      ".github\/repro\/noncanonical-existential-debuginfo.swift",
+      ".github\/repro\/cross-package",
+      ".github\/workflows\/windows-existential-repro.yml"
+    ],
+    "lastMeasured" : "run 32489398734 (2026-08-21): Swift 6.3.3 and 6.4 both single-file=CLEAN cross-package=STILL FIRING respell-canonical=CLEAN"
+  },
+  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+}
