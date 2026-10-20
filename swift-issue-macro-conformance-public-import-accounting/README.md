@@ -54,6 +54,26 @@ The same accounting gap shows up in two places:
   "SQL Foundation Integration" hit the same error, and replaced the JSON `signed` column
   with a signers table.
 
+## Variant: the conformed protocol is the only cross-module use (20 Oct 2026)
+
+The gap does not need a witness type. An extension macro whose declaration is
+`@attached(extension, conformances: Marker)` (in a module that `public import`s the
+protocol's module `Proto`, as swift-sql's `SQL_Macros` does with `SQL`) expands to
+`extension Thing: Proto.Marker {}` on `@MarkedDot public struct Thing {}`:
+
+- `public import Proto` in the client: `warning: public import of 'Proto' was not used in
+  public declarations or inlinable code`. The same warning appears when the expansion spells
+  the protocol with a module selector, `Proto::Marker`, which is the form `@Table` emits.
+- `import Proto` (control): `macro expansion @MarkedDot:1:24: error: cannot use protocol
+  'Marker' in a public or '@usableFromInline' conformance; 'Proto' was not imported publicly`.
+
+Apple Swift 6.4 (swiftlang-6.4.0.34.1), arm64 macOS 27.2, `InternalImportsByDefault`.
+This variant explains every `public import of 'SQL' was not used` on a `@Table` type
+(44 in Mapje's PersonalData, 6 in swift-sqlite's CloudKit tables, swift-sql's Public Draft
+Tests): the import is needed and the diagnostic is wrong. Under
+`treatAllWarnings(as: .error)` such a target cannot build, which is why swift-sql and
+swift-sqlite do not yet adopt the canonical settings tail.
+
 ## Workaround
 
 Keep every cross-module type a macro puts into public declarations also visible in the
