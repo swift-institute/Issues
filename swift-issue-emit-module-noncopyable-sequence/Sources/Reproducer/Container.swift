@@ -109,6 +109,9 @@ extension Container.Bounded: Sequence where Element: Copyable {
 
 // ✅ WORKS: Single constraint (no compound)
 public struct SingleConstraint<Element: ~Copyable>: ~Copyable {
+    // SAFETY: The pointer is module-internal. This control type exposes no public API
+    // that accesses or vends it.
+    @safe
     public struct Bounded: ~Copyable {
         var _ptr: UnsafeMutablePointer<Element>
     }
