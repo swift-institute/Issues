@@ -35,7 +35,7 @@ func - (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointer<Int> {
 }
 
 var values: [Int] = [0, 10, 20, 30, 40]
-let observed: Int = unsafe values.withUnsafeMutableBufferPointer { buf in
+let observed: Int = values.withUnsafeMutableBufferPointer { buf in
     guard let base = buf.baseAddress else { return 0 }
     let advanced = unsafe base + Vec(4)
     let backed = unsafe advanced - Vec(2)
