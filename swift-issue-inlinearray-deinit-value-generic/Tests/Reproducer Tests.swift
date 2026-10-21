@@ -1,3 +1,4 @@
+import Synchronization
 import Testing
 // The reproducer library target is `swift-issue-inlinearray-deinit-value-generic-Repro`;
 // SwiftPM exposes it under the C99-mangled module name below. The
@@ -6,9 +7,16 @@ import Testing
 @testable import swift_issue_inlinearray_deinit_value_generic_Repro
 
 /// Thread-safe tracker for deinit order
-final class Tracker: @unchecked Sendable {
-    nonisolated(unsafe) var deinitOrder: [Int] = []
-    func append(_ id: Int) { deinitOrder.append(id) }
+final class Tracker: Sendable {
+    private let lock = Mutex<[Int]>([])
+
+    var deinitOrder: [Int] {
+        lock.withLock { $0 }
+    }
+
+    func append(_ id: Int) {
+        lock.withLock { $0.append(id) }
+    }
 }
 
 /// Element that tracks its deinit - defined in TEST module (cross-module from Container)

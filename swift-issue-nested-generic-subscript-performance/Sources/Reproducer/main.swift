@@ -192,7 +192,7 @@
             let mult = ns / rawNs
             print(
                 "\(label.padding(toLength: 38, withPad: " ", startingAt: 0))"
-                    + "\(String(format: "%6.1f", ns))ns  (\(String(format: "%.2f", mult))x)"
+                    + "\(unsafe String(format: "%6.1f", ns))ns  (\(unsafe String(format: "%.2f", mult))x)"
             )
         }
 
@@ -234,7 +234,7 @@
             let mult = ns / oRawNs
             print(
                 "\(label.padding(toLength: 38, withPad: " ", startingAt: 0))"
-                    + "\(String(format: "%6.1f", ns))ns  (\(String(format: "%.2f", mult))x)"
+                    + "\(unsafe String(format: "%6.1f", ns))ns  (\(unsafe String(format: "%.2f", mult))x)"
             )
         }
 
