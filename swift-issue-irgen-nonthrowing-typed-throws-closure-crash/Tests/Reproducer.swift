@@ -1,6 +1,6 @@
-import Testing
-import Foundation
 import Dispatch
+import Foundation
+import Testing
 
 @Suite
 struct `IRGen Tests` {
@@ -11,11 +11,11 @@ struct `IRGen Tests` {
 
     static func compilerURL(named name: String) -> URL? {
         #if os(Windows)
-        let candidates = ["\(name).exe", name]
-        let separator: Character = ";"
+            let candidates = ["\(name).exe", name]
+            let separator: Character = ";"
         #else
-        let candidates = [name]
-        let separator: Character = ":"
+            let candidates = [name]
+            let separator: Character = ":"
         #endif
 
         let environment = ProcessInfo.processInfo.environment
@@ -52,9 +52,11 @@ struct `IRGen Tests` {
         let identifier = sourceName.replacingOccurrences(of: ".swift.txt", with: "")
         let processID = ProcessInfo.processInfo.processIdentifier
         let temporary = URL(fileURLWithPath: NSTemporaryDirectory())
-        let swiftSource = temporary
+        let swiftSource =
+            temporary
             .appendingPathComponent("irgen-typed-throws-\(identifier)-\(processID).swift")
-        let object = temporary
+        let object =
+            temporary
             .appendingPathComponent("irgen-typed-throws-\(identifier)-\(processID).o")
 
         try? FileManager.default.removeItem(at: swiftSource)
@@ -96,13 +98,15 @@ struct `IRGen Tests` {
         process.waitUntilExit()
         outputGroup.wait()
 
-        let errorText = String(
-            data: errorData,
-            encoding: .utf8
-        ) ?? ""
+        let errorText =
+            String(
+                data: errorData,
+                encoding: .utf8
+            ) ?? ""
 
         if errorText.contains("hasErrorResult()")
-            && errorText.contains("IRGenRequest") {
+            && errorText.contains("IRGenRequest")
+        {
             return (true, nil)
         }
         if process.terminationStatus == 0 {

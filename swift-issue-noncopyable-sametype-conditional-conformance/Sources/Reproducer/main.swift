@@ -18,53 +18,58 @@
 //            probe was inconclusive (no compiler, or compile failed)
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 
-let source = URL(fileURLWithPath: #filePath)
-    .deletingLastPathComponent()        // Sources/Reproducer/
-    .deletingLastPathComponent()        // Sources/
-    .appendingPathComponent("reproducer.swift")
+    let source = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()  // Sources/Reproducer/
+        .deletingLastPathComponent()  // Sources/
+        .appendingPathComponent("reproducer.swift")
 
-guard FileManager.default.fileExists(atPath: source.path) else {
-    FileHandle.standardError.write(Data("inconclusive: reproducer.swift not found\n".utf8))
+    guard FileManager.default.fileExists(atPath: source.path) else {
+        FileHandle.standardError.write(Data("inconclusive: reproducer.swift not found\n".utf8))
+        exit(0)
+    }
+
+    let pid = ProcessInfo.processInfo.processIdentifier
+    let binary = URL(fileURLWithPath: NSTemporaryDirectory())
+        .appendingPathComponent("sametype-conformance-\(pid)")
+    defer { try? FileManager.default.removeItem(at: binary) }
+
+    func run(_ executable: String, _ arguments: [String]) -> Int32? {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: executable)
+        process.arguments = arguments
+        process.standardError = Pipe()
+        process.standardOutput = Pipe()
+        do { try process.run() } catch { return nil }
+        process.waitUntilExit()
+        if process.terminationReason == .uncaughtSignal { return 128 + process.terminationStatus }
+        return process.terminationStatus
+    }
+
+    // Positive control: the reproducer always COMPILES; a compile failure means
+    // the instrument broke, not the bug.
+    guard let compile = run("/usr/bin/env", ["swiftc", source.path, "-o", binary.path]),
+        compile == 0
+    else {
+        FileHandle.standardError.write(
+            Data("inconclusive: reproducer.swift failed to compile\n".utf8))
+        exit(0)
+    }
+
+    guard let runStatus = run(binary.path, []) else {
+        FileHandle.standardError.write(
+            Data("inconclusive: could not launch the compiled reproducer\n".utf8))
+        exit(0)
+    }
+
+    if runStatus >= 128 {
+        FileHandle.standardError.write(
+            Data("BUG FIRES: the reproducer was killed by signal \(runStatus - 128).\n".utf8))
+        exit(1)
+    }
+    print("bug appears FIXED: the reproducer ran to completion (exit \(runStatus)).")
     exit(0)
-}
-
-let pid = ProcessInfo.processInfo.processIdentifier
-let binary = URL(fileURLWithPath: NSTemporaryDirectory())
-    .appendingPathComponent("sametype-conformance-\(pid)")
-defer { try? FileManager.default.removeItem(at: binary) }
-
-func run(_ executable: String, _ arguments: [String]) -> Int32? {
-    let process = Process()
-    process.executableURL = URL(fileURLWithPath: executable)
-    process.arguments = arguments
-    process.standardError = Pipe()
-    process.standardOutput = Pipe()
-    do { try process.run() } catch { return nil }
-    process.waitUntilExit()
-    if process.terminationReason == .uncaughtSignal { return 128 + process.terminationStatus }
-    return process.terminationStatus
-}
-
-// Positive control: the reproducer always COMPILES; a compile failure means
-// the instrument broke, not the bug.
-guard let compile = run("/usr/bin/env", ["swiftc", source.path, "-o", binary.path]), compile == 0 else {
-    FileHandle.standardError.write(Data("inconclusive: reproducer.swift failed to compile\n".utf8))
-    exit(0)
-}
-
-guard let runStatus = run(binary.path, []) else {
-    FileHandle.standardError.write(Data("inconclusive: could not launch the compiled reproducer\n".utf8))
-    exit(0)
-}
-
-if runStatus >= 128 {
-    FileHandle.standardError.write(Data("BUG FIRES: the reproducer was killed by signal \(runStatus - 128).\n".utf8))
-    exit(1)
-}
-print("bug appears FIXED: the reproducer ran to completion (exit \(runStatus)).")
-exit(0)
 #endif
 
 // swiftlint:enable no_try_optional

@@ -29,4 +29,8 @@ struct Values<Value>: P, Q {
 func check(_ value: some P) {}
 func check(_ value: some Q) {}
 
-check(Values { "Hello"; "Goodbye" })
+check(
+    Values {
+        "Hello"
+        "Goodbye"
+    })

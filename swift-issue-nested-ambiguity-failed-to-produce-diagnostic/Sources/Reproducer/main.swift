@@ -13,56 +13,60 @@
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
 
-import Foundation
+    import Foundation
 
-let here = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
-let crashSource = here.appendingPathComponent("Crash.swift.txt")
+    let here = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+    let crashSource = here.appendingPathComponent("Crash.swift.txt")
 
-let pid = ProcessInfo.processInfo.processIdentifier
-let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
-    .appendingPathComponent("nested-ambiguity-diagnostic-\(pid).swift")
-try? FileManager.default.removeItem(at: swiftCopy)
-do {
-    try FileManager.default.copyItem(at: crashSource, to: swiftCopy)
-} catch {
-    FileHandle.standardError.write(Data("could not stage crash source: \(error)\n".utf8))
-    exit(0)
-}
+    let pid = ProcessInfo.processInfo.processIdentifier
+    let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
+        .appendingPathComponent("nested-ambiguity-diagnostic-\(pid).swift")
+    try? FileManager.default.removeItem(at: swiftCopy)
+    do {
+        try FileManager.default.copyItem(at: crashSource, to: swiftCopy)
+    } catch {
+        FileHandle.standardError.write(Data("could not stage crash source: \(error)\n".utf8))
+        exit(0)
+    }
 
-let process = Process()
-process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-process.arguments = ["swiftc", "-typecheck", "-swift-version", "6", swiftCopy.path]
-let stderr = Pipe()
-process.standardError = stderr
-process.standardOutput = Pipe()
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+    process.arguments = ["swiftc", "-typecheck", "-swift-version", "6", swiftCopy.path]
+    let stderr = Pipe()
+    process.standardError = stderr
+    process.standardOutput = Pipe()
 
-do {
-    try process.run()
-} catch {
-    FileHandle.standardError.write(Data("could not launch swiftc: \(error)\n".utf8))
-    exit(0)
-}
-let errText = String(
-    data: stderr.fileHandleForReading.readDataToEndOfFile(),
-    encoding: .utf8
-) ?? ""
-process.waitUntilExit()
-try? FileManager.default.removeItem(at: swiftCopy)
+    do {
+        try process.run()
+    } catch {
+        FileHandle.standardError.write(Data("could not launch swiftc: \(error)\n".utf8))
+        exit(0)
+    }
+    let errText =
+        String(
+            data: stderr.fileHandleForReading.readDataToEndOfFile(),
+            encoding: .utf8
+        ) ?? ""
+    process.waitUntilExit()
+    try? FileManager.default.removeItem(at: swiftCopy)
 
-if errText.contains("failed to produce diagnostic") {
-    FileHandle.standardError.write(Data("BUG FIRED: failed to produce diagnostic for a nested ambiguous call.\n".utf8))
-    exit(1)
-} else if errText.contains("ambiguous use of") {
-    FileHandle.standardError.write(Data("Proper ambiguity diagnostic reported — the bug is FIXED.\n".utf8))
-    exit(0)
-} else {
-    FileHandle.standardError.write(Data("swiftc output did not match either signature:\n\(errText)\n".utf8))
-    exit(0)
-}
+    if errText.contains("failed to produce diagnostic") {
+        FileHandle.standardError.write(
+            Data("BUG FIRED: failed to produce diagnostic for a nested ambiguous call.\n".utf8))
+        exit(1)
+    } else if errText.contains("ambiguous use of") {
+        FileHandle.standardError.write(
+            Data("Proper ambiguity diagnostic reported — the bug is FIXED.\n".utf8))
+        exit(0)
+    } else {
+        FileHandle.standardError.write(
+            Data("swiftc output did not match either signature:\n\(errText)\n".utf8))
+        exit(0)
+    }
 
 #else
 
-print("subprocess probe unavailable on this platform; skipping")
+    print("subprocess probe unavailable on this platform; skipping")
 
 #endif
 

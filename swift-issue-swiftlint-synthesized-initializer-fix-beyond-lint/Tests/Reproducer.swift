@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // SwiftLint's `unneeded_synthesized_initializer` corrects strictly more sites
@@ -48,62 +48,74 @@ extension `SwiftLint Synthesized Initializer Fix Beyond Lint`.Unit {
     /// `nil` when the instrument is unreachable or its positive control fails.
     static func measure() -> (reported: Int, corrected: Int)? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let sources = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-            .appendingPathComponent("Sources/Reproducer")
+            let sources = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()
+                .deletingLastPathComponent()
+                .appendingPathComponent("Sources/Reproducer")
 
-        let work = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("swiftlint-synth-init-test-\(ProcessInfo.processInfo.processIdentifier)")
+            let work = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent(
+                    "swiftlint-synth-init-test-\(ProcessInfo.processInfo.processIdentifier)")
 
-        // FileManager's removeItem/createDirectory/copyItem and
-        // String(contentsOf:) are untyped cross-module throwing APIs; every
-        // outcome is handled by the guards below rather than swallowed. No
-        // suppression is needed: `no_try_optional` excludes `Tests/.*`.
-        try? FileManager.default.removeItem(at: work)
-        guard (try? FileManager.default.createDirectory(
-            at: work.appendingPathComponent("Sources"),
-            withIntermediateDirectories: true
-        )) != nil else { return nil }
-        defer { try? FileManager.default.removeItem(at: work) }
+            // FileManager's removeItem/createDirectory/copyItem and
+            // String(contentsOf:) are untyped cross-module throwing APIs; every
+            // outcome is handled by the guards below rather than swallowed. No
+            // suppression is needed: `no_try_optional` excludes `Tests/.*`.
+            try? FileManager.default.removeItem(at: work)
+            guard
+                (try? FileManager.default.createDirectory(
+                    at: work.appendingPathComponent("Sources"),
+                    withIntermediateDirectories: true
+                )) != nil
+            else { return nil }
+            defer { try? FileManager.default.removeItem(at: work) }
 
-        let staged = work.appendingPathComponent("Sources/Fixture.swift")
-        guard (try? FileManager.default.copyItem(
-                  at: sources.appendingPathComponent("Fixture.swift.txt"), to: staged
-              )) != nil,
-              (try? FileManager.default.copyItem(
-                  at: sources.appendingPathComponent("Config.yml.txt"),
-                  to: work.appendingPathComponent(".swiftlint.yml")
-              )) != nil
-        else { return nil }
+            let staged = work.appendingPathComponent("Sources/Fixture.swift")
+            guard
+                (try? FileManager.default.copyItem(
+                    at: sources.appendingPathComponent("Fixture.swift.txt"), to: staged
+                )) != nil,
+                (try? FileManager.default.copyItem(
+                    at: sources.appendingPathComponent("Config.yml.txt"),
+                    to: work.appendingPathComponent(".swiftlint.yml")
+                )) != nil
+            else { return nil }
 
-        func run(_ arguments: [String]) -> (status: Int32, output: String)? {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-            process.arguments = arguments
-            process.currentDirectoryURL = work
-            let pipe = Pipe()
-            process.standardOutput = pipe
-            process.standardError = pipe
-            do { try process.run() } catch { return nil }
-            let text = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
-            process.waitUntilExit()
-            return (process.terminationStatus, text)
-        }
+            func run(_ arguments: [String]) -> (status: Int32, output: String)? {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+                process.arguments = arguments
+                process.currentDirectoryURL = work
+                let pipe = Pipe()
+                process.standardOutput = pipe
+                process.standardError = pipe
+                do { try process.run() } catch { return nil }
+                let text =
+                    String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)
+                    ?? ""
+                process.waitUntilExit()
+                return (process.terminationStatus, text)
+            }
 
-        guard let linted = run(["swiftlint", "lint", "--strict", "--no-cache", "--reporter", "json"])
-        else { return nil }
-        let reported = linted.output.components(separatedBy: "unneeded_synthesized_initializer").count - 1
-        // POSITIVE CONTROL: an instrument reporting nothing is broken — rule
-        // disabled, configuration not found, fixture not linted — not fixed.
-        guard reported > 0 else { return nil }
+            guard
+                let linted = run([
+                    "swiftlint", "lint", "--strict", "--no-cache", "--reporter", "json",
+                ])
+            else { return nil }
+            let reported =
+                linted.output.components(separatedBy: "unneeded_synthesized_initializer").count - 1
+            // POSITIVE CONTROL: an instrument reporting nothing is broken — rule
+            // disabled, configuration not found, fixture not linted — not fixed.
+            guard reported > 0 else { return nil }
 
-        guard let fixed = run(["swiftlint", "--fix", "--no-cache"]), fixed.status == 0 else { return nil }
-        guard let mutated = try? String(contentsOf: staged, encoding: .utf8) else { return nil }
-        let surviving = mutated.components(separatedBy: "internal init(value: Int)").count - 1
-        return (reported, 6 - surviving)
+            guard let fixed = run(["swiftlint", "--fix", "--no-cache"]), fixed.status == 0 else {
+                return nil
+            }
+            guard let mutated = try? String(contentsOf: staged, encoding: .utf8) else { return nil }
+            let surviving = mutated.components(separatedBy: "internal init(value: Int)").count - 1
+            return (reported, 6 - surviving)
         #else
-        return nil
+            return nil
         #endif
     }
 

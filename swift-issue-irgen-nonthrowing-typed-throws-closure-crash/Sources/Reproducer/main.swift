@@ -1,18 +1,18 @@
+import Dispatch
 // This harness stages/compiles/cleans up temp reproducer files; failures in
 // best-effort cleanup or staging checks are handled via guard/defer control
 // flow, not silently swallowed, so the optional-chaining form is the correct idiom here.
 // swiftlint:disable no_try_optional
 import Foundation
-import Dispatch
 
 #if canImport(Darwin)
-import Darwin
+    import Darwin
 #elseif canImport(Glibc)
-import Glibc
+    import Glibc
 #elseif canImport(Musl)
-import Musl
+    import Musl
 #elseif canImport(WinSDK)
-import WinSDK
+    import WinSDK
 #endif
 
 let sourceNames = [
@@ -22,11 +22,11 @@ let sourceNames = [
 
 func compilerURL(named name: String) -> URL? {
     #if os(Windows)
-    let candidates = ["\(name).exe", name]
-    let separator: Character = ";"
+        let candidates = ["\(name).exe", name]
+        let separator: Character = ";"
     #else
-    let candidates = [name]
-    let separator: Character = ":"
+        let candidates = [name]
+        let separator: Character = ":"
     #endif
 
     let environment = ProcessInfo.processInfo.environment
@@ -59,9 +59,11 @@ func bugFires(sourceName: String) -> Bool? {
     let identifier = sourceName.replacingOccurrences(of: ".swift.txt", with: "")
     let processID = ProcessInfo.processInfo.processIdentifier
     let temporary = URL(fileURLWithPath: NSTemporaryDirectory())
-    let swiftSource = temporary
+    let swiftSource =
+        temporary
         .appendingPathComponent("irgen-typed-throws-\(identifier)-\(processID).swift")
-    let object = temporary
+    let object =
+        temporary
         .appendingPathComponent("irgen-typed-throws-\(identifier)-\(processID).o")
 
     try? FileManager.default.removeItem(at: swiftSource)
@@ -103,13 +105,15 @@ func bugFires(sourceName: String) -> Bool? {
     process.waitUntilExit()
     outputGroup.wait()
 
-    let errorText = String(
-        data: errorData,
-        encoding: .utf8
-    ) ?? ""
+    let errorText =
+        String(
+            data: errorData,
+            encoding: .utf8
+        ) ?? ""
 
     if errorText.contains("hasErrorResult()")
-        && errorText.contains("IRGenRequest") {
+        && errorText.contains("IRGenRequest")
+    {
         return true
     }
     if process.terminationStatus == 0 {

@@ -1,8 +1,8 @@
-import Testing
+import Cardinal_Primitives
+import Ordinal_Primitives
 import Synchronization
 import Tagged_Primitives
-import Ordinal_Primitives
-import Cardinal_Primitives
+import Testing
 
 private enum SimpleTag: Sendable {}
 
@@ -60,8 +60,8 @@ struct TaggedNoncopyableAtomicReproducer {
 /// snapshot stream (verified 2026-03-16-a / 2026-05-07-a (6.4-dev) / 2026-05-12-a (6.5-dev)).
 private func isShippingBuggyToolchain() -> Bool {
     #if compiler(<6.5)
-    return true
+        return true
     #else
-    return false
+        return false
     #endif
 }

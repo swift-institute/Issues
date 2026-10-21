@@ -22,79 +22,90 @@
 //   exit 2 — inconclusive (no reachable compiler, or an unrelated failure)
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 
-// Measured deterministic (5/5 aborts on 6.3.3 macOS arm64; every Linux
-// invocation aborted). Retried anyway so that a single anomalous clean run
-// cannot announce a fix that has not landed.
-let attempts = 3
+    // Measured deterministic (5/5 aborts on 6.3.3 macOS arm64; every Linux
+    // invocation aborted). Retried anyway so that a single anomalous clean run
+    // cannot announce a fix that has not landed.
+    let attempts = 3
 
-let here = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
-let crashSource = here.appendingPathComponent("Crash.swift.txt")
+    let here = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+    let crashSource = here.appendingPathComponent("Crash.swift.txt")
 
-func inconclusive(_ reason: String) -> Never {
-    FileHandle.standardError.write(Data("inconclusive: \(reason)\n".utf8))
-    exit(2)
-}
-
-guard FileManager.default.fileExists(atPath: crashSource.path)
-else { inconclusive("trigger resource not found next to \(#filePath)") }
-
-let pid = ProcessInfo.processInfo.processIdentifier
-let work = URL(fileURLWithPath: NSTemporaryDirectory())
-    .appendingPathComponent("tasklocal-function-value-null-metadata-probe-\(pid)")
-try? FileManager.default.removeItem(at: work)
-guard (try? FileManager.default.createDirectory(at: work, withIntermediateDirectories: true)) != nil
-else { inconclusive("could not create a scratch directory") }
-defer { try? FileManager.default.removeItem(at: work) }
-
-// Top-level code: the trigger must be staged as `main.swift`.
-let staged = work.appendingPathComponent("main.swift")
-guard (try? FileManager.default.copyItem(at: crashSource, to: staged)) != nil
-else { inconclusive("could not stage the trigger source as main.swift") }
-
-let binary = work.appendingPathComponent("probe")
-
-func run(_ launchPath: String, _ arguments: [String]) -> (status: Int32, signalled: Bool, stderr: String)? {
-    let process = Process()
-    process.executableURL = URL(fileURLWithPath: launchPath)
-    process.arguments = arguments
-    process.currentDirectoryURL = work
-    let errors = Pipe()
-    process.standardError = errors
-    process.standardOutput = Pipe()
-    do { try process.run() } catch { return nil }
-    let text = String(data: errors.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
-    process.waitUntilExit()
-    return (process.terminationStatus, process.terminationReason == .uncaughtSignal, text)
-}
-
-guard let build = run("/usr/bin/env", ["swiftc", "-O", "-swift-version", "6", "main.swift", "-o", "probe"])
-else { inconclusive("could not launch swiftc") }
-guard build.status == 0 else {
-    inconclusive("the trigger source did not compile:\n\(build.stderr)")
-}
-
-var sawUnrelatedFailure = ""
-for _ in 0..<attempts {
-    guard let outcome = run(binary.path, []) else { inconclusive("could not launch the probe binary") }
-    if outcome.signalled, outcome.status == SIGSEGV {
-        FileHandle.standardError.write(Data(
-            "BUG FIRES: the probe binary died with SIGSEGV in swift_task_localValuePush.\n".utf8
-        ))
-        exit(1)
+    func inconclusive(_ reason: String) -> Never {
+        FileHandle.standardError.write(Data("inconclusive: \(reason)\n".utf8))
+        exit(2)
     }
-    if outcome.status != 0 { sawUnrelatedFailure = outcome.stderr }
-}
 
-if sawUnrelatedFailure.isEmpty {
-    print("bug appears FIXED: the probe binary ran to completion on \(attempts) attempts.")
-    exit(0)
-}
-inconclusive("the probe binary failed for an unrelated reason:\n\(sawUnrelatedFailure)")
+    guard FileManager.default.fileExists(atPath: crashSource.path)
+    else { inconclusive("trigger resource not found next to \(#filePath)") }
+
+    let pid = ProcessInfo.processInfo.processIdentifier
+    let work = URL(fileURLWithPath: NSTemporaryDirectory())
+        .appendingPathComponent("tasklocal-function-value-null-metadata-probe-\(pid)")
+    try? FileManager.default.removeItem(at: work)
+    guard
+        (try? FileManager.default.createDirectory(at: work, withIntermediateDirectories: true))
+            != nil
+    else { inconclusive("could not create a scratch directory") }
+    defer { try? FileManager.default.removeItem(at: work) }
+
+    // Top-level code: the trigger must be staged as `main.swift`.
+    let staged = work.appendingPathComponent("main.swift")
+    guard (try? FileManager.default.copyItem(at: crashSource, to: staged)) != nil
+    else { inconclusive("could not stage the trigger source as main.swift") }
+
+    let binary = work.appendingPathComponent("probe")
+
+    func run(_ launchPath: String, _ arguments: [String]) -> (
+        status: Int32, signalled: Bool, stderr: String
+    )? {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: launchPath)
+        process.arguments = arguments
+        process.currentDirectoryURL = work
+        let errors = Pipe()
+        process.standardError = errors
+        process.standardOutput = Pipe()
+        do { try process.run() } catch { return nil }
+        let text =
+            String(data: errors.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+        process.waitUntilExit()
+        return (process.terminationStatus, process.terminationReason == .uncaughtSignal, text)
+    }
+
+    guard
+        let build = run(
+            "/usr/bin/env", ["swiftc", "-O", "-swift-version", "6", "main.swift", "-o", "probe"])
+    else { inconclusive("could not launch swiftc") }
+    guard build.status == 0 else {
+        inconclusive("the trigger source did not compile:\n\(build.stderr)")
+    }
+
+    var sawUnrelatedFailure = ""
+    for _ in 0..<attempts {
+        guard let outcome = run(binary.path, []) else {
+            inconclusive("could not launch the probe binary")
+        }
+        if outcome.signalled, outcome.status == SIGSEGV {
+            FileHandle.standardError.write(
+                Data(
+                    "BUG FIRES: the probe binary died with SIGSEGV in swift_task_localValuePush.\n"
+                        .utf8
+                ))
+            exit(1)
+        }
+        if outcome.status != 0 { sawUnrelatedFailure = outcome.stderr }
+    }
+
+    if sawUnrelatedFailure.isEmpty {
+        print("bug appears FIXED: the probe binary ran to completion on \(attempts) attempts.")
+        exit(0)
+    }
+    inconclusive("the probe binary failed for an unrelated reason:\n\(sawUnrelatedFailure)")
 #elseif canImport(ucrt)
-import ucrt
-exit(2)
+    import ucrt
+    exit(2)
 #endif
 
 // swiftlint:enable no_try_optional

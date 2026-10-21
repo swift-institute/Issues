@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // A `@TaskLocal` whose VALUE TYPE IS A FUNCTION TYPE makes the optimizer emit the
@@ -65,9 +65,9 @@ struct TaskLocalFunctionValueNullMetadataReproducer {
     /// True when this target was built by a compiler that predates the fix.
     static var expectsBug: Bool {
         #if compiler(>=6.4)
-        false
+            false
         #else
-        true
+            true
         #endif
     }
 
@@ -77,58 +77,64 @@ struct TaskLocalFunctionValueNullMetadataReproducer {
     /// failure was unrelated — in which case the probe proved nothing.
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let crashSource = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
-        guard FileManager.default.fileExists(atPath: crashSource.path) else { return nil }
+            let crashSource = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
+            guard FileManager.default.fileExists(atPath: crashSource.path) else { return nil }
 
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let work = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("tasklocal-function-value-null-metadata-\(pid)")
-        try? FileManager.default.removeItem(at: work)
-        guard (try? FileManager.default.createDirectory(
-            at: work, withIntermediateDirectories: true
-        )) != nil else { return nil }
-        defer { try? FileManager.default.removeItem(at: work) }
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let work = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("tasklocal-function-value-null-metadata-\(pid)")
+            try? FileManager.default.removeItem(at: work)
+            guard
+                (try? FileManager.default.createDirectory(
+                    at: work, withIntermediateDirectories: true
+                )) != nil
+            else { return nil }
+            defer { try? FileManager.default.removeItem(at: work) }
 
-        // Top-level code: the trigger must be staged as `main.swift`.
-        let staged = work.appendingPathComponent("main.swift")
-        guard (try? FileManager.default.copyItem(at: crashSource, to: staged)) != nil
-        else { return nil }
+            // Top-level code: the trigger must be staged as `main.swift`.
+            let staged = work.appendingPathComponent("main.swift")
+            guard (try? FileManager.default.copyItem(at: crashSource, to: staged)) != nil
+            else { return nil }
 
-        func run(_ launchPath: String, _ arguments: [String]) -> (status: Int32, signalled: Bool)? {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: launchPath)
-            process.arguments = arguments
-            process.currentDirectoryURL = work
-            let errors = Pipe()
-            process.standardError = errors
-            process.standardOutput = Pipe()
-            do { try process.run() } catch { return nil }
-            // Drain stderr before waiting so a verbose crash report cannot fill
-            // the pipe buffer and deadlock the child.
-            _ = errors.fileHandleForReading.readDataToEndOfFile()
-            process.waitUntilExit()
-            return (process.terminationStatus, process.terminationReason == .uncaughtSignal)
-        }
+            func run(_ launchPath: String, _ arguments: [String]) -> (
+                status: Int32, signalled: Bool
+            )? {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: launchPath)
+                process.arguments = arguments
+                process.currentDirectoryURL = work
+                let errors = Pipe()
+                process.standardError = errors
+                process.standardOutput = Pipe()
+                do { try process.run() } catch { return nil }
+                // Drain stderr before waiting so a verbose crash report cannot fill
+                // the pipe buffer and deadlock the child.
+                _ = errors.fileHandleForReading.readDataToEndOfFile()
+                process.waitUntilExit()
+                return (process.terminationStatus, process.terminationReason == .uncaughtSignal)
+            }
 
-        guard let build = run(
-            "/usr/bin/env",
-            ["swiftc", "-O", "-swift-version", "6", "main.swift", "-o", "probe"]
-        ) else { return nil }
-        guard build.status == 0 else { return nil }
+            guard
+                let build = run(
+                    "/usr/bin/env",
+                    ["swiftc", "-O", "-swift-version", "6", "main.swift", "-o", "probe"]
+                )
+            else { return nil }
+            guard build.status == 0 else { return nil }
 
-        let binary = work.appendingPathComponent("probe")
-        var sawUnrelatedFailure = false
-        for _ in 0..<attempts {
-            guard let outcome = run(binary.path, []) else { return nil }
-            if outcome.signalled, outcome.status == SIGSEGV { return true }
-            if outcome.status != 0 { sawUnrelatedFailure = true }
-        }
-        return sawUnrelatedFailure ? nil : false
+            let binary = work.appendingPathComponent("probe")
+            var sawUnrelatedFailure = false
+            for _ in 0..<attempts {
+                guard let outcome = run(binary.path, []) else { return nil }
+                if outcome.signalled, outcome.status == SIGSEGV { return true }
+                if outcome.status != 0 { sawUnrelatedFailure = true }
+            }
+            return sawUnrelatedFailure ? nil : false
         #else
-        return nil                // no subprocess facility
+            return nil  // no subprocess facility
         #endif
     }
 

@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // A generic type witnessing a protocol through `extension Gen: P where
@@ -27,34 +27,37 @@ struct NoncopyableSametypeConditionalConformanceReproducer {
     /// failure = broken instrument, not the bug).
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let source = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/reproducer.swift")
-        guard FileManager.default.fileExists(atPath: source.path) else { return nil }
+            let source = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/reproducer.swift")
+            guard FileManager.default.fileExists(atPath: source.path) else { return nil }
 
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let binary = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("sametype-conformance-test-\(pid)")
-        defer { try? FileManager.default.removeItem(at: binary) }
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let binary = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("sametype-conformance-test-\(pid)")
+            defer { try? FileManager.default.removeItem(at: binary) }
 
-        func run(_ executable: String, _ arguments: [String]) -> (signaled: Bool, status: Int32)? {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: executable)
-            process.arguments = arguments
-            process.standardError = Pipe()
-            process.standardOutput = Pipe()
-            do { try process.run() } catch { return nil }
-            process.waitUntilExit()
-            return (process.terminationReason == .uncaughtSignal, process.terminationStatus)
-        }
+            func run(_ executable: String, _ arguments: [String]) -> (
+                signaled: Bool, status: Int32
+            )? {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: executable)
+                process.arguments = arguments
+                process.standardError = Pipe()
+                process.standardOutput = Pipe()
+                do { try process.run() } catch { return nil }
+                process.waitUntilExit()
+                return (process.terminationReason == .uncaughtSignal, process.terminationStatus)
+            }
 
-        guard let compile = run("/usr/bin/env", ["swiftc", source.path, "-o", binary.path]),
-              !compile.signaled, compile.status == 0 else { return nil }
-        guard let execution = run(binary.path, []) else { return nil }
-        return execution.signaled
+            guard let compile = run("/usr/bin/env", ["swiftc", source.path, "-o", binary.path]),
+                !compile.signaled, compile.status == 0
+            else { return nil }
+            guard let execution = run(binary.path, []) else { return nil }
+            return execution.signaled
         #else
-        return nil
+            return nil
         #endif
     }
 

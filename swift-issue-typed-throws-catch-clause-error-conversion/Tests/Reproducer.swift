@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // Throwing the ENCLOSING function's typed error from inside a `catch` clause
@@ -66,58 +66,63 @@ struct TypedThrowsCatchClauseErrorConversionReproducer {
     /// probe proved nothing.
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let crashSource = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
-        guard FileManager.default.fileExists(atPath: crashSource.path) else { return nil }
+            let crashSource = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
+            guard FileManager.default.fileExists(atPath: crashSource.path) else { return nil }
 
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let work = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("typed-throws-catch-conversion-\(pid)")
-        try? FileManager.default.removeItem(at: work)
-        guard (try? FileManager.default.createDirectory(
-            at: work, withIntermediateDirectories: true
-        )) != nil else { return nil }
-        defer { try? FileManager.default.removeItem(at: work) }
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let work = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("typed-throws-catch-conversion-\(pid)")
+            try? FileManager.default.removeItem(at: work)
+            guard
+                (try? FileManager.default.createDirectory(
+                    at: work, withIntermediateDirectories: true
+                )) != nil
+            else { return nil }
+            defer { try? FileManager.default.removeItem(at: work) }
 
-        let staged = work.appendingPathComponent("Crash.swift")
-        guard (try? FileManager.default.copyItem(at: crashSource, to: staged)) != nil
-        else { return nil }
+            let staged = work.appendingPathComponent("Crash.swift")
+            guard (try? FileManager.default.copyItem(at: crashSource, to: staged)) != nil
+            else { return nil }
 
-        func compile() -> (status: Int32, stderr: String)? {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-            process.arguments = [
-                "swiftc", "-swift-version", "6", "-parse-as-library",
-                "-c", "Crash.swift", "-o", "Crash.o",
-            ]
-            process.currentDirectoryURL = work
-            let errors = Pipe()
-            process.standardError = errors
-            process.standardOutput = Pipe()
-            do { try process.run() } catch { return nil }
-            let text = String(
-                data: errors.fileHandleForReading.readDataToEndOfFile(),
-                encoding: .utf8
-            ) ?? ""
-            process.waitUntilExit()
-            return (process.terminationStatus, text)
-        }
-
-        var sawUnrelatedFailure = false
-        for _ in 0..<attempts {
-            guard let result = compile() else { return nil }
-            guard result.status != 0 else { continue }
-            if result.stderr.contains("INTERNAL ERROR: feature not implemented: throw conversion")
-                || result.stderr.contains("While silgen") {
-                return true
+            func compile() -> (status: Int32, stderr: String)? {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+                process.arguments = [
+                    "swiftc", "-swift-version", "6", "-parse-as-library",
+                    "-c", "Crash.swift", "-o", "Crash.o",
+                ]
+                process.currentDirectoryURL = work
+                let errors = Pipe()
+                process.standardError = errors
+                process.standardOutput = Pipe()
+                do { try process.run() } catch { return nil }
+                let text =
+                    String(
+                        data: errors.fileHandleForReading.readDataToEndOfFile(),
+                        encoding: .utf8
+                    ) ?? ""
+                process.waitUntilExit()
+                return (process.terminationStatus, text)
             }
-            sawUnrelatedFailure = true
-        }
-        return sawUnrelatedFailure ? nil : false
+
+            var sawUnrelatedFailure = false
+            for _ in 0..<attempts {
+                guard let result = compile() else { return nil }
+                guard result.status != 0 else { continue }
+                if result.stderr.contains(
+                    "INTERNAL ERROR: feature not implemented: throw conversion")
+                    || result.stderr.contains("While silgen")
+                {
+                    return true
+                }
+                sawUnrelatedFailure = true
+            }
+            return sawUnrelatedFailure ? nil : false
         #else
-        return nil                // no subprocess facility
+            return nil  // no subprocess facility
         #endif
     }
 

@@ -20,11 +20,15 @@ private func - (lhs: UnsafeMutablePointer<Int>, rhs: Vec) -> UnsafeMutablePointe
 // left out until its CI leg shows whether the bug fires there.
 private func isRelease() -> Bool {
     #if os(Windows)
-    return false
+        return false
     #else
-    var debug = false
-    assert({ debug = true; return true }())
-    return !debug
+        var debug = false
+        assert(
+            {
+                debug = true
+                return true
+            }())
+        return !debug
     #endif
 }
 

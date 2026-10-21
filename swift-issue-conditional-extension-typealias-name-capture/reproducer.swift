@@ -4,7 +4,7 @@ public protocol P {}
 
 extension Outer {
     public struct Inner<Substrate> {
-        internal var _x: Element   // error: type 'Substrate' does not conform to protocol 'P'
+        internal var _x: Element  // error: type 'Substrate' does not conform to protocol 'P'
     }
 }
 

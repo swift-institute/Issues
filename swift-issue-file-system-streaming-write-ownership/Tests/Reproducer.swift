@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // CopyPropagation shortens the begin_borrow/end_borrow scope of a borrowed
@@ -36,54 +36,58 @@ struct FileSystemStreamingWriteOwnershipReproducer {
     /// reason (inconclusive).
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let here = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
+            let here = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
 
-        guard FileManager.default.fileExists(atPath: here.path) else { return nil }
+            guard FileManager.default.fileExists(atPath: here.path) else { return nil }
 
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("fs-streaming-write-ownership-test-\(pid).swift")
-        let out = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("fs-streaming-write-ownership-test-\(pid).out")
-        try? FileManager.default.removeItem(at: swiftCopy)
-        guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else { return nil }
-        defer {
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("fs-streaming-write-ownership-test-\(pid).swift")
+            let out = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("fs-streaming-write-ownership-test-\(pid).out")
             try? FileManager.default.removeItem(at: swiftCopy)
-            try? FileManager.default.removeItem(at: out)
-        }
+            guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else {
+                return nil
+            }
+            defer {
+                try? FileManager.default.removeItem(at: swiftCopy)
+                try? FileManager.default.removeItem(at: out)
+            }
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = [
-            "swiftc", "-O",
-            swiftCopy.path,
-            "-o", out.path,
-        ]
-        let stderr = Pipe()
-        process.standardError = stderr
-        process.standardOutput = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = [
+                "swiftc", "-O",
+                swiftCopy.path,
+                "-o", out.path,
+            ]
+            let stderr = Pipe()
+            process.standardError = stderr
+            process.standardOutput = Pipe()
 
-        do { try process.run() } catch { return nil }
-        process.waitUntilExit()
+            do { try process.run() } catch { return nil }
+            process.waitUntilExit()
 
-        let errText = String(
-            data: stderr.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
+            let errText =
+                String(
+                    data: stderr.fileHandleForReading.readDataToEndOfFile(),
+                    encoding: .utf8
+                ) ?? ""
 
-        if errText.contains("Found outside of lifetime use")
-            && errText.contains("CopyPropagation") {
-            return true
-        }
-        if process.terminationStatus == 0 {
-            return false          // compiled cleanly — fix has landed
-        }
-        return nil                // failed for an unrelated reason — inconclusive
+            if errText.contains("Found outside of lifetime use")
+                && errText.contains("CopyPropagation")
+            {
+                return true
+            }
+            if process.terminationStatus == 0 {
+                return false  // compiled cleanly — fix has landed
+            }
+            return nil  // failed for an unrelated reason — inconclusive
         #else
-        return nil                // no subprocess facility
+            return nil  // no subprocess facility
         #endif
     }
 
@@ -93,28 +97,30 @@ struct FileSystemStreamingWriteOwnershipReproducer {
     /// outcome, is what lets the red flip fire when a backport lands.
     static func probedCompilerIsPre64() -> Bool {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["swiftc", "--version"]
-        let stdout = Pipe()
-        process.standardOutput = stdout
-        process.standardError = Pipe()
-        do { try process.run() } catch { return false }
-        process.waitUntilExit()
-        let text = String(
-            data: stdout.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
-        guard let range = text.range(of: "version ") else { return false }
-        let tail = text[range.upperBound...]
-        let components = tail
-            .prefix(while: { $0.isNumber || $0 == "." })
-            .split(separator: ".")
-            .compactMap { Int($0) }
-        guard components.count >= 2 else { return false }
-        return (components[0], components[1]) < (6, 4)
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = ["swiftc", "--version"]
+            let stdout = Pipe()
+            process.standardOutput = stdout
+            process.standardError = Pipe()
+            do { try process.run() } catch { return false }
+            process.waitUntilExit()
+            let text =
+                String(
+                    data: stdout.fileHandleForReading.readDataToEndOfFile(),
+                    encoding: .utf8
+                ) ?? ""
+            guard let range = text.range(of: "version ") else { return false }
+            let tail = text[range.upperBound...]
+            let components =
+                tail
+                .prefix(while: { $0.isNumber || $0 == "." })
+                .split(separator: ".")
+                .compactMap { Int($0) }
+            guard components.count >= 2 else { return false }
+            return (components[0], components[1]) < (6, 4)
         #else
-        return false
+            return false
         #endif
     }
 

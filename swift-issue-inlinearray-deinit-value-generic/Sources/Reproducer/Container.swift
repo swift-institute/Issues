@@ -103,7 +103,8 @@ public struct ContainerFixed<Element: ~Copyable, let capacity: Int>: ~Copyable {
 
 /// This container works correctly - literal capacity does not trigger the bug.
 public struct ContainerLiteral<Element: ~Copyable>: ~Copyable {
-    var _storage: InlineArray<4, (Int, Int, Int, Int, Int, Int, Int, Int)>  // Literal 4, not generic
+    // Literal 4, not generic
+    var _storage: InlineArray<4, (Int, Int, Int, Int, Int, Int, Int, Int)>
     var _count: Int
     // NO reference type properties - but still works!
 

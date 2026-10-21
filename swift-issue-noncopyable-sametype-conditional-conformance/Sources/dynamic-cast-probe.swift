@@ -1,5 +1,6 @@
 import func Darwin.fflush
 import var Darwin.stdout
+
 protocol P {}
 struct Pool: ~Copyable {}
 struct PoolC {}
@@ -9,7 +10,10 @@ struct Gen2<A: ~Copyable> {}
 extension Gen2: P where A == PoolC {}
 struct Gen3<A: ~Copyable> {}
 extension Gen3: P where A: ~Copyable {}
-func say(_ s: String) { print(s); fflush(stdout) }
+func say(_ s: String) {
+    print(s)
+    fflush(stdout)
+}
 let a: Any = Gen<Pool>()
 let b: Any = Gen2<PoolC>()
 let c: Any = Gen3<Pool>()

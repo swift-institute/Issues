@@ -10,7 +10,7 @@ struct Bits {
     var popcount: Int { words[0].nonzeroBitCount }
 }
 @_rawLayout(likeArrayOf: Int, count: 4)
-struct RawInline: ~Copyable { init() {} }
+struct RawInline: ~Copyable {}
 
 final class Box {
     var bits = Bits()
@@ -24,5 +24,9 @@ struct Wrapper: ~Copyable {
     mutating func insert(_ i: Int) { box.mark(i) }
     var occupancy: Int { box.bits.popcount }
 }
-@inline(never) func run() -> Int { var w = Wrapper(); w.insert(2); return w.occupancy }
+@inline(never) func run() -> Int {
+    var w = Wrapper()
+    w.insert(2)
+    return w.occupancy
+}
 print("occupancy=\(run()) (expect 1)")

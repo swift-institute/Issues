@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // Cross-module rejects-valid: a conditional conformance to a protocol with
@@ -21,55 +21,67 @@ struct NoncopyableSequenceConformanceReproducer {
     /// both modules emit cleanly, `nil` when inconclusive.
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let sources = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources")
-        let fm = FileManager.default
-        func swiftFiles(_ dir: String) -> [String] {
-            let url = sources.appendingPathComponent(dir)
-            return ((try? fm.contentsOfDirectory(atPath: url.path)) ?? [])
-                .filter { $0.hasSuffix(".swift") }
-                .map { url.appendingPathComponent($0).path }
-        }
-        let core = swiftFiles("Core")
-        let ring = swiftFiles("Ring")
-        guard !core.isEmpty, !ring.isEmpty else { return nil }
+            let sources = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources")
+            let fm = FileManager.default
+            func swiftFiles(_ dir: String) -> [String] {
+                let url = sources.appendingPathComponent(dir)
+                return ((try? fm.contentsOfDirectory(atPath: url.path)) ?? [])
+                    .filter { $0.hasSuffix(".swift") }
+                    .map { url.appendingPathComponent($0).path }
+            }
+            let core = swiftFiles("Core")
+            let ring = swiftFiles("Ring")
+            guard !core.isEmpty, !ring.isEmpty else { return nil }
 
-        let out = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("noncopyable-sequence-conformance-\(ProcessInfo.processInfo.processIdentifier)")
-        guard (try? fm.createDirectory(at: out, withIntermediateDirectories: true)) != nil else { return nil }
-        defer { try? fm.removeItem(at: out) }
+            let out = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent(
+                    "noncopyable-sequence-conformance-\(ProcessInfo.processInfo.processIdentifier)")
+            guard (try? fm.createDirectory(at: out, withIntermediateDirectories: true)) != nil
+            else { return nil }
+            defer { try? fm.removeItem(at: out) }
 
-        func swiftc(_ arguments: [String]) -> (status: Int32, stderr: String)? {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-            process.arguments = ["swiftc", "-swift-version", "6", "-parse-as-library"] + arguments
-            let stderr = Pipe()
-            process.standardError = stderr
-            process.standardOutput = Pipe()
-            do { try process.run() } catch { return nil }
-            let text = String(data: stderr.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
-            process.waitUntilExit()
-            return (process.terminationStatus, text)
-        }
+            func swiftc(_ arguments: [String]) -> (status: Int32, stderr: String)? {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+                process.arguments =
+                    ["swiftc", "-swift-version", "6", "-parse-as-library"] + arguments
+                let stderr = Pipe()
+                process.standardError = stderr
+                process.standardOutput = Pipe()
+                do { try process.run() } catch { return nil }
+                let text =
+                    String(data: stderr.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)
+                    ?? ""
+                process.waitUntilExit()
+                return (process.terminationStatus, text)
+            }
 
-        let coreModule = "swift_issue_noncopyable_sequence_conformance_Core"
-        guard let built = swiftc([
-            "-emit-module", "-module-name", coreModule,
-            "-emit-module-path", out.appendingPathComponent("\(coreModule).swiftmodule").path,
-        ] + core), built.status == 0 else { return nil }
+            let coreModule = "swift_issue_noncopyable_sequence_conformance_Core"
+            guard
+                let built = swiftc(
+                    [
+                        "-emit-module", "-module-name", coreModule,
+                        "-emit-module-path",
+                        out.appendingPathComponent("\(coreModule).swiftmodule").path,
+                    ] + core), built.status == 0
+            else { return nil }
 
-        guard let result = swiftc([
-            "-emit-module", "-module-name", "Ring", "-I", out.path,
-            "-emit-module-path", out.appendingPathComponent("Ring.swiftmodule").path,
-        ] + ring) else { return nil }
+            guard
+                let result = swiftc(
+                    [
+                        "-emit-module", "-module-name", "Ring", "-I", out.path,
+                        "-emit-module-path", out.appendingPathComponent("Ring.swiftmodule").path,
+                    ] + ring)
+            else { return nil }
 
-        if result.stderr.contains("does not conform to protocol 'Copyable'") { return true }
-        if result.status == 0 { return false }
-        return nil
+            if result.stderr.contains("does not conform to protocol 'Copyable'") { return true }
+            if result.status == 0 { return false }
+            return nil
         #else
-        return nil
+            return nil
         #endif
     }
 

@@ -20,8 +20,8 @@
 // build clean there). No local 6.3.2 +Asserts toolchain was available to reproduce
 // the assertion outside Windows CI; the Windows CI run is the reproduction of record.
 
-public import Iterator_Chunk_Primitives
 public import Iterable
+public import Iterator_Chunk_Primitives
 
 struct TestColl<Element: Sendable>: Sendable {
     var storage: [Element]

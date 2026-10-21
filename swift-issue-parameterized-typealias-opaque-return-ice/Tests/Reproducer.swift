@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // Swift 6.3.2 in-cohort ICE ("failed to produce diagnostic for expression")
@@ -26,45 +26,48 @@ struct ParameterizedTypealiasOpaqueReturnICECanary {
     /// compiler could be reached or it failed for an unrelated reason.
     static func iceFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let here = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
+            let here = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
 
-        guard FileManager.default.fileExists(atPath: here.path) else { return nil }
+            guard FileManager.default.fileExists(atPath: here.path) else { return nil }
 
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("parameterized-typealias-ice-test-\(pid).swift")
-        let out = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("parameterized-typealias-ice-test-\(pid).out")
-        try? FileManager.default.removeItem(at: swiftCopy)
-        guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else { return nil }
-        defer {
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("parameterized-typealias-ice-test-\(pid).swift")
+            let out = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("parameterized-typealias-ice-test-\(pid).out")
             try? FileManager.default.removeItem(at: swiftCopy)
-            try? FileManager.default.removeItem(at: out)
-        }
+            guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else {
+                return nil
+            }
+            defer {
+                try? FileManager.default.removeItem(at: swiftCopy)
+                try? FileManager.default.removeItem(at: out)
+            }
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["swiftc", swiftCopy.path, "-o", out.path]
-        let stderr = Pipe()
-        process.standardError = stderr
-        process.standardOutput = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = ["swiftc", swiftCopy.path, "-o", out.path]
+            let stderr = Pipe()
+            process.standardError = stderr
+            process.standardOutput = Pipe()
 
-        do { try process.run() } catch { return nil }
-        process.waitUntilExit()
+            do { try process.run() } catch { return nil }
+            process.waitUntilExit()
 
-        let errText = String(
-            data: stderr.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
+            let errText =
+                String(
+                    data: stderr.fileHandleForReading.readDataToEndOfFile(),
+                    encoding: .utf8
+                ) ?? ""
 
-        if errText.contains("failed to produce diagnostic") { return true }
-        if process.terminationStatus == 0 { return false }
-        return nil
+            if errText.contains("failed to produce diagnostic") { return true }
+            if process.terminationStatus == 0 { return false }
+            return nil
         #else
-        return nil
+            return nil
         #endif
     }
 

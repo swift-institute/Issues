@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // swiftlang/swift (PENDING filing) — `~Copyable` `@_rawLayout` trailing-field
@@ -35,57 +35,60 @@ struct NoncopyableRawLayoutTrailingFieldReproducer {
     /// Returns `nil` if no compiler could be reached / launched (inconclusive).
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let here = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
+            let here = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
 
-        guard FileManager.default.fileExists(atPath: here.path) else { return nil }
+            guard FileManager.default.fileExists(atPath: here.path) else { return nil }
 
-        // swiftc keys off the file extension; stage the `.txt` resource as a
-        // `.swift` temp so it is compiled rather than treated as a link input.
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("rawlayout-trailing-test-\(pid).swift")
-        let out = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("rawlayout-trailing-test-\(pid).out")
-        try? FileManager.default.removeItem(at: swiftCopy)
-        guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else { return nil }
-        defer {
+            // swiftc keys off the file extension; stage the `.txt` resource as a
+            // `.swift` temp so it is compiled rather than treated as a link input.
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("rawlayout-trailing-test-\(pid).swift")
+            let out = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("rawlayout-trailing-test-\(pid).out")
             try? FileManager.default.removeItem(at: swiftCopy)
-            try? FileManager.default.removeItem(at: out)
-        }
+            guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else {
+                return nil
+            }
+            defer {
+                try? FileManager.default.removeItem(at: swiftCopy)
+                try? FileManager.default.removeItem(at: out)
+            }
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = [
-            "swiftc", "-O",
-            "-enable-experimental-feature", "RawLayout",
-            "-enable-experimental-feature", "ValueGenerics",
-            swiftCopy.path,
-            "-o", out.path,
-        ]
-        let stderr = Pipe()
-        process.standardError = stderr
-        process.standardOutput = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = [
+                "swiftc", "-O",
+                "-enable-experimental-feature", "RawLayout",
+                "-enable-experimental-feature", "ValueGenerics",
+                swiftCopy.path,
+                "-o", out.path,
+            ]
+            let stderr = Pipe()
+            process.standardError = stderr
+            process.standardOutput = Pipe()
 
-        do { try process.run() } catch { return nil }
-        process.waitUntilExit()
+            do { try process.run() } catch { return nil }
+            process.waitUntilExit()
 
-        let errText = String(
-            data: stderr.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
+            let errText =
+                String(
+                    data: stderr.fileHandleForReading.readDataToEndOfFile(),
+                    encoding: .utf8
+                ) ?? ""
 
-        if errText.contains("does not dominate all uses") || errText.contains("Broken module") {
-            return true
-        }
-        if process.terminationStatus == 0 {
-            return false          // compiled cleanly — fix has landed
-        }
-        return nil                // failed for an unrelated reason — inconclusive
+            if errText.contains("does not dominate all uses") || errText.contains("Broken module") {
+                return true
+            }
+            if process.terminationStatus == 0 {
+                return false  // compiled cleanly — fix has landed
+            }
+            return nil  // failed for an unrelated reason — inconclusive
         #else
-        return nil                // no subprocess facility
+            return nil  // no subprocess facility
         #endif
     }
 

@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // swiftlang/swift#89684 — bogus `type 'Substrate' does not conform to
@@ -44,51 +44,54 @@ struct ConditionalExtensionTypealiasNameCaptureReproducer {
     /// rejected without the bug's signature (inconclusive).
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let here = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer/Reject.swift.txt")
+            let here = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer/Reject.swift.txt")
 
-        guard FileManager.default.fileExists(atPath: here.path) else { return nil }
+            guard FileManager.default.fileExists(atPath: here.path) else { return nil }
 
-        // swiftc keys off the file extension; stage the `.txt` resource as a
-        // `.swift` temp so it is compiled rather than treated as a link input.
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("conditional-extension-typealias-test-\(pid).swift")
-        try? FileManager.default.removeItem(at: swiftCopy)
-        guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else { return nil }
-        defer {
+            // swiftc keys off the file extension; stage the `.txt` resource as a
+            // `.swift` temp so it is compiled rather than treated as a link input.
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("conditional-extension-typealias-test-\(pid).swift")
             try? FileManager.default.removeItem(at: swiftCopy)
-        }
+            guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else {
+                return nil
+            }
+            defer {
+                try? FileManager.default.removeItem(at: swiftCopy)
+            }
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = [
-            "swiftc", "-typecheck", "-swift-version", "6",
-            swiftCopy.path,
-        ]
-        let stderr = Pipe()
-        process.standardError = stderr
-        process.standardOutput = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = [
+                "swiftc", "-typecheck", "-swift-version", "6",
+                swiftCopy.path,
+            ]
+            let stderr = Pipe()
+            process.standardError = stderr
+            process.standardOutput = Pipe()
 
-        do { try process.run() } catch { return nil }
-        process.waitUntilExit()
+            do { try process.run() } catch { return nil }
+            process.waitUntilExit()
 
-        let errText = String(
-            data: stderr.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
+            let errText =
+                String(
+                    data: stderr.fileHandleForReading.readDataToEndOfFile(),
+                    encoding: .utf8
+                ) ?? ""
 
-        if errText.contains("error: type 'Substrate' does not conform to protocol 'P'") {
-            return true           // the bogus rejection — the bug's signature
-        }
-        if process.terminationStatus == 0 {
-            return false          // typechecked cleanly — fix has landed
-        }
-        return nil                // rejected for an unrelated reason — inconclusive
+            if errText.contains("error: type 'Substrate' does not conform to protocol 'P'") {
+                return true  // the bogus rejection — the bug's signature
+            }
+            if process.terminationStatus == 0 {
+                return false  // typechecked cleanly — fix has landed
+            }
+            return nil  // rejected for an unrelated reason — inconclusive
         #else
-        return nil                // no subprocess facility
+            return nil  // no subprocess facility
         #endif
     }
 

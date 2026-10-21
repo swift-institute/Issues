@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // SwiftLint's `redundant_nil_coalescing` treats every `?? nil` as dead code. On a
@@ -61,75 +61,90 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
     /// positive control fails, or the fixture did not compile to begin with.
     static func measure() -> (compilesAfterFix: Bool, lintCleanAfterFix: Bool)? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let sources = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-            .appendingPathComponent("Sources/Reproducer")
+            let sources = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()
+                .deletingLastPathComponent()
+                .appendingPathComponent("Sources/Reproducer")
 
-        let work = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("swiftlint-nil-coalescing-test-\(ProcessInfo.processInfo.processIdentifier)")
+            let work = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent(
+                    "swiftlint-nil-coalescing-test-\(ProcessInfo.processInfo.processIdentifier)")
 
-        // FileManager's removeItem/createDirectory/copyItem are untyped
-        // cross-module throwing APIs; every outcome is handled by the guards
-        // below rather than swallowed. No suppression is needed:
-        // `no_try_optional` excludes `Tests/.*`.
-        try? FileManager.default.removeItem(at: work)
-        guard (try? FileManager.default.createDirectory(
-            at: work.appendingPathComponent("Sources"),
-            withIntermediateDirectories: true
-        )) != nil else { return nil }
-        defer { try? FileManager.default.removeItem(at: work) }
+            // FileManager's removeItem/createDirectory/copyItem are untyped
+            // cross-module throwing APIs; every outcome is handled by the guards
+            // below rather than swallowed. No suppression is needed:
+            // `no_try_optional` excludes `Tests/.*`.
+            try? FileManager.default.removeItem(at: work)
+            guard
+                (try? FileManager.default.createDirectory(
+                    at: work.appendingPathComponent("Sources"),
+                    withIntermediateDirectories: true
+                )) != nil
+            else { return nil }
+            defer { try? FileManager.default.removeItem(at: work) }
 
-        let staged = work.appendingPathComponent("Sources/Fixture.swift")
-        guard (try? FileManager.default.copyItem(
-                  at: sources.appendingPathComponent("Fixture.swift.txt"), to: staged
-              )) != nil,
-              (try? FileManager.default.copyItem(
-                  at: sources.appendingPathComponent("Config.yml.txt"),
-                  to: work.appendingPathComponent(".swiftlint.yml")
-              )) != nil
-        else { return nil }
+            let staged = work.appendingPathComponent("Sources/Fixture.swift")
+            guard
+                (try? FileManager.default.copyItem(
+                    at: sources.appendingPathComponent("Fixture.swift.txt"), to: staged
+                )) != nil,
+                (try? FileManager.default.copyItem(
+                    at: sources.appendingPathComponent("Config.yml.txt"),
+                    to: work.appendingPathComponent(".swiftlint.yml")
+                )) != nil
+            else { return nil }
 
-        func run(_ arguments: [String]) -> (status: Int32, output: String)? {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-            process.arguments = arguments
-            process.currentDirectoryURL = work
-            let pipe = Pipe()
-            process.standardOutput = pipe
-            process.standardError = pipe
-            do { try process.run() } catch { return nil }
-            let text = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
-            process.waitUntilExit()
-            return (process.terminationStatus, text)
-        }
+            func run(_ arguments: [String]) -> (status: Int32, output: String)? {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+                process.arguments = arguments
+                process.currentDirectoryURL = work
+                let pipe = Pipe()
+                process.standardOutput = pipe
+                process.standardError = pipe
+                do { try process.run() } catch { return nil }
+                let text =
+                    String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)
+                    ?? ""
+                process.waitUntilExit()
+                return (process.terminationStatus, text)
+            }
 
-        // PRECONDITION: the fixture compiles BEFORE the correction. Without it
-        // the measurement cannot distinguish "the fix broke it" from "it never
-        // compiled".
-        guard let before = run(["swiftc", "-typecheck", "-swift-version", "6", staged.path]),
-              before.status == 0
-        else { return nil }
+            // PRECONDITION: the fixture compiles BEFORE the correction. Without it
+            // the measurement cannot distinguish "the fix broke it" from "it never
+            // compiled".
+            guard let before = run(["swiftc", "-typecheck", "-swift-version", "6", staged.path]),
+                before.status == 0
+            else { return nil }
 
-        // POSITIVE CONTROL: both sites must be reported — the hazard (double
-        // optional) and the genuinely-redundant single optional. A run reporting
-        // fewer is either a broken instrument or a rule that has been narrowed.
-        guard let linted = run(["swiftlint", "lint", "--strict", "--no-cache", "--reporter", "json"])
-        else { return nil }
-        guard linted.output.components(separatedBy: "redundant_nil_coalescing").count - 1 == 2
-        else { return nil }
+            // POSITIVE CONTROL: both sites must be reported — the hazard (double
+            // optional) and the genuinely-redundant single optional. A run reporting
+            // fewer is either a broken instrument or a rule that has been narrowed.
+            guard
+                let linted = run([
+                    "swiftlint", "lint", "--strict", "--no-cache", "--reporter", "json",
+                ])
+            else { return nil }
+            guard linted.output.components(separatedBy: "redundant_nil_coalescing").count - 1 == 2
+            else { return nil }
 
-        guard let fixed = run(["swiftlint", "--fix", "--no-cache"]), fixed.status == 0 else { return nil }
-        guard let after = run(["swiftc", "-typecheck", "-swift-version", "6", staged.path]) else { return nil }
-        guard let recheck = run(["swiftlint", "lint", "--strict", "--no-cache"]) else { return nil }
+            guard let fixed = run(["swiftlint", "--fix", "--no-cache"]), fixed.status == 0 else {
+                return nil
+            }
+            guard let after = run(["swiftc", "-typecheck", "-swift-version", "6", staged.path])
+            else { return nil }
+            guard let recheck = run(["swiftlint", "lint", "--strict", "--no-cache"]) else {
+                return nil
+            }
 
-        return (after.status == 0, recheck.status == 0)
+            return (after.status == 0, recheck.status == 0)
         #else
-        return nil
+            return nil
         #endif
     }
 
-    @Test func `the redundant_nil_coalescing correction turns compiling code into a compile error`() {
+    @Test func `the redundant_nil_coalescing correction turns compiling code into a compile error`()
+    {
         let measured = Self.measure()
         withKnownIssue(
             "swiftlint --fix deletes the `?? nil` that flattens a double optional"

@@ -11,7 +11,7 @@ extension Tree where Element: ~Copyable {
     public struct Unbounded: ~Copyable {
         @usableFromInline var _x: Int
 
-        public init() { self._x = 0 }                          // body twin (~Copyable context)
+        public init() { self._x = 0 }  // body twin (~Copyable context)
 
         public init() where Element: Copyable { self._x = 0 }  // member-level where twin
     }

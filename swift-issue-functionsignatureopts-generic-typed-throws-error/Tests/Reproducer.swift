@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // swiftlang/swift#89617 — FunctionSignatureOpts asserts on a generic
@@ -43,9 +43,9 @@ struct FunctionSignatureOptsGenericTypedThrowsErrorReproducer {
     /// True when this target was built by a compiler that predates the fix.
     static var expectsBug: Bool {
         #if compiler(>=6.4)
-        false
+            false
         #else
-        true
+            true
         #endif
     }
 
@@ -54,57 +54,62 @@ struct FunctionSignatureOptsGenericTypedThrowsErrorReproducer {
     /// compiler could be reached / launched (inconclusive).
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let here = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
+            let here = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
 
-        guard FileManager.default.fileExists(atPath: here.path) else { return nil }
+            guard FileManager.default.fileExists(atPath: here.path) else { return nil }
 
-        // swiftc keys off the file extension; stage the `.txt` resource as a
-        // `.swift` temp so it is compiled rather than treated as a link input.
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("fso-typedthrows-test-\(pid).swift")
-        let out = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("fso-typedthrows-test-\(pid).o")
-        try? FileManager.default.removeItem(at: swiftCopy)
-        guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else { return nil }
-        defer {
+            // swiftc keys off the file extension; stage the `.txt` resource as a
+            // `.swift` temp so it is compiled rather than treated as a link input.
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("fso-typedthrows-test-\(pid).swift")
+            let out = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("fso-typedthrows-test-\(pid).o")
             try? FileManager.default.removeItem(at: swiftCopy)
-            try? FileManager.default.removeItem(at: out)
-        }
+            guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else {
+                return nil
+            }
+            defer {
+                try? FileManager.default.removeItem(at: swiftCopy)
+                try? FileManager.default.removeItem(at: out)
+            }
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = [
-            "swiftc", "-O", "-swift-version", "6", "-c",
-            swiftCopy.path,
-            "-o", out.path,
-        ]
-        let stderr = Pipe()
-        process.standardError = stderr
-        process.standardOutput = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = [
+                "swiftc", "-O", "-swift-version", "6", "-c",
+                swiftCopy.path,
+                "-o", out.path,
+            ]
+            let stderr = Pipe()
+            process.standardError = stderr
+            process.standardOutput = Pipe()
 
-        do { try process.run() } catch { return nil }
-        process.waitUntilExit()
+            do { try process.run() } catch { return nil }
+            process.waitUntilExit()
 
-        let errText = String(
-            data: stderr.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
+            let errText =
+                String(
+                    data: stderr.fileHandleForReading.readDataToEndOfFile(),
+                    encoding: .utf8
+                ) ?? ""
 
-        // Two manifestations of the same defect (assert on 6.3+, verifier on 6.2/6.2.3).
-        if errText.contains("hasTypeParameter")
-            || errText.contains("error destination of try_apply must take argument of error result type") {
-            return true
-        }
-        if process.terminationStatus == 0 {
-            return false          // compiled cleanly — fix has landed
-        }
-        return nil                // failed for an unrelated reason — inconclusive
+            // Two manifestations of the same defect (assert on 6.3+, verifier on 6.2/6.2.3).
+            if errText.contains("hasTypeParameter")
+                || errText.contains(
+                    "error destination of try_apply must take argument of error result type")
+            {
+                return true
+            }
+            if process.terminationStatus == 0 {
+                return false  // compiled cleanly — fix has landed
+            }
+            return nil  // failed for an unrelated reason — inconclusive
         #else
-        return nil                // no subprocess facility
+            return nil  // no subprocess facility
         #endif
     }
 

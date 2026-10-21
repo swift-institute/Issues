@@ -10,12 +10,12 @@ extension Stack where Element: ~Copyable {
     public struct Bounded: ~Copyable {
         @usableFromInline var _x: Int
 
-        public init(capacity: Int) { self._x = capacity }   // body twin (~Copyable context)
+        public init(capacity: Int) { self._x = capacity }  // body twin (~Copyable context)
     }
 }
 
 extension Stack.Bounded where Element: Copyable {
-    public init(capacity: Int) { self._x = capacity }       // extension twin
+    public init(capacity: Int) { self._x = capacity }  // extension twin
 }
 
 extension Stack.Bounded: Copyable where Element: Copyable {}

@@ -131,7 +131,7 @@ let package = Package(
             path: "swift-issue-irgen-nonthrowing-typed-throws-closure-crash/Sources/Reproducer",
             resources: [
                 .copy("ConstrainedExtension.swift.txt"),
-                .copy("DirectInitialization.swift.txt")
+                .copy("DirectInitialization.swift.txt"),
             ]
         ),
 
@@ -464,7 +464,8 @@ let package = Package(
 
         .executableTarget(
             name: "swift-issue-sillinker-borrowed-protocol-default-shared-coroutine-abort-Repro",
-            path: "swift-issue-sillinker-borrowed-protocol-default-shared-coroutine-abort/Sources/Reproducer",
+            path:
+                "swift-issue-sillinker-borrowed-protocol-default-shared-coroutine-abort/Sources/Reproducer",
             resources: [
                 .copy("LibA.swift.txt"),
                 .copy("Consumer.swift.txt"),
@@ -498,7 +499,8 @@ let package = Package(
 
         .executableTarget(
             name: "swift-issue-swiftlint-redundant-nil-coalescing-double-optional-Repro",
-            path: "swift-issue-swiftlint-redundant-nil-coalescing-double-optional/Sources/Reproducer",
+            path:
+                "swift-issue-swiftlint-redundant-nil-coalescing-double-optional/Sources/Reproducer",
             resources: [
                 .copy("Fixture.swift.txt"),
                 .copy("Config.yml.txt"),
@@ -532,7 +534,8 @@ let package = Package(
 
         .executableTarget(
             name: "swift-issue-swiftlint-synthesized-initializer-fix-beyond-lint-Repro",
-            path: "swift-issue-swiftlint-synthesized-initializer-fix-beyond-lint/Sources/Reproducer",
+            path:
+                "swift-issue-swiftlint-synthesized-initializer-fix-beyond-lint/Sources/Reproducer",
             resources: [
                 .copy("Fixture.swift.txt"),
                 .copy("Config.yml.txt"),
@@ -813,7 +816,8 @@ let package = Package(
         ),
         .target(
             name: "swift-issue-nested-generic-subscript-performance-Repro-Library",
-            path: "swift-issue-nested-generic-subscript-performance/Sources/NestedGenericPerformance"
+            path:
+                "swift-issue-nested-generic-subscript-performance/Sources/NestedGenericPerformance"
         ),
 
         // Cross-module rejects-valid (associatedtype Element vs generic
@@ -906,7 +910,8 @@ let package = Package(
         ),
         .executableTarget(
             name: "swift-issue-silgencleanup-nested-closure-borrowing-noncopyable-Repro",
-            path: "swift-issue-silgencleanup-nested-closure-borrowing-noncopyable/Sources/Reproducer",
+            path:
+                "swift-issue-silgencleanup-nested-closure-borrowing-noncopyable/Sources/Reproducer",
             resources: [
                 .copy("Crash.swift.txt")
             ]
@@ -945,7 +950,8 @@ let package = Package(
         ),
         .executableTarget(
             name: "swift-issue-noncopyable-assoctype-second-protocol-bodyless-witness-Repro",
-            path: "swift-issue-noncopyable-assoctype-second-protocol-bodyless-witness/Sources/Reproducer",
+            path:
+                "swift-issue-noncopyable-assoctype-second-protocol-bodyless-witness/Sources/Reproducer",
             resources: [
                 .copy("Core.swift.txt"),
                 .copy("Consumer.swift.txt"),

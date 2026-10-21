@@ -22,77 +22,89 @@
 //            instrument)
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 
-let sourcesRoot = URL(fileURLWithPath: #filePath)
-    .deletingLastPathComponent()        // Sources/Reproducer/
-    .deletingLastPathComponent()        // Sources/
-let namespaceDir = sourcesRoot.appendingPathComponent("ReproducerStorageNamespace")
-let inlineDir = sourcesRoot.appendingPathComponent("ReproducerStorageInline")
+    let sourcesRoot = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()  // Sources/Reproducer/
+        .deletingLastPathComponent()  // Sources/
+    let namespaceDir = sourcesRoot.appendingPathComponent("ReproducerStorageNamespace")
+    let inlineDir = sourcesRoot.appendingPathComponent("ReproducerStorageInline")
 
-func inconclusive(_ reason: String) -> Never {
-    FileHandle.standardError.write(Data("inconclusive: \(reason)\n".utf8))
-    exit(0)
-}
+    func inconclusive(_ reason: String) -> Never {
+        FileHandle.standardError.write(Data("inconclusive: \(reason)\n".utf8))
+        exit(0)
+    }
 
-func swiftFiles(in directory: URL) -> [String] {
-    ((try? FileManager.default.contentsOfDirectory(atPath: directory.path)) ?? [])
-        .filter { $0.hasSuffix(".swift") }
-        .sorted()
-        .map { directory.appendingPathComponent($0).path }
-}
+    func swiftFiles(in directory: URL) -> [String] {
+        ((try? FileManager.default.contentsOfDirectory(atPath: directory.path)) ?? [])
+            .filter { $0.hasSuffix(".swift") }
+            .sorted()
+            .map { directory.appendingPathComponent($0).path }
+    }
 
-let namespaceSources = swiftFiles(in: namespaceDir)
-let inlineSources = swiftFiles(in: inlineDir)
-guard !namespaceSources.isEmpty, !inlineSources.isEmpty else {
-    inconclusive("trigger sources not found under \(sourcesRoot.path)")
-}
+    let namespaceSources = swiftFiles(in: namespaceDir)
+    let inlineSources = swiftFiles(in: inlineDir)
+    guard !namespaceSources.isEmpty, !inlineSources.isEmpty else {
+        inconclusive("trigger sources not found under \(sourcesRoot.path)")
+    }
 
-let work = URL(fileURLWithPath: NSTemporaryDirectory())
-    .appendingPathComponent("rawlayout-rejection-\(ProcessInfo.processInfo.processIdentifier)")
-try? FileManager.default.removeItem(at: work)
-guard (try? FileManager.default.createDirectory(at: work, withIntermediateDirectories: true)) != nil
-else { inconclusive("could not create a scratch directory") }
-defer { try? FileManager.default.removeItem(at: work) }
+    let work = URL(fileURLWithPath: NSTemporaryDirectory())
+        .appendingPathComponent("rawlayout-rejection-\(ProcessInfo.processInfo.processIdentifier)")
+    try? FileManager.default.removeItem(at: work)
+    guard
+        (try? FileManager.default.createDirectory(at: work, withIntermediateDirectories: true))
+            != nil
+    else { inconclusive("could not create a scratch directory") }
+    defer { try? FileManager.default.removeItem(at: work) }
 
-func swiftc(_ arguments: [String]) -> (status: Int32, stderr: String)? {
-    let process = Process()
-    process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-    process.arguments = ["swiftc"] + arguments
-    process.currentDirectoryURL = work
-    let errors = Pipe()
-    process.standardError = errors
-    process.standardOutput = Pipe()
-    do { try process.run() } catch { return nil }
-    let text = String(data: errors.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
-    process.waitUntilExit()
-    return (process.terminationStatus, text)
-}
+    func swiftc(_ arguments: [String]) -> (status: Int32, stderr: String)? {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        process.arguments = ["swiftc"] + arguments
+        process.currentDirectoryURL = work
+        let errors = Pipe()
+        process.standardError = errors
+        process.standardOutput = Pipe()
+        do { try process.run() } catch { return nil }
+        let text =
+            String(data: errors.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+        process.waitUntilExit()
+        return (process.terminationStatus, text)
+    }
 
-// Positive control: module A always compiles.
-guard let moduleA = swiftc(
-    ["-wmo", "-parse-as-library", "-emit-module",
-     "-emit-module-path", "StorageNamespaceLib.swiftmodule",
-     "-module-name", "StorageNamespaceLib"] + namespaceSources
-) else { inconclusive("could not launch swiftc") }
-guard moduleA.status == 0 else {
-    inconclusive("module A failed to build:\n\(moduleA.stderr)")
-}
+    // Positive control: module A always compiles.
+    guard
+        let moduleA = swiftc(
+            [
+                "-wmo", "-parse-as-library", "-emit-module",
+                "-emit-module-path", "StorageNamespaceLib.swiftmodule",
+                "-module-name", "StorageNamespaceLib",
+            ] + namespaceSources
+        )
+    else { inconclusive("could not launch swiftc") }
+    guard moduleA.status == 0 else {
+        inconclusive("module A failed to build:\n\(moduleA.stderr)")
+    }
 
-guard let moduleB = swiftc(
-    ["-wmo", "-parse-as-library", "-typecheck",
-     "-enable-experimental-feature", "RawLayout", "-I", "."] + inlineSources
-) else { inconclusive("could not launch swiftc for module B") }
+    guard
+        let moduleB = swiftc(
+            [
+                "-wmo", "-parse-as-library", "-typecheck",
+                "-enable-experimental-feature", "RawLayout", "-I", ".",
+            ] + inlineSources
+        )
+    else { inconclusive("could not launch swiftc for module B") }
 
-if moduleB.stderr.contains("does not conform to protocol 'Copyable'") {
-    FileHandle.standardError.write(Data("BUG FIRES: the @_rawLayout extension is rejected.\n".utf8))
-    exit(1)
-}
-if moduleB.status == 0 {
-    print("bug appears FIXED: module B typechecked cleanly.")
-    exit(0)
-}
-inconclusive("module B failed for an unrelated reason:\n\(moduleB.stderr)")
+    if moduleB.stderr.contains("does not conform to protocol 'Copyable'") {
+        FileHandle.standardError.write(
+            Data("BUG FIRES: the @_rawLayout extension is rejected.\n".utf8))
+        exit(1)
+    }
+    if moduleB.status == 0 {
+        print("bug appears FIXED: module B typechecked cleanly.")
+        exit(0)
+    }
+    inconclusive("module B failed for an unrelated reason:\n\(moduleB.stderr)")
 #endif
 
 // swiftlint:enable no_try_optional

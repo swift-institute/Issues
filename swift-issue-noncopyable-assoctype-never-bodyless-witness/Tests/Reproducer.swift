@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // A protocol with `associatedtype Body: ~Copyable` and a `Body == Never`
@@ -46,76 +46,84 @@ struct NoncopyableAssoctypeNeverBodylessWitnessReproducer {
     /// in which case the probe proved nothing.
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let root = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer")
+            let root = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer")
 
-        let coreSource = root.appendingPathComponent("Core.swift.txt")
-        let consumerSource = root.appendingPathComponent("Consumer.swift.txt")
-        guard FileManager.default.fileExists(atPath: coreSource.path),
-              FileManager.default.fileExists(atPath: consumerSource.path)
-        else { return nil }
+            let coreSource = root.appendingPathComponent("Core.swift.txt")
+            let consumerSource = root.appendingPathComponent("Consumer.swift.txt")
+            guard FileManager.default.fileExists(atPath: coreSource.path),
+                FileManager.default.fileExists(atPath: consumerSource.path)
+            else { return nil }
 
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let work = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("noncopyable-never-witness-\(pid)")
-        try? FileManager.default.removeItem(at: work)
-        guard (try? FileManager.default.createDirectory(
-            at: work, withIntermediateDirectories: true
-        )) != nil else { return nil }
-        defer { try? FileManager.default.removeItem(at: work) }
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let work = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("noncopyable-never-witness-\(pid)")
+            try? FileManager.default.removeItem(at: work)
+            guard
+                (try? FileManager.default.createDirectory(
+                    at: work, withIntermediateDirectories: true
+                )) != nil
+            else { return nil }
+            defer { try? FileManager.default.removeItem(at: work) }
 
-        let core = work.appendingPathComponent("Core.swift")
-        let consumer = work.appendingPathComponent("Consumer.swift")
-        guard (try? FileManager.default.copyItem(at: coreSource, to: core)) != nil,
-              (try? FileManager.default.copyItem(at: consumerSource, to: consumer)) != nil
-        else { return nil }
+            let core = work.appendingPathComponent("Core.swift")
+            let consumer = work.appendingPathComponent("Consumer.swift")
+            guard (try? FileManager.default.copyItem(at: coreSource, to: core)) != nil,
+                (try? FileManager.default.copyItem(at: consumerSource, to: consumer)) != nil
+            else { return nil }
 
-        func run(_ arguments: [String]) -> (status: Int32, stderr: String)? {
-            let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-            process.arguments = ["swiftc"] + arguments
-            process.currentDirectoryURL = work
-            let errors = Pipe()
-            process.standardError = errors
-            process.standardOutput = Pipe()
-            do { try process.run() } catch { return nil }
-            let text = String(
-                data: errors.fileHandleForReading.readDataToEndOfFile(),
-                encoding: .utf8
-            ) ?? ""
-            process.waitUntilExit()
-            return (process.terminationStatus, text)
-        }
+            func run(_ arguments: [String]) -> (status: Int32, stderr: String)? {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+                process.arguments = ["swiftc"] + arguments
+                process.currentDirectoryURL = work
+                let errors = Pipe()
+                process.standardError = errors
+                process.standardOutput = Pipe()
+                do { try process.run() } catch { return nil }
+                let text =
+                    String(
+                        data: errors.fileHandleForReading.readDataToEndOfFile(),
+                        encoding: .utf8
+                    ) ?? ""
+                process.waitUntilExit()
+                return (process.terminationStatus, text)
+            }
 
-        // Step 1 — the defining module. This ALWAYS compiles; if it does not,
-        // the environment is at fault and the probe is inconclusive. This is
-        // the probe's positive control: it proves swiftc was reached and ran.
-        guard let defining = run([
-            "-enable-experimental-feature", "SuppressedAssociatedTypes",
-            "-wmo", "-parse-as-library", "-emit-module",
-            "-emit-module-path", "M.swiftmodule", "-module-name", "M", "Core.swift",
-        ]), defining.status == 0 else { return nil }
+            // Step 1 — the defining module. This ALWAYS compiles; if it does not,
+            // the environment is at fault and the probe is inconclusive. This is
+            // the probe's positive control: it proves swiftc was reached and ran.
+            guard
+                let defining = run([
+                    "-enable-experimental-feature", "SuppressedAssociatedTypes",
+                    "-wmo", "-parse-as-library", "-emit-module",
+                    "-emit-module-path", "M.swiftmodule", "-module-name", "M", "Core.swift",
+                ]), defining.status == 0
+            else { return nil }
 
-        // Step 2 — the consumer module, with verification forced on.
-        guard let importing = run([
-            "-enable-experimental-feature", "SuppressedAssociatedTypes",
-            "-Xfrontend", "-sil-verify-all",
-            "-wmo", "-parse-as-library", "-c", "Consumer.swift",
-            "-I", ".", "-module-name", "N", "-o", "Consumer.o",
-        ]) else { return nil }
+            // Step 2 — the consumer module, with verification forced on.
+            guard
+                let importing = run([
+                    "-enable-experimental-feature", "SuppressedAssociatedTypes",
+                    "-Xfrontend", "-sil-verify-all",
+                    "-wmo", "-parse-as-library", "-c", "Consumer.swift",
+                    "-I", ".", "-module-name", "N", "-o", "Consumer.o",
+                ])
+            else { return nil }
 
-        if importing.stderr.contains("Must have a construct to emit for")
-            || importing.stderr.contains("must have a body") {
-            return true
-        }
-        if importing.status == 0 {
-            return false          // compiled cleanly — fix has landed
-        }
-        return nil                // failed for an unrelated reason — inconclusive
+            if importing.stderr.contains("Must have a construct to emit for")
+                || importing.stderr.contains("must have a body")
+            {
+                return true
+            }
+            if importing.status == 0 {
+                return false  // compiled cleanly — fix has landed
+            }
+            return nil  // failed for an unrelated reason — inconclusive
         #else
-        return nil                // no subprocess facility
+            return nil  // no subprocess facility
         #endif
     }
 

@@ -12,7 +12,7 @@ struct Bits {
     var popcount: Int { words[0].nonzeroBitCount }
 }
 
-struct Raw: ~Copyable { var x: Int = 0 }   // stand-in for the @_rawLayout substrate
+struct Raw: ~Copyable { var x: Int = 0 }  // stand-in for the @_rawLayout substrate
 
 final class Box<S: ~Copyable> {
     var bits = Bits()
@@ -20,7 +20,9 @@ final class Box<S: ~Copyable> {
     init(_ sub: consuming S) { self.sub = sub }
     deinit {
         // teardown reads the bitmap (occupancy-walk liveness)
-        if bits[2] { /* would drain */ }
+        if bits[2] {
+            // would drain
+        }
     }
     func mark(_ i: Int) { bits[i] = true }
 }

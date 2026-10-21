@@ -15,11 +15,11 @@ extension Tree where Element: ~Copyable {
 }
 
 extension Tree.Unbounded where Element: ~Copyable {
-    public init() { self._x = 0 }                           // ~Copyable extension twin
+    public init() { self._x = 0 }  // ~Copyable extension twin
 }
 
 extension Tree.Unbounded where Element: Copyable {
-    public init() { self._x = 0 }                           // Copyable extension twin
+    public init() { self._x = 0 }  // Copyable extension twin
 }
 
 extension Tree.Unbounded: Copyable where Element: Copyable {}

@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // Swift 6.3.x wasm32 Embedded — `MandatoryPerformanceOptimizations` SIL crash
@@ -28,17 +28,17 @@ struct EmbeddedWasmMandatoryPerfCrashFixture {
     @Test
     func `trigger fixture is present and carries the two live lines`() {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let fixture = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
+            let fixture = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
 
-        guard let text = try? String(contentsOf: fixture, encoding: .utf8) else {
-            Issue.record("Crash.swift.txt missing beside the reproducer target")
-            return
-        }
-        #expect(text.contains("public import Index_Primitives"))
-        #expect(text.contains("public let x: Index<Int> = .zero + .zero"))
+            guard let text = try? String(contentsOf: fixture, encoding: .utf8) else {
+                Issue.record("Crash.swift.txt missing beside the reproducer target")
+                return
+            }
+            #expect(text.contains("public import Index_Primitives"))
+            #expect(text.contains("public let x: Index<Int> = .zero + .zero"))
         #endif
     }
 }

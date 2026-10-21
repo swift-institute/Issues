@@ -10,15 +10,15 @@
 // Exit code: 0 if `backed.pointee == 20` (no bug); 1 if not (bug fires).
 
 #if canImport(Darwin)
-import Darwin
+    import Darwin
 #elseif canImport(Glibc)
-import Glibc
+    import Glibc
 #elseif canImport(Musl)
-import Musl
+    import Musl
 #elseif canImport(Bionic)
-import Bionic
+    import Bionic
 #elseif canImport(WinSDK)
-import WinSDK
+    import WinSDK
 #endif
 
 struct Vec {

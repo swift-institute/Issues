@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // A body member and a redundant-with-default `where Element: Copyable`
@@ -24,35 +24,36 @@ struct NoncopyableExtensionMemberManglingCollisionReproducer {
     /// `false` if it compiled cleanly, `nil` if inconclusive.
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let source = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/reproducer.swift")
-        guard FileManager.default.fileExists(atPath: source.path) else { return nil }
+            let source = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/reproducer.swift")
+            guard FileManager.default.fileExists(atPath: source.path) else { return nil }
 
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let objectFile = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("mangling-collision-test-\(pid).o")
-        defer { try? FileManager.default.removeItem(at: objectFile) }
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let objectFile = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("mangling-collision-test-\(pid).o")
+            defer { try? FileManager.default.removeItem(at: objectFile) }
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["swiftc", "-emit-object", source.path, "-o", objectFile.path]
-        let stderr = Pipe()
-        process.standardError = stderr
-        process.standardOutput = Pipe()
-        do { try process.run() } catch { return nil }
-        process.waitUntilExit()
-        let errText = String(
-            data: stderr.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = ["swiftc", "-emit-object", source.path, "-o", objectFile.path]
+            let stderr = Pipe()
+            process.standardError = stderr
+            process.standardOutput = Pipe()
+            do { try process.run() } catch { return nil }
+            process.waitUntilExit()
+            let errText =
+                String(
+                    data: stderr.fileHandleForReading.readDataToEndOfFile(),
+                    encoding: .utf8
+                ) ?? ""
 
-        if errText.contains("multiple definitions of symbol") { return true }
-        if process.terminationStatus == 0 { return false }
-        return nil
+            if errText.contains("multiple definitions of symbol") { return true }
+            if process.terminationStatus == 0 { return false }
+            return nil
         #else
-        return nil
+            return nil
         #endif
     }
 

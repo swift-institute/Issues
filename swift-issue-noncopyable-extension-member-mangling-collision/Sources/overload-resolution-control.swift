@@ -17,6 +17,6 @@ extension Tree.Builder where Element: Copyable {
 
 struct NC: ~Copyable {}
 
-let a = Tree<Int>.Builder.build()   // resolves the Copyable twin
-let b = Tree<NC>.Builder.build()    // resolves the body twin
+let a = Tree<Int>.Builder.build()  // resolves the Copyable twin
+let b = Tree<NC>.Builder.build()  // resolves the body twin
 print(a, b)

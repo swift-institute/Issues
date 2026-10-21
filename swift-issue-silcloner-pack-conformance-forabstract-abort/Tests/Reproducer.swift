@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // swiftlang/swift#90275 — SILCloner projects a pack element lane onto a pack
@@ -49,56 +49,60 @@ struct SILClonerPackConformanceForAbstractAbortReproducer {
     /// (inconclusive).
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let here = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
+            let here = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
 
-        guard FileManager.default.fileExists(atPath: here.path) else { return nil }
+            guard FileManager.default.fileExists(atPath: here.path) else { return nil }
 
-        // swiftc keys off the file extension; stage the `.txt` resource as a
-        // `.swift` temp so it is compiled rather than treated as a link input.
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("silcloner-pack-conformance-test-\(pid).swift")
-        let out = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("silcloner-pack-conformance-test-\(pid).sil")
-        try? FileManager.default.removeItem(at: swiftCopy)
-        guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else { return nil }
-        defer {
+            // swiftc keys off the file extension; stage the `.txt` resource as a
+            // `.swift` temp so it is compiled rather than treated as a link input.
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("silcloner-pack-conformance-test-\(pid).swift")
+            let out = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("silcloner-pack-conformance-test-\(pid).sil")
             try? FileManager.default.removeItem(at: swiftCopy)
-            try? FileManager.default.removeItem(at: out)
-        }
+            guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else {
+                return nil
+            }
+            defer {
+                try? FileManager.default.removeItem(at: swiftCopy)
+                try? FileManager.default.removeItem(at: out)
+            }
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = [
-            "swiftc", "-emit-sil", "-swift-version", "6",
-            swiftCopy.path,
-            "-o", out.path,
-        ]
-        let stderr = Pipe()
-        process.standardError = stderr
-        process.standardOutput = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = [
+                "swiftc", "-emit-sil", "-swift-version", "6",
+                swiftCopy.path,
+                "-o", out.path,
+            ]
+            let stderr = Pipe()
+            process.standardError = stderr
+            process.standardOutput = Pipe()
 
-        do { try process.run() } catch { return nil }
-        process.waitUntilExit()
+            do { try process.run() } catch { return nil }
+            process.waitUntilExit()
 
-        let errText = String(
-            data: stderr.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
+            let errText =
+                String(
+                    data: stderr.fileHandleForReading.readDataToEndOfFile(),
+                    encoding: .utf8
+                ) ?? ""
 
-        if errText.contains("forAbstract")
-            && errText.contains("Abstract conformance with bad subject type") {
-            return true
-        }
-        if process.terminationStatus == 0 {
-            return false          // compiled cleanly — fix has landed
-        }
-        return nil                // failed for an unrelated reason — inconclusive
+            if errText.contains("forAbstract")
+                && errText.contains("Abstract conformance with bad subject type")
+            {
+                return true
+            }
+            if process.terminationStatus == 0 {
+                return false  // compiled cleanly — fix has landed
+            }
+            return nil  // failed for an unrelated reason — inconclusive
         #else
-        return nil                // no subprocess facility
+            return nil  // no subprocess facility
         #endif
     }
 
@@ -110,30 +114,32 @@ struct SILClonerPackConformanceForAbstractAbortReproducer {
     /// forever — see the functionsignatureopts entry's note).
     static func probedCompilerIsPre64() -> Bool {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["swiftc", "--version"]
-        let stdout = Pipe()
-        process.standardOutput = stdout
-        process.standardError = Pipe()
-        do { try process.run() } catch { return false }
-        process.waitUntilExit()
-        let text = String(
-            data: stdout.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
-        // First "N.M" pair after "version " — e.g. "Apple Swift version 6.3.3"
-        // or "Swift version 6.4-dev".
-        guard let range = text.range(of: "version ") else { return false }
-        let tail = text[range.upperBound...]
-        let components = tail
-            .prefix(while: { $0.isNumber || $0 == "." })
-            .split(separator: ".")
-            .compactMap { Int($0) }
-        guard components.count >= 2 else { return false }
-        return (components[0], components[1]) < (6, 4)
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = ["swiftc", "--version"]
+            let stdout = Pipe()
+            process.standardOutput = stdout
+            process.standardError = Pipe()
+            do { try process.run() } catch { return false }
+            process.waitUntilExit()
+            let text =
+                String(
+                    data: stdout.fileHandleForReading.readDataToEndOfFile(),
+                    encoding: .utf8
+                ) ?? ""
+            // First "N.M" pair after "version " — e.g. "Apple Swift version 6.3.3"
+            // or "Swift version 6.4-dev".
+            guard let range = text.range(of: "version ") else { return false }
+            let tail = text[range.upperBound...]
+            let components =
+                tail
+                .prefix(while: { $0.isNumber || $0 == "." })
+                .split(separator: ".")
+                .compactMap { Int($0) }
+            guard components.count >= 2 else { return false }
+            return (components[0], components[1]) < (6, 4)
         #else
-        return false
+            return false
         #endif
     }
 

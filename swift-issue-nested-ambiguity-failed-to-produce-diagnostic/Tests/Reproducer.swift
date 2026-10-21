@@ -1,7 +1,7 @@
 import Testing
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 #endif
 
 // The type checker emits "failed to produce diagnostic for expression" instead of
@@ -20,39 +20,42 @@ struct NestedAmbiguityFailedToProduceDiagnosticReproducer {
     /// proper ambiguity, `nil` when inconclusive.
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-        let crashSource = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()        // Tests/
-            .deletingLastPathComponent()        // issue root
-            .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
+            let crashSource = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()  // Tests/
+                .deletingLastPathComponent()  // issue root
+                .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
 
-        guard FileManager.default.fileExists(atPath: crashSource.path) else { return nil }
+            guard FileManager.default.fileExists(atPath: crashSource.path) else { return nil }
 
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("nested-ambiguity-diagnostic-test-\(pid).swift")
-        try? FileManager.default.removeItem(at: swiftCopy)
-        guard (try? FileManager.default.copyItem(at: crashSource, to: swiftCopy)) != nil else { return nil }
-        defer { try? FileManager.default.removeItem(at: swiftCopy) }
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("nested-ambiguity-diagnostic-test-\(pid).swift")
+            try? FileManager.default.removeItem(at: swiftCopy)
+            guard (try? FileManager.default.copyItem(at: crashSource, to: swiftCopy)) != nil else {
+                return nil
+            }
+            defer { try? FileManager.default.removeItem(at: swiftCopy) }
 
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["swiftc", "-typecheck", "-swift-version", "6", swiftCopy.path]
-        let stderr = Pipe()
-        process.standardError = stderr
-        process.standardOutput = Pipe()
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = ["swiftc", "-typecheck", "-swift-version", "6", swiftCopy.path]
+            let stderr = Pipe()
+            process.standardError = stderr
+            process.standardOutput = Pipe()
 
-        do { try process.run() } catch { return nil }
-        let errText = String(
-            data: stderr.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        ) ?? ""
-        process.waitUntilExit()
+            do { try process.run() } catch { return nil }
+            let errText =
+                String(
+                    data: stderr.fileHandleForReading.readDataToEndOfFile(),
+                    encoding: .utf8
+                ) ?? ""
+            process.waitUntilExit()
 
-        if errText.contains("failed to produce diagnostic") { return true }
-        if errText.contains("ambiguous use of") { return false }
-        return nil
+            if errText.contains("failed to produce diagnostic") { return true }
+            if errText.contains("ambiguous use of") { return false }
+            return nil
         #else
-        return nil
+            return nil
         #endif
     }
 

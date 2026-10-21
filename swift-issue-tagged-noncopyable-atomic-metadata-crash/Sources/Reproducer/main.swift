@@ -17,10 +17,10 @@
 // a recoverable runtime error. The CI per-issue matrix's macOS 6.3.x
 // leg captures the 139 termination as the bug-fired signal.
 
+import Cardinal_Primitives
+import Ordinal_Primitives
 import Synchronization
 import Tagged_Primitives
-import Ordinal_Primitives
-import Cardinal_Primitives
 
 // `SimpleTag` names this reproducer's phantom tag type as reported upstream
 // and referenced verbatim in this issue's README/investigation notes;

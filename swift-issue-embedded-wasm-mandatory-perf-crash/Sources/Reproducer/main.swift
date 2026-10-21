@@ -13,21 +13,22 @@
 //       lane; see the README for the exact verified invocation.
 
 #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
-import Foundation
+    import Foundation
 
-FileHandle.standardError.write(Data(
-    """
-    inconclusive: this defect requires the swift-6.3.x wasm-embedded SDK and
-    the production swift-index-primitives dependency chain; it cannot be
-    probed from this dependency-free host target. Reproduce with the exact
-    container invocation documented in this entry's README
-    (docker swift:6.3.2-jammy + swift-6.3.2-RELEASE_wasm-embedded SDK,
-    swift build --swift-sdk swift-6.3.2-RELEASE_wasm-embedded).
+    FileHandle.standardError.write(
+        Data(
+            """
+            inconclusive: this defect requires the swift-6.3.x wasm-embedded SDK and
+            the production swift-index-primitives dependency chain; it cannot be
+            probed from this dependency-free host target. Reproduce with the exact
+            container invocation documented in this entry's README
+            (docker swift:6.3.2-jammy + swift-6.3.2-RELEASE_wasm-embedded SDK,
+            swift build --swift-sdk swift-6.3.2-RELEASE_wasm-embedded).
 
-    """.utf8
-))
-exit(2)
+            """.utf8
+        ))
+    exit(2)
 #elseif canImport(ucrt)
-import ucrt
-exit(2)
+    import ucrt
+    exit(2)
 #endif
