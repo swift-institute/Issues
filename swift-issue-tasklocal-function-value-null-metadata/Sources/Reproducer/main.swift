@@ -57,7 +57,10 @@
 
     let binary = work.appendingPathComponent("probe")
 
-    func run(_ launchPath: String, _ arguments: [String]) -> (
+    func run(
+        _ launchPath: String,
+        _ arguments: [String]
+    ) -> (
         status: Int32, signalled: Bool, stderr: String
     )? {
         let process = Process()
@@ -76,7 +79,9 @@
 
     guard
         let build = run(
-            "/usr/bin/env", ["swiftc", "-O", "-swift-version", "6", "main.swift", "-o", "probe"])
+            "/usr/bin/env",
+            ["swiftc", "-O", "-swift-version", "6", "main.swift", "-o", "probe"]
+        )
     else { inconclusive("could not launch swiftc") }
     guard build.status == 0 else {
         inconclusive("the trigger source did not compile:\n\(build.stderr)")
@@ -92,7 +97,8 @@
                 Data(
                     "BUG FIRES: the probe binary died with SIGSEGV in swift_task_localValuePush.\n"
                         .utf8
-                ))
+                )
+            )
             exit(1)
         }
         if outcome.status != 0 { sawUnrelatedFailure = outcome.stderr }

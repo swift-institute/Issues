@@ -120,6 +120,8 @@
 
     extension NestedVectorSpec.Inline where Element: Copyable {
         @inlinable
+        // REASON: swift-format owns attribute-argument spacing and removes these spaces.
+        // swiftlint:disable:next colon
         @_specialize(exported:true,where Element == Int, N == 3)
         borrowing func read(at index: Int) -> Element {
             return self[index]
@@ -190,7 +192,8 @@
             let mult = ns / rawNs
             print(
                 "\(label.padding(toLength: 38, withPad: " ", startingAt: 0))"
-                    + "\(String(format: "%6.1f", ns))ns  (\(String(format: "%.2f", mult))x)")
+                    + "\(String(format: "%6.1f", ns))ns  (\(String(format: "%.2f", mult))x)"
+            )
         }
 
         print("BLACKHOLE methodology (\(iterations) iter):")
@@ -231,7 +234,8 @@
             let mult = ns / oRawNs
             print(
                 "\(label.padding(toLength: 38, withPad: " ", startingAt: 0))"
-                    + "\(String(format: "%6.1f", ns))ns  (\(String(format: "%.2f", mult))x)")
+                    + "\(String(format: "%6.1f", ns))ns  (\(String(format: "%.2f", mult))x)"
+            )
         }
 
         orow("Raw InlineArray (baseline)", oRawNs)

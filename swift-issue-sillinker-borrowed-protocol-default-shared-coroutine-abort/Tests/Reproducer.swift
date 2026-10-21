@@ -68,7 +68,8 @@ struct SILLinkerBorrowedProtocolDefaultSharedCoroutineAbortReproducer {
             try? FileManager.default.removeItem(at: work)
             guard
                 (try? FileManager.default.createDirectory(
-                    at: work, withIntermediateDirectories: true
+                    at: work,
+                    withIntermediateDirectories: true
                 )) != nil
             else { return nil }
             defer { try? FileManager.default.removeItem(at: work) }

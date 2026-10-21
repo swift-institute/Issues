@@ -55,7 +55,8 @@ extension `SwiftLint Synthesized Initializer Fix Beyond Lint`.Unit {
 
             let work = URL(fileURLWithPath: NSTemporaryDirectory())
                 .appendingPathComponent(
-                    "swiftlint-synth-init-test-\(ProcessInfo.processInfo.processIdentifier)")
+                    "swiftlint-synth-init-test-\(ProcessInfo.processInfo.processIdentifier)"
+                )
 
             // FileManager's removeItem/createDirectory/copyItem and
             // String(contentsOf:) are untyped cross-module throwing APIs; every
@@ -73,7 +74,8 @@ extension `SwiftLint Synthesized Initializer Fix Beyond Lint`.Unit {
             let staged = work.appendingPathComponent("Sources/Fixture.swift")
             guard
                 (try? FileManager.default.copyItem(
-                    at: sources.appendingPathComponent("Fixture.swift.txt"), to: staged
+                    at: sources.appendingPathComponent("Fixture.swift.txt"),
+                    to: staged
                 )) != nil,
                 (try? FileManager.default.copyItem(
                     at: sources.appendingPathComponent("Config.yml.txt"),

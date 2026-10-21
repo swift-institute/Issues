@@ -81,19 +81,24 @@
         FileHandle.standardError.write(
             Data(
                 "BUG FIRED: CopyPropagation ownership abort on borrowed ~Copyable field projection.\n"
-                    .utf8))
+                    .utf8
+            )
+        )
         exit(1)
     } else if process.terminationStatus != 0 {
         // Compiler failed for some OTHER reason (e.g. a future flag/syntax change).
         // Not the bug under test; do not flip the signal.
         FileHandle.standardError.write(
-            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8))
+            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8)
+        )
         exit(0)
     } else {
         FileHandle.standardError.write(
             Data(
                 "bug absent: Crash.swift.txt compiled cleanly at -O — the fix has reached this toolchain.\n"
-                    .utf8))
+                    .utf8
+            )
+        )
         exit(0)
     }
 

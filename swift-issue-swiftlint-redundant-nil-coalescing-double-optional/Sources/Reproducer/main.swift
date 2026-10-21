@@ -78,7 +78,8 @@
     guard let version = run(["swiftlint", "version"]), version.status == 0
     else { inconclusive("no reachable `swiftlint` on PATH") }
     FileHandle.standardError.write(
-        Data("swiftlint \(version.output.trimmingCharacters(in: .whitespacesAndNewlines))\n".utf8))
+        Data("swiftlint \(version.output.trimmingCharacters(in: .whitespacesAndNewlines))\n".utf8)
+    )
 
     // PRECONDITION — the fixture compiles BEFORE the correction. Without this the
     // probe cannot distinguish "the fix broke it" from "it never compiled".
@@ -124,7 +125,8 @@
     let cleanAfterBreak = recheck.status == 0
 
     FileHandle.standardError.write(
-        Data("compiler diagnostic after `--fix`:\n\(after.output)\n".utf8))
+        Data("compiler diagnostic after `--fix`:\n\(after.output)\n".utf8)
+    )
     print("DEFECT FIRES — fixture compiled before `--fix`, does not compile after.")
     print("lint after the break reports clean: \(cleanAfterBreak)")
     exit(1)

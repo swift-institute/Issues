@@ -77,17 +77,20 @@
 
     if bugFired {
         FileHandle.standardError.write(
-            Data("BUG FIRED: LLVM verifier rejected the value-witness IR.\n".utf8))
+            Data("BUG FIRED: LLVM verifier rejected the value-witness IR.\n".utf8)
+        )
         exit(1)
     } else if process.terminationStatus != 0 {
         // Compiler failed for some OTHER reason (e.g. feature flag renamed on a
         // future toolchain). Not the bug under test; do not flip the signal.
         FileHandle.standardError.write(
-            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8))
+            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8)
+        )
         exit(0)
     } else {
         FileHandle.standardError.write(
-            Data("Crash.swift.txt compiled cleanly — the bug appears FIXED.\n".utf8))
+            Data("Crash.swift.txt compiled cleanly — the bug appears FIXED.\n".utf8)
+        )
         exit(0)
     }
 

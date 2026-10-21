@@ -9,7 +9,8 @@
         .appendingPathComponent("Fixture")
     let root = URL(fileURLWithPath: NSTemporaryDirectory())
         .appendingPathComponent(
-            "testing-foundation-system-\(ProcessInfo.processInfo.processIdentifier)")
+            "testing-foundation-system-\(ProcessInfo.processInfo.processIdentifier)"
+        )
 
     // REASON: Process.run() throws an untyped Foundation error in this out-of-process harness.
     // swiftlint:disable:next typed_throws_required
@@ -28,13 +29,19 @@
     }
 
     // REASON: Foundation file-system and String I/O APIs throw untyped errors.
-    // swiftlint:disable:next typed_throws_required
-    func copy(_ name: String, to path: String, replacing replacements: [String: String] = [:])
+    func copy(
+        _ name: String,
+        to path: String,
+        replacing replacements: [String: String] = [:]
+    )
+        // swiftlint:disable:next typed_throws_required
         throws
     {
         let destination = root.appendingPathComponent(path)
         try FileManager.default.createDirectory(
-            at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
+            at: destination.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
         try replacements.reduce(
             String(contentsOf: fixture.appendingPathComponent(name), encoding: .utf8)
         ) {
@@ -47,8 +54,10 @@
     // swiftlint:disable:next typed_throws_required
     func build(import line: String) throws -> (status: Int32, output: String) {
         try copy(
-            "ClientTests.swift.txt", to: "Tests/ClientTests/ClientTests.swift",
-            replacing: ["@IMPORT@": line])
+            "ClientTests.swift.txt",
+            to: "Tests/ClientTests/ClientTests.swift",
+            replacing: ["@IMPORT@": line]
+        )
         return try run(["swift", "build", "--build-tests"], in: root)
     }
 
@@ -62,7 +71,8 @@
         let without = try build(import: "")
         if without.status != 0 {
             FileHandle.standardError.write(
-                Data("unexpected failure without Foundation:\n\(without.output)\n".utf8))
+                Data("unexpected failure without Foundation:\n\(without.output)\n".utf8)
+            )
             exit(2)
         }
         let with = try build(import: "import Foundation")

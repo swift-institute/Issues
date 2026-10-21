@@ -38,7 +38,10 @@ struct NoncopyableSametypeConditionalConformanceReproducer {
                 .appendingPathComponent("sametype-conformance-test-\(pid)")
             defer { try? FileManager.default.removeItem(at: binary) }
 
-            func run(_ executable: String, _ arguments: [String]) -> (
+            func run(
+                _ executable: String,
+                _ arguments: [String]
+            ) -> (
                 signaled: Bool, status: Int32
             )? {
                 let process = Process()

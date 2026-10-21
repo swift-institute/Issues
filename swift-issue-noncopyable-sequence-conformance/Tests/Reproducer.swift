@@ -38,7 +38,8 @@ struct NoncopyableSequenceConformanceReproducer {
 
             let out = URL(fileURLWithPath: NSTemporaryDirectory())
                 .appendingPathComponent(
-                    "noncopyable-sequence-conformance-\(ProcessInfo.processInfo.processIdentifier)")
+                    "noncopyable-sequence-conformance-\(ProcessInfo.processInfo.processIdentifier)"
+                )
             guard (try? fm.createDirectory(at: out, withIntermediateDirectories: true)) != nil
             else { return nil }
             defer { try? fm.removeItem(at: out) }
@@ -66,7 +67,8 @@ struct NoncopyableSequenceConformanceReproducer {
                         "-emit-module", "-module-name", coreModule,
                         "-emit-module-path",
                         out.appendingPathComponent("\(coreModule).swiftmodule").path,
-                    ] + core), built.status == 0
+                    ] + core
+                ), built.status == 0
             else { return nil }
 
             guard
@@ -74,7 +76,8 @@ struct NoncopyableSequenceConformanceReproducer {
                     [
                         "-emit-module", "-module-name", "Ring", "-I", out.path,
                         "-emit-module-path", out.appendingPathComponent("Ring.swiftmodule").path,
-                    ] + ring)
+                    ] + ring
+                )
             else { return nil }
 
             if result.stderr.contains("does not conform to protocol 'Copyable'") { return true }

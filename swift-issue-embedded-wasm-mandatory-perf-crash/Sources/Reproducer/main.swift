@@ -26,7 +26,8 @@
             swift build --swift-sdk swift-6.3.2-RELEASE_wasm-embedded).
 
             """.utf8
-        ))
+        )
+    )
     exit(2)
 #elseif canImport(ucrt)
     import ucrt

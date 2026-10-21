@@ -63,7 +63,8 @@
 
     if process.terminationStatus != 0 {
         FileHandle.standardError.write(
-            Data("swiftc failed for an unrelated reason:\n\(output)\n".utf8))
+            Data("swiftc failed for an unrelated reason:\n\(output)\n".utf8)
+        )
     }
 
     exit(0)

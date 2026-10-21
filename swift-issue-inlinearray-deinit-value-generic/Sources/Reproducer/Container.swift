@@ -40,7 +40,8 @@ public struct Container<Element: ~Copyable, let capacity: Int>: ~Copyable {
         guard count > 0 else { return }
         let stride = MemoryLayout<Element>.stride
         unsafe Swift.withUnsafeBytes(of: _storage) { bytes in
-            let basePtr = unsafe UnsafeMutableRawPointer(mutating: bytes.baseAddress!)
+            guard let baseAddress = bytes.baseAddress else { return }
+            let basePtr = unsafe UnsafeMutableRawPointer(mutating: baseAddress)
             for i in 0..<count {
                 let elementPtr = unsafe (basePtr + i * stride).assumingMemoryBound(to: Element.self)
                 unsafe elementPtr.deinitialize(count: 1)  // Element.deinit NOT called!
@@ -90,7 +91,8 @@ public struct ContainerFixed<Element: ~Copyable, let capacity: Int>: ~Copyable {
         guard count > 0 else { return }
         let stride = MemoryLayout<Element>.stride
         unsafe Swift.withUnsafeBytes(of: _storage) { bytes in
-            let basePtr = unsafe UnsafeMutableRawPointer(mutating: bytes.baseAddress!)
+            guard let baseAddress = bytes.baseAddress else { return }
+            let basePtr = unsafe UnsafeMutableRawPointer(mutating: baseAddress)
             for i in 0..<count {
                 let elementPtr = unsafe (basePtr + i * stride).assumingMemoryBound(to: Element.self)
                 unsafe elementPtr.deinitialize(count: 1)  // Element.deinit IS called
@@ -133,7 +135,8 @@ public struct ContainerLiteral<Element: ~Copyable>: ~Copyable {
         guard count > 0 else { return }
         let stride = MemoryLayout<Element>.stride
         unsafe Swift.withUnsafeBytes(of: _storage) { bytes in
-            let basePtr = unsafe UnsafeMutableRawPointer(mutating: bytes.baseAddress!)
+            guard let baseAddress = bytes.baseAddress else { return }
+            let basePtr = unsafe UnsafeMutableRawPointer(mutating: baseAddress)
             for i in 0..<count {
                 let elementPtr = unsafe (basePtr + i * stride).assumingMemoryBound(to: Element.self)
                 unsafe elementPtr.deinitialize(count: 1)  // Element.deinit IS called

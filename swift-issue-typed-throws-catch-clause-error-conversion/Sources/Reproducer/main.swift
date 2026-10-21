@@ -84,7 +84,8 @@
                 Data(
                     "BUG FIRES: swiftc rejected or crashed on the typed-throws catch-clause conversion.\n"
                         .utf8
-                ))
+                )
+            )
             exit(1)
         }
         lastFailure = result.stderr

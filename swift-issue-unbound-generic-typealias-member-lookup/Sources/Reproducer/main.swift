@@ -56,7 +56,8 @@
     if errText.contains("is not a member type of type") && errText.contains("Alias") {
         FileHandle.standardError.write(
             Data(
-                "BUG FIRES: unbound generic typealias member lookup rejects 'Alias.Member'.\n".utf8)
+                "BUG FIRES: unbound generic typealias member lookup rejects 'Alias.Member'.\n".utf8
+            )
         )
         exit(1)
     }
@@ -65,7 +66,8 @@
         exit(0)
     }
     FileHandle.standardError.write(
-        Data("inconclusive: swiftc failed for an unrelated reason:\n\(errText)\n".utf8))
+        Data("inconclusive: swiftc failed for an unrelated reason:\n\(errText)\n".utf8)
+    )
     exit(0)
 
 #endif

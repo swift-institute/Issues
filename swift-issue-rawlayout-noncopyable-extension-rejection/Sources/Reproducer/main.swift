@@ -97,7 +97,8 @@
 
     if moduleB.stderr.contains("does not conform to protocol 'Copyable'") {
         FileHandle.standardError.write(
-            Data("BUG FIRES: the @_rawLayout extension is rejected.\n".utf8))
+            Data("BUG FIRES: the @_rawLayout extension is rejected.\n".utf8)
+        )
         exit(1)
     }
     if moduleB.status == 0 {

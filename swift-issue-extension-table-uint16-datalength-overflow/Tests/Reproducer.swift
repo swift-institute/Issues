@@ -56,7 +56,9 @@ struct ExtensionTableUInt16DataLengthOverflowReproducer {
             try? FileManager.default.removeItem(at: staged)
             try? FileManager.default.removeItem(at: moduleDir)
             try? FileManager.default.createDirectory(
-                at: moduleDir, withIntermediateDirectories: true)
+                at: moduleDir,
+                withIntermediateDirectories: true
+            )
             // swiftc keys off the file extension; stage the `.txt` resource as `.swift`.
             guard (try? FileManager.default.copyItem(at: crashSource, to: staged)) != nil else {
                 return nil

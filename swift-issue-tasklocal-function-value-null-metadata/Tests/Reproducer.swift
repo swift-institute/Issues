@@ -89,7 +89,8 @@ struct TaskLocalFunctionValueNullMetadataReproducer {
             try? FileManager.default.removeItem(at: work)
             guard
                 (try? FileManager.default.createDirectory(
-                    at: work, withIntermediateDirectories: true
+                    at: work,
+                    withIntermediateDirectories: true
                 )) != nil
             else { return nil }
             defer { try? FileManager.default.removeItem(at: work) }
@@ -99,7 +100,10 @@ struct TaskLocalFunctionValueNullMetadataReproducer {
             guard (try? FileManager.default.copyItem(at: crashSource, to: staged)) != nil
             else { return nil }
 
-            func run(_ launchPath: String, _ arguments: [String]) -> (
+            func run(
+                _ launchPath: String,
+                _ arguments: [String]
+            ) -> (
                 status: Int32, signalled: Bool
             )? {
                 let process = Process()

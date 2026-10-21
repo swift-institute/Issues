@@ -33,4 +33,5 @@ check(
     Values {
         "Hello"
         "Goodbye"
-    })
+    }
+)

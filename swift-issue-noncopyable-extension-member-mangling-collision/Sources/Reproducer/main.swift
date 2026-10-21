@@ -53,7 +53,8 @@
 
     if errText.contains("multiple definitions of symbol") {
         FileHandle.standardError.write(
-            Data("BUG FIRES: extension-member mangling collision.\n".utf8))
+            Data("BUG FIRES: extension-member mangling collision.\n".utf8)
+        )
         exit(1)
     }
     if process.terminationStatus == 0 {
@@ -61,7 +62,8 @@
         exit(0)
     }
     FileHandle.standardError.write(
-        Data("inconclusive: swiftc failed for an unrelated reason:\n\(errText)\n".utf8))
+        Data("inconclusive: swiftc failed for an unrelated reason:\n\(errText)\n".utf8)
+    )
     exit(0)
 #endif
 

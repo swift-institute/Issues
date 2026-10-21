@@ -74,17 +74,22 @@
         FileHandle.standardError.write(
             Data(
                 "BUG FIRED: SILGenCleanup ownership-verifier abort on nested closure capturing borrowing ~Copyable parameter.\n"
-                    .utf8))
+                    .utf8
+            )
+        )
         exit(1)
     } else if process.terminationStatus != 0 {
         FileHandle.standardError.write(
-            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8))
+            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8)
+        )
         exit(0)
     } else {
         FileHandle.standardError.write(
             Data(
                 "bug absent: Crash.swift.txt compiled cleanly — the fix has reached this toolchain.\n"
-                    .utf8))
+                    .utf8
+            )
+        )
         exit(0)
     }
 

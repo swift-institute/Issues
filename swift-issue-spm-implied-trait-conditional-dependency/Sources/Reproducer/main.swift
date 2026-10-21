@@ -32,14 +32,19 @@
         let sources = directory.appendingPathComponent("Sources/\(module)")
         try FileManager.default.createDirectory(at: sources, withIntermediateDirectories: true)
         try "public let value = 1\n".write(
-            to: sources.appendingPathComponent("\(module).swift"), atomically: true, encoding: .utf8
+            to: sources.appendingPathComponent("\(module).swift"),
+            atomically: true,
+            encoding: .utf8
         )
         let manifest = try String(
-            contentsOf: fixture.appendingPathComponent("\(name).Package.swift.txt"), encoding: .utf8
+            contentsOf: fixture.appendingPathComponent("\(name).Package.swift.txt"),
+            encoding: .utf8
         )
         .replacingOccurrences(of: "@ROOT@", with: root.path)
         try manifest.write(
-            to: directory.appendingPathComponent("Package.swift"), atomically: true, encoding: .utf8
+            to: directory.appendingPathComponent("Package.swift"),
+            atomically: true,
+            encoding: .utf8
         )
         if commit {
             _ = try run(["git", "init", "-q", "-b", "main"], in: directory)
@@ -48,7 +53,9 @@
                 [
                     "git", "-c", "user.name=repro", "-c", "user.email=repro@example.com", "commit",
                     "-qm", "fixture",
-                ], in: directory)
+                ],
+                in: directory
+            )
         }
         return directory
     }

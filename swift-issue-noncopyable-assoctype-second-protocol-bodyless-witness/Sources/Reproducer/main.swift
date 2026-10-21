@@ -35,7 +35,8 @@
 
     let work = URL(fileURLWithPath: NSTemporaryDirectory())
         .appendingPathComponent(
-            "second-protocol-bodyless-witness-probe-\(ProcessInfo.processInfo.processIdentifier)")
+            "second-protocol-bodyless-witness-probe-\(ProcessInfo.processInfo.processIdentifier)"
+        )
     try? FileManager.default.removeItem(at: work)
     guard
         (try? FileManager.default.createDirectory(at: work, withIntermediateDirectories: true))
@@ -99,7 +100,8 @@
             Data(
                 "BUG FIRES: the consumer module aborted on the bodyless `Box.body.read` witness.\n"
                     .utf8
-            ))
+            )
+        )
         exit(1)
     }
     if importing.status == 0 {

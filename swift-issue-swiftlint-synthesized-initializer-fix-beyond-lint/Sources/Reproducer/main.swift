@@ -75,7 +75,8 @@
     guard let version = run(["swiftlint", "version"]), version.status == 0
     else { inconclusive("no reachable `swiftlint` on PATH") }
     FileHandle.standardError.write(
-        Data("swiftlint \(version.output.trimmingCharacters(in: .whitespacesAndNewlines))\n".utf8))
+        Data("swiftlint \(version.output.trimmingCharacters(in: .whitespacesAndNewlines))\n".utf8)
+    )
 
     // MEASURE — what a lane running `--strict` would see.
     guard let linted = run(["swiftlint", "lint", "--strict", "--no-cache", "--reporter", "json"])
@@ -107,7 +108,8 @@
     let corrected = originalCount - surviving
 
     FileHandle.standardError.write(
-        Data("reported by lint --strict: \(reported)\ncorrected by --fix: \(corrected)\n".utf8))
+        Data("reported by lint --strict: \(reported)\ncorrected by --fix: \(corrected)\n".utf8)
+    )
 
     guard corrected > reported else {
         print(

@@ -68,7 +68,8 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
 
             let work = URL(fileURLWithPath: NSTemporaryDirectory())
                 .appendingPathComponent(
-                    "swiftlint-nil-coalescing-test-\(ProcessInfo.processInfo.processIdentifier)")
+                    "swiftlint-nil-coalescing-test-\(ProcessInfo.processInfo.processIdentifier)"
+                )
 
             // FileManager's removeItem/createDirectory/copyItem are untyped
             // cross-module throwing APIs; every outcome is handled by the guards
@@ -86,7 +87,8 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
             let staged = work.appendingPathComponent("Sources/Fixture.swift")
             guard
                 (try? FileManager.default.copyItem(
-                    at: sources.appendingPathComponent("Fixture.swift.txt"), to: staged
+                    at: sources.appendingPathComponent("Fixture.swift.txt"),
+                    to: staged
                 )) != nil,
                 (try? FileManager.default.copyItem(
                     at: sources.appendingPathComponent("Config.yml.txt"),
@@ -143,8 +145,7 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
         #endif
     }
 
-    @Test func `the redundant_nil_coalescing correction turns compiling code into a compile error`()
-    {
+    @Test func `the redundant_nil_coalescing correction turns compiling code into a compile error`() {
         let measured = Self.measure()
         withKnownIssue(
             "swiftlint --fix deletes the `?? nil` that flattens a double optional"

@@ -9,7 +9,8 @@
         .appendingPathComponent("Fixture")
     let root = URL(fileURLWithPath: NSTemporaryDirectory())
         .appendingPathComponent(
-            "macro-conformance-import-\(ProcessInfo.processInfo.processIdentifier)")
+            "macro-conformance-import-\(ProcessInfo.processInfo.processIdentifier)"
+        )
 
     // REASON: Process.run() throws an untyped Foundation error in this out-of-process harness.
     // swiftlint:disable:next typed_throws_required
@@ -28,13 +29,19 @@
     }
 
     // REASON: Foundation file-system and String I/O APIs throw untyped errors.
-    // swiftlint:disable:next typed_throws_required
-    func copy(_ name: String, to path: String, replacing replacements: [String: String] = [:])
+    func copy(
+        _ name: String,
+        to path: String,
+        replacing replacements: [String: String] = [:]
+    )
+        // swiftlint:disable:next typed_throws_required
         throws
     {
         let destination = root.appendingPathComponent(path)
         try FileManager.default.createDirectory(
-            at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
+            at: destination.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
         try replacements.reduce(
             String(contentsOf: fixture.appendingPathComponent(name), encoding: .utf8)
         ) {
@@ -47,7 +54,10 @@
     // swiftlint:disable:next typed_throws_required
     func build(import keyword: String) throws -> (status: Int32, output: String) {
         try copy(
-            "Client.swift.txt", to: "Sources/Client/Client.swift", replacing: ["@IMPORT@": keyword])
+            "Client.swift.txt",
+            to: "Sources/Client/Client.swift",
+            replacing: ["@IMPORT@": keyword]
+        )
         return try run(["swift", "build", "--target", "Client"], in: root)
     }
 
@@ -73,7 +83,8 @@
         }
         if publicImport.status != 0 {
             FileHandle.standardError.write(
-                Data("unexpected build failure:\n\(publicImport.output)\n".utf8))
+                Data("unexpected build failure:\n\(publicImport.output)\n".utf8)
+            )
             exit(2)
         }
         print("built (bug did not fire)")

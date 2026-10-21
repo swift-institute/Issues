@@ -30,7 +30,8 @@
 
     let work = URL(fileURLWithPath: NSTemporaryDirectory())
         .appendingPathComponent(
-            "sillinker-borrowed-default-probe-\(ProcessInfo.processInfo.processIdentifier)")
+            "sillinker-borrowed-default-probe-\(ProcessInfo.processInfo.processIdentifier)"
+        )
     try? FileManager.default.removeItem(at: work)
     guard
         (try? FileManager.default.createDirectory(at: work, withIntermediateDirectories: true))
@@ -80,7 +81,8 @@
         FileHandle.standardError.write(
             Data(
                 "swiftlang/swift#90406 FIRES: the importing module aborted.\n".utf8
-            ))
+            )
+        )
         exit(1)
     }
     if importing.status == 0 {

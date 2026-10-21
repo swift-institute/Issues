@@ -78,7 +78,8 @@ struct TypedThrowsCatchClauseErrorConversionReproducer {
             try? FileManager.default.removeItem(at: work)
             guard
                 (try? FileManager.default.createDirectory(
-                    at: work, withIntermediateDirectories: true
+                    at: work,
+                    withIntermediateDirectories: true
                 )) != nil
             else { return nil }
             defer { try? FileManager.default.removeItem(at: work) }
@@ -113,7 +114,8 @@ struct TypedThrowsCatchClauseErrorConversionReproducer {
                 guard let result = compile() else { return nil }
                 guard result.status != 0 else { continue }
                 if result.stderr.contains(
-                    "INTERNAL ERROR: feature not implemented: throw conversion")
+                    "INTERNAL ERROR: feature not implemented: throw conversion"
+                )
                     || result.stderr.contains("While silgen")
                 {
                     return true

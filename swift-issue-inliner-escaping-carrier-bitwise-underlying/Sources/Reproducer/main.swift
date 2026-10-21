@@ -85,19 +85,24 @@
         FileHandle.standardError.write(
             Data(
                 "BUG FIRED: EarlyPerfInliner aborted on an escaping mark_dependence over a coroutine token.\n"
-                    .utf8))
+                    .utf8
+            )
+        )
         exit(1)
     } else if process.terminationStatus != 0 {
         // Compiler failed for some OTHER reason (unknown flag, syntax change, …).
         // Not the bug under test; do not flip the signal.
         FileHandle.standardError.write(
-            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8))
+            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8)
+        )
         exit(0)
     } else {
         FileHandle.standardError.write(
             Data(
                 "Crash.swift.txt compiled cleanly — expected on 6.3/6.4-class toolchains; on a 6.5-dev-class toolchain this means the bug is FIXED.\n"
-                    .utf8))
+                    .utf8
+            )
+        )
         exit(0)
     }
 

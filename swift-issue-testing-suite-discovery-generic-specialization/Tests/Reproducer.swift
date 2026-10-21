@@ -4,5 +4,6 @@ import Testing
 func evidenceLayoutContract() {
     #expect(!"swift-issue-testing-suite-discovery-generic-specialization".isEmpty)
     #expect(
-        !"swift test list: compile error on @Suite in a generic extension since Swift 6.4".isEmpty)
+        !"swift test list: compile error on @Suite in a generic extension since Swift 6.4".isEmpty
+    )
 }

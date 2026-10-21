@@ -31,8 +31,8 @@ enum SimpleTag: Sendable {}
 // swiftlint:disable:next no_tag_suffix_phantom
 let cursor = Atomic<Tagged<SimpleTag, Ordinal>>(.zero)
 // reason: the literal `2` is a known-valid Cardinal for this probe; the
-// force-try is not a runtime risk.
-// swiftlint:disable:next no_tag_suffix_phantom force_try
-let count: Tagged<SimpleTag, Cardinal> = try! .init(2)
+// constructor cannot fail.
+// swiftlint:disable:next no_tag_suffix_phantom
+let count: Tagged<SimpleTag, Cardinal> = .literal(2)
 let result = cursor.advance(within: count)
 print("result = \(result.underlying.rawValue)")

@@ -77,18 +77,22 @@
         FileHandle.standardError.write(
             Data(
                 "BUG FIRED: bogus 'does not conform' rejection of the valid declaring-context annotation.\n"
-                    .utf8))
+                    .utf8
+            )
+        )
         exit(1)
     } else if process.terminationStatus != 0 {
         // The compiler rejected the source for some OTHER reason (e.g. a future
         // syntax change, or a rephrased diagnostic). Not the signature under
         // test; do not flip the signal — re-triage by hand.
         FileHandle.standardError.write(
-            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8))
+            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8)
+        )
         exit(0)
     } else {
         FileHandle.standardError.write(
-            Data("Reject.swift.txt typechecked cleanly — the bug appears FIXED.\n".utf8))
+            Data("Reject.swift.txt typechecked cleanly — the bug appears FIXED.\n".utf8)
+        )
         exit(0)
     }
 

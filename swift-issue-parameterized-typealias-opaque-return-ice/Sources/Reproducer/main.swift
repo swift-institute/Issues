@@ -65,11 +65,13 @@
 
     if errText.contains("failed to produce diagnostic") {
         FileHandle.standardError.write(
-            Data("ICE SIGNATURE: failed to produce diagnostic for expression.\n".utf8))
+            Data("ICE SIGNATURE: failed to produce diagnostic for expression.\n".utf8)
+        )
         exit(1)
     } else if process.terminationStatus != 0 {
         FileHandle.standardError.write(
-            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8))
+            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8)
+        )
         exit(0)
     } else {
         FileHandle.standardError.write(

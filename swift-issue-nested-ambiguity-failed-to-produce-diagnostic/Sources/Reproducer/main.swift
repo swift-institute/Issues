@@ -52,15 +52,18 @@
 
     if errText.contains("failed to produce diagnostic") {
         FileHandle.standardError.write(
-            Data("BUG FIRED: failed to produce diagnostic for a nested ambiguous call.\n".utf8))
+            Data("BUG FIRED: failed to produce diagnostic for a nested ambiguous call.\n".utf8)
+        )
         exit(1)
     } else if errText.contains("ambiguous use of") {
         FileHandle.standardError.write(
-            Data("Proper ambiguity diagnostic reported — the bug is FIXED.\n".utf8))
+            Data("Proper ambiguity diagnostic reported — the bug is FIXED.\n".utf8)
+        )
         exit(0)
     } else {
         FileHandle.standardError.write(
-            Data("swiftc output did not match either signature:\n\(errText)\n".utf8))
+            Data("swiftc output did not match either signature:\n\(errText)\n".utf8)
+        )
         exit(0)
     }
 

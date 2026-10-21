@@ -74,23 +74,28 @@
     let bugFired =
         errText.contains("hasTypeParameter")
         || errText.contains(
-            "error destination of try_apply must take argument of error result type")
+            "error destination of try_apply must take argument of error result type"
+        )
 
     if bugFired {
         FileHandle.standardError.write(
             Data(
                 "BUG FIRED: FunctionSignatureOpts aborted on the generic typed-throws error result.\n"
-                    .utf8))
+                    .utf8
+            )
+        )
         exit(1)
     } else if process.terminationStatus != 0 {
         // Compiler failed for some OTHER reason (e.g. a future flag/syntax change).
         // Not the bug under test; do not flip the signal.
         FileHandle.standardError.write(
-            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8))
+            Data("swiftc failed for an unrelated reason:\n\(errText)\n".utf8)
+        )
         exit(0)
     } else {
         FileHandle.standardError.write(
-            Data("Crash.swift.txt compiled cleanly — the bug appears FIXED.\n".utf8))
+            Data("Crash.swift.txt compiled cleanly — the bug appears FIXED.\n".utf8)
+        )
         exit(0)
     }
 

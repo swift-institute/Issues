@@ -53,19 +53,22 @@
         compile == 0
     else {
         FileHandle.standardError.write(
-            Data("inconclusive: reproducer.swift failed to compile\n".utf8))
+            Data("inconclusive: reproducer.swift failed to compile\n".utf8)
+        )
         exit(0)
     }
 
     guard let runStatus = run(binary.path, []) else {
         FileHandle.standardError.write(
-            Data("inconclusive: could not launch the compiled reproducer\n".utf8))
+            Data("inconclusive: could not launch the compiled reproducer\n".utf8)
+        )
         exit(0)
     }
 
     if runStatus >= 128 {
         FileHandle.standardError.write(
-            Data("BUG FIRES: the reproducer was killed by signal \(runStatus - 128).\n".utf8))
+            Data("BUG FIRES: the reproducer was killed by signal \(runStatus - 128).\n".utf8)
+        )
         exit(1)
     }
     print("bug appears FIXED: the reproducer ran to completion (exit \(runStatus)).")

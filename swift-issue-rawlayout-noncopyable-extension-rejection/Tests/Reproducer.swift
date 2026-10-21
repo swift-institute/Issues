@@ -42,11 +42,13 @@ struct RawlayoutNoncopyableExtensionRejectionReproducer {
 
             let work = URL(fileURLWithPath: NSTemporaryDirectory())
                 .appendingPathComponent(
-                    "rawlayout-rejection-test-\(ProcessInfo.processInfo.processIdentifier)")
+                    "rawlayout-rejection-test-\(ProcessInfo.processInfo.processIdentifier)"
+                )
             try? FileManager.default.removeItem(at: work)
             guard
                 (try? FileManager.default.createDirectory(
-                    at: work, withIntermediateDirectories: true
+                    at: work,
+                    withIntermediateDirectories: true
                 )) != nil
             else { return nil }
             defer { try? FileManager.default.removeItem(at: work) }

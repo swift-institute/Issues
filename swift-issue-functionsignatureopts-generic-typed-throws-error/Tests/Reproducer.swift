@@ -100,7 +100,8 @@ struct FunctionSignatureOptsGenericTypedThrowsErrorReproducer {
             // Two manifestations of the same defect (assert on 6.3+, verifier on 6.2/6.2.3).
             if errText.contains("hasTypeParameter")
                 || errText.contains(
-                    "error destination of try_apply must take argument of error result type")
+                    "error destination of try_apply must take argument of error result type"
+                )
             {
                 return true
             }

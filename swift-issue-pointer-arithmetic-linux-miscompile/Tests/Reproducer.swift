@@ -27,7 +27,8 @@ private func isRelease() -> Bool {
             {
                 debug = true
                 return true
-            }())
+            }()
+        )
         return !debug
     #endif
 }
