@@ -21,7 +21,7 @@ public struct Container<Element: ~Copyable, let capacity: Int>: ~Copyable {
     @unsafe
     mutating func _pointerToElement(at index: Int) -> UnsafeMutablePointer<Element> {
         let stride = MemoryLayout<Element>.stride
-        return unsafe Swift.withUnsafeMutablePointer(to: &_storage) { storagePtr in
+        return Swift.withUnsafeMutablePointer(to: &_storage) { storagePtr in
             let basePtr = UnsafeMutableRawPointer(storagePtr)
             return unsafe (basePtr + index * stride).assumingMemoryBound(to: Element.self)
         }
@@ -39,7 +39,7 @@ public struct Container<Element: ~Copyable, let capacity: Int>: ~Copyable {
         let count = _count
         guard count > 0 else { return }
         let stride = MemoryLayout<Element>.stride
-        unsafe Swift.withUnsafeBytes(of: _storage) { bytes in
+        Swift.withUnsafeBytes(of: _storage) { bytes in
             guard let baseAddress = bytes.baseAddress else { return }
             let basePtr = unsafe UnsafeMutableRawPointer(mutating: baseAddress)
             for i in 0..<count {
@@ -74,7 +74,7 @@ public struct ContainerFixed<Element: ~Copyable, let capacity: Int>: ~Copyable {
     @unsafe
     mutating func _pointerToElement(at index: Int) -> UnsafeMutablePointer<Element> {
         let stride = MemoryLayout<Element>.stride
-        return unsafe Swift.withUnsafeMutablePointer(to: &_storage) { storagePtr in
+        return Swift.withUnsafeMutablePointer(to: &_storage) { storagePtr in
             let basePtr = UnsafeMutableRawPointer(storagePtr)
             return unsafe (basePtr + index * stride).assumingMemoryBound(to: Element.self)
         }
@@ -90,7 +90,7 @@ public struct ContainerFixed<Element: ~Copyable, let capacity: Int>: ~Copyable {
         let count = _count
         guard count > 0 else { return }
         let stride = MemoryLayout<Element>.stride
-        unsafe Swift.withUnsafeBytes(of: _storage) { bytes in
+        Swift.withUnsafeBytes(of: _storage) { bytes in
             guard let baseAddress = bytes.baseAddress else { return }
             let basePtr = unsafe UnsafeMutableRawPointer(mutating: baseAddress)
             for i in 0..<count {
@@ -118,7 +118,7 @@ public struct ContainerLiteral<Element: ~Copyable>: ~Copyable {
     @unsafe
     mutating func _pointerToElement(at index: Int) -> UnsafeMutablePointer<Element> {
         let stride = MemoryLayout<Element>.stride
-        return unsafe Swift.withUnsafeMutablePointer(to: &_storage) { storagePtr in
+        return Swift.withUnsafeMutablePointer(to: &_storage) { storagePtr in
             let basePtr = UnsafeMutableRawPointer(storagePtr)
             return unsafe (basePtr + index * stride).assumingMemoryBound(to: Element.self)
         }
@@ -134,7 +134,7 @@ public struct ContainerLiteral<Element: ~Copyable>: ~Copyable {
         let count = _count
         guard count > 0 else { return }
         let stride = MemoryLayout<Element>.stride
-        unsafe Swift.withUnsafeBytes(of: _storage) { bytes in
+        Swift.withUnsafeBytes(of: _storage) { bytes in
             guard let baseAddress = bytes.baseAddress else { return }
             let basePtr = unsafe UnsafeMutableRawPointer(mutating: baseAddress)
             for i in 0..<count {
