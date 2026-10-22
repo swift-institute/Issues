@@ -58,24 +58,33 @@ public enum Readiness: String, CaseIterable, Sendable {
         let signature = report.signature
         require(signature != nil, .signature, "no signature: paste the output of `issue-reduce --signature`")
         if let signature, signature.crashed {
-            require(!signature.frames.isEmpty || signature.assertion != nil, .signature, "a crash signature needs an assertion or at least one frame")
+            // Windows toolchains print unsymbolized frames, so there a
+            // `requires:` line (the verifier's or abort's own text) identifies it.
+            require(!signature.frames.isEmpty || signature.assertion != nil || !signature.required.isEmpty, .signature, "a crash signature needs an assertion, at least one frame, or a `requires:` line")
         }
 
         // Toolchain matrix: the current release, the release branch's latest
-        // snapshot and the latest main snapshot, each with a stated result.
+        // snapshot and the latest main snapshot, each with a stated result,
+        // on the platform the record reproduces on: a Windows record is
+        // judged by its `windows-` rows, any other by the rest.
         let rows = report.matrix
+        let toolchain = report[.reproducesOn]
+        let platform = Platform(toolchain: toolchain)
+        let prefix = platform.prefix
         let results = ["reproduces", "does not reproduce", "fixed", "different crash"]
         for row in rows {
             require(results.contains(where: { row.result.hasPrefix($0) }), .matrix, "'\(row.toolchain)': result must be one of \(results.joined(separator: ", "))")
             require(!row.version.isEmpty, .matrix, "'\(row.toolchain)': state the `swift --version` line")
         }
         // The newest of each kind decides; older rows are history.
-        let main = Readiness.newest(rows.filter { $0.toolchain.hasPrefix("main-snapshot-") })
-        let branch = Readiness.newest(rows.filter { $0.toolchain.range(of: #"^\d+\.\d+(\.x)?-snapshot-"#, options: .regularExpression) != nil })
-        let release = rows.first { $0.toolchain.range(of: #"^(xcode-)?\d+\.\d+(\.\d+)?$"#, options: .regularExpression) != nil }
-        require(release != nil, .matrix, "no row for the current release toolchain (e.g. `xcode-27.2` or `6.4.1`)")
-        require(branch != nil, .matrix, "no row for the latest release-branch snapshot (e.g. `6.4.x-snapshot-2026-10-20`)")
-        require(main != nil, .matrix, "no row for the latest main snapshot (e.g. `main-snapshot-2026-10-17`)")
+        let own = rows.filter { Platform(toolchain: $0.toolchain) == platform }
+        let main = Readiness.newest(own.filter { $0.toolchain.hasPrefix(prefix + "main-snapshot-") })
+        let branch = Readiness.newest(own.filter { Platform.swiftlyName($0.toolchain).range(of: #"^\d+\.\d+(\.x)?-snapshot-"#, options: .regularExpression) != nil })
+        let release = own.first { Platform.swiftlyName($0.toolchain).range(of: #"^(xcode-)?\d+\.\d+(\.\d+)?$"#, options: .regularExpression) != nil }
+        let releaseExample = platform == .windows ? "`windows-6.4.1`" : "`xcode-27.2` or `6.4.1`"
+        require(release != nil, .matrix, "no row for the current release toolchain (e.g. \(releaseExample))")
+        require(branch != nil, .matrix, "no row for the latest release-branch snapshot (e.g. `\(prefix)6.4.x-snapshot-2026-10-20`)")
+        require(main != nil, .matrix, "no row for the latest main snapshot (e.g. `\(prefix)main-snapshot-2026-10-17`)")
         if let main {
             if let snapshotDate = Readiness.snapshotDate(main.toolchain) {
                 let age = date.timeIntervalSince(snapshotDate) / 86_400
@@ -126,10 +135,9 @@ public enum Readiness: String, CaseIterable, Sendable {
         }
 
         // Where it reproduces, and that the matrix agrees.
-        let toolchain = report[.reproducesOn]
         if !toolchain.isEmpty {
             let isXcode = toolchain.hasPrefix("xcode-")
-            require(Readiness.isToolchain(toolchain), .reproducesOn, "'\(toolchain)' is neither a swiftly toolchain name nor `xcode-<version>`")
+            require(Readiness.isToolchain(toolchain), .reproducesOn, "'\(toolchain)' is not a swiftly toolchain name, `windows-` and one, or `xcode-<version>`")
             require(!isXcode || owner == .feedbackAssistant, .reproducesOn, "reproduces only with Xcode's toolchain: swiftlang/swift asks for such bugs to go to Feedback Assistant; retest on an open-source toolchain or reroute")
             let row = rows.first { $0.toolchain == toolchain }
             require(row?.result.hasPrefix("reproduces") == true, .reproducesOn, "the matrix has no 'reproduces' row for \(toolchain)")
@@ -157,7 +165,7 @@ public enum Readiness: String, CaseIterable, Sendable {
                 findings.append(Finding(field: .draft, message: "the stack dump lacks the signature frame \(frame)"))
             }
         }
-        for local in ["/Users/", "/private/tmp/", "/var/folders/", "/home/"] where draft.contains(local) {
+        for local in ["/Users/", "/private/tmp/", "/var/folders/", "/home/", #"C:\Users\"#, #"D:\a\"#] where draft.contains(local) {
             findings.append(Finding(field: .draft, message: "contains a machine-local path (\(local)…); nobody upstream can open it"))
         }
 
@@ -191,8 +199,9 @@ public enum Readiness: String, CaseIterable, Sendable {
         return formatter.date(from: String(toolchain[range]))
     }
 
+    /// A swiftly name, `windows-` and a swiftly name, or `xcode-<version>`.
     static func isToolchain(_ name: String) -> Bool {
-        name.range(of: #"^(main-snapshot-\d{4}-\d{2}-\d{2}|\d+\.\d+(\.x)?-snapshot-\d{4}-\d{2}-\d{2}|\d+\.\d+(\.\d+)?|xcode-\d+(\.\d+)*)$"#, options: .regularExpression) != nil
+        name.range(of: #"^(xcode-\d+(\.\d+)*|(windows-)?(main-snapshot-\d{4}-\d{2}-\d{2}|\d+\.\d+(\.x)?-snapshot-\d{4}-\d{2}-\d{2}|\d+\.\d+(\.\d+)?))$"#, options: .regularExpression) != nil
     }
 }
 

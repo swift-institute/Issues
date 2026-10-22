@@ -46,7 +46,8 @@ extension Signature {
 
     /// Reads a signature from command output, keeping `frameCount` frames.
     public init(output: String, frameCount: Int = 4, required: [String] = []) {
-        let lines = output.components(separatedBy: "\n")
+        // `.newlines` also splits Windows' CRLF.
+        let lines = output.components(separatedBy: .newlines)
         var assertion: String?
         var phase: String?
         var frames: [String] = []
@@ -97,12 +98,15 @@ extension Signature {
         return other.frames.contains { ours.contains($0) }
     }
 
-    // Darwin: `Assertion failed: (cond), function f, file x.cpp, line 12.`
-    // Linux:  `swift-frontend: x.cpp:12: void f(): Assertion `cond' failed.`
+    // Darwin:  `Assertion failed: (cond), function f, file x.cpp, line 12.`
+    // Linux:   `swift-frontend: x.cpp:12: void f(): Assertion `cond' failed.`
+    // Windows: `Assertion failed: cond, file C:\x.cpp, line 12`
     static func assertionText(_ line: String) -> String? {
         if let range = line.range(of: "Assertion failed: ") {
             var text = String(line[range.upperBound...])
-            if let cut = text.range(of: ", function ") { text = String(text[..<cut.lowerBound]) }
+            for marker in [", function ", ", file "] {
+                if let cut = text.range(of: marker) { text = String(text[..<cut.lowerBound]) }
+            }
             return text.trimmingCharacters(in: .whitespaces)
         }
         if let start = line.range(of: "Assertion `"), let end = line.range(of: "' failed", range: start.upperBound..<line.endIndex) {

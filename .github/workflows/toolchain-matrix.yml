@@ -1,13 +1,18 @@
 # The toolchain matrix of a "Toolchain bug" record, run on CI (UPSTREAM-PROCEDURE.md, step 4).
 #
-# Runs the record's minimal reproduction on each named toolchain on a hosted
-# macOS runner. `xcode-<version>` uses the runner's selected Xcode (recorded,
-# never assumed to be that version); every other name is installed through
-# swiftly. Posts the table as a comment on the issue. The Institute treats CI
+# Runs the record's minimal reproduction on each named toolchain. A plan job
+# on Linux (`issue-check --matrix … --print-setup`) sends each name to its
+# runner: `xcode-<version>` and swiftly names to one macOS job (an
+# `xcode-<version>` row runs only on exactly that Xcode, else it is marked
+# not run; every other name is installed through swiftly); each
+# `windows-<swiftly name>` to its own Windows job, since a Windows runner
+# holds one toolchain on PATH at a time. Each job posts its table as a
+# comment on the issue, so a matrix with Windows rows arrives as several
+# comments, and "different crash" compares rows within one job only. The Institute treats CI
 # as the evidence of record, so a record's matrix comes from this run, not
 # from a developer machine.
 #
-# Wiring only: classification is `issue-check --matrix` in Tooling/. Pin
+# Wiring only: routing and classification are `issue-check` in Tooling/. Pin
 # boundary as in upstream-readiness.yml.
 
 name: toolchain-matrix
@@ -19,7 +24,7 @@ on:
         description: Issue number
         required: true
       toolchains:
-        description: Comma-separated, e.g. 6.4.x-snapshot-2026-10-20,xcode-27.2,6.4.1,main-snapshot-2026-10-17
+        description: Comma-separated, e.g. 6.4.x-snapshot-2026-10-20,xcode-27.2,6.4.1,main-snapshot-2026-10-17,windows-6.4.1
         required: true
 
 permissions:
@@ -30,8 +35,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  plan:
+    name: toolchain-matrix / plan
+    runs-on: ubuntu-latest
+    container: swift:6.4.0-noble
+    timeout-minutes: 30
+    env:
+      TOOLCHAINS_LIST: ${{ inputs.toolchains }}
+    outputs:
+      macos: ${{ steps.setup.outputs.macos }}
+      swiftly: ${{ steps.setup.outputs.swiftly }}
+      windows: ${{ steps.setup.outputs.windows }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build issue-check
+        run: |
+          swift --version | tee -a "$GITHUB_STEP_SUMMARY"
+          swift build --package-path Tooling --product issue-check
+      - name: Plan
+        id: setup
+        run: Tooling/.build/debug/issue-check --matrix "$TOOLCHAINS_LIST" --print-setup | tee -a "$GITHUB_OUTPUT" "$GITHUB_STEP_SUMMARY"
+
   matrix:
-    name: toolchain-matrix / issue-check
+    name: toolchain-matrix / issue-check · macOS
+    needs: plan
+    if: needs.plan.outputs.macos != ''
     runs-on: macos-26
     timeout-minutes: 90
     permissions:
@@ -40,7 +70,8 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       ISSUE: ${{ inputs.issue }}
-      TOOLCHAINS_LIST: ${{ inputs.toolchains }}
+      TOOLCHAINS_LIST: ${{ needs.plan.outputs.macos }}
+      SWIFTLY_TOOLCHAINS: ${{ needs.plan.outputs.swiftly }}
       GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -51,6 +82,7 @@ jobs:
           echo "Runner image: $ImageOS $ImageVersion" | tee -a "$GITHUB_STEP_SUMMARY"
           xcodebuild -version | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Install swiftly
+        if: needs.plan.outputs.swiftly != ''
         run: |
           curl -fsSL -o "$RUNNER_TEMP/swiftly.pkg" https://download.swift.org/swiftly/darwin/swiftly.pkg
           pkgutil --check-signature "$RUNNER_TEMP/swiftly.pkg" | tee -a "$GITHUB_STEP_SUMMARY" \
@@ -59,14 +91,51 @@ jobs:
           "$HOME/.swiftly/bin/swiftly" init --assume-yes --skip-install --quiet-shell-followup
           echo "$HOME/.swiftly/bin" >> "$GITHUB_PATH"
       - name: Install the toolchains
+        if: needs.plan.outputs.swiftly != ''
         run: |
-          for toolchain in ${TOOLCHAINS_LIST//,/ }; do
-            case "$toolchain" in
-              xcode*) ;;
-              *) swiftly install "$toolchain" --assume-yes ;;
-            esac
+          for toolchain in ${SWIFTLY_TOOLCHAINS//,/ }; do
+            swiftly install "$toolchain" --assume-yes
           done
       - name: Build issue-check
         run: swift build -c release --package-path Tooling --product issue-check
       - name: Matrix
         run: Tooling/.build/release/issue-check "$ISSUE" --repo "$GITHUB_REPOSITORY" --matrix "$TOOLCHAINS_LIST" --post | tee -a "$GITHUB_STEP_SUMMARY"
+
+  matrix-windows:
+    name: toolchain-matrix / issue-check · ${{ matrix.toolchain }}
+    needs: plan
+    if: needs.plan.outputs.windows != '[]'
+    runs-on: windows-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.windows) }}
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE: ${{ inputs.issue }}
+      TOOLCHAIN: ${{ matrix.toolchain }}
+      GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The row's toolchain is the only one on PATH; issue-check is built with it.
+      - uses: SwiftyLab/setup-swift@38f54a76b70d989321de9dc7c840618c08cf56e9 # v1.14.0
+        with:
+          swift-version: ${{ matrix['swift-version'] }}
+          cache-snapshot: false
+      - name: Record the runner
+        run: |
+          echo "Runner image: $ImageOS $ImageVersion" | tee -a "$GITHUB_STEP_SUMMARY"
+          swiftc --version | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Build issue-check
+        run: swift build --package-path Tooling --product issue-check
+      - name: Matrix
+        run: Tooling/.build/debug/issue-check "$ISSUE" --repo "$GITHUB_REPOSITORY" --matrix "$TOOLCHAIN" --post | tee -a "$GITHUB_STEP_SUMMARY"

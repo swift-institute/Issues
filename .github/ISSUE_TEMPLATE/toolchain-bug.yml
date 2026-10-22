@@ -58,7 +58,8 @@ body:
       description: >
         One row each for the current release (`xcode-<version>` or `X.Y.Z`),
         the latest release-branch snapshot and the latest main snapshot, all
-        run with the minimal reproduction. Result is `reproduces`,
+        run with the minimal reproduction, on the platform of Reproduces on
+        (`windows-` rows for a Windows record). Result is `reproduces`,
         `does not reproduce` or `fixed`.
       value: |
         | Toolchain | `swiftc --version` | Result |
@@ -94,8 +95,9 @@ body:
       label: Reproduces on
       description: >
         The toolchain `issue-check --run` uses: a swiftly name such as
-        `main-snapshot-2026-10-17`, or `xcode-<version>` (Feedback Assistant
-        only).
+        `main-snapshot-2026-10-17`, `windows-` and a swiftly name for a
+        Windows-only bug (`windows-6.4.1`), or `xcode-<version>` (Feedback
+        Assistant only).
   - type: textarea
     id: reduction
     attributes:

@@ -69,6 +69,13 @@ frames with `atos`. Take the record's signature on the toolchain in
 **Reproduces on**: `issue-check --run` compares against it exactly. The matrix
 (step 4) compares across toolchains by phase and shared Swift frames instead.
 
+Windows toolchains print frames as addresses with no names, and the tools
+cannot name them, so a Windows signature has a phase and no frames. Add a
+`--require` with the failure's own text (an assertion, or a verifier's message
+such as `child overlaps previous child`), so the signature still identifies
+the defect; `issue-check` accepts a crash signature that has an assertion, a
+frame, or a `requires:` line.
+
 Find the build settings that matter first. Xcode's Debug configuration adds
 `-DDEBUG`, `-enable-testing` and `-g`; a release build drops them. Vary one at
 a time, and keep only those whose removal makes the failure go away.
@@ -131,11 +138,27 @@ snapshot from the last month.
 
 An `xcode-<version>` row runs only on an installed Xcode of exactly that version (the selected one first); otherwise it reports `not run`. Hosted runners often lack the newest Xcode or beta, so such a row may have to be a local observation, labelled as one.
 
+**Windows.** A bug that reproduces only on Windows names the swift.org
+Windows x86_64 toolchains as `windows-` followed by the swiftly name:
+`windows-6.4.1`, `windows-6.4.x-snapshot-YYYY-MM-DD`,
+`windows-main-snapshot-YYYY-MM-DD`. Its **Reproduces on** is one of them, and
+`issue-check` reads its release, release-branch and main rows from the
+`windows-` rows alone: macOS rows that do not reproduce are context, not a fix
+on main. A `windows-` row runs on the Windows toolchain on `PATH`, and only
+when its `swiftc --version` is that toolchain (a release by its exact
+version, a snapshot by its branch, since Windows snapshots print no date);
+on any other host it reports `not run`. The release-branch and main snapshots
+have Windows installers only on some days; check
+`https://download.swift.org/development/windows10/` before naming one. With
+no Windows machine of our own, a Windows row comes only from CI.
+
 A local `--matrix` run is for iterating only. The Institute treats CI as
 evidence, so the table in the record comes from the
 [toolchain-matrix](.github/workflows/toolchain-matrix.yml) workflow. It runs
-the record's own reproduction on a hosted macOS runner and posts the table on
-the issue:
+the record's own reproduction on hosted runners and posts the table on the
+issue: one macOS job for the swiftly and `xcode-` names, and one Windows job
+per `windows-` name (a Windows runner holds one toolchain at a time), each
+posting its own table. Combine them into the record's one table.
 
 ```sh
 gh workflow run toolchain-matrix.yml -R swift-institute/Issues \
@@ -217,9 +240,13 @@ gh issue edit 150 --add-label upstream-ready
 ```
 
 Adding `upstream-ready` (or editing an issue that has it) runs the same check
-in CI on a clean macOS runner, with the stated toolchain installed by swiftly.
-If anything is missing or the reproduction no longer fails, CI removes the
-label and says why.
+in CI. A plan job reads **Reproduces on** with `issue-check --print-setup` and
+picks the runner: a clean macOS runner with the stated toolchain installed by
+swiftly (or the stated Xcode), or, for a `windows-` toolchain, a clean Windows
+runner with that toolchain installed by setup-swift. If anything is missing
+or the reproduction no longer fails, CI removes the label and says why. A
+Windows record cannot be run locally here, so `issue-check 150` checks its
+fields only and the CI run is its evidence.
 
 Only then ask Coen, one filing at a time, with the draft and the target.
 After his explicit yes, file it exactly as drafted, then fill **Filing

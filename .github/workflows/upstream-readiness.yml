@@ -4,16 +4,22 @@
 # `issue-check <issue> --run --enforce` from Tooling/. The check reads the
 # "Toolchain bug" form fields, rejects the label unless every required field
 # is present and consistent, then runs the minimal reproduction on the
-# toolchain the issue names (installed through swiftly) and requires the
-# recorded signature. On failure it removes the label and says why in one
+# toolchain the issue names and requires the recorded signature: a swiftly
+# or xcode- toolchain on macOS, a windows- toolchain on Windows. A plan job
+# on Linux asks `issue-check --print-setup` which runner and install the
+# record needs, so no YAML step reads the record. On failure it removes the label and says why in one
 # comment it keeps up to date; on success it records the verified toolchain
 # in that comment.
 #
 # Wiring only: every verdict is Swift in Tooling/Sources. Pin boundary:
-# actions/checkout is SHA-pinned; swiftly.pkg is downloaded from swift.org and
-# must carry an Apple-issued Developer ID signature (checked and recorded);
-# swiftly verifies each toolchain it installs; the hosted runner image is
-# unpinnable and is recorded per run.
+# actions/checkout and SwiftyLab/setup-swift are SHA-pinned; the plan job runs
+# in the swift:6.4.0-noble image (a tag, recorded per run); swiftly.pkg is
+# downloaded from swift.org and must carry an Apple-issued Developer ID
+# signature (checked and recorded); swiftly verifies each toolchain it
+# installs; setup-swift verifies the Windows release it resolves, while a
+# Windows snapshot installer comes over HTTPS from download.swift.org without
+# a signature check; the hosted runner images are unpinnable and are
+# recorded per run.
 #
 # Governance: like issue-105-toolchain-recheck.yml, a bespoke workflow in a
 # control-plane repository, outside the generated-caller topology; its typed
@@ -38,8 +44,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check:
-    name: upstream-readiness / issue-check
+  plan:
+    name: upstream-readiness / plan
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.action == 'labeled' &&
@@ -47,6 +53,36 @@ jobs:
       (github.event.action == 'edited' &&
         (contains(github.event.issue.labels.*.name, 'upstream-ready') ||
          contains(github.event.issue.labels.*.name, 'upstream-filed')))
+    runs-on: ubuntu-latest
+    container: swift:6.4.0-noble
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE: ${{ github.event.issue.number || inputs.issue }}
+    outputs:
+      swiftly: ${{ steps.setup.outputs.swiftly }}
+      windows: ${{ steps.setup.outputs.windows }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install gh
+        run: |
+          apt-get update -qq && apt-get install -y -qq gh > /dev/null
+          swift --version | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Build issue-check
+        run: swift build --package-path Tooling --product issue-check
+      - name: Plan
+        id: setup
+        run: Tooling/.build/debug/issue-check "$ISSUE" --repo "$GITHUB_REPOSITORY" --print-setup | tee -a "$GITHUB_OUTPUT" "$GITHUB_STEP_SUMMARY"
+
+  check:
+    name: upstream-readiness / issue-check · macOS
+    needs: plan
+    if: needs.plan.outputs.windows == '[]'
     runs-on: macos-26
     timeout-minutes: 60
     permissions:
@@ -55,6 +91,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       ISSUE: ${{ github.event.issue.number || inputs.issue }}
+      SWIFTLY_TOOLCHAINS: ${{ needs.plan.outputs.swiftly }}
       GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -65,6 +102,7 @@ jobs:
           echo "Runner image: $ImageOS $ImageVersion" | tee -a "$GITHUB_STEP_SUMMARY"
           xcrun swiftc --version | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Install swiftly
+        if: needs.plan.outputs.swiftly != ''
         run: |
           curl -fsSL -o "$RUNNER_TEMP/swiftly.pkg" https://download.swift.org/swiftly/darwin/swiftly.pkg
           pkgutil --check-signature "$RUNNER_TEMP/swiftly.pkg" | tee -a "$GITHUB_STEP_SUMMARY" \
@@ -72,14 +110,44 @@ jobs:
           installer -pkg "$RUNNER_TEMP/swiftly.pkg" -target CurrentUserHomeDirectory
           "$HOME/.swiftly/bin/swiftly" init --assume-yes --skip-install --quiet-shell-followup
           echo "$HOME/.swiftly/bin" >> "$GITHUB_PATH"
+      - name: Install the stated toolchain
+        if: needs.plan.outputs.swiftly != ''
+        run: swiftly install "$SWIFTLY_TOOLCHAINS" --assume-yes
       - name: Build issue-check
         run: swift build -c release --package-path Tooling --product issue-check
-      - name: Install the stated toolchain
-        run: |
-          toolchain="$(Tooling/.build/release/issue-check "$ISSUE" --repo "$GITHUB_REPOSITORY" --print-toolchain)"
-          case "$toolchain" in
-            xcode-*|"") echo "No swiftly toolchain stated ('$toolchain'); issue-check will report it." ;;
-            *) swiftly install "$toolchain" --assume-yes ;;
-          esac
       - name: Check
         run: Tooling/.build/release/issue-check "$ISSUE" --repo "$GITHUB_REPOSITORY" --run --enforce
+
+  check-windows:
+    name: upstream-readiness / issue-check · Windows
+    needs: plan
+    if: needs.plan.outputs.windows != '[]'
+    runs-on: windows-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE: ${{ github.event.issue.number || inputs.issue }}
+      GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The stated toolchain is the only one on PATH; issue-check is built with it.
+      - uses: SwiftyLab/setup-swift@38f54a76b70d989321de9dc7c840618c08cf56e9 # v1.14.0
+        with:
+          swift-version: ${{ fromJSON(needs.plan.outputs.windows)[0]['swift-version'] }}
+          cache-snapshot: false
+      - name: Record the runner
+        run: |
+          echo "Runner image: $ImageOS $ImageVersion" | tee -a "$GITHUB_STEP_SUMMARY"
+          swiftc --version | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Build issue-check
+        run: swift build --package-path Tooling --product issue-check
+      - name: Check
+        run: Tooling/.build/debug/issue-check "$ISSUE" --repo "$GITHUB_REPOSITORY" --run --enforce

@@ -18,8 +18,12 @@ let usage = """
                             an issue number and `gh` with write access.
       --date <YYYY-MM-DD>   Check as of this date (default: today)
       --print-toolchain     Print the "Reproduces on" toolchain and stop
+      --print-setup         Print, as $GITHUB_OUTPUT lines, the runner and installs
+                            for the "Reproduces on" toolchain (or, with --matrix,
+                            for those toolchains; no issue needed) and stop
       --matrix <a,b,...>    Run the reproduction on these toolchains (swiftly names,
-                            or xcode-<version> for the selected Xcode), print the
+                            xcode-<version> for that Xcode, or windows-<swiftly name>
+                            for the Windows toolchain on PATH), print the
                             Toolchain matrix table and stop
       --post                With --matrix: also post the table on the issue
     """
@@ -42,6 +46,7 @@ var labelName: String?
 var runs = false
 var enforces = false
 var printsToolchain = false
+var printsSetup = false
 var matrixToolchains: [String] = []
 var posts = false
 var date = Date()
@@ -59,6 +64,7 @@ while let argument = options.next() {
     case "--run": runs = true
     case "--enforce": enforces = true
     case "--print-toolchain": printsToolchain = true
+    case "--print-setup": printsSetup = true
     case "--matrix": matrixToolchains = value().split(separator: ",").map(String.init)
     case "--post": posts = true
     case "--date":
@@ -73,6 +79,8 @@ while let argument = options.next() {
     default: fail("Unknown option \(argument).\n\n" + usage)
     }
 }
+
+if printsSetup, !matrixToolchains.isEmpty { print(Platform.setup(matrixToolchains)); exit(0) }
 
 let body: String
 var labels: [String] = []
@@ -101,6 +109,7 @@ if let labelName {
 
 let report = Report(body: body)
 if printsToolchain { print(report[.reproducesOn]); exit(0) }
+if printsSetup { print(Platform.setup([report[.reproducesOn]])); exit(0) }
 if !matrixToolchains.isEmpty {
     guard let source = report.source, let fileName = report.fileName, let commandLine = report.commandLine else {
         fail("--matrix needs one swift block and one command in Minimal reproduction.")

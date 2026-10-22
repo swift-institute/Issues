@@ -28,19 +28,33 @@ public struct Matrix: Sendable {
     }
 
     /// `xcode-<version>` runs the command as written, through that Xcode (see
-    /// `environment(for:)`); anything else runs through `swiftly run … +<name>`.
+    /// `environment(for:)`); `windows-<name>` runs it on the toolchain on
+    /// `PATH`, which CI installed; anything else runs through
+    /// `swiftly run … +<name>`.
     public static func arguments(_ command: [String], on toolchain: String) -> [String] {
         if toolchain.hasPrefix("xcode") { return command }
         let tool = command.first == "xcrun" ? Array(command.dropFirst()) : command
+        if Platform(toolchain: toolchain) == .windows { return tool }
         return ["swiftly", "run"] + tool + ["+" + toolchain]
     }
 
     /// The environment that runs `toolchain`: for `xcode-<version>`, the
     /// installed Xcode of exactly that version, selected through
     /// `DEVELOPER_DIR`; nil when that Xcode is not installed, so a row never
-    /// silently runs a different Xcode.
+    /// silently runs a different Xcode. For `windows-<name>`, the inherited
+    /// environment when the toolchain on `PATH` is that one, and nil on any
+    /// other host or toolchain.
     public static func environment(for toolchain: String) -> [String: String]?? {
         var environment = ProcessInfo.processInfo.environment
+        if Platform(toolchain: toolchain) == .windows {
+            #if os(Windows)
+            let version = (try? Invocation(arguments: ["swiftc", "--version"], directory: URL(fileURLWithPath: NSTemporaryDirectory()), timeout: 60).run())?
+                .output.components(separatedBy: .newlines).first { $0.contains("Swift version") } ?? ""
+            return Platform.isWindowsToolchain(toolchain, version: version) ? .some(nil) : .none
+            #else
+            return .none
+            #endif
+        }
         guard toolchain.hasPrefix("xcode-") else { return .some(nil) }
         let version = String(toolchain.dropFirst("xcode-".count))
         // The selected Xcode first, so that of two installs of one version
@@ -71,7 +85,7 @@ public struct Matrix: Sendable {
             }
             let probe = Reduction(command: command, fileName: fileName, signature: Signature(crashed: false, assertion: nil, phase: nil, frames: []), timeout: timeout, environment: environment)
             let version = try probe.invoke(source: "", command: Matrix.arguments(["xcrun", "swiftc", "--version"], on: toolchain)).output
-                .components(separatedBy: "\n").first { $0.contains("Swift version") }
+                .components(separatedBy: .newlines).first { $0.contains("Swift version") }
                 .flatMap { line in line.range(of: "Apple Swift version").map { String(line[$0.lowerBound...]) } ?? line } ?? "unknown"
             let output = try probe.invoke(source: source, command: Matrix.arguments(command, on: toolchain)).output
             let signature = Signature(output: output, frameCount: frameCount)
