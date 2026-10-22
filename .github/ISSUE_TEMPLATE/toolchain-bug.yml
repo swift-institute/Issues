@@ -1,0 +1,130 @@
+name: Toolchain bug
+description: >
+  A suspected bug in the Swift toolchain, SwiftPM, swift-format, swift-syntax,
+  swift-foundation or Xcode. Every such bug is recorded here first and goes
+  upstream only once `issue-check` passes and Coen says yes. The procedure is
+  UPSTREAM-PROCEDURE.md at the repository root.
+labels: [upstream-candidate]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Fill what you know and leave the rest empty: the record starts as
+        `upstream-candidate`. `upstream-ready` is admitted only by
+        `issue-check --run`, which reads these fields by their labels, so do
+        not rename them.
+  - type: dropdown
+    id: owner
+    attributes:
+      label: Owner
+      description: Whose bug it is. Decide this first (procedure, step 1).
+      options:
+        - swiftlang/swift (compiler, standard library, runtime, SourceKit)
+        - swiftlang/swift-package-manager
+        - swiftlang/swift-format
+        - swiftlang/swift-syntax
+        - swiftlang/swift-foundation
+        - Feedback Assistant (Xcode, Apple SDKs and frameworks)
+        - Our own code (never upstream)
+    validations:
+      required: false
+  - type: textarea
+    id: owner-reason
+    attributes:
+      label: Why this owner
+      description: >
+        The routing rule that applied and the evidence for it: the failing
+        process (swift-frontend, swift-build, swift-format, …), the phase or
+        frame it fails in, and whether it reproduces outside Xcode.
+  - type: dropdown
+    id: action
+    attributes:
+      label: Upstream action
+      options:
+        - New issue
+        - Comment on an existing open issue
+        - Cherry-pick request on the fixing pull request
+        - Do not file (fixed on main, a duplicate that needs nothing, or not a toolchain bug)
+  - type: textarea
+    id: signature
+    attributes:
+      label: Crash signature
+      description: The output of `issue-reduce <file> --signature -- <command>`, unedited.
+      render: text
+  - type: textarea
+    id: matrix
+    attributes:
+      label: Toolchain matrix
+      description: >
+        One row each for the current release (`xcode-<version>` or `X.Y.Z`),
+        the latest release-branch snapshot and the latest main snapshot, all
+        run with the minimal reproduction. Result is `reproduces`,
+        `does not reproduce` or `fixed`.
+      value: |
+        | Toolchain | `swiftc --version` | Result |
+        |---|---|---|
+        | xcode-27.2 | | |
+        | 6.4.x-snapshot-YYYY-MM-DD | | |
+        | main-snapshot-YYYY-MM-DD | | |
+  - type: textarea
+    id: regression
+    attributes:
+      label: Regression range
+      description: >
+        Last toolchain that passed and first that fails, if bisected between
+        snapshots; or the fixing commit, if one toolchain in the matrix passes.
+  - type: textarea
+    id: duplicates
+    attributes:
+      label: Duplicate search
+      description: >
+        The exact `gh search issues` and `gh search prs` commands run against
+        the owner's repository (open and closed), the date, what was
+        considered, and a closing `Verdict:` line.
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: >
+        One ```swift block (the whole file) and one ```sh block with the one
+        command that fails. No package, no dependency, no Institute code.
+  - type: input
+    id: reproduces-on
+    attributes:
+      label: Reproduces on
+      description: >
+        The toolchain `issue-check --run` uses: a swiftly name such as
+        `main-snapshot-2026-10-17`, or `xcode-<version>` (Feedback Assistant
+        only).
+  - type: textarea
+    id: reduction
+    attributes:
+      label: Reduction record
+      description: >
+        The `issue-reduce` summary (input → output size, steps, fixed point),
+        each ingredient's A/B result, and an `Independent review:` line from a
+        reviewer who reproduced the bug from the upstream draft alone.
+  - type: textarea
+    id: draft
+    attributes:
+      label: Upstream draft
+      description: >
+        The exact text to file, using the owner's own template headings in
+        their order (procedure, step 6). It contains the minimal reproduction
+        verbatim and no machine-local paths.
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Readiness
+      options:
+        - label: The reproduction is one file and one command, and uses no Institute code or third-party package.
+        - label: The matrix was run with the minimal reproduction, on toolchains installed from swift.org or the stated Xcode.
+        - label: The duplicate search covered open and closed issues and pull requests in the owner's repository.
+        - label: An independent reviewer reproduced it from the draft alone and found nothing left to remove.
+  - type: textarea
+    id: filing
+    attributes:
+      label: Filing record
+      description: >
+        Filled only when filed: `Approved by Coen: <YYYY-MM-DD>` with his
+        words, and the upstream link.

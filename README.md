@@ -23,6 +23,15 @@ The companion research repository is at
 The companion experiments repository is at
 [swift-institute/Experiments](https://github.com/swift-institute/Experiments).
 
+## Reporting upstream
+
+Every suspected toolchain bug is opened here first, with the "Toolchain bug"
+issue form. It goes to swiftlang or Feedback Assistant only after
+`issue-check` admits the `upstream-ready` label and Coen says yes to that
+filing. The routing rules, reduction, toolchain matrix, duplicate search and
+upstream formats are in [UPSTREAM-PROCEDURE.md](UPSTREAM-PROCEDURE.md); the
+reducer and the gate are in [Tooling/](Tooling).
+
 ## Per-Issue Convention
 
 Every `swift-issue-*/` subdirectory follows this steady-state layout.
