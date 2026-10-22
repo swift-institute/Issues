@@ -224,6 +224,30 @@ After his explicit yes, file it exactly as drafted, then fill **Filing
 record** with `Approved by Coen: <date>` and his words, and the upstream link,
 and add `upstream-filed`; `issue-check --label upstream-filed` checks both.
 
+## Workarounds in someone else's package
+
+A toolchain bug sometimes has a source-side workaround in a third-party
+package. #150's is a one-line change in swift-issue-reporting. The
+package's maintainers are not the bug's owner, so a pull request to them goes
+through the same record and Coen's per-filing yes. It must also pass one more
+test: **it improves their code on its own merits**, not just around our
+compiler. It qualifies only if, without the toolchain bug, the maintainers
+would still want it, because it is clearer, safer, faster or more correct. A
+workaround for a bug already fixed on main, or for a configuration the package
+does not support, does not qualify.
+
+If it qualifies, the record also needs:
+
+- the package's own test suite passing with the change, on CI in a fork (a
+  fork is a public action, so it needs Coen's yes too);
+- every platform the package supports compiling with the change;
+- the package's pull-request template, or its CONTRIBUTING order;
+- a search of the package's issues and pull requests for earlier discussion
+  of the code being changed.
+
+If it does not qualify, record the workaround on the Institute issue, for our
+own pins or forks, and post nothing.
+
 ## What the gate does not check
 
 `issue-check` checks that each part is present and consistent and that the
