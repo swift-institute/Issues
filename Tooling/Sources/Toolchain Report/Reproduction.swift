@@ -42,9 +42,12 @@ public struct Reproduction: Sendable {
         let versionArguments = toolchain.hasPrefix("xcode-")
             ? ["xcrun", "swiftc", "--version"]
             : ["swiftly", "run", "swiftc", "--version", "+" + toolchain]
-        let version = try Invocation(arguments: versionArguments, directory: directory, timeout: 120).run().output
+        guard case .some(let environment) = Matrix.environment(for: toolchain) else {
+            return Outcome(reproduced: false, version: "\(toolchain) is not installed on this machine", output: "")
+        }
+        let version = try Invocation(arguments: versionArguments, directory: directory, environment: environment, timeout: 120).run().output
             .components(separatedBy: "\n").first { $0.contains("Swift version") } ?? "unknown"
-        var result = try Invocation(arguments: arguments, directory: directory, timeout: timeout).run()
+        var result = try Invocation(arguments: arguments, directory: directory, environment: environment, timeout: timeout).run()
         result.output = Symbolizer.symbolize(result.output)
         return Outcome(reproduced: !result.timedOut && signature.matches(result.output), version: version, output: result.output)
     }

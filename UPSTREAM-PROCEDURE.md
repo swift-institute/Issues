@@ -129,6 +129,8 @@ when a toolchain crashes in the same phase with a shared Swift frame,
 `different crash`, or `does not reproduce`. `issue-check` requires a main
 snapshot from the last month.
 
+An `xcode-<version>` row runs only on an installed Xcode of exactly that version (the selected one first); otherwise it reports `not run`. Hosted runners often lack the newest Xcode or beta, so such a row may have to be a local observation, labelled as one.
+
 A local `--matrix` run is for iterating only. The Institute treats CI as
 evidence, so the table in the record comes from the
 [toolchain-matrix](.github/workflows/toolchain-matrix.yml) workflow. It runs
