@@ -95,7 +95,14 @@ extension Invocation {
         for directory in (variable("PATH") ?? "").split(separator: separator) {
             for suffix in extensions {
                 let candidate = URL(fileURLWithPath: String(directory)).appendingPathComponent(name + suffix)
-                if FileManager.default.isExecutableFile(atPath: candidate.path) { return candidate }
+                // On Windows, isExecutableFile is true for some missing files
+                // (gh.COM next to gh.exe, on GitHub's runner), so also ask
+                // that the file exist.
+                var isDirectory: ObjCBool = false
+                if FileManager.default.fileExists(atPath: candidate.path, isDirectory: &isDirectory), !isDirectory.boolValue,
+                   FileManager.default.isExecutableFile(atPath: candidate.path) {
+                    return candidate
+                }
             }
         }
         return nil
