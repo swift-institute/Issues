@@ -25,3 +25,26 @@ jobs:
     if: ${{ !github.event.repository.private }}
     name: ci / matrix
     uses: swift-institute/.github/.github/workflows/swift-ci.yml@main
+
+  macro-testing-windows-ambiguity:
+    name: Reproduce · Windows · macro-testing ambiguity
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: SwiftyLab/setup-swift@38f54a76b70d989321de9dc7c840618c08cf56e9
+        with:
+          swift-version: "6.4"
+          cache-snapshot: false
+      - name: Verify the diagnostic and the typed control
+        shell: bash
+        run: |
+          swift --version
+          status=0
+          swiftc -typecheck macro-testing-windows-ambiguity/reproducer.swift \
+            > diagnostic.log 2>&1 || status=$?
+          cat diagnostic.log
+          test "$status" -ne 0
+          grep -F "error: ambiguous use of 'init(_:)'" diagnostic.log
+          grep -F "Scalars.Element == Unicode.Scalar" diagnostic.log
+          swiftc -typecheck macro-testing-windows-ambiguity/fixed.swift
