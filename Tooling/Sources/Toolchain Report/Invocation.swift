@@ -20,6 +20,14 @@ public struct Invocation: Sendable {
         public var timedOut: Bool
     }
 
+    /// A command that was found but could not be started.
+    public struct LaunchFailure: Error, CustomStringConvertible {
+        public var executable: String
+        public var directory: String
+        public var underlying: String
+        public var description: String { "cannot start \(executable) in \(directory): \(underlying)" }
+    }
+
     /// Runs the first argument, looked up on `PATH` unless it is a path. A
     /// command that is not found exits 127, as from a shell.
     public func run() throws -> Result {
@@ -44,7 +52,11 @@ public struct Invocation: Sendable {
         }
         let finished = DispatchSemaphore(value: 0)
         process.terminationHandler = { _ in finished.signal() }
-        try process.run()
+        do {
+            try process.run()
+        } catch {
+            throw LaunchFailure(executable: executable.path, directory: directory.path, underlying: "\(error)")
+        }
 
         var timedOut = false
         if finished.wait(timeout: .now() + timeout) == .timedOut {

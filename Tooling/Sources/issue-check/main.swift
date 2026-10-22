@@ -10,7 +10,8 @@ let usage = """
     OPTIONS:
       --repo <owner/name>   Repository of the issue (default: swift-institute/Issues)
       --label <label>       Check as upstream-ready or upstream-filed
-                            (default: the highest readiness label on the issue)
+                            (default: upstream-filed if the issue has it,
+                            else upstream-ready)
       --run                 Also run the minimal reproduction on the stated
                             toolchain and require the signature
       --enforce             On failure, remove the label and comment why; on
@@ -104,7 +105,9 @@ if let labelName {
     guard let parsed = Readiness(rawValue: labelName) else { fail("Unknown label \(labelName).") }
     readiness = parsed
 } else {
-    readiness = Readiness.allCases.last { labels.contains($0.rawValue) } ?? .ready
+    // upstream-candidate demands nothing, so a candidate is checked for what
+    // upstream-ready would demand.
+    readiness = labels.contains(Readiness.filed.rawValue) ? .filed : .ready
 }
 
 let report = Report(body: body)
@@ -156,8 +159,10 @@ if enforces, let number {
     if findings.isEmpty {
         comment = "\(marker)\n**`\(readiness.rawValue)` verified**\(run): every required field is present and the reproduction shows the signature on \(verified ?? "the stated toolchain (static checks only)")."
     } else {
-        comment = "\(marker)\n**`\(readiness.rawValue)` removed**\(run). Missing or inconsistent:\n\n" + findings.map { "- \($0)" }.joined(separator: "\n")
-        if labels.contains(readiness.rawValue) {
+        // Only a label that demands something is taken away.
+        let removes = readiness != .candidate && labels.contains(readiness.rawValue)
+        comment = "\(marker)\n**`\(readiness.rawValue)` \(removes ? "removed" : "not met")**\(run). Missing or inconsistent:\n\n" + findings.map { "- \($0)" }.joined(separator: "\n")
+        if removes {
             _ = try gh(["issue", "edit", number, "--repo", repository, "--remove-label", readiness.rawValue])
         }
     }

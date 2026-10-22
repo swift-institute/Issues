@@ -139,7 +139,7 @@ jobs:
         with:
           persist-credentials: false
       # The stated toolchain is the only one on PATH; issue-check is built with it.
-      - uses: SwiftyLab/setup-swift@38f54a76b70d989321de9dc7c840618c08cf56e9 # v1.14.0
+      - uses: SwiftyLab/setup-swift@d60245579ea3836a3f2fa65ebbe1e8891d577c76 # v1.14.2
         with:
           swift-version: ${{ fromJSON(needs.plan.outputs.windows)[0]['swift-version'] }}
           cache-snapshot: false
