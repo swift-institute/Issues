@@ -16,7 +16,7 @@ The procedure has three labels, and a tool decides the last two:
 
 The tools are in [Tooling/](Tooling): `issue-reduce` (the reducer) and
 `issue-check` (the gate). Build them with
-`institute package build --package-path Tooling`.
+`swift build --package-path Tooling`.
 
 ## 1. Route: whose bug is it?
 
