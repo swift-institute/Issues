@@ -1,0 +1,21 @@
+# run 39795615821 (review/astscope-94dae5 83912190b461a047cf59a8cfbdb788d9c5830857, workflow review-astscope): round-2 review variants rvw/. RESULT lines only.
+linux | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux | Build config: +assertions
+linux | RESULT v00_baseline: exit=134 OVERLAP
+linux | RESULT v00_baseline_without_typecheck_flag: exit=1 OVERLAP
+linux | RESULT v20_noA_always: exit=139 OVERLAP
+linux | RESULT v21_noA_always_nocap: exit=1 NO-OVERLAP
+linux | RESULT v22_noA_always_nospace: exit=139 OVERLAP
+linux | RESULT v23_noA_always_nowin_noLE_nocomment: exit=139 OVERLAP
+linux | RESULT v24_noA_always_single_control: exit=1 NO-OVERLAP
+linux | RESULT v25_noA_always_notype_control: exit=139 OVERLAP
+macos | Apple Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+macos | Build config: +assertions
+macos | RESULT v00_baseline: exit=1 OVERLAP
+macos | RESULT v00_baseline_without_typecheck_flag: exit=1 OVERLAP
+macos | RESULT v20_noA_always: exit=1 OVERLAP
+macos | RESULT v21_noA_always_nocap: exit=1 NO-OVERLAP
+macos | RESULT v22_noA_always_nospace: exit=1 OVERLAP
+macos | RESULT v23_noA_always_nowin_noLE_nocomment: exit=1 OVERLAP
+macos | RESULT v24_noA_always_single_control: exit=1 NO-OVERLAP
+macos | RESULT v25_noA_always_notype_control: exit=1 OVERLAP

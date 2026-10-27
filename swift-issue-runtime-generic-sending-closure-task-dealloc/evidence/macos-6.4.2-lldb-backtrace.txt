@@ -1,0 +1,14 @@
+$ xcrun swiftc -Onone -g -swift-version 6 -parse-as-library reproducer.swift -o rg && lldb -s cmds ./rg   # cmds: run, bt 10
+# Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1), macOS arm64
+* thread #4, name = 'Task 1', queue = 'com.apple.root.default-qos.cooperative', stop reason = signal SIGABRT
+      frame #0: 0x00000001957fc650 libsystem_kernel.dylib`__pthread_kill + 8
+* thread #4, name = 'Task 1', queue = 'com.apple.root.default-qos.cooperative', stop reason = signal SIGABRT
+  * frame #0: 0x00000001957fc650 libsystem_kernel.dylib`__pthread_kill + 8
+    frame #1: 0x0000000195838960 libsystem_pthread.dylib`pthread_kill + 296
+    frame #2: 0x00000001958cc480 libsystem_c.dylib`abort + 148
+    frame #3: 0x0000000199967ff0 libswift_Concurrency.dylib`swift::swift_Concurrency_fatalErrorv(unsigned int, char const*, char*) + 32
+    frame #4: 0x0000000199968010 libswift_Concurrency.dylib`swift::swift_Concurrency_fatalError(unsigned int, char const*, ...) + 32
+    frame #5: 0x000000019996823c libswift_Concurrency.dylib`swift::_swift_task_dealloc_specific(swift::AsyncTask*, void*) (.cold.2) + 84
+    frame #6: 0x00000001998fdf68 libswift_Concurrency.dylib`swift_task_dealloc + 124
+    frame #7: 0x0000000100000e54 rg`static App.main() at reproducer.swift:15:19
+    frame #9: 0x00000001000014ac rg`async_MainTQ0_ at <compiler-generated>:0

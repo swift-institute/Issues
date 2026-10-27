@@ -1,0 +1,14 @@
+protocol Parsing { associatedtype Input; associatedtype Output; associatedtype Failure: Swift.Error = Never }
+protocol Serializing { associatedtype Output; associatedtype Buffer; associatedtype Failure: Swift.Error = Never }
+protocol Coding: Parsing, Serializing {}
+protocol Symbol { associatedtype Input; associatedtype Output }
+struct App<Index: Symbol, Input> where Index.Input == Input { var storage: Input }
+extension App { struct Coder<Inner: Coding> where Inner.Output == Input { let inner: Inner } }
+extension App.Coder: Parsing { typealias Input = Inner.Input; typealias Output = App<Index, Inner.Output>; typealias Failure = Inner.Failure }
+extension App.Coder: Serializing { typealias Buffer = Inner.Buffer }
+extension App.Coder: Coding {}
+struct Case<Input, Source, Focus, Content: Coding> where Content.Input == Input, Content.Output == Focus {}
+extension Case {
+    init<Index: Symbol, Inner: Coding>(dummy: Void)
+    where Focus == App<Index, Index.Input>, Content == App<Index, Index.Input>.Coder<Inner>, Inner.Input == Input, Inner.Output == Index.Input { fatalError() }
+}

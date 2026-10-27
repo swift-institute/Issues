@@ -1,0 +1,29 @@
+name: repro
+on: [push, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        opt: ["-Onone -enable-experimental-feature Lifetimes", "-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: SwiftyLab/setup-swift@38f54a76b70d989321de9dc7c840618c08cf56e9
+        with:
+          swift-version: "6.4"
+      - run: swift --version
+      - name: Variants
+        shell: pwsh
+        run: |
+          $fail = 0
+          foreach ($f in Get-ChildItem v3/*.swift | Sort-Object Name) {
+            swiftc -parse-as-library -module-name M -package-name p -swift-version 6 ${{ matrix.opt }} -c $f.FullName -o "$($f.BaseName).obj" 2>&1 | Out-File "$($f.BaseName).log"
+            $code = $LASTEXITCODE
+            $first = (Select-String -Path "$($f.BaseName).log" -Pattern "Assertion failed|error:" | Select-Object -First 1).Line
+            Get-Content "$($f.BaseName).log" | Select-String -Pattern "Assertion failed|While silgen|While evaluating|Initial term|Abort:|error:" | ForEach-Object { Write-Output "  LOG $_" }
+            Write-Output "RESULT $($f.Name) ${{ matrix.opt }} exit=$code $first"
+          }
+          exit 0

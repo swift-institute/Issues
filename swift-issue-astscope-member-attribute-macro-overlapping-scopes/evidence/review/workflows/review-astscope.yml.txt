@@ -1,0 +1,26 @@
+name: review-astscope
+on:
+  push:
+    branches: [review/astscope-94dae5]
+permissions:
+  contents: read
+jobs:
+  macos:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: install toolchain
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/swiftly.pkg" https://download.swift.org/swiftly/darwin/swiftly.pkg && installer -pkg "$RUNNER_TEMP/swiftly.pkg" -target CurrentUserHomeDirectory && "$HOME/.swiftly/bin/swiftly" init --assume-yes --skip-install --quiet-shell-followup && "$HOME/.swiftly/bin/swiftly" install main-snapshot-2026-10-17 --assume-yes
+      - name: variants
+        run: |
+          printf '#!/bin/bash\nexec "$HOME/.swiftly/bin/swiftly" run swiftc "$@" +main-snapshot-2026-10-17\n' > "$RUNNER_TEMP/sw" && chmod +x "$RUNNER_TEMP/sw"
+          ./rvw/run.sh "$RUNNER_TEMP/sw"
+  linux:
+    runs-on: ubuntu-latest
+    container: swiftlang/swift:nightly-main-jammy
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: variants
+        shell: bash
+        run: ./rvw/run.sh swiftc

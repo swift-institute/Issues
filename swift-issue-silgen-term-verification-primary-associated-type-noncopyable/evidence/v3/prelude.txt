@@ -1,0 +1,93 @@
+protocol Parsing: ~Copyable {
+    associatedtype Input: ~Copyable & ~Escapable
+    associatedtype Output: ~Copyable & ~Escapable
+    associatedtype Failure: Swift.Error = Never
+}
+protocol Serializing: ~Copyable {
+    associatedtype Output: ~Copyable & ~Escapable
+    associatedtype Buffer: ~Copyable & ~Escapable
+    associatedtype Failure: Swift.Error = Never
+}
+protocol Coding<Input, Output, Buffer, Failure>: Parsing, Serializing, ~Copyable
+where Input: ~Copyable & ~Escapable, Output: ~Copyable & ~Escapable, Buffer: ~Copyable & ~Escapable {}
+
+enum Operation {
+    protocol Symbol: ~Copyable, ~Escapable {
+        associatedtype Input: ~Copyable & ~Escapable
+        associatedtype Output: ~Copyable & ~Escapable
+        associatedtype Failure: ~Copyable & ~Escapable
+    }
+    typealias Application<Index: Symbol> = _Application<Index, Index.Input>
+    where Index.Input: ~Copyable & ~Escapable
+
+    struct _Application<Index: Symbol, Input: ~Copyable & ~Escapable>: ~Copyable, ~Escapable
+    where Index.Input == Input {
+        private var storage: Input
+        @_lifetime(copy input)
+        init(_ input: consuming Input) { storage = input }
+    }
+}
+
+extension Operation._Application: Escapable where Input: Escapable {}
+
+extension Operation._Application where Input: ~Copyable & Escapable {
+    struct Coder<Inner: Coding>
+    where
+        Inner.Input: ~Copyable & ~Escapable,
+        Inner.Buffer: ~Copyable & ~Escapable,
+        Inner.Output: ~Copyable & Escapable,
+        Inner.Output == Input
+    {
+        let inner: Inner
+        init(_ inner: Inner) { self.inner = inner }
+    }
+}
+
+extension Operation._Application.Coder: Parsing
+where
+    Input: ~Copyable & Escapable,
+    Inner.Output: ~Copyable & Escapable,
+    Inner.Input: ~Copyable & ~Escapable,
+    Inner.Buffer: ~Copyable & ~Escapable
+{
+    typealias Input = Inner.Input
+    typealias Output = Operation._Application<Index, Inner.Output>
+    typealias Failure = Inner.Failure
+}
+
+extension Operation._Application.Coder: Serializing
+where
+    Input: ~Copyable & Escapable,
+    Inner.Output: ~Copyable & Escapable,
+    Inner.Input: ~Copyable & ~Escapable,
+    Inner.Buffer: ~Copyable & ~Escapable
+{
+    typealias Buffer = Inner.Buffer
+}
+
+extension Operation._Application.Coder: Coding
+where
+    Input: ~Copyable & Escapable,
+    Inner.Output: ~Copyable & Escapable,
+    Inner.Input: ~Copyable & ~Escapable,
+    Inner.Buffer: ~Copyable & ~Escapable
+{}
+
+struct Case<
+    Input: ~Copyable & ~Escapable,
+    Source: ~Copyable,
+    Focus: ~Copyable,
+    Content: Coding & ~Copyable
+>: ~Copyable
+where
+    Content.Input == Input,
+    Content.Output == Focus,
+    Content.Buffer: ~Copyable & ~Escapable
+{
+    let absent: Content.Failure
+    let content: Content
+    init(absent: Content.Failure, content: () -> Content) {
+        self.absent = absent
+        self.content = content()
+    }
+}

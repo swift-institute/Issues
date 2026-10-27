@@ -97,6 +97,42 @@ Not required: a loop in the user's `deinit` body (a trivial `deinit { _ = field 
 still crashes); a separate outer wrapper struct (a single struct reproduces);
 cross-module split; a reference-typed field.
 
+Item 5 needs one qualification. Under whole-module optimization (`-wmo`, which
+`swift build -c release` uses), the all-`internal` `Crash.swift.txt` compiles
+cleanly on Swift 6.4.2. Under `-wmo` the types must be `public` or `package` to
+crash; see the access-level variant below.
+
+## Trigger variants
+
+Each row is a source in `Sources/Reproducer/` that both harnesses compile out of
+process. Results are Apple Swift 6.4.2 (`swiftlang-6.4.2.1.9 clang-2100.4.1.1`),
+arm64-apple-macosx27.2.0, run on 2026-10-27.
+
+| Variant | Source | Flags | Shape | 6.4.2 result | Controls (same flags unless stated) |
+|---------|--------|-------|-------|--------------|----------------------|
+| Scalar trailing field | [`Crash.swift.txt`](Sources/Reproducer/Crash.swift.txt) | `-O` | scalar `position` after the generic `@_rawLayout` buffer, `deinit` | **CRASH** | fields reordered: compiles. Same source with `-O -wmo`: compiles. |
+| Reduced | [`Reduced.swift.txt`](Sources/Reproducer/Reduced.swift.txt) | `-swift-version 6 -parse-as-library -O -c` | as above, no caller (not run by the harnesses) | **CRASH** | not re-run on 6.4.2; see "Swift 6.4 re-test" for the 6.4 controls |
+| Access level | [`AccessLevel.swift.txt`](Sources/Reproducer/AccessLevel.swift.txt) | `-swift-version 6 -O -wmo` | `public` types; trailing `bitmap` after `@_rawLayout(likeArrayOf:)` `elements`, wrapped in `@_rawLayout(like:)`, `deinit` | **CRASH** (`package` with `-package-name`: **CRASH**) | every `public` removed: compiles. Public copy at `-Onone`: compiles, prints `OK`. Internal copy without `-wmo`: **CRASH**. |
+| Two raw-layout fields | [`CrossModuleCore.swift.txt`](Sources/Reproducer/CrossModuleCore.swift.txt) + [`CrossModuleMiddleware.swift.txt`](Sources/Reproducer/CrossModuleMiddleware.swift.txt) | `-swift-version 6 -O -wmo -parse-as-library`, module `Bug1Core` then `Bug1Middleware` | `Buffer` stores two `Container<Element>.Inline<N>` raw-layout values; the second is the trailing field; the raw-layout type has a `deinit` | **CRASH** compiling `Bug1Middleware` (`Running pass "verify" on module`) | `_b` removed: compiles. `deinit` removed from `Bug1Core`: compiles. `-Onone`: compiles. Both files in one module (no import): **CRASH**, so the module split is not required. |
+
+The access-level variant explains why the experiment it comes from saw
+`internal` build and `public` crash under `swift build -c release`: that build
+uses `-wmo`. Without `-wmo`, both crash. Re-run on 6.4.2 with the experiment's own
+package (`swift build -c release`): the public source crashes with the verifier
+error, the internal copy builds.
+
+The two-field variant shows that the trailing field does not have to be a
+scalar. A second raw-layout field after the first triggers the same verifier
+error. Its source experiment recorded six ingredients, including a generic enum
+wrapper and the module split. Only the module split was re-checked here, and it
+is not required on 6.4.2. The other ingredients were not re-checked.
+
+Provenance of the two variants: `Experiments/swift-buffer-primitives--rawlayout-access-level-trigger`
+and `Experiments/swift-buffer-primitives--rawlayout-minimal-reproducer` at
+Experiments commit `f1c4db4d390c12af5ec454dfb506feaa4ec5e841`. Their files are
+kept in [`evidence/access-level-trigger/`](evidence/access-level-trigger/) and
+[`evidence/minimal-reproducer/`](evidence/minimal-reproducer/).
+
 ## Reproduction matrix
 
 Run on the canonical minimum reproducer
@@ -177,14 +213,32 @@ compiled SwiftPM target (it would abort the whole package build). The trigger
 ships as the [`Crash.swift.txt`](Sources/Reproducer/Crash.swift.txt) resource and
 is compiled **out of process** by both harnesses:
 
-- [`Tests/Reproducer.swift`](Tests/Reproducer.swift) — Swift Testing. Runs
-  `swiftc -O` on `Crash.swift.txt` in a child process and wraps the result in
-  `withKnownIssue`. **Green** while the subprocess build aborts with the verifier
-  error (current state); flips **red** when an upstream fix lands and the source
-  compiles cleanly.
+- [`Tests/Reproducer Tests.swift`](Tests/Reproducer%20Tests.swift) — Swift Testing.
+  One test per variant (`reproducer`, `publicTypesUnderWholeModuleOptimization`,
+  `twoRawLayoutFieldsAcrossModules`). Each compiles its source in a child process
+  and wraps the result in `withKnownIssue`. **Green** while the subprocess build
+  aborts with the verifier error (current state); flips **red** when an upstream
+  fix lands and the source compiles cleanly.
 - [`Sources/Reproducer/main.swift`](Sources/Reproducer/main.swift) — standalone
-  executable. `exit(1)` if the subprocess build aborts (bug fired), `exit(0)` if
-  it compiles cleanly (bug fixed) or the probe was inconclusive.
+  executable. Probes all three variants and prints one line each. `exit(1)` if
+  any subprocess build aborts with the verifier error (bug fired), `exit(0)` if
+  all compile cleanly (bug fixed) or the probe was inconclusive.
+
+Local run on Apple Swift 6.4.2, macOS arm64 (2026-10-27):
+
+```
+$ xcrun swiftc Sources/Reproducer/main.swift -o /tmp/repro && /tmp/repro
+BUG FIRED: Crash.swift.txt (swiftc -O): LLVM verifier rejected the IR.
+BUG FIRED: AccessLevel.swift.txt (swiftc -O -wmo): LLVM verifier rejected the IR.
+BUG FIRED: CrossModule*.swift.txt (swiftc -O -wmo, two modules): LLVM verifier rejected the IR.
+exit 1
+```
+
+The same harness built from a copy whose sources were replaced by the controls
+(fields reordered, `public` removed, `deinit` removed from `Bug1Core`, `_b`
+removed) printed `clean:` for all three and exited 0. The test file, built as a
+standalone Swift Testing runner, passed with 3 known issues on the real sources
+and failed all 3 tests on the control copy.
 
 ## Swift 6.4 re-test (2026-10-11)
 

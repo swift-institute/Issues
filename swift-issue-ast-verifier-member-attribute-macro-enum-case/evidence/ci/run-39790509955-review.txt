@@ -1,0 +1,33 @@
+# run 39790509955 (review/enumcase-a1effe 9269131bd303593fa2056dfe59207ab36cf037af, workflow review-enumcase): review variants. RESULT lines only.
+linux | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux | Build config: +assertions
+linux | RESULT v0: FAILS_SAME
+linux | RESULT v0_no_typecheck_flag: FAILS_SAME
+linux | RESULT v0_parse_only: ACCEPTED
+linux | RESULT v10_other_attr: FAILS_SAME
+linux | RESULT v11_no_macro_decl_args: PLUGIN_BUILD_FAILED
+linux | RESULT v1_empty_expansion: ACCEPTED
+linux | RESULT v2_no_capability_branch: OTHER_rc1
+linux | RESULT v3_no_diagnostics_field: OTHER_rc1
+linux | RESULT v4_no_case: ACCEPTED
+linux | RESULT v5_no_macro_attr_on_enum: ACCEPTED
+linux | RESULT v6_struct_member: ACCEPTED
+linux | RESULT v7_no_take_loop: FAILS_SAME
+linux | RESULT v8_no_windows_branch: FAILS_SAME
+linux | RESULT v9_capability_empty: OTHER_rc1
+macos | Apple Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+macos | Build config: +assertions
+macos | RESULT v0: FAILS_SAME
+macos | RESULT v0_no_typecheck_flag: FAILS_SAME
+macos | RESULT v0_parse_only: ACCEPTED
+macos | RESULT v1_empty_expansion: ACCEPTED
+macos | RESULT v10_other_attr: FAILS_SAME
+macos | RESULT v11_no_macro_decl_args: PLUGIN_BUILD_FAILED
+macos | RESULT v2_no_capability_branch: OTHER_rc1
+macos | RESULT v3_no_diagnostics_field: OTHER_rc1
+macos | RESULT v4_no_case: ACCEPTED
+macos | RESULT v5_no_macro_attr_on_enum: ACCEPTED
+macos | RESULT v6_struct_member: ACCEPTED
+macos | RESULT v7_no_take_loop: FAILS_SAME
+macos | RESULT v8_no_windows_branch: FAILS_SAME
+macos | RESULT v9_capability_empty: OTHER_rc1

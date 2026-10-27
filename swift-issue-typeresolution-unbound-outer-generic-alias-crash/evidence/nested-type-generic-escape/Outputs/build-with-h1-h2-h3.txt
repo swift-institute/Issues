@@ -1,0 +1,36 @@
+Building for debugging...
+[0/4] Write sources
+[1/4] Write swift-version--58304C5D6DBC2206.txt
+[3/6] Emitting module nested_type_generic_escape
+[4/6] Compiling nested_type_generic_escape main.swift
+/Users/coen/Developer/swift-primitives/swift-ownership-primitives/Experiments/nested-type-generic-escape/Sources/nested-type-generic-escape/main.swift:61:40: error: generic parameter 'V' could not be inferred
+ 45 | // ============================================================================
+ 46 | 
+ 47 | struct H2_Foo<V> {
+    |               `- note: 'V' declared as parameter to type 'H2_Foo'
+ 48 |     struct Bar<U> {
+ 49 |         let value: U
+    :
+ 59 | 
+ 60 | func h2_short_test() {
+ 61 |     let h2_short: H2_Foo.Bar<String> = H2_Foo.Bar(value: "hi")
+    |                                        |- error: generic parameter 'V' could not be inferred
+    |                                        `- note: explicitly specify the generic arguments to fix this issue
+ 62 |     print("H2 short: \(h2_short.value)")
+ 63 | }
+
+/Users/coen/Developer/swift-primitives/swift-ownership-primitives/Experiments/nested-type-generic-escape/Sources/nested-type-generic-escape/main.swift:88:43: error: generic parameter 'V' could not be inferred
+ 67 | // ============================================================================
+ 68 | 
+ 69 | struct H3_Foo<V: ~Copyable>: ~Copyable {
+    |               `- note: 'V' declared as parameter to type 'H3_Foo'
+ 70 |     struct Bar<U: ~Copyable>: ~Copyable {
+ 71 |         let value: U
+    :
+ 86 | 
+ 87 | func h3_short_test() {
+ 88 |     let h3_short: H3_Foo.Bar<H3_Handle> = H3_Foo.Bar(H3_Handle(43))
+    |                                           |- error: generic parameter 'V' could not be inferred
+    |                                           `- note: explicitly specify the generic arguments to fix this issue
+ 89 |     print("H3 short: \(h3_short.value.id)")
+ 90 | }

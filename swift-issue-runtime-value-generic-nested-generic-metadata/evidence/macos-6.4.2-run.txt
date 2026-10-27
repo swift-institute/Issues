@@ -1,0 +1,26 @@
+$ xcrun swiftc --version
+swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Target: arm64-apple-macosx27.2.0
+
+$ xcrun swiftc -Onone -module-name main reproducer.swift -o x && ./x
+exit status: 139
+
+$ xcrun swiftc -O -module-name main reproducer.swift -o x && ./x
+main.Link<1>.Node<Swift.Int>
+exit status: 0
+
+$ xcrun swiftc -Onone -module-name main evidence/control-type-generic-parent.swift -o x && ./x
+main.Link<Swift.Int>.Node<Swift.Int>
+exit status: 0
+
+$ xcrun swiftc -O -module-name main evidence/control-type-generic-parent.swift -o x && ./x
+main.Link<Swift.Int>.Node<Swift.Int>
+exit status: 0
+
+$ xcrun swiftc -Onone -module-name main evidence/control-non-generic-nested.swift -o x && ./x
+main.Link<1>.Node
+exit status: 0
+
+$ xcrun swiftc -O -module-name main evidence/control-non-generic-nested.swift -o x && ./x
+main.Link<1>.Node
+exit status: 0

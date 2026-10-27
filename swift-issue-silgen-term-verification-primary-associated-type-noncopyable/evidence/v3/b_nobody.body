@@ -1,0 +1,25 @@
+extension Case
+where
+    Input: ~Copyable & ~Escapable,
+    Source: ~Copyable,
+    Focus: ~Copyable,
+    Content.Buffer: ~Copyable & ~Escapable
+{
+    init<Index: Operation.Symbol, Inner: Coding>(
+        absent: Content.Failure,
+        content: Inner,
+        dummy: Void
+    )
+    where
+        Focus == Operation.Application<Index>,
+        Index.Input: ~Copyable & Escapable,
+        Content == Operation.Application<Index>.Coder<Inner>,
+        Inner.Input: ~Copyable & ~Escapable,
+        Inner.Buffer: ~Copyable & ~Escapable,
+        Inner.Input == Input,
+        Inner.Output == Index.Input,
+        Inner.Output: ~Copyable & Escapable
+    {
+        fatalError()
+    }
+}

@@ -1,0 +1,135 @@
+# run 39788628757 (lane/astscope-member-attribute 0f646c6a6a605a799991e7a4aff234542ea73546, workflow final): final/scope.swift and final/case.swift exactly as drafted, on every toolchain. Output of final/run.sh per job; timestamps, empty lines and unsymbolized stack frames stripped.
+macos | swift-driver version: 1.148.6 Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)
+macos | RESULT xcode scope exit=0 
+macos | RESULT xcode case exit=0 
+macos | Apple Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+macos | Build config: +assertions
+macos | RESULT macos-main-snapshot-2026-10-17 scope exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+macos |   | Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+macos |   | ASTScopeImpl verification error in source file 'repro.swift':
+macos |   | child overlaps previous child:
+macos |   | CustomAttributeScope 0x99f8b3e28, [1:1 - 1:2] 
+macos |   | ***Previous child
+macos |   | CustomAttributeScope 0x99f8b3e28, [1:4 - 1:5] 
+macos |   | ***Parent node***
+macos |   | NominalTypeBodyScope 0x99f8b3d28, [43:13 - 43:26] 'S'
+macos |   | `-CustomAttributeScope 0x99f8b3e28, [1:4 - 1:5] 
+macos |   | Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos |   | Stack dump:
+macos | RESULT macos-main-snapshot-2026-10-17 case exit=1 EnumCaseDecl should not have attributes
+macos |   | EnumCaseDecl should not have attributes
+macos |   | Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos |   | Stack dump:
+macos |   | Error: RunProgramError(terminationStatus: signaled(6), config: Configuration(
+macos |   |     executable: path(/Users/runner/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2026-10-17-a.xctoolchain/usr/bin/swiftc),
+macos |   |     arguments: ["-typecheck", "-load-plugin-executable", "plugin#P", "repro.swift"],
+macos |   |     environment: Inheriting current environment with updates:
+macos |   | [PATH: Optional("/Users/runner/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2026-10-17-a.xctoolchain/usr/bin:/opt/homebrew/lib/ruby/gems/3.4.0/bin:/opt/homebrew/opt/ruby@3.4/bin:/Users/runner/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/runner/.cargo/bin:/usr/local/opt/curl/bin:/usr/local/bin:/usr/local/sbin:/Users/runner/bin:/Users/runner/.yarn/bin:/Users/runner/Library/Android/sdk/tools:/Users/runner/Library/Android/sdk/platform-tools:/Library/Frameworks/Python.framework/Versions/Current/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/bin:/bin:/usr/sbin:/sbin:/Users/runner/.dotnet/tools"), TOOLCHAINS: Optional("org.swift.65202610171a"), SDKROOT: Optional("/Applications/Xcode_26.6.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk")],
+macos |   |     workingDirectory: ,
+macos |   |     platformOptions: PlatformOptions(
+macos |   |         qualityOfService: default,
+macos |   |         userID: nil,
+macos |   |         groupID: nil,
+macos |   |         supplementaryGroups: nil,
+macos |   |         processGroupID: nil,
+macos |   |         createSession: false,
+macos |   |         preSpawnProcessConfigurator: not set
+macos |   |     )
+macos |   | ))
+macos | Apple Swift version 6.4.4-dev (LLVM a52029da5113665, Swift 90b3468f3de7d1f)
+macos | Build config: +assertions
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 scope exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+macos |   | Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+macos |   | ASTScopeImpl verification error in source file 'repro.swift':
+macos |   | child overlaps previous child:
+macos |   | CustomAttributeScope 0x8cb32adb0, [1:1 - 1:2] 
+macos |   | ***Previous child
+macos |   | CustomAttributeScope 0x8cb32adb0, [1:4 - 1:5] 
+macos |   | ***Parent node***
+macos |   | NominalTypeBodyScope 0x8cb32acb0, [43:13 - 43:26] 'S'
+macos |   | `-CustomAttributeScope 0x8cb32adb0, [1:4 - 1:5] 
+macos |   | Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos |   | Stack dump:
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 case exit=1 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos |   | EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos |   | Stack dump:
+macos |   | Error: RunProgramError(terminationStatus: signaled(6), config: Configuration(
+macos |   |     executable: path(/Users/runner/Library/Developer/Toolchains/swift-6.4.x-DEVELOPMENT-SNAPSHOT-2026-10-20-a.xctoolchain/usr/bin/swiftc),
+macos |   |     arguments: ["-typecheck", "-load-plugin-executable", "plugin#P", "repro.swift"],
+macos |   |     environment: Inheriting current environment with updates:
+macos |   | [PATH: Optional("/Users/runner/Library/Developer/Toolchains/swift-6.4.x-DEVELOPMENT-SNAPSHOT-2026-10-20-a.xctoolchain/usr/bin:/opt/homebrew/lib/ruby/gems/3.4.0/bin:/opt/homebrew/opt/ruby@3.4/bin:/Users/runner/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/runner/.cargo/bin:/usr/local/opt/curl/bin:/usr/local/bin:/usr/local/sbin:/Users/runner/bin:/Users/runner/.yarn/bin:/Users/runner/Library/Android/sdk/tools:/Users/runner/Library/Android/sdk/platform-tools:/Library/Frameworks/Python.framework/Versions/Current/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/bin:/bin:/usr/sbin:/sbin:/Users/runner/.dotnet/tools"), SDKROOT: Optional("/Applications/Xcode_26.6.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"), TOOLCHAINS: Optional("org.swift.64202610201a")],
+macos |   |     workingDirectory: ,
+macos |   |     platformOptions: PlatformOptions(
+macos |   |         qualityOfService: default,
+macos |   |         userID: nil,
+macos |   |         groupID: nil,
+macos |   |         supplementaryGroups: nil,
+macos |   |         processGroupID: nil,
+macos |   |         createSession: false,
+macos |   |         preSpawnProcessConfigurator: not set
+macos |   |     )
+macos |   | ))
+macos | Apple Swift version 6.4.1 (swift-6.4.1-RELEASE)
+macos | RESULT macos-6.4.1 scope exit=0 
+macos | RESULT macos-6.4.1 case exit=0 
+linux (swiftlang/swift:nightly-main-jammy) | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux (swiftlang/swift:nightly-main-jammy) | Build config: +assertions
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy scope exit=134 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+linux (swiftlang/swift:nightly-main-jammy) |   | Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+linux (swiftlang/swift:nightly-main-jammy) |   | ASTScopeImpl verification error in source file 'repro.swift':
+linux (swiftlang/swift:nightly-main-jammy) |   | child overlaps previous child:
+linux (swiftlang/swift:nightly-main-jammy) |   | CustomAttributeScope 0x55b015bfdc68, [1:1 - 1:2] 
+linux (swiftlang/swift:nightly-main-jammy) |   | ***Previous child
+linux (swiftlang/swift:nightly-main-jammy) |   | CustomAttributeScope 0x55b015bfdc68, [1:4 - 1:5] 
+linux (swiftlang/swift:nightly-main-jammy) |   | ***Parent node***
+linux (swiftlang/swift:nightly-main-jammy) |   | NominalTypeBodyScope 0x55b015bfdb68, [43:13 - 43:26] 'S'
+linux (swiftlang/swift:nightly-main-jammy) |   | `-CustomAttributeScope 0x55b015bfdc68, [1:4 - 1:5] 
+linux (swiftlang/swift:nightly-main-jammy) |   | Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+linux (swiftlang/swift:nightly-main-jammy) |   | Stack dump:
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy case exit=134 EnumCaseDecl should not have attributes
+linux (swiftlang/swift:nightly-main-jammy) |   | EnumCaseDecl should not have attributes
+linux (swiftlang/swift:nightly-main-jammy) |   | Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+linux (swiftlang/swift:nightly-main-jammy) |   | Stack dump:
+linux (swiftlang/swift:nightly-main-jammy) |   | *** Signal 6: Backtracing from 0x7f09174c29dd... done ***
+linux (swiftlang/swift:nightly-main-jammy) |   | *** Program crashed: Aborted at 0x00007f09174c29dd ***
+linux (swiftlang/swift:nightly-main-jammy) |   | Platform: x86_64 Linux (Ubuntu 22.04.5 LTS)
+linux (swiftlang/swift:nightly-main-jammy) |   | Thread 0 "swift-frontend" crashed:
+linux (swiftlang/swift:nightly-main-jammy) |   | 0  0x00007f09174c29dd <unknown> in libc.so.6
+linux (swiftlang/swift:nightly-main-jammy) |   | Registers:
+linux (swiftlang/swift:nightly-main-jammy) |   | rax 0x0000000000000000  0
+linux (swiftlang/swift:nightly-main-jammy) |   | rdx 0x0000000000000006  6
+linux (swiftlang/swift:nightly-main-jammy) |   | rcx 0x00007f09174c29dd  48 3d 01 f0 ff ff 73 01 c3 48 8b 0d 23 b4 0f 00  H=·ðÿÿs·ÃH··#´··
+linux (swiftlang/swift:nightly-main-jammy) |   | rbx 0x0000000000000006  6
+linux (swiftlang/swift:nightly-main-jammy) |   | rsi 0x00000000000000cd  205
+linux (swiftlang/swift:nightly-main-jammy) |   | rdi 0x00000000000000cd  205
+linux (swiftlang/swift:nightly-main-jammy) |   | rbp 0x00000000000000cd  205
+linux (swiftlang/swift:nightly-main-jammy) |   | rsp 0x00005620fef4bc18  96 00 2a bb 20 56 00 00 00 00 00 00 00 00 00 00  ··*» V··········
+linux (swiftlang/swift:nightly-main-jammy) |   |  r8 0x0000000000000000  0
+linux (swiftlang/swift:nightly-main-jammy) |   |  r9 0x0000000000000000  0
+linux (swiftlang/swift:nightly-main-jammy) |   | r10 0x00005620fef4beb0  06 00 00 00 00 00 00 00 fa ff ff ff 00 00 00 00  ········úÿÿÿ····
+linux (swift:6.4.1-noble) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble scope exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble case exit=0 
+windows | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows | Build config: +assertions
+windows | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows | Build config: +assertions
+windows | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows | Build config: +assertions
+windows | RESULT windows-6.4.1 scope exit=132 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+windows |   | Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+windows |   | ASTScopeImpl verification error in source file 'repro.swift':
+windows |   | child overlaps previous child:
+windows |   | CustomAttributeScope 0x18619c337b8, [1:1 - 1:2] 
+windows |   | ***Previous child
+windows |   | CustomAttributeScope 0x18619c337b8, [1:4 - 1:5] 
+windows |   | ***Parent node***
+windows |   | NominalTypeBodyScope 0x18619c336b8, [43:13 - 43:26] 'S'
+windows |   | `-CustomAttributeScope 0x18619c337b8, [1:4 - 1:5] 
+windows |   | Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+windows |   | Stack dump:
+windows |   | Exception Code: 0xC000001D
+windows | RESULT windows-6.4.1 case exit=132 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+windows |   | EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+windows |   | Stack dump:
+windows |   | Exception Code: 0xC000001D

@@ -1,0 +1,23 @@
+// VARIANT: TWO RAW-LAYOUT FIELDS — module 1 of 2 (Bug1Core)
+//
+// From Experiments/swift-buffer-primitives--rawlayout-minimal-reproducer
+// (Sources/Bug1Core/Types.swift, unchanged apart from this header).
+//
+// This module compiles cleanly. The crash fires when
+// `CrossModuleMiddleware.swift.txt` is compiled against it.
+//
+//   swiftc -swift-version 6 -O -wmo -parse-as-library \
+//     -enable-experimental-feature RawLayout \
+//     -module-name Bug1Core -emit-module -emit-module-path mods/Bug1Core.swiftmodule \
+//     CrossModuleCore.swift -c -o core.o
+//
+// Control: remove the `deinit {}` below; the middleware then compiles.
+
+public enum Container<Element: ~Copyable> {
+    @_rawLayout(likeArrayOf: Element, count: capacity)
+    public struct Inline<let capacity: Int>: ~Copyable {
+        public init() {}
+
+        deinit {}
+    }
+}

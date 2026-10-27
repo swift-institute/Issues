@@ -1,0 +1,13 @@
+Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+ASTScopeImpl verification error in source file 'repro.swift':
+child overlaps previous child:
+CustomAttributeScope 0x55b015bfdc68, [1:1 - 1:2] 
+
+***Previous child
+CustomAttributeScope 0x55b015bfdc68, [1:4 - 1:5] 
+
+***Parent node***
+NominalTypeBodyScope 0x55b015bfdb68, [43:13 - 43:26] 'S'
+`-CustomAttributeScope 0x55b015bfdc68, [1:4 - 1:5] 
+
+Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.

@@ -1,0 +1,116 @@
+protocol Parsing: ~Copyable {
+    associatedtype Input: ~Copyable
+    associatedtype Output: ~Copyable
+    associatedtype Failure: Swift.Error = Never
+}
+protocol Serializing: ~Copyable {
+    associatedtype Output: ~Copyable
+    associatedtype Buffer: ~Copyable
+    associatedtype Failure: Swift.Error = Never
+}
+protocol Coding<Input, Output, Buffer, Failure>: Parsing, Serializing, ~Copyable
+where Input: ~Copyable, Output: ~Copyable, Buffer: ~Copyable {}
+
+enum Operation {
+    protocol Symbol: ~Copyable {
+        associatedtype Input: ~Copyable
+        associatedtype Output: ~Copyable
+        associatedtype Failure: ~Copyable
+    }
+    typealias Application<Index: Symbol> = _Application<Index, Index.Input>
+    where Index.Input: ~Copyable
+
+    struct _Application<Index: Symbol, Input: ~Copyable>: ~Copyable
+    where Index.Input == Input {
+        private var storage: Input
+        init(_ input: consuming Input) { storage = input }
+    }
+}
+
+
+extension Operation._Application where Input: ~Copyable {
+    struct Coder<Inner: Coding>
+    where
+        Inner.Input: ~Copyable,
+        Inner.Buffer: ~Copyable,
+        Inner.Output: ~Copyable,
+        Inner.Output == Input
+    {
+        let inner: Inner
+        init(_ inner: Inner) { self.inner = inner }
+    }
+}
+
+extension Operation._Application.Coder: Parsing
+where
+    Input: ~Copyable,
+    Inner.Output: ~Copyable,
+    Inner.Input: ~Copyable,
+    Inner.Buffer: ~Copyable
+{
+    typealias Input = Inner.Input
+    typealias Output = Operation._Application<Index, Inner.Output>
+    typealias Failure = Inner.Failure
+}
+
+extension Operation._Application.Coder: Serializing
+where
+    Input: ~Copyable,
+    Inner.Output: ~Copyable,
+    Inner.Input: ~Copyable,
+    Inner.Buffer: ~Copyable
+{
+    typealias Buffer = Inner.Buffer
+}
+
+extension Operation._Application.Coder: Coding
+where
+    Input: ~Copyable,
+    Inner.Output: ~Copyable,
+    Inner.Input: ~Copyable,
+    Inner.Buffer: ~Copyable
+{}
+
+struct Case<
+    Input: ~Copyable,
+    Source: ~Copyable,
+    Focus: ~Copyable,
+    Content: Coding & ~Copyable
+>: ~Copyable
+where
+    Content.Input == Input,
+    Content.Output == Focus,
+    Content.Buffer: ~Copyable
+{
+    let absent: Content.Failure
+    let content: Content
+    init(absent: Content.Failure, content: () -> Content) {
+        self.absent = absent
+        self.content = content()
+    }
+}
+extension Case
+where
+    Input: ~Copyable,
+    Source: ~Copyable,
+    Focus: ~Copyable,
+    Content.Buffer: ~Copyable
+{
+    init<Index: Operation.Symbol, Inner: Coding>(
+        absent: Content.Failure,
+        content: Inner,
+        dummy: Void
+    )
+    where
+        Focus == Operation.Application<Index>,
+        Index.Input: ~Copyable,
+        Content == Operation.Application<Index>.Coder<Inner>,
+        Inner.Input: ~Copyable,
+        Inner.Buffer: ~Copyable,
+        Inner.Input == Input,
+        Inner.Output == Index.Input,
+        Inner.Output: ~Copyable
+    {
+        fatalError()
+    }
+}

@@ -1,0 +1,34 @@
+$ xcrun swiftc -emit-module -parse-as-library -module-name ReproLib -enable-experimental-feature Lifetimes -swift-version 6 ReproLib.swift -emit-module-path ReproLib.swiftmodule -o /dev/null
+$ xcrun swiftc -c -swift-version 6 -Onone -enable-experimental-feature Lifetimes -I . main.swift -o main.o
+Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+Stack dump:
+0.	Program arguments: /Applications/Xcode-27.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c -primary-file main.swift -target arm64-apple-macosx27.2.0 -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode-27.2.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.2.sdk -I . -no-color-diagnostics -Xcc -fno-color-diagnostics -swift-version 6 -Onone -new-driver-path /Applications/Xcode-27.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-driver -enable-experimental-feature Lifetimes -empty-abi-descriptor -no-auto-bridging-header-chaining -module-name main -disable-clang-spi -target-sdk-version 27.2 -target-sdk-name macosx27.2 -external-plugin-path /Applications/Xcode-27.2.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins#/Applications/Xcode-27.2.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -external-plugin-path /Applications/Xcode-27.2.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/local/lib/swift/host/plugins#/Applications/Xcode-27.2.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server -in-process-plugin-server-path /Applications/Xcode-27.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -plugin-path /Applications/Xcode-27.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins -plugin-path /Applications/Xcode-27.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/local/lib/swift/host/plugins -o main.o
+1.	Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+2.	Compiling with the current language version
+3.	While evaluating request ExecuteSILPipelineRequest(Run pipelines { Mandatory Diagnostic Passes + Enabling Optimization Passes } on SIL for main)
+4.	While running pass #32 SILFunctionTransform "SendNonSendable" on SILFunction "@$s4main16crashingFunctionyyFyyXEfU_".
+ for expression at [main.swift:91:9 - line:91:28] RangeText="{ _ = View(target) "
+Stack dump without symbol names (ensure you have llvm-symbolizer in your PATH or set the environment var `LLVM_SYMBOLIZER_PATH` to point to it):
+0  swift-frontend           0x0000000108b4abb8 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) + 56
+1  swift-frontend           0x0000000108b48714 llvm::sys::RunSignalHandlers() + 172
+2  swift-frontend           0x0000000108b4b190 SignalHandler(int, __siginfo*, void*) + 356
+3  libsystem_platform.dylib 0x000000019a802144 _sigtramp + 56
+4  libsystem_pthread.dylib  0x0000000195838960 pthread_kill + 296
+5  libsystem_c.dylib        0x00000001958cc480 abort + 148
+6  swift-frontend           0x0000000103a49278 swift::Partition::merge(swift::PartitionPrimitives::Element, swift::PartitionPrimitives::Element, bool) + 244
+7  swift-frontend           0x0000000103678864 swift::RegionAnalysisFunctionInfo::runDataflow() + 5640
+8  swift-frontend           0x000000010367d624 swift::RegionAnalysis::newFunctionAnalysis(swift::SILFunction*) + 3940
+9  swift-frontend           0x0000000108c22408 (anonymous namespace)::SendNonSendable::run() + 268
+10 swift-frontend           0x000000010389bd94 swift::SILPassManager::runFunctionPasses(unsigned int, unsigned int) + 3524
+11 swift-frontend           0x0000000103897210 swift::SILPassManager::executePassPipelinePlan(swift::SILPassPipelinePlan const&) + 13112
+12 swift-frontend           0x00000001038afeb8 swift::SimpleRequest<swift::ExecuteSILPipelineRequest, std::__1::tuple<> (swift::SILPipelineExecutionDescriptor), (swift::RequestFlags)1>::evaluateRequest(swift::ExecuteSILPipelineRequest const&, swift::Evaluator&) + 48
+13 swift-frontend           0x000000010389ed54 swift::ExecuteSILPipelineRequest::OutputType swift::Evaluator::getResultUncached<swift::ExecuteSILPipelineRequest, swift::ExecuteSILPipelineRequest::OutputType swift::evaluateOrFatal<swift::ExecuteSILPipelineRequest>(swift::Evaluator&, swift::ExecuteSILPipelineRequest)::'lambda'()>(swift::ExecuteSILPipelineRequest const&, swift::ExecuteSILPipelineRequest::OutputType swift::evaluateOrFatal<swift::ExecuteSILPipelineRequest>(swift::Evaluator&, swift::ExecuteSILPipelineRequest)::'lambda'()) + 388
+14 swift-frontend           0x00000001038a0fd4 swift::runSILDiagnosticPasses(swift::SILModule&) + 420
+15 swift-frontend           0x0000000102e2cd54 swift::CompilerInstance::performSILProcessing(swift::SILModule*) + 512
+16 swift-frontend           0x0000000102a07f18 performCompileStepsPostSILGen(swift::CompilerInstance&, std::__1::unique_ptr<swift::SILModule, std::__1::default_delete<swift::SILModule>>, llvm::PointerUnion<swift::ModuleDecl*, swift::SourceFile*>, swift::PrimarySpecificPaths const&, int&, swift::FrontendObserver*, llvm::ArrayRef<char const*>, llvm::ArrayRef<swift::PrimarySpecificPaths>) + 1652
+17 swift-frontend           0x0000000102a06bf4 swift::performCompileStepsPostSema(swift::CompilerInstance&, int&, swift::FrontendObserver*, llvm::ArrayRef<char const*>) + 992
+18 swift-frontend           0x0000000102a0c2d8 performCompile(swift::CompilerInstance&, int&, swift::FrontendObserver*, llvm::ArrayRef<char const*>) + 1748
+19 swift-frontend           0x0000000102a092d4 swift::performFrontend(llvm::ArrayRef<char const*>, char const*, void*, swift::FrontendObserver*) + 3460
+20 swift-frontend           0x0000000102772b64 swift::mainEntry(int, char const**) + 5156
+21 dyld                     0x0000000195764d7c start + 6652
+(exit status 134)

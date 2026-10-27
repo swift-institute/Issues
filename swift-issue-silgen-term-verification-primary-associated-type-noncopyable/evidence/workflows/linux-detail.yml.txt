@@ -1,0 +1,27 @@
+name: linux-detail
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    container: swiftlang/swift:nightly-main-jammy
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: |
+          swiftc --version
+          cp v3/m11_primary_on_coding.swift /tmp/m11.swift
+          run() {
+            echo "##### swiftc $*"
+            code=0
+            swiftc "$@" /tmp/m11.swift > /tmp/l.txt 2>&1 || code=$?
+            head -7 /tmp/l.txt
+            echo "exit=$code"
+          }
+          run -emit-silgen
+          run -c -parse-as-library -o /tmp/o.o
+          run -typecheck
+          run -emit-silgen -swift-version 6
+          run -c -parse-as-library -module-name M -package-name p -swift-version 6 -Onone -enable-experimental-feature Lifetimes -o /tmp/o.o
+          exit 0

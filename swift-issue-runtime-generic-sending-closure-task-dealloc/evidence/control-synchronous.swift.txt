@@ -1,0 +1,8 @@
+struct One<Value: Sendable>: Sendable {
+    let _resume: @Sendable (sending () -> sending Value) -> Void
+    func resume(returning value: sending Value) { _resume { value } }
+}
+@main struct App { static func main() {
+    let one = One<String> { @Sendable (thunk: sending () -> sending String) in print(thunk()) }
+    one.resume(returning: "hello")
+} }

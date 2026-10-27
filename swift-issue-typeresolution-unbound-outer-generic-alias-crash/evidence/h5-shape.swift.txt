@@ -1,0 +1,15 @@
+struct Handle: ~Copyable {
+    let id: Int
+    init(_ id: Int) { self.id = id }
+}
+struct __H5FooBar<U: ~Copyable>: ~Copyable {
+    let value: U
+    init(_ value: consuming U) { self.value = value }
+}
+struct H5_Foo<V> {
+    typealias Bar<U: ~Copyable> = __H5FooBar<U>
+}
+func h5_short_test() {
+    let h5_short: H5_Foo.Bar<Handle> = H5_Foo.Bar(Handle(8))
+    print("H5 short: \(h5_short.value.id)")
+}

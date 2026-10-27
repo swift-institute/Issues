@@ -1,0 +1,22 @@
+$ xcrun swiftc --version
+swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Target: arm64-apple-macosx27.2.0
+
+$ xcrun swiftc -O -wmo -swift-version 6 -strict-memory-safety -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature LifetimeDependence -enable-experimental-feature Lifetimes -enable-experimental-feature SuppressedAssociatedTypes -enable-upcoming-feature InferIsolatedConformances -c reproducer.swift -o /dev/null
+exit status: 0
+
+$ xcrun swiftc -Onone -wmo -swift-version 6 -strict-memory-safety -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature LifetimeDependence -enable-experimental-feature Lifetimes -enable-experimental-feature SuppressedAssociatedTypes -enable-upcoming-feature InferIsolatedConformances -c reproducer.swift -o /dev/null
+exit status: 0
+
+$ xcrun swiftc -O -wmo -swift-version 6 -strict-memory-safety -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature LifetimeDependence -enable-experimental-feature Lifetimes -enable-experimental-feature SuppressedAssociatedTypes -enable-upcoming-feature InferIsolatedConformances -c evidence/control-let-bound-closure.swift -o /dev/null
+exit status: 0
+
+$ xcrun swiftc -Onone -wmo -swift-version 6 -strict-memory-safety -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature LifetimeDependence -enable-experimental-feature Lifetimes -enable-experimental-feature SuppressedAssociatedTypes -enable-upcoming-feature InferIsolatedConformances -c evidence/control-let-bound-closure.swift -o /dev/null
+exit status: 0
+
+$ xcrun swiftc -O -wmo -swift-version 6 -c reproducer.swift -o /dev/null   # no settings
+exit status: 0
+
+# Does this compiler have assertions? An assertions build crashes here; a release build exits 1 silently.
+$ swiftc -typecheck -Xfrontend -debug-assert-after-parse a.swift   # a.swift: let x = 1
+exit status: 1

@@ -1,0 +1,8 @@
+import ReproLib
+
+func crashingFunction() {
+    let target = Target()
+    _ = { _ = View(target) }()
+}
+
+crashingFunction()

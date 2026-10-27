@@ -1,0 +1,47 @@
+name: win-nightly
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  windows-nightly:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install nightly
+        shell: pwsh
+        run: |
+          $snap = "swift-DEVELOPMENT-SNAPSHOT-2026-10-17-a"
+          Invoke-WebRequest "https://download.swift.org/development/windows10/$snap/$snap-windows10.exe" -OutFile installer.exe
+          $p = Start-Process -FilePath installer.exe -ArgumentList "/install","/quiet","/norestart","/log","$PWD\inst.log" -Wait -PassThru
+          Write-Output "installer exit $($p.ExitCode)"
+          Get-Content inst.log -Tail 30 -ErrorAction SilentlyContinue
+          foreach ($d in "$env:LOCALAPPDATA\Programs\Swift","C:\Program Files\Swift","C:\Users\runneradmin\AppData\Local\Programs\Swift","C:\Library") { Write-Output "$d exists=$(Test-Path $d)"; if (Test-Path $d) { Get-ChildItem $d | ForEach-Object { Write-Output "  $($_.FullName)" } } }
+          $tc = Get-ChildItem "$env:LOCALAPPDATA\Programs\Swift\Toolchains" -ErrorAction SilentlyContinue | Select-Object -First 1
+          $bin = Join-Path $tc.FullName "usr\bin"
+          "$bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
+          $sdk = "$env:LOCALAPPDATA\Programs\Swift\Platforms"
+          Write-Output "bin $bin"
+          $root = "$env:LOCALAPPDATA\Programs\Swift"
+          Get-ChildItem "$root\Runtimes" -Directory | ForEach-Object { $rb = Join-Path $_.FullName "usr\bin"; Write-Output "runtime $rb exists=$(Test-Path $rb)"; $rb | Out-File -Append -Encoding utf8 $env:GITHUB_PATH }
+          "$root\Python-3.10.1\tools" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
+          Get-ChildItem $bin -Filter "swift*.exe" | Select-Object -First 8 | ForEach-Object { Write-Output "  bin: $($_.Name)" }
+          Get-ChildItem $sdk -Recurse -Directory -Filter Windows.sdk | Select-Object -First 1 | ForEach-Object { "SDKROOT=$($_.FullName)" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV; Write-Output "sdk $($_.FullName)" }
+      - name: Variants
+        shell: pwsh
+        run: |
+          $root = "$env:LOCALAPPDATA\Programs\Swift"
+          $bin = "$root\Toolchains\0.0.0+Asserts\usr\bin"
+          $dlls = Get-ChildItem $root -Recurse -Filter swiftCore.dll | ForEach-Object { $_.FullName }
+          Write-Output "swiftCore: $($dlls -join ' | ')"
+          foreach ($d in $dlls) { $env:PATH = (Split-Path $d) + ";" + $env:PATH }
+          Get-ChildItem $root -Recurse -Filter swift_Builtin_float.dll | ForEach-Object { Write-Output "float: $($_.FullName)"; $env:PATH = (Split-Path $_.FullName) + ";" + $env:PATH }
+          & "$bin\swift-frontend.exe" -version; Write-Output "frontend exit $LASTEXITCODE"
+          $sdk = (Get-ChildItem "$root\Platforms" -Recurse -Directory -Filter Windows.sdk | Select-Object -First 1).FullName
+          foreach ($f in (Get-ChildItem v/*.swift, v2/*.swift, v3/*.swift)) {
+            & "$bin\swift-frontend.exe" -frontend -c -primary-file $f.FullName -parse-as-library -module-name M -package-name p -swift-version 6 -Onone -enable-experimental-feature Lifetimes -target x86_64-unknown-windows-msvc -sdk $sdk -o "$($f.BaseName).obj" 2>&1 | Out-File "$($f.BaseName).log"
+            $code = $LASTEXITCODE
+            $first = (Select-String -Path "$($f.BaseName).log" -Pattern "Assertion failed|error:" | Select-Object -First 1).Line
+            Get-Content "$($f.BaseName).log" | Select-String -Pattern "Assertion failed|Abort:|Initial term|hasErrorResult" | Select-Object -First 4 | ForEach-Object { Write-Output "  LOG $_" }
+            Write-Output "RESULT $($f.Name) exit=$code $first"
+          }
+          exit 0

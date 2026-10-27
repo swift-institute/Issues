@@ -1,0 +1,39 @@
+Building for debugging...
+[0/3] Write swift-version--58304C5D6DBC2206.txt
+Build of product 'nested-type-generic-escape' complete! (0.10s)
+==================================================
+nested-type-generic-escape experiment
+==================================================
+
+--- H1 ---
+H1: H1_Foo<String>.Bar = 42 — works with explicit outer generic
+H1: H1_Foo.Bar without outer generic — see h1_short_test() below
+H1 short: 42
+
+--- H2 ---
+H2: H2_Foo<Int>.Bar<String>(value:) = hi — works explicit
+H2: H2_Foo.Bar<String> without outer V — see H2_short_test() below
+
+--- H3 ---
+H3: H3_Foo<Int>.Bar<Handle>(id:42) — works explicit; .id = 42
+
+--- H4 ---
+H4: default generic parameter — tested via commented H4_FooWithDefault
+
+--- H5 ---
+H5: H5_Foo<Int>.Bar<Handle> via hoisted typealias — id = 7
+H5: The hoisted type is __H5FooBar<U>, reached via nested typealias
+H5: Same phantom-V constraint applies at access through H5_Foo<V>
+
+--- H6 ---
+H6: module-scope typealias H5Bar<U> = __H5FooBar<U> — id = 99
+H6: But H5Bar is a top-level typealias, not nested under H5_Foo namespace
+H6: Violates Nest.Name — this is the compound-at-module-scope pattern
+
+==================================================
+RESULTS:
+  H1 short form (typealias to non-generic):     WORKS
+  H2 short form (nested struct with own gen):   REFUTED
+  H3 short form (~Copyable variant):            REFUTED
+  H5 short form (hoisted via nested typealias): CRASHES compiler
+==================================================

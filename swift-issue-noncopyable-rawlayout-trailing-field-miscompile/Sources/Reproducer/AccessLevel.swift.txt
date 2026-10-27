@@ -1,0 +1,71 @@
+// VARIANT: ACCESS LEVEL UNDER WHOLE-MODULE OPTIMIZATION
+//
+// From Experiments/swift-buffer-primitives--rawlayout-access-level-trigger
+// (Sources/main/main.swift, unchanged apart from this header).
+//
+// Under `-wmo` (what `swift build -c release` uses), the access level of the
+// types decides whether the crash fires:
+//
+//   public or package  -> CRASH ("Instruction does not dominate all uses!")
+//   internal           -> compiles; prints "OK"
+//
+// Without `-wmo` (per-file `-O`), the internal copy crashes too. The
+// canonical `Crash.swift.txt` is all internal, so it crashes under plain
+// `swiftc -O` but compiles under `swiftc -O -wmo`.
+//
+// Here the trailing field is `bitmap`, declared after the generic
+// `@_rawLayout(likeArrayOf:)` field `elements` inside `CombinedLayout`.
+//
+// Build to observe the crash:
+//
+//   swiftc -swift-version 6 -O -wmo \
+//     -enable-experimental-feature RawLayout \
+//     AccessLevel.swift -o /tmp/access-level
+//
+// Control: remove every `public ` and build with the same flags. It compiles.
+
+@_rawLayout(likeArrayOf: Element, count: capacity)
+public struct RawElements<Element: ~Copyable, let capacity: Int>: ~Copyable {
+    public init() {}
+}
+
+public struct CombinedLayout<Element: ~Copyable, let capacity: Int>: ~Copyable {
+    public var elements: RawElements<Element, capacity>
+    public var bitmap: InlineArray<4, UInt>
+}
+
+@_rawLayout(like: CombinedLayout<Element, capacity>)
+public struct CombinedRaw<Element: ~Copyable, let capacity: Int>: ~Copyable {
+    public init() {}
+}
+
+public struct InlineStorage<Element: ~Copyable, let capacity: Int>: ~Copyable {
+    public var _raw: CombinedRaw<Element, capacity>
+
+    public init() { _raw = CombinedRaw() }
+
+    deinit {
+        let stride = MemoryLayout<Element>.stride
+        let bitmapOffset = stride * capacity
+        unsafe withUnsafePointer(to: _raw) { rawBase in
+            let base = unsafe UnsafeRawPointer(rawBase)
+            let bitmapPtr = unsafe base.advanced(by: bitmapOffset)
+                .assumingMemoryBound(to: UInt.self)
+            let elementBase = unsafe UnsafeMutableRawPointer(mutating: base)
+            for word in 0..<4 {
+                var bits = unsafe bitmapPtr[word]
+                while bits != 0 {
+                    let bitIdx = bits.trailingZeroBitCount
+                    let slot = word &* UInt.bitWidth &+ bitIdx
+                    guard slot < capacity else { break }
+                    unsafe elementBase.advanced(by: slot &* stride)
+                        .assumingMemoryBound(to: Element.self)
+                        .deinitialize(count: 1)
+                    bits &= bits &- 1
+                }
+            }
+        }
+    }
+}
+
+print("OK")

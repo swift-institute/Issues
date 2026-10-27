@@ -189,6 +189,10 @@ let package = Package(
         // OF PROCESS via `swiftc -O`, reporting the verifier abort as the
         // signal. The test wraps the probe in `withKnownIssue` (green while the
         // out-of-process build crashes; red on upstream fix).
+        //
+        // Two more variants: public or package types crash under -O -wmo where
+        // internal ones do not (`AccessLevel.swift.txt`), and two @_rawLayout
+        // fields across modules (`CrossModuleCore` / `CrossModuleMiddleware`).
 
         .testTarget(
             name: "swift-issue-noncopyable-rawlayout-trailing-field-miscompile-Tests",
@@ -199,7 +203,11 @@ let package = Package(
             name: "swift-issue-noncopyable-rawlayout-trailing-field-miscompile-Repro",
             path: "swift-issue-noncopyable-rawlayout-trailing-field-miscompile/Sources/Reproducer",
             resources: [
-                .copy("Crash.swift.txt")
+                .copy("Crash.swift.txt"),
+                .copy("Reduced.swift.txt"),
+                .copy("AccessLevel.swift.txt"),
+                .copy("CrossModuleCore.swift.txt"),
+                .copy("CrossModuleMiddleware.swift.txt"),
             ]
         ),
 
@@ -1072,6 +1080,267 @@ let package = Package(
             name: "swift-issue-testing-foundation-overlay-package-system-module-Repro",
             path: "swift-issue-testing-foundation-overlay-package-system-module/Sources/Reproducer",
             exclude: ["Fixture"]
+        ),
+
+        // MARK: - swift-issue-runtime-value-generic-nested-generic-metadata
+        //
+        // swift-institute/Issues#105 — runtime SIGSEGV in libswiftCore when
+        // metadata is instantiated at run time for a generic type nested in a
+        // value-generic type (`Link<1>.Node<Int>`). A 6.4 regression
+        // (swiftlang/swift#89965 / #89995); fixed on main by swiftlang/swift#91267,
+        // not backported to 6.4.x. Fires at -Onone; -O hides it.
+        //
+        // The source compiles but its program crashes, so it ships as
+        // `Crash.swift.txt` and is compiled and run OUT OF PROCESS per [ISSUE-029];
+        // `when:` is the 6.4 compiler family.
+
+        .testTarget(
+            name: "swift-issue-runtime-value-generic-nested-generic-metadata-Tests",
+            path: "swift-issue-runtime-value-generic-nested-generic-metadata/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-runtime-value-generic-nested-generic-metadata-Repro",
+            path: "swift-issue-runtime-value-generic-nested-generic-metadata/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
+
+        // MARK: - swift-issue-silgen-sendable-typed-throws-closure-cast
+        //
+        // NOT FILED. SILGen crashes (signal 5, createInputFunctionArgument under
+        // LoweredParamGenerator::claimNext) emitting a typed-throws closure literal
+        // cast inline with `as @Sendable (Int) throws(TestError) -> Int` into a
+        // generic `<V: Sendable>` parameter. Fires on 6.3.1 and 6.4.2 at -Onone with
+        // no feature flags. Workaround: bind the closure to a typed `let` first.
+        //
+        // The source crashes the compiler, so it ships as `Crash.swift.txt` and is
+        // compiled OUT OF PROCESS per [ISSUE-029]; `when: { true }`.
+
+        .testTarget(
+            name: "swift-issue-silgen-sendable-typed-throws-closure-cast-Tests",
+            path: "swift-issue-silgen-sendable-typed-throws-closure-cast/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-silgen-sendable-typed-throws-closure-cast-Repro",
+            path: "swift-issue-silgen-sendable-typed-throws-closure-cast/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
+
+        // MARK: - swift-issue-generic-specializer-sendable-closure-cast
+        //
+        // NOT FILED. At -O an assertions compiler aborts in GenericSpecializer
+        // (TypeSubstCloner.h: `Subs.empty() || SubstCalleeSILType == …`)
+        // specializing `insert<Value: Sendable>` for a closure literal cast inline
+        // with `as @Sendable (Int) -> Int`. Recorded only on a Linux 6.4-dev
+        // assertions toolchain; Apple's 6.4 / 6.4.2 release toolchains have no
+        // assertions and build it, which is not evidence of a fix.
+        //
+        // The source aborts the compiler, so it ships as `Crash.swift.txt` and is
+        // compiled OUT OF PROCESS per [ISSUE-029]. A clean build on a compiler
+        // without assertions is inconclusive; `when:` is Linux.
+
+        .testTarget(
+            name: "swift-issue-generic-specializer-sendable-closure-cast-Tests",
+            path: "swift-issue-generic-specializer-sendable-closure-cast/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-generic-specializer-sendable-closure-cast-Repro",
+            path: "swift-issue-generic-specializer-sendable-closure-cast/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
+
+        // MARK: - swift-issue-sendnonsendable-iife-borrowing-init-crash
+        //
+        // NOT FILED. The SendNonSendable pass aborts (signal 6, Partition::merge
+        // in region analysis) when a function body holds an immediately-invoked
+        // closure that builds a public `~Copyable, ~Escapable` View through a
+        // borrowing `@_lifetime` init. Debug is enough; `Lifetimes` feature.
+        // Crashes on 6.3.1 and 6.4.2 (macOS arm64).
+        //
+        // The library and the crashing caller ship as `*.swift.txt` and are
+        // compiled OUT OF PROCESS per [ISSUE-029]; `when: { true }`.
+
+        .testTarget(
+            name: "swift-issue-sendnonsendable-iife-borrowing-init-crash-Tests",
+            path: "swift-issue-sendnonsendable-iife-borrowing-init-crash/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-sendnonsendable-iife-borrowing-init-crash-Repro",
+            path: "swift-issue-sendnonsendable-iife-borrowing-init-crash/Sources/Reproducer",
+            resources: [
+                .copy("ReproLib.swift.txt"),
+                .copy("Crash.swift.txt"),
+            ]
+        ),
+
+        // MARK: - swift-issue-move-checker-let-field-consuming-self-copy
+        //
+        // NOT FILED. The move checker reports "copy of noncopyable typed value.
+        // This is a compiler bug." when a `consuming func` on a `~Copyable,
+        // ~Escapable` builder forwards its `let`-bound `~Copyable` stored
+        // property into a sibling type's `consuming` init. `var` storage is the
+        // workaround. Fires on 6.3.2 and 6.4.2 (macOS arm64), any -O level.
+        //
+        // The source does not compile, so it ships as `Bug.swift.txt` and is
+        // compiled OUT OF PROCESS per [ISSUE-029]; `when: { true }`.
+
+        .testTarget(
+            name: "swift-issue-move-checker-let-field-consuming-self-copy-Tests",
+            path: "swift-issue-move-checker-let-field-consuming-self-copy/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-move-checker-let-field-consuming-self-copy-Repro",
+            path: "swift-issue-move-checker-let-field-consuming-self-copy/Sources/Reproducer",
+            resources: [
+                .copy("Bug.swift.txt")
+            ]
+        ),
+
+        // MARK: - swift-issue-copytoborrow-cross-module-actor-state-miscompile
+        //
+        // NOT FILED. A client built with -O against a library built with -O -wmo
+        // reads an actor's `state` as `.running` after an awaited call set it to
+        // `.shuttingDown`; ASan reports heap-use-after-free. Disabling
+        // copy-to-borrow-optimization in the client fixes it. 100/100 iterations
+        // wrong on 6.4.2 (about 50/100 on 6.3.1). Found in swift-io's
+        // IO.Event.Selector shutdown path.
+        //
+        // The two modules need their own flags, so they ship as `.swift.txt` and are
+        // built and run OUT OF PROCESS per [ISSUE-029]; `when:` macOS.
+
+        .testTarget(
+            name: "swift-issue-copytoborrow-cross-module-actor-state-miscompile-Tests",
+            path: "swift-issue-copytoborrow-cross-module-actor-state-miscompile/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-copytoborrow-cross-module-actor-state-miscompile-Repro",
+            path: "swift-issue-copytoborrow-cross-module-actor-state-miscompile/Sources/Reproducer",
+            resources: [
+                .copy("BugLib.swift.txt"),
+                .copy("BugTest.swift.txt"),
+            ]
+        ),
+
+        // MARK: - swift-issue-typeresolution-unbound-outer-generic-alias-crash
+        //
+        // NOT FILED. swift-frontend segfaults in
+        // TypeResolution::applyUnboundGenericArguments when a generic typealias is
+        // named through its generic outer type with the outer's arguments left out:
+        // `struct F<V> { typealias B<U> = U }` used as `F.B<Int>`. Crashes on 6.3.1
+        // and 6.4.2. Found as hypothesis H5 of the nested-type-generic-escape
+        // experiment (swift-ownership-primitives).
+        //
+        // The source crashes the compiler, so it ships as `Crash.swift.txt` and is
+        // type-checked OUT OF PROCESS per [ISSUE-029]; `when: { true }`.
+
+        .testTarget(
+            name: "swift-issue-typeresolution-unbound-outer-generic-alias-crash-Tests",
+            path: "swift-issue-typeresolution-unbound-outer-generic-alias-crash/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-typeresolution-unbound-outer-generic-alias-crash-Repro",
+            path: "swift-issue-typeresolution-unbound-outer-generic-alias-crash/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
+
+        // MARK: - swift-issue-runtime-generic-sending-closure-task-dealloc
+        //
+        // NOT FILED. At -Onone, passing a `sending` closure through a generic
+        // `@Sendable (sending () -> Value) async -> Void` value, from a function whose
+        // own parameter is `sending`, aborts in swift_task_dealloc: "freed pointer was
+        // not the last allocation". -O hides it. Fires on 6.4.2. On 6.3.1 the original
+        // shape crashed SILGen instead (reabstraction thunk); that no longer fires.
+        //
+        // The source compiles but its program aborts, so it ships as
+        // `Crash.swift.txt` and is compiled and run OUT OF PROCESS per [ISSUE-029];
+        // `when: { true }`.
+
+        .testTarget(
+            name: "swift-issue-runtime-generic-sending-closure-task-dealloc-Tests",
+            path: "swift-issue-runtime-generic-sending-closure-task-dealloc/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-runtime-generic-sending-closure-task-dealloc-Repro",
+            path: "swift-issue-runtime-generic-sending-closure-task-dealloc/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
+
+        // MARK: - swift-issue-silgen-term-verification-primary-associated-type-noncopyable
+        //
+        // swiftlang/swift#93525 (Issues#113, swift-coder locus) — an assertions-enabled
+        // compiler aborts in RequirementMachine::verify ("Term verification failed",
+        // GenericSignatureQueries.cpp:880) while SILGen lowers an initializer pinning a
+        // ~Copyable parameter to a nested conditional conformer of a refining protocol
+        // with primary associated types. Release toolchains compile it.
+        //
+        // The source aborts the compiler, so it ships as `Crash.swift.txt` and is
+        // compiled OUT OF PROCESS per [ISSUE-029]; `when:` is "+assertions toolchain".
+
+        .testTarget(
+            name: "swift-issue-silgen-term-verification-primary-associated-type-noncopyable-Tests",
+            path: "swift-issue-silgen-term-verification-primary-associated-type-noncopyable/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-silgen-term-verification-primary-associated-type-noncopyable-Repro",
+            path: "swift-issue-silgen-term-verification-primary-associated-type-noncopyable/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
+
+        // MARK: - swift-issue-astscope-member-attribute-macro-overlapping-scopes
+        //
+        // NOT FILED (Issues#157). When a member-attribute macro returns two custom
+        // attributes for one member, an assertions-enabled compiler aborts in ASTScope
+        // verification: "child overlaps previous child" between the generated
+        // CustomAttributeScopes. Release toolchains accept it.
+        //
+        // `Crash.swift.txt` is a macro plugin (-D PLUGIN, plugin protocol, no swift-syntax)
+        // and its client; both are compiled OUT OF PROCESS per [ISSUE-029];
+        // `when:` is "+assertions toolchain".
+
+        .testTarget(
+            name: "swift-issue-astscope-member-attribute-macro-overlapping-scopes-Tests",
+            path: "swift-issue-astscope-member-attribute-macro-overlapping-scopes/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-astscope-member-attribute-macro-overlapping-scopes-Repro",
+            path: "swift-issue-astscope-member-attribute-macro-overlapping-scopes/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
+        ),
+
+        // MARK: - swift-issue-ast-verifier-member-attribute-macro-enum-case
+        //
+        // NOT POSTED (Issues#175; same root cause as open swiftlang/swift#90139). A
+        // member-attribute macro's attribute is left on the EnumCaseDecl and the AST
+        // verifier aborts: "EnumCaseDecl should not have attributes". Fires on
+        // assertions builds, and on release toolchains with -enable-ast-verifier
+        // (Xcode 6.4.2 locally).
+        //
+        // `Crash.swift.txt` is a macro plugin (-D PLUGIN) and its client; both are
+        // compiled OUT OF PROCESS per [ISSUE-029]; `when:` is "Darwin or +assertions".
+
+        .testTarget(
+            name: "swift-issue-ast-verifier-member-attribute-macro-enum-case-Tests",
+            path: "swift-issue-ast-verifier-member-attribute-macro-enum-case/Tests"
+        ),
+        .executableTarget(
+            name: "swift-issue-ast-verifier-member-attribute-macro-enum-case-Repro",
+            path: "swift-issue-ast-verifier-member-attribute-macro-enum-case/Sources/Reproducer",
+            resources: [
+                .copy("Crash.swift.txt")
+            ]
         ),
     ],
     swiftLanguageModes: [.v6]

@@ -30,3 +30,19 @@ swiftc -O -Xllvm -print-after-all -enable-experimental-feature RawLayout \
   -enable-experimental-feature ValueGenerics Crash.swift.txt -o /dev/null 2>&1 \
   | grep -E "IR Dump|Running pass|dominate"
 ```
+
+## Variant sources (added 2026-10-27)
+
+Copied unchanged from `swift-institute/Experiments` at commit
+`f1c4db4d390c12af5ec454dfb506feaa4ec5e841`. Each `Package.swift` is renamed
+`Package.swift.txt` so SwiftPM does not treat it as a nested package.
+
+| Folder | Origin | What it holds |
+|--------|--------|---------------|
+| [`access-level-trigger/`](access-level-trigger/) | `swift-buffer-primitives--rawlayout-access-level-trigger` | `EXPERIMENT.md` (dated 2026-03-21: `internal` builds, `public`/`package` crash under `swift build -c release`), its manifest, and `Sources/main/main.swift`. The harness copy is `../Sources/Reproducer/AccessLevel.swift.txt`. |
+| [`minimal-reproducer/`](minimal-reproducer/) | `swift-buffer-primitives--rawlayout-minimal-reproducer` | `EXPERIMENT.md` (dated 2026-03-21: Bug 1 reproduces with two cross-module fields; Bug 2 does not reproduce), its manifest, and all six source targets. Only `Bug1Core` and `Bug1Middleware` are used: they are `../Sources/Reproducer/CrossModuleCore.swift.txt` and `CrossModuleMiddleware.swift.txt`. The `Bug2*` targets belong to `../../swift-issue-copypropagation-nonescapable-mark-dependence/` and are kept only as part of the original folder. |
+
+On Swift 6.4.2 the access-level result holds only under `-wmo`; without it the
+internal copy crashes too. See the README's "Trigger variants" table.
+
+The Swift sources kept here verbatim are stored as `.swift.txt`, so the repository formatter and linter never rewrite them: `minimal-reproducer/Sources/Bug2Consumer/main.swift.txt`. Scripts and notes in this folder name them by their original `.swift` names; rename a file back to rerun it.

@@ -1,0 +1,4 @@
+$ xcrun swiftc -Onone -g -module-name main reproducer.swift -o rg && lldb --batch -o run -o bt ./rg
+# Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1), macOS arm64
+* thread #1, queue = 'com.apple.main-thread', stop reason = EXC_BAD_ACCESS (code=1, address=0x0)
+      frame #0: 0x00000001958f66a0 libswiftCore.dylib`swift::nameForMetadata(swift::TargetMetadata<swift::InProcess> const*, bool) + 56

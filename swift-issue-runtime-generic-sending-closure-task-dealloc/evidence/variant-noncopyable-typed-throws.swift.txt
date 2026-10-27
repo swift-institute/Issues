@@ -1,0 +1,23 @@
+struct Payload: ~Copyable, Sendable {
+    let message: String
+}
+
+struct One<Value: ~Copyable & Sendable, Failure: Error>: ~Copyable, Sendable {
+    let _resume: @Sendable (sending () throws(Failure) -> sending Value) async -> Void
+
+    consuming func resume(returning value: consuming sending Value) async {
+        var slot: Value? = consume value
+        await _resume { () throws(Failure) -> sending Value in slot.take()! }
+    }
+}
+
+@main
+struct App {
+    static func main() async {
+        let one = One<Payload, Never> { @Sendable (thunk: sending () throws(Never) -> sending Payload) async in
+            let payload = thunk()
+            print(payload.message)
+        }
+        await one.resume(returning: Payload(message: "hello"))
+    }
+}

@@ -1,0 +1,82 @@
+# 2026-10-27T20:25:00Z macOS 27.2 arm64
+swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Target: arm64-apple-macosx27.2.0
+
+## reproducer.swift
+struct F<V> { typealias B<U> = U }
+func f(_: F.B<Int>) {}
+$ swiftc -typecheck -swift-version 6 reproducer.swift
+exit=139
+Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+Stack dump:
+1.	Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+2.	Compiling with the current language version
+3.	While evaluating request TypeCheckPrimaryFileRequest(source_file "reproducer.swift")
+4.	While type-checking 'f(_:)' (at reproducer.swift:2:1)
+5.	While evaluating request InterfaceTypeRequest(reproducer.(file).f@reproducer.swift:2:6)
+6.	While evaluating request LifetimeDependenceInfoRequest(reproducer.(file).f@reproducer.swift:2:6)
+7.	While evaluating request InterfaceTypeRequest(reproducer.(file).f(_:)._@reproducer.swift:2:8)
+8.	While evaluating request ResolveTypeRequest(while resolving type , F.B<Int>)
+Stack dump without symbol names (ensure you have llvm-symbolizer in your PATH or set the environment var `LLVM_SYMBOLIZER_PATH` to point to it):
+0  swift-frontend           0x0000000106f8abb8 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) + 56
+1  swift-frontend           0x0000000106f88714 llvm::sys::RunSignalHandlers() + 172
+2  swift-frontend           0x0000000106f8b190 SignalHandler(int, __siginfo*, void*) + 356
+3  libsystem_platform.dylib 0x000000019a802144 _sigtramp + 56
+4  swift-frontend           0x00000001023301d8 swift::Type llvm::function_ref<swift::Type (swift::SubstitutableType*)>::callback_fn<swift::TypeResolution::applyUnboundGenericArguments(swift::GenericTypeDecl*, swift::Type, swift::SourceLoc, llvm::ArrayRef<swift::Type>, bool*) const::$_0 const>(long, swift::SubstitutableType*) + 32
+5  swift-frontend           0x00000001029ae95c swift::InFlightSubstitution::substType(swift::SubstitutableType*, unsigned int) + 40
+6  swift-frontend           0x00000001029b1890 (anonymous namespace)::TypeSubstituter::transformGenericTypeParamType(swift::GenericTypeParamType*, swift::TypePosition) + 32
+7  swift-frontend           0x00000001071495a0 swift::TypeTransform<(anonymous namespace)::TypeSubstituter>::doIt(swift::Type, swift::TypePosition) + 2296
+8  swift-frontend           0x00000001029adbf0 swift::Type::subst(swift::InFlightSubstitution&) const + 268
+9  swift-frontend           0x00000001029ae478 swift::Type::subst(llvm::function_ref<swift::Type (swift::SubstitutableType*)>, llvm::function_ref<swift::ProtocolConformanceRef (swift::InFlightSubstitution&, swift::Type, swift::ProtocolDecl*)>, swift::SubstOptions) const + 436
+10 swift-frontend           0x00000001022744e8 swift::TypeChecker::checkGenericArgumentsForDiagnostics(swift::GenericSignature, llvm::ArrayRef<swift::Requirement>, llvm::function_ref<swift::Type (swift::SubstitutableType*)>) + 236
+11 swift-frontend           0x0000000102310e54 swift::TypeResolution::applyUnboundGenericArguments(swift::GenericTypeDecl*, swift::Type, swift::SourceLoc, llvm::ArrayRef<swift::Type>, bool*) const + 2204
+12 swift-frontend           0x000000010232b924 (anonymous namespace)::TypeResolver::applyGenericArguments(swift::Type, swift::DeclRefTypeRepr*, swift::TypeResolutionOptions) + 3064
+13 swift-frontend           0x000000010232741c (anonymous namespace)::TypeResolver::resolveDeclRefTypeReprRec(swift::DeclRefTypeRepr*, swift::TypeResolutionOptions) + 2336
+14 swift-frontend           0x00000001023145e4 (anonymous namespace)::TypeResolver::resolveType(swift::TypeRepr*, swift::TypeResolutionOptions) + 428
+15 swift-frontend           0x00000001071077d4 evaluateTypeResolution(swift::TypeResolution const*, swift::TypeRepr*, swift::SILTypeResolutionContext*) + 124
+16 swift-frontend           0x0000000102330470 swift::ResolveTypeRequest::OutputType swift::Evaluator::getResultUncached<swift::ResolveTypeRequest, swift::ResolveTypeRequest::OutputType swift::evaluateOrDefault<swift::ResolveTypeRequest>(swift::Evaluator&, swift::ResolveTypeRequest, swift::ResolveTypeRequest::OutputType)::'lambda'()>(swift::ResolveTypeRequest const&, swift::ResolveTypeRequest::OutputType swift::evaluateOrDefault<swift::ResolveTypeRequest>(swift::Evaluator&, swift::ResolveTypeRequest, swift::ResolveTypeRequest::OutputType)::'lambda'()) + 400
+17 swift-frontend           0x00000001021fc6bc validateParameterType(swift::ParamDecl*) + 928
+18 swift-frontend           0x00000001021fc110 swift::InterfaceTypeRequest::evaluate(swift::Evaluator&, swift::ValueDecl*) const + 5292
+19 swift-frontend           0x00000001026c0f00 swift::ValueDecl::getInterfaceType() const + 1064
+20 swift-frontend           0x00000001026e90b4 swift::ParamDecl::toFunctionParam(swift::Type) const + 56
+21 swift-frontend           0x0000000102848b24 swift::LifetimeDependenceInfo::get(swift::ValueDecl*) + 404
+22 swift-frontend           0x0000000101682374 swift::LifetimeDependenceInfoRequest::OutputType swift::Evaluator::getResultUncached<swift::LifetimeDependenceInfoRequest, swift::LifetimeDependenceInfoRequest::OutputType swift::evaluateOrDefault<swift::LifetimeDependenceInfoRequest>(swift::Evaluator&, swift::LifetimeDependenceInfoRequest, swift::LifetimeDependenceInfoRequest::OutputType)::'lambda'()>(swift::LifetimeDependenceInfoRequest const&, swift::LifetimeDependenceInfoRequest::OutputType swift::evaluateOrDefault<swift::LifetimeDependenceInfoRequest>(swift::Evaluator&, swift::LifetimeDependenceInfoRequest, swift::LifetimeDependenceInfoRequest::OutputType)::'lambda'()) + 452
+23 swift-frontend           0x00000001026f1360 swift::AbstractFunctionDecl::getLifetimeDependencies() const + 300
+24 swift-frontend           0x00000001021fb544 swift::InterfaceTypeRequest::evaluate(swift::Evaluator&, swift::ValueDecl*) const + 2272
+25 swift-frontend           0x00000001026c0f00 swift::ValueDecl::getInterfaceType() const + 1064
+26 swift-frontend           0x000000010223fab4 (anonymous namespace)::DeclChecker::visitFuncDecl(swift::FuncDecl*) + 48
+27 swift-frontend           0x00000001070ed0c4 (anonymous namespace)::DeclChecker::visit(swift::Decl*) + 724
+28 swift-frontend           0x0000000102334024 swift::TypeCheckPrimaryFileRequest::evaluate(swift::Evaluator&, swift::SourceFile*) const + 776
+
+## control.swift
+struct F<V> { typealias B<U> = U }
+func f(_: F<Int>.B<Int>) {}
+$ swiftc -typecheck -swift-version 6 control.swift
+exit=0
+
+## control-nongeneric.swift
+struct F { typealias B<U> = U }
+func f(_: F.B<Int>) {}
+$ swiftc -typecheck -swift-version 6 control-nongeneric.swift
+exit=0
+
+## control-nongeneric-alias.swift
+struct F<V> { typealias B = Int }
+func f(_: F.B) {}
+$ swiftc -typecheck -swift-version 6 control-nongeneric-alias.swift
+exit=0
+
+## h5-shape.swift (the experiment's H5 short form, standalone)
+$ swiftc -typecheck -swift-version 6 h5-shape.swift
+exit=139
+1.	Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+2.	Compiling with the current language version
+3.	While evaluating request TypeCheckPrimaryFileRequest(source_file "h5-shape.swift")
+4.	While evaluating request TypeCheckFunctionBodyRequest(main.(file).h5_short_test()@h5-shape.swift:12:6)
+5.	While type-checking statement at [h5-shape.swift:12:22 - line:15:1] RangeText="{
+6.	While type-checking declaration 0x77344005d0 (at h5-shape.swift:13:5)
+7.	While evaluating request PatternBindingEntryRequest((unknown decl)@h5-shape.swift:13:5, 0)
+8.	While evaluating request PatternTypeRequest((pattern @ 0x77344003b0))
+9.	While evaluating request ResolveTypeRequest(while resolving type , H5_Foo.Bar<Handle>)
+4  swift-frontend           0x0000000101d441d8 swift::Type llvm::function_ref<swift::Type (swift::SubstitutableType*)>::callback_fn<swift::TypeResolution::applyUnboundGenericArguments(swift::GenericTypeDecl*, swift::Type, swift::SourceLoc, 
+11 swift-frontend           0x0000000101d24e54 swift::TypeResolution::applyUnboundGenericArguments(swift::GenericTypeDecl*, swift::Type, swift::SourceLoc, llvm::ArrayRef<swift::Type>, bool*) const + 2204

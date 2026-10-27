@@ -1,0 +1,53 @@
+# Local run, 2026-10-27, macOS 27.2 arm64
+$ xcrun swiftc --version
+swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Target: arm64-apple-macosx27.2.0
+
+## 1. Reproducer (evidence/v3/m11_primary_on_coding.swift = Sources/Reproducer/Crash.swift.txt), upstream command
+$ xcrun swiftc -c -parse-as-library m11.swift -o m11.o
+exit=0
+$ xcrun swiftc -emit-silgen m11.swift > /dev/null
+exit=0
+
+## 1b. Every v3 variant with the lane's flags (evidence/run.sh)
+RESULT m11_primary_on_coding.swift exit=0 
+RESULT m12_primary_on_parsing.swift exit=0 
+RESULT m13_no_primary.swift exit=0 
+RESULT p1_case_content_parsing_only.swift exit=0 
+RESULT q1_z1_case_parsing_serializing.swift exit=0 
+RESULT y1_no_inverses.swift exit=0 
+RESULT z1_only_copyable_inverse.swift exit=0 
+
+## 2. Controls, upstream command
+$ xcrun swiftc -c -parse-as-library m12_primary_on_parsing.swift -o m12_primary_on_parsing.o
+exit=0
+$ xcrun swiftc -c -parse-as-library m13_no_primary.swift -o m13_no_primary.o
+exit=0
+No-assertions toolchain: crash file and controls all compile. The verification this bug trips does not run here, so these exits are not evidence of a fix or of the controls' cleanliness on an assertions build. CI evidence: evidence/ci/.
+
+## 3. Probe (Sources/Reproducer/main.swift)
+$ xcrun swiftc Sources/Reproducer/main.swift -o probe && ./probe     (real toolchain, Xcode Swift 6.4.2)
+Compiled, but this toolchain has no assertions, so the check did not run: inconclusive.
+exit=0
+$ PATH=<stub>:$PATH STUB_REPLAY=<recorded CI abort> ./probe     (stub swiftc: replays the CI text, compiles nothing)
+BUG FIRED: requirement-machine term verification failed in SILGen.
+exit=1
+$ PATH=<stub>:$PATH ./probe     (stub swiftc: +assertions, exits 0, as a fixed assertions build would)
+An assertions toolchain compiled the file — the bug is FIXED.
+exit=0
+
+## 4. Swift Testing harness, run through a scratch package that declares exactly the Package.swift block of this entry with the Issues package's swiftSettings (strict memory safety, upcoming features, warnings as errors). `swift build` succeeded with no warnings.
+$ swift test --filter silgen_term   (real toolchain)
+􁁛  Test reproducer() passed after 0.460 seconds.
+$ PATH=<stub>:$PATH STUB_REPLAY=<recorded CI abort> swift test --filter silgen_term
+􀢂  Test reproducer() recorded a known issue at Reproducer Tests.swift:86:15: Expectation failed: fired == false
+􀢂  Test reproducer() passed after 0.014 seconds with 1 known issue.
+$ PATH=<stub>:$PATH swift test --filter silgen_term   (stub assertions build that compiles the file: the fix signal)
+􀢄  Test reproducer() recorded an issue at Reproducer Tests.swift:84:23: Known issue was not recorded
+􀢄  Test reproducer() failed after 0.076 seconds with 1 issue.
+
+## 5. Test file typecheck outside SwiftPM
+$ xcrun swiftc -typecheck -parse-as-library "Tests/Reproducer Tests.swift"
+Tests/Reproducer Tests.swift:1:8: error: no such module 'Testing'
+$ (same, plus -F/-I to the platform's Testing and -plugin-path to the toolchain's testing plugins)
+typecheck exit=0

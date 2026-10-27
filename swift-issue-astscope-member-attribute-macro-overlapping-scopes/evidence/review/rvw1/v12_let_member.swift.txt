@@ -1,0 +1,44 @@
+#if PLUGIN
+// A macro plugin speaking the compiler's plugin protocol directly (no swift-syntax):
+// `M` (member attribute) returns "@A @A" for each member; `A` (peer) expands to nothing.
+#if os(Windows)
+import ucrt
+func get(_ p: UnsafeMutableRawPointer, _ n: Int) -> Int { Int(_read(0, p, UInt32(n))) }
+func put(_ p: UnsafeRawPointer, _ n: Int) { _ = _write(1, p, UInt32(n)) }
+_ = _setmode(0, _O_BINARY)
+_ = _setmode(1, _O_BINARY)
+#elseif canImport(Darwin)
+import Darwin
+func get(_ p: UnsafeMutableRawPointer, _ n: Int) -> Int { read(0, p, n) }
+func put(_ p: UnsafeRawPointer, _ n: Int) { _ = write(1, p, n) }
+#else
+import Glibc
+func get(_ p: UnsafeMutableRawPointer, _ n: Int) -> Int { read(0, p, n) }
+func put(_ p: UnsafeRawPointer, _ n: Int) { _ = write(1, p, n) }
+#endif
+func take(_ n: Int) -> [UInt8]? {
+    var b = [UInt8](repeating: 0, count: n), i = 0
+    while i < n {
+        let r = b.withUnsafeMutableBytes { get($0.baseAddress! + i, n - i) }
+        if r <= 0 { return nil }
+        i += r
+    }
+    return b
+}
+func send(_ s: String) {
+    var n = UInt64(s.utf8.count).littleEndian
+    withUnsafeBytes(of: &n) { put($0.baseAddress!, 8) }
+    Array(s.utf8).withUnsafeBytes { put($0.baseAddress!, $0.count) }
+}
+while let h = take(8), let m = take(h.enumerated().reduce(0) { $0 | Int($1.1) << (8 * $1.0) }) {
+    let s = String(decoding: m, as: UTF8.self)
+    send(s.contains("getCapability")
+        ? #"{"getCapabilityResult":{"capability":{"protocolVersion":7}}}"#
+        : #"{"expandMacroResult":{"expandedSource":"\#(s.contains("memberAttribute") ? "@A @A" : "")","diagnostics":[]}}"#)
+}
+#else
+@attached(memberAttribute) macro M() = #externalMacro(module: "P", type: "M")
+@attached(peer) macro A() = #externalMacro(module: "P", type: "A")
+
+@M struct S { let x: Int }
+#endif

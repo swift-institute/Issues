@@ -1,0 +1,66 @@
+# Local run, 2026-10-27, macOS 27.2 arm64
+$ xcrun swiftc --version
+swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Target: arm64-apple-macosx27.2.0
+
+## 1. Reproducer (evidence/lane/final/case.swift = Sources/Reproducer/Crash.swift.txt)
+### the record's command (no verifier flag): release builds skip the AST verifier
+$ xcrun swiftc -D PLUGIN repro.swift -o plugin   -> exit=0
+$ xcrun swiftc -o client -load-plugin-executable 'plugin#P' repro.swift
+exit=0
+### with the AST verifier turned on (the harness's command)
+$ xcrun swiftc -D PLUGIN repro.swift -o plugin   -> exit=0
+$ xcrun swiftc -typecheck -Xfrontend -enable-ast-verifier -load-plugin-executable 'plugin#P' repro.swift
+exit=134
+EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+0  swift-frontend           0x000000010a636bb8 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) + 56
+1  swift-frontend           0x000000010a634714 llvm::sys::RunSignalHandlers() + 172
+2  swift-frontend           0x000000010a637190 SignalHandler(int, __siginfo*, void*) + 356
+3  libsystem_platform.dylib 0x000000019a802144 _sigtramp + 56
+4  libsystem_pthread.dylib  0x0000000195838960 pthread_kill + 296
+### the record's command with the verifier turned on
+$ xcrun swiftc -D PLUGIN repro.swift -o plugin   -> exit=0
+$ xcrun swiftc -Xfrontend -enable-ast-verifier -o client -load-plugin-executable 'plugin#P' repro.swift
+exit=1
+error: compile command failed due to signal 6 (use -v to see invocation)
+EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+0  swift-frontend           0x0000000106d22bb8 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) + 56
+1  swift-frontend           0x0000000106d20714 llvm::sys::RunSignalHandlers() + 172
+2  swift-frontend           0x0000000106d23190 SignalHandler(int, __siginfo*, void*) + 356
+3  libsystem_platform.dylib 0x000000019a802144 _sigtramp + 56
+
+## 2. Controls, harness command (-typecheck -Xfrontend -enable-ast-verifier)
+### evidence/review/v4_no_case.swift
+$ xcrun swiftc -D PLUGIN repro.swift -o plugin   -> exit=0
+$ xcrun swiftc -typecheck -Xfrontend -enable-ast-verifier -load-plugin-executable 'plugin#P' repro.swift
+exit=0
+### evidence/review/v6_struct_member.swift
+$ xcrun swiftc -D PLUGIN repro.swift -o plugin   -> exit=0
+$ xcrun swiftc -typecheck -Xfrontend -enable-ast-verifier -load-plugin-executable 'plugin#P' repro.swift
+exit=0
+### evidence/review/v1_empty_expansion.swift
+$ xcrun swiftc -D PLUGIN repro.swift -o plugin   -> exit=0
+$ xcrun swiftc -typecheck -Xfrontend -enable-ast-verifier -load-plugin-executable 'plugin#P' repro.swift
+exit=0
+
+## 3. Probe (Sources/Reproducer/main.swift)
+$ xcrun swiftc Sources/Reproducer/main.swift -o probe && ./probe
+BUG FIRED: AST verifier rejected the macro's attribute on the EnumCaseDecl.
+exit=1
+$ (copy of main.swift next to evidence/review/v4_no_case.swift staged as Crash.swift.txt) ./probe
+The AST verifier accepted the client — the bug is FIXED.
+exit=0
+
+## 4. Swift Testing harness, run through a scratch package that declares exactly the Package.swift block of this entry with the Issues package's swiftSettings (strict memory safety, upcoming features, warnings as errors). `swift build` succeeded with no warnings.
+$ swift test --filter ast_verifier_member
+􀢂  Test reproducer() recorded a known issue at Reproducer Tests.swift:102:15: Expectation failed: fired == false
+􀢂  Test reproducer() passed after 0.878 seconds with 1 known issue.
+$ (evidence/review/v4_no_case.swift staged as Crash.swift.txt in the scratch copy) swift test --filter ast_verifier_member   (the fix signal)
+􀢄  Test reproducer() recorded an issue at Reproducer Tests.swift:100:23: Known issue was not recorded
+􀢄  Test reproducer() failed after 0.845 seconds with 1 issue.
+
+## 5. Test file typecheck outside SwiftPM
+$ xcrun swiftc -typecheck -parse-as-library "Tests/Reproducer Tests.swift"
+Tests/Reproducer Tests.swift:1:8: error: no such module 'Testing'
+$ (same, plus -F/-I to the platform's Testing and -plugin-path to the toolchain's testing plugins)
+typecheck exit=0

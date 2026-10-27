@@ -1,0 +1,53 @@
+# Local run, 2026-10-27, macOS 27.2 arm64
+$ xcrun swiftc --version
+swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Target: arm64-apple-macosx27.2.0
+
+## 1. Reproducer (evidence/lane/final/scope.swift = Sources/Reproducer/Crash.swift.txt), the record's two commands
+$ xcrun swiftc -D PLUGIN repro.swift -o plugin
+exit=0
+$ xcrun swiftc -typecheck -load-plugin-executable 'plugin#P' repro.swift 
+exit=0 
+
+## 1b. Same, without -typecheck (links a client), and with every verifier flag this release frontend offers
+$ xcrun swiftc -load-plugin-executable 'plugin#P' repro.swift -o client
+exit=0
+$ ... -Xfrontend -enable-ast-verifier
+exit=0
+$ ... -Xfrontend -dump-scope-maps -Xfrontend expanded > /dev/null
+exit=0
+
+## 2. Control: one generated attribute (evidence/review/rvw1/v06_single_A_control.swift)
+$ xcrun swiftc -D PLUGIN repro.swift -o plugin
+exit=0
+$ xcrun swiftc -typecheck -load-plugin-executable 'plugin#P' repro.swift 
+exit=0 
+
+No-assertions toolchain: the client is accepted with and without the controls. The ASTScope verifier does not run in this release build, and none of the flags tried above turns it on, so these exits are not evidence of a fix. CI evidence: evidence/ci/.
+
+## 3. Probe (Sources/Reproducer/main.swift)
+$ xcrun swiftc Sources/Reproducer/main.swift -o probe && ./probe     (real toolchain, Xcode Swift 6.4.2)
+Accepted, but this toolchain has no assertions, so the verifier did not run: inconclusive.
+exit=0
+$ PATH=<stub>:$PATH STUB_REPLAY=<recorded CI abort> ./probe     (stub swiftc: replays the CI text, compiles nothing)
+BUG FIRED: ASTScope verifier aborted on two generated CustomAttributeScopes.
+exit=1
+$ PATH=<stub>:$PATH ./probe     (stub swiftc: +assertions, exits 0, as a fixed assertions build would)
+An assertions toolchain accepted the client — the bug is FIXED.
+exit=0
+
+## 4. Swift Testing harness, run through a scratch package that declares exactly the Package.swift block of this entry with the Issues package's swiftSettings (strict memory safety, upcoming features, warnings as errors). `swift build` succeeded with no warnings.
+$ swift test --filter astscope_member   (real toolchain)
+􁁛  Test reproducer() passed after 0.971 seconds.
+$ PATH=<stub>:$PATH STUB_REPLAY=<recorded CI abort> swift test --filter astscope_member
+􀢂  Test reproducer() recorded a known issue at Reproducer Tests.swift:96:15: Expectation failed: fired == false
+􀢂  Test reproducer() passed after 0.084 seconds with 1 known issue.
+$ PATH=<stub>:$PATH swift test --filter astscope_member   (stub assertions build that accepts the client: the fix signal)
+􀢄  Test reproducer() recorded an issue at Reproducer Tests.swift:94:23: Known issue was not recorded
+􀢄  Test reproducer() failed after 0.091 seconds with 1 issue.
+
+## 5. Test file typecheck outside SwiftPM
+$ xcrun swiftc -typecheck -parse-as-library "Tests/Reproducer Tests.swift"
+Tests/Reproducer Tests.swift:1:8: error: no such module 'Testing'
+$ (same, plus -F/-I to the platform's Testing and -plugin-path to the toolchain's testing plugins)
+typecheck exit=0

@@ -1,0 +1,65 @@
+# run 39643341814 (main e1142cb636c5092bf3ef4a9f114b10663933ecfb, workflow nightly): Linux nightly 6.5-dev +assertions and Windows 6.4.1, v/ v2/ rows (v3/ rows belong to swift-issue-silgen-term-verification-primary-associated-type-noncopyable).
+windows-641 | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-641 | Build config: +assertions
+windows-641 | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-641 | Build config: +assertions
+windows-641 | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-641 | Build config: +assertions
+windows-641 | RESULT a_full.swift exit=-1073741795 
+windows-641 | RESULT b_copyable.swift exit=-1073741795 
+windows-641 | RESULT c_explicit.swift exit=0 
+windows-641 | RESULT d_label.swift exit=-1073741795 
+windows-641 | RESULT e_errorinbody.swift exit=-1073741795 
+windows-641 | RESULT f_nosendable.swift exit=-1073741795 
+windows-641 | RESULT g_func.swift exit=-1073741795 
+windows-641 | RESULT h_throwing.swift exit=0 
+windows-641 | RESULT i_untyped.swift exit=0 
+windows-641 | RESULT j_nongeneric.swift exit=0 
+windows-641 | RESULT k_generic_toplevel_error.swift exit=0 
+windows-641 | RESULT l_generic_nested_error_freefunc.swift exit=1 D:\a\windows-exception-29-reproducer\windows-exception-29-reproducer\v2\l_generic_nested_error_freefunc.swift:5:45: error: generic parameter 'Element' could not be inferred
+windows-641 | RESULT m_generic_nested_error_local.swift exit=-1073741795 
+windows-641 | RESULT n_minimal_nonstatic.swift exit=-1073741795 
+windows-641 | RESULT o_fix_annotated.swift exit=0 
+windows-641 | RESULT p_fix_ignoring_param.swift exit=0 
+linux | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux | Build config: +assertions
+linux | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux | Build config: +assertions
+linux | RESULT v/a_full.swift exit=0 
+linux | RESULT v/b_copyable.swift exit=0 
+linux | RESULT v/c_explicit.swift exit=0 
+linux | RESULT v/d_label.swift exit=0 
+linux | RESULT v/e_errorinbody.swift exit=0 
+linux | RESULT v/f_nosendable.swift exit=0 
+linux | RESULT v/g_func.swift exit=0 
+linux | RESULT v/h_throwing.swift exit=0 
+linux | RESULT v/i_untyped.swift exit=0 
+linux | RESULT v2/j_nongeneric.swift exit=0 
+linux | RESULT v2/k_generic_toplevel_error.swift exit=0 
+linux | RESULT v2/l_generic_nested_error_freefunc.swift exit=1 v2/l_generic_nested_error_freefunc.swift:5:45: error: generic parameter 'Element' could not be inferred
+linux | RESULT v2/m_generic_nested_error_local.swift exit=0 
+linux | RESULT v2/n_minimal_nonstatic.swift exit=0 
+linux | RESULT v2/o_fix_annotated.swift exit=0 
+linux | RESULT v2/p_fix_ignoring_param.swift exit=0 
+windows-nightly | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-nightly | Build config: +assertions
+windows-nightly | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-nightly | Build config: +assertions
+windows-nightly | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-nightly | Build config: +assertions
+windows-nightly | RESULT a_full.swift exit=-1073741795 
+windows-nightly | RESULT b_copyable.swift exit=-1073741795 
+windows-nightly | RESULT c_explicit.swift exit=0 
+windows-nightly | RESULT d_label.swift exit=-1073741795 
+windows-nightly | RESULT e_errorinbody.swift exit=-1073741795 
+windows-nightly | RESULT f_nosendable.swift exit=-1073741795 
+windows-nightly | RESULT g_func.swift exit=-1073741795 
+windows-nightly | RESULT h_throwing.swift exit=0 
+windows-nightly | RESULT i_untyped.swift exit=0 
+windows-nightly | RESULT j_nongeneric.swift exit=0 
+windows-nightly | RESULT k_generic_toplevel_error.swift exit=0 
+windows-nightly | RESULT l_generic_nested_error_freefunc.swift exit=1 D:\a\windows-exception-29-reproducer\windows-exception-29-reproducer\v2\l_generic_nested_error_freefunc.swift:5:45: error: generic parameter 'Element' could not be inferred
+windows-nightly | RESULT m_generic_nested_error_local.swift exit=-1073741795 
+windows-nightly | RESULT n_minimal_nonstatic.swift exit=-1073741795 
+windows-nightly | RESULT o_fix_annotated.swift exit=0 
+windows-nightly | RESULT p_fix_ignoring_param.swift exit=0 

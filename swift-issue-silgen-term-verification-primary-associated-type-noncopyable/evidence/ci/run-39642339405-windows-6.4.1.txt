@@ -1,0 +1,57 @@
+# swift-institute/windows-exception-29-reproducer run 39642339405 (main 133e228082b60f1f63d8e79a79ad1d398561e9bf, workflow repro): Windows 6.4.1 +assertions, v3/ variants, two flag sets. Result and crash lines only; timestamps stripped.
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Target: x86_64-unknown-windows-msvc
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Build config: +assertions
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Target: x86_64-unknown-windows-msvc
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Build config: +assertions
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Target: x86_64-unknown-windows-msvc
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Build config: +assertions
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG Abort: function verify at GenericSignatureQueries.cpp:880
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG Initial term:    τ_0_3.[Parsing:Input]
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG 3.
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG 4.
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG 5.
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG | 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT m11_primary_on_coding.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=-1073741795 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT m12_primary_on_parsing.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=0 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT m13_no_primary.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=0 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT p1_case_content_parsing_only.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=0 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT q1_z1_case_parsing_serializing.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=0 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT y1_no_inverses.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=0 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG Abort: function verify at GenericSignatureQueries.cpp:880
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG Initial term:    τ_0_3.[Parsing:Input]
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG 3.
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG 4.
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG 5.
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG | 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT z1_only_copyable_inverse.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=-1073741795 
+windows (-Onone -enable-experimental-feature Lifetimes) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone -enable-experimental-feature Lifetimes) | Target: x86_64-unknown-windows-msvc
+windows (-Onone -enable-experimental-feature Lifetimes) | Build config: +assertions
+windows (-Onone -enable-experimental-feature Lifetimes) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone -enable-experimental-feature Lifetimes) | Target: x86_64-unknown-windows-msvc
+windows (-Onone -enable-experimental-feature Lifetimes) | Build config: +assertions
+windows (-Onone -enable-experimental-feature Lifetimes) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone -enable-experimental-feature Lifetimes) | Target: x86_64-unknown-windows-msvc
+windows (-Onone -enable-experimental-feature Lifetimes) | Build config: +assertions
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG Abort: function verify at GenericSignatureQueries.cpp:880
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG Initial term:    τ_0_3.[Parsing:Input]
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG 3.
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG 4.
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG 5.
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG | 
+windows (-Onone -enable-experimental-feature Lifetimes) | RESULT m11_primary_on_coding.swift -Onone -enable-experimental-feature Lifetimes exit=-1073741795 
+windows (-Onone -enable-experimental-feature Lifetimes) | RESULT m12_primary_on_parsing.swift -Onone -enable-experimental-feature Lifetimes exit=0 
+windows (-Onone -enable-experimental-feature Lifetimes) | RESULT m13_no_primary.swift -Onone -enable-experimental-feature Lifetimes exit=0 
+windows (-Onone -enable-experimental-feature Lifetimes) | RESULT p1_case_content_parsing_only.swift -Onone -enable-experimental-feature Lifetimes exit=0 
+windows (-Onone -enable-experimental-feature Lifetimes) | RESULT q1_z1_case_parsing_serializing.swift -Onone -enable-experimental-feature Lifetimes exit=0 
+windows (-Onone -enable-experimental-feature Lifetimes) | RESULT y1_no_inverses.swift -Onone -enable-experimental-feature Lifetimes exit=0 
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG Abort: function verify at GenericSignatureQueries.cpp:880
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG Initial term:    τ_0_3.[Parsing:Input]
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG 3.
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG 4.
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG 5.
+windows (-Onone -enable-experimental-feature Lifetimes) |   LOG | 
+windows (-Onone -enable-experimental-feature Lifetimes) | RESULT z1_only_copyable_inverse.swift -Onone -enable-experimental-feature Lifetimes exit=-1073741795 

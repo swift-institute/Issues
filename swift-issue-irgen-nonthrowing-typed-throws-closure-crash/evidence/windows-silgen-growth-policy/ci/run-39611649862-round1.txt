@@ -1,0 +1,64 @@
+# run 39611649862 (main 7a942c9b27097b2981060115374d945a2a65b930, workflow repro): round 1, v/, Windows 6.4.1 +assertions, three flag sets. RESULT lines and the verifier line; timestamps stripped.
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Build config: +assertions
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Build config: +assertions
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | Build config: +assertions
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT a_full.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=-1073741795 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT b_copyable.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=-1073741795 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT c_explicit.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=0 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT d_label.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=-1073741795 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT e_errorinbody.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=-1073741795 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT f_nosendable.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=-1073741795 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT g_func.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=-1073741795 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT h_throwing.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=0 
+windows (-Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feat... | RESULT i_untyped.swift -Onone -warnings-as-errors -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature InferIsolatedConformances -enable-experimental-feature Lifetimes -strict-memory-safety -enable-testing -g exit=0 
+windows (-O) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-O) | Build config: +assertions
+windows (-O) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-O) | Build config: +assertions
+windows (-O) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-O) | Build config: +assertions
+windows (-O) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-O) | RESULT a_full.swift -O exit=-1073741795 
+windows (-O) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-O) | RESULT b_copyable.swift -O exit=-1073741795 
+windows (-O) | RESULT c_explicit.swift -O exit=0 
+windows (-O) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-O) | RESULT d_label.swift -O exit=-1073741795 
+windows (-O) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-O) | RESULT e_errorinbody.swift -O exit=-1073741795 
+windows (-O) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-O) | RESULT f_nosendable.swift -O exit=-1073741795 
+windows (-O) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-O) | RESULT g_func.swift -O exit=-1073741795 
+windows (-O) | RESULT h_throwing.swift -O exit=0 
+windows (-O) | RESULT i_untyped.swift -O exit=0 
+windows (-Onone) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone) | Build config: +assertions
+windows (-Onone) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone) | Build config: +assertions
+windows (-Onone) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows (-Onone) | Build config: +assertions
+windows (-Onone) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone) | RESULT a_full.swift -Onone exit=-1073741795 
+windows (-Onone) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone) | RESULT b_copyable.swift -Onone exit=-1073741795 
+windows (-Onone) | RESULT c_explicit.swift -Onone exit=0 
+windows (-Onone) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone) | RESULT d_label.swift -Onone exit=-1073741795 
+windows (-Onone) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone) | RESULT e_errorinbody.swift -Onone exit=-1073741795 
+windows (-Onone) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone) | RESULT f_nosendable.swift -Onone exit=-1073741795 
+windows (-Onone) |   LOG SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+windows (-Onone) | RESULT g_func.swift -Onone exit=-1073741795 
+windows (-Onone) | RESULT h_throwing.swift -Onone exit=0 
+windows (-Onone) | RESULT i_untyped.swift -Onone exit=0 

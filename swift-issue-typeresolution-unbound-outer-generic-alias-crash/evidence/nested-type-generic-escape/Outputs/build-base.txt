@@ -1,0 +1,66 @@
+Building for debugging...
+[0/6] Write sources
+[1/6] Write nested-type-generic-escape-entitlement.plist
+[2/6] Write swift-version--58304C5D6DBC2206.txt
+[4/8] Emitting module nested_type_generic_escape
+[5/8] Compiling nested_type_generic_escape main.swift
+/Users/coen/Developer/swift-primitives/swift-ownership-primitives/Experiments/nested-type-generic-escape/Sources/nested-type-generic-escape/main.swift:61:52: error: main actor-isolated let 'h2_full' can not be referenced from a nonisolated context
+ 53 | 
+ 54 | // Full form: H2_Foo<Int>.Bar<String>
+ 55 | let h2_full: H2_Foo<Int>.Bar<String> = H2_Foo<Int>.Bar(value: "hi")
+    |     `- note: let declared here
+ 56 | 
+ 57 | // Attempt: H2_Foo.Bar<String> without V?
+ 58 | // let h2_short: H2_Foo.Bar<String> = H2_Foo.Bar(value: "hi")
+ 59 | 
+ 60 | func h2_test() {
+    |      `- note: add '@MainActor' to make global function 'h2_test()' part of global actor 'MainActor'
+ 61 |     print("H2: H2_Foo<Int>.Bar<String>(value:) = \(h2_full.value) — works explicit")
+    |                                                    `- error: main actor-isolated let 'h2_full' can not be referenced from a nonisolated context
+ 62 |     print("H2: H2_Foo.Bar<String> without outer V — uncomment above to test")
+ 63 | }
+
+/Users/coen/Developer/swift-primitives/swift-ownership-primitives/Experiments/nested-type-generic-escape/Sources/nested-type-generic-escape/main.swift:88:75: error: main actor-isolated let 'h3_full' can not be referenced from a nonisolated context
+ 80 | 
+ 81 | // Full form: H3_Foo<Int>.Bar<H3_Handle>
+ 82 | let h3_full: H3_Foo<Int>.Bar<H3_Handle> = H3_Foo<Int>.Bar(H3_Handle(42))
+    |     `- note: let declared here
+ 83 | 
+ 84 | // Attempt: drop outer generic
+ 85 | // let h3_short: H3_Foo.Bar<H3_Handle> = H3_Foo.Bar(H3_Handle(42))
+ 86 | 
+ 87 | func h3_test() {
+    |      `- note: add '@MainActor' to make global function 'h3_test()' part of global actor 'MainActor'
+ 88 |     print("H3: H3_Foo<Int>.Bar<Handle>(id:42) — works explicit; .id = \(h3_full.value.id)")
+    |                                                                         `- error: main actor-isolated let 'h3_full' can not be referenced from a nonisolated context
+ 89 | }
+ 90 | 
+
+/Users/coen/Developer/swift-primitives/swift-ownership-primitives/Experiments/nested-type-generic-escape/Sources/nested-type-generic-escape/main.swift:133:73: error: main actor-isolated let 'h5_full' can not be referenced from a nonisolated context
+125 | 
+126 | // Attempt: H5_Foo<Int>.Bar<H3_Handle>
+127 | let h5_full: H5_Foo<Int>.Bar<H3_Handle> = H5_Foo<Int>.Bar(H3_Handle(7))
+    |     `- note: let declared here
+128 | 
+129 | // Attempt: H5_Foo.Bar<H3_Handle> — omit outer generic?
+130 | // let h5_short: H5_Foo.Bar<H3_Handle> = H5_Foo.Bar(H3_Handle(8))
+131 | 
+132 | func h5_test() {
+    |      `- note: add '@MainActor' to make global function 'h5_test()' part of global actor 'MainActor'
+133 |     print("H5: H5_Foo<Int>.Bar<Handle> via hoisted typealias — id = \(h5_full.value.id)")
+    |                                                                       `- error: main actor-isolated let 'h5_full' can not be referenced from a nonisolated context
+134 |     print("H5: The hoisted type is __H5FooBar<U>, reached via nested typealias")
+135 |     print("H5: Same phantom-V constraint applies at access through H5_Foo<V>")
+
+/Users/coen/Developer/swift-primitives/swift-ownership-primitives/Experiments/nested-type-generic-escape/Sources/nested-type-generic-escape/main.swift:151:75: error: main actor-isolated let 'h6_x' can not be referenced from a nonisolated context
+146 | typealias H5Bar<U: ~Copyable> = __H5FooBar<U>
+147 | 
+148 | let h6_x = H5Bar(H3_Handle(99))
+    |     `- note: let declared here
+149 | 
+150 | func h6_test() {
+    |      `- note: add '@MainActor' to make global function 'h6_test()' part of global actor 'MainActor'
+151 |     print("H6: module-scope typealias H5Bar<U> = __H5FooBar<U> — id = \(h6_x.value.id)")
+    |                                                                         `- error: main actor-isolated let 'h6_x' can not be referenced from a nonisolated context
+152 |     print("H6: But H5Bar is a top-level typealias, not nested under H5_Foo namespace")
+153 |     print("H6: Violates Nest.Name — this is the compound-at-module-scope pattern")

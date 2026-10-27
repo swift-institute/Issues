@@ -1,0 +1,120 @@
+# run 39643341814 (main e1142cb6, workflow nightly): Linux swiftlang/swift:nightly-main-jammy and Windows 6.4.1, v/ v2/ v3/ variants. Result and crash lines only; timestamps stripped.
+windows-641 | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-641 | Target: x86_64-unknown-windows-msvc
+windows-641 | Build config: +assertions
+windows-641 | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-641 | Target: x86_64-unknown-windows-msvc
+windows-641 | Build config: +assertions
+windows-641 | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-641 | Target: x86_64-unknown-windows-msvc
+windows-641 | Build config: +assertions
+windows-641 | RESULT a_full.swift exit=-1073741795 
+windows-641 | RESULT b_copyable.swift exit=-1073741795 
+windows-641 | RESULT c_explicit.swift exit=0 
+windows-641 | RESULT d_label.swift exit=-1073741795 
+windows-641 | RESULT e_errorinbody.swift exit=-1073741795 
+windows-641 | RESULT f_nosendable.swift exit=-1073741795 
+windows-641 | RESULT g_func.swift exit=-1073741795 
+windows-641 | RESULT h_throwing.swift exit=0 
+windows-641 | RESULT i_untyped.swift exit=0 
+windows-641 | RESULT j_nongeneric.swift exit=0 
+windows-641 | RESULT k_generic_toplevel_error.swift exit=0 
+windows-641 | RESULT l_generic_nested_error_freefunc.swift exit=1 D:\a\windows-exception-29-reproducer\windows-exception-29-reproducer\v2\l_generic_nested_error_freefunc.swift:5:45: error: generic parameter 'Element' could not be inferred
+windows-641 | RESULT m_generic_nested_error_local.swift exit=-1073741795 
+windows-641 | RESULT n_minimal_nonstatic.swift exit=-1073741795 
+windows-641 | RESULT o_fix_annotated.swift exit=0 
+windows-641 | RESULT p_fix_ignoring_param.swift exit=0 
+windows-641 |   LOG Abort: function verify at GenericSignatureQueries.cpp:880
+windows-641 |   LOG Initial term:    τ_0_3.[Parsing:Input]
+windows-641 |   LOG 5.
+windows-641 |   LOG | 
+windows-641 | RESULT m11_primary_on_coding.swift exit=-1073741795 
+windows-641 | RESULT m12_primary_on_parsing.swift exit=0 
+windows-641 | RESULT m13_no_primary.swift exit=0 
+windows-641 | RESULT p1_case_content_parsing_only.swift exit=0 
+windows-641 | RESULT q1_z1_case_parsing_serializing.swift exit=0 
+windows-641 | RESULT y1_no_inverses.swift exit=0 
+windows-641 |   LOG Abort: function verify at GenericSignatureQueries.cpp:880
+windows-641 |   LOG Initial term:    τ_0_3.[Parsing:Input]
+windows-641 |   LOG 5.
+windows-641 |   LOG | 
+windows-641 | RESULT z1_only_copyable_inverse.swift exit=-1073741795 
+linux | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux | Target: x86_64-unknown-linux-gnu
+linux | Build config: +assertions
+linux | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux | Target: x86_64-unknown-linux-gnu
+linux | Build config: +assertions
+linux | RESULT v/a_full.swift exit=0 
+linux | RESULT v/b_copyable.swift exit=0 
+linux | RESULT v/c_explicit.swift exit=0 
+linux | RESULT v/d_label.swift exit=0 
+linux | RESULT v/e_errorinbody.swift exit=0 
+linux | RESULT v/f_nosendable.swift exit=0 
+linux | RESULT v/g_func.swift exit=0 
+linux | RESULT v/h_throwing.swift exit=0 
+linux | RESULT v/i_untyped.swift exit=0 
+linux | RESULT v2/j_nongeneric.swift exit=0 
+linux | RESULT v2/k_generic_toplevel_error.swift exit=0 
+linux | RESULT v2/l_generic_nested_error_freefunc.swift exit=1 v2/l_generic_nested_error_freefunc.swift:5:45: error: generic parameter 'Element' could not be inferred
+linux | RESULT v2/m_generic_nested_error_local.swift exit=0 
+linux | RESULT v2/n_minimal_nonstatic.swift exit=0 
+linux | RESULT v2/o_fix_annotated.swift exit=0 
+linux | RESULT v2/p_fix_ignoring_param.swift exit=0 
+linux | ./run.sh: line 6:   266 Aborted                 (core dumped) swiftc -parse-as-library -module-name M -package-name p -swift-version 6 -Onone -enable-experimental-feature Lifetimes -c "$f" -o /tmp/out.o > /tmp/log.txt 2>&1
+linux |   LOG Abort: function verify at GenericSignatureQueries.cpp:880
+linux |   LOG Initial term:    τ_0_3.[Parsing:Input]
+linux |   LOG 4.
+linux |   LOG 5.
+linux | RESULT v3/m11_primary_on_coding.swift exit=134 
+linux | RESULT v3/m12_primary_on_parsing.swift exit=0 
+linux | RESULT v3/m13_no_primary.swift exit=0 
+linux | RESULT v3/p1_case_content_parsing_only.swift exit=0 
+linux | RESULT v3/q1_z1_case_parsing_serializing.swift exit=0 
+linux | RESULT v3/y1_no_inverses.swift exit=0 
+linux | ./run.sh: line 6:   310 Aborted                 (core dumped) swiftc -parse-as-library -module-name M -package-name p -swift-version 6 -Onone -enable-experimental-feature Lifetimes -c "$f" -o /tmp/out.o > /tmp/log.txt 2>&1
+linux |   LOG Abort: function verify at GenericSignatureQueries.cpp:880
+linux |   LOG Initial term:    τ_0_3.[Parsing:Input]
+linux |   LOG 4.
+linux |   LOG 5.
+linux | RESULT v3/z1_only_copyable_inverse.swift exit=134 
+windows-nightly | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-nightly | Target: x86_64-unknown-windows-msvc
+windows-nightly | Build config: +assertions
+windows-nightly | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-nightly | Target: x86_64-unknown-windows-msvc
+windows-nightly | Build config: +assertions
+windows-nightly | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows-nightly | Target: x86_64-unknown-windows-msvc
+windows-nightly | Build config: +assertions
+windows-nightly | RESULT a_full.swift exit=-1073741795 
+windows-nightly | RESULT b_copyable.swift exit=-1073741795 
+windows-nightly | RESULT c_explicit.swift exit=0 
+windows-nightly | RESULT d_label.swift exit=-1073741795 
+windows-nightly | RESULT e_errorinbody.swift exit=-1073741795 
+windows-nightly | RESULT f_nosendable.swift exit=-1073741795 
+windows-nightly | RESULT g_func.swift exit=-1073741795 
+windows-nightly | RESULT h_throwing.swift exit=0 
+windows-nightly | RESULT i_untyped.swift exit=0 
+windows-nightly | RESULT j_nongeneric.swift exit=0 
+windows-nightly | RESULT k_generic_toplevel_error.swift exit=0 
+windows-nightly | RESULT l_generic_nested_error_freefunc.swift exit=1 D:\a\windows-exception-29-reproducer\windows-exception-29-reproducer\v2\l_generic_nested_error_freefunc.swift:5:45: error: generic parameter 'Element' could not be inferred
+windows-nightly | RESULT m_generic_nested_error_local.swift exit=-1073741795 
+windows-nightly | RESULT n_minimal_nonstatic.swift exit=-1073741795 
+windows-nightly | RESULT o_fix_annotated.swift exit=0 
+windows-nightly | RESULT p_fix_ignoring_param.swift exit=0 
+windows-nightly |   LOG Abort: function verify at GenericSignatureQueries.cpp:880
+windows-nightly |   LOG Initial term:    τ_0_3.[Parsing:Input]
+windows-nightly |   LOG 5.
+windows-nightly |   LOG | 
+windows-nightly | RESULT m11_primary_on_coding.swift exit=-1073741795 
+windows-nightly | RESULT m12_primary_on_parsing.swift exit=0 
+windows-nightly | RESULT m13_no_primary.swift exit=0 
+windows-nightly | RESULT p1_case_content_parsing_only.swift exit=0 
+windows-nightly | RESULT q1_z1_case_parsing_serializing.swift exit=0 
+windows-nightly | RESULT y1_no_inverses.swift exit=0 
+windows-nightly |   LOG Abort: function verify at GenericSignatureQueries.cpp:880
+windows-nightly |   LOG Initial term:    τ_0_3.[Parsing:Input]
+windows-nightly |   LOG 5.
+windows-nightly |   LOG | 
+windows-nightly | RESULT z1_only_copyable_inverse.swift exit=-1073741795 

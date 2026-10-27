@@ -1,0 +1,18 @@
+$ xcrun swiftc -c -swift-version 6 -package-name Repro -enable-experimental-feature Lifetimes -enable-experimental-feature LifetimeDependence -enable-experimental-feature SuppressedAssociatedTypes main.swift -o main.o
+main.swift:2:29: warning: experimental feature 'SuppressedAssociatedTypes' is deprecated; see SE-503 for the official version [#OldSuppressedAssociatedTypes]
+ 1 | public protocol SourceProto<Element>: ~Copyable, ~Escapable {
+ 2 |     associatedtype Element: ~Copyable
+   |                             `- warning: experimental feature 'SuppressedAssociatedTypes' is deprecated; see SE-503 for the official version [#OldSuppressedAssociatedTypes]
+ 3 | }
+ 4 | 
+
+main.swift:45:26: error: copy of noncopyable typed value. This is a compiler bug. Please file a bug with a small example of the bug
+43 |         _ t: @escaping (Base.Element) -> Output
+44 |     ) -> NS.Result<Base, Output> {
+45 |         NS.Result(_base: _base, _t: t)
+   |                          `- error: copy of noncopyable typed value. This is a compiler bug. Please file a bug with a small example of the bug
+46 |     }
+47 | }
+
+[#OldSuppressedAssociatedTypes]: <https://docs.swift.org/compiler/documentation/diagnostics/old-suppressed-associatedtypes>
+(exit status 1)

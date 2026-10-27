@@ -1,0 +1,188 @@
+# run 39784950734 (lane/astscope-member-attribute 51c68ffa4e58400c7793f95207b340dec5c61344, workflow astscope): lane reduction variants for both records. RESULT lines only.
+windows | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows | Build config: +assertions
+windows | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows | Build config: +assertions
+windows | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows | Build config: +assertions
+windows | RESULT windows-6.4.1 N1 [ -typecheck] exit=0 
+windows | RESULT windows-6.4.1 N1 [ -c -o out-N1.o] exit=0 
+windows | RESULT windows-6.4.1 N1 [-D CASES -typecheck] exit=132 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+windows | RESULT windows-6.4.1 N1 [-D CASES -c -o out-N1.o] exit=132 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+windows | RESULT windows-6.4.1 N2 [ -typecheck] exit=132 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+windows | RESULT windows-6.4.1 N2 [ -c -o out-N2.o] exit=132 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+windows | RESULT windows-6.4.1 N2 [-D CASES -typecheck] exit=132 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+windows | RESULT windows-6.4.1 N2 [-D CASES -c -o out-N2.o] exit=132 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+windows | RESULT windows-6.4.1 N14 [ -typecheck] exit=132 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+windows | RESULT windows-6.4.1 N14 [ -c -o out-N14.o] exit=132 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+windows | RESULT windows-6.4.1 N14 [-D CASES -typecheck] exit=132 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+windows | RESULT windows-6.4.1 N14 [-D CASES -c -o out-N14.o] exit=132 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+windows | RESULT windows-6.4.1 observable [-typecheck] exit=0 
+windows | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+windows | Build config: +assertions
+windows | RESULT windows-6.4.1 ONE DEFAULT exit=0 
+windows | RESULT windows-6.4.1 ONE R_STRUCT exit=0 
+windows | RESULT windows-6.4.1 ONE R_NOCONFORM exit=0 
+windows | RESULT windows-6.4.1 ONE R_NESTSTRUCT exit=0 
+windows | RESULT windows-6.4.1 ONE R_CASE exit=132 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+windows | RESULT windows-6.4.1 TWO DEFAULT exit=132 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+windows | RESULT windows-6.4.1 TWO R_STRUCT exit=132 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+windows | RESULT windows-6.4.1 TWO R_NOCONFORM exit=132 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+windows | RESULT windows-6.4.1 TWO R_NESTSTRUCT exit=132 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+windows | RESULT windows-6.4.1 TWO R_CASE exit=132 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+linux (swift:6.4.1-noble) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N1 [ -typecheck] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N1 [ -c -o out-N1.o] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N1 [-D CASES -typecheck] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N1 [-D CASES -c -o out-N1.o] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N2 [ -typecheck] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N2 [ -c -o out-N2.o] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N2 [-D CASES -typecheck] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N2 [-D CASES -c -o out-N2.o] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N14 [ -typecheck] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N14 [ -c -o out-N14.o] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N14 [-D CASES -typecheck] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble N14 [-D CASES -c -o out-N14.o] exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble observable [-typecheck] exit=0 
+linux (swift:6.4.1-noble) | Swift version 6.4.1 (swift-6.4.1-RELEASE)
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble ONE DEFAULT exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble ONE R_STRUCT exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble ONE R_NOCONFORM exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble ONE R_NESTSTRUCT exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble ONE R_CASE exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble TWO DEFAULT exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble TWO R_STRUCT exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble TWO R_NOCONFORM exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble TWO R_NESTSTRUCT exit=0 
+linux (swift:6.4.1-noble) | RESULT linux-swift:6.4.1-noble TWO R_CASE exit=0 
+linux (swiftlang/swift:nightly-main-jammy) | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux (swiftlang/swift:nightly-main-jammy) | Build config: +assertions
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N1 [ -typecheck] exit=0 
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N1 [ -c -o out-N1.o] exit=0 
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N1 [-D CASES -typecheck] exit=134 EnumCaseDecl should not have attributes
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N1 [-D CASES -c -o out-N1.o] exit=134 EnumCaseDecl should not have attributes
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N2 [ -typecheck] exit=134 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N2 [ -c -o out-N2.o] exit=134 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N2 [-D CASES -typecheck] exit=134 EnumCaseDecl should not have attributes
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N2 [-D CASES -c -o out-N2.o] exit=134 EnumCaseDecl should not have attributes
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N14 [ -typecheck] exit=134 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N14 [ -c -o out-N14.o] exit=134 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N14 [-D CASES -typecheck] exit=134 EnumCaseDecl should not have attributes
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy N14 [-D CASES -c -o out-N14.o] exit=134 EnumCaseDecl should not have attributes
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy observable [-typecheck] exit=0 
+linux (swiftlang/swift:nightly-main-jammy) | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux (swiftlang/swift:nightly-main-jammy) | Build config: +assertions
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy ONE DEFAULT exit=0 
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy ONE R_STRUCT exit=0 
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy ONE R_NOCONFORM exit=0 
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy ONE R_NESTSTRUCT exit=0 
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy ONE R_CASE exit=134 EnumCaseDecl should not have attributes
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy TWO DEFAULT exit=134 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy TWO R_STRUCT exit=134 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy TWO R_NOCONFORM exit=134 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy TWO R_NESTSTRUCT exit=134 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+linux (swiftlang/swift:nightly-main-jammy) | RESULT linux-swiftlang/swift:nightly-main-jammy TWO R_CASE exit=134 EnumCaseDecl should not have attributes
+macos | swift-driver version: 1.148.6 Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)
+macos | RESULT xcode N1 [ -typecheck] exit=0 
+macos | RESULT xcode N1 [ -c -o out-N1.o] exit=0 
+macos | RESULT xcode N1 [-D CASES -typecheck] exit=0 
+macos | RESULT xcode N1 [-D CASES -c -o out-N1.o] exit=0 
+macos | RESULT xcode N2 [ -typecheck] exit=0 
+macos | RESULT xcode N2 [ -c -o out-N2.o] exit=0 
+macos | RESULT xcode N2 [-D CASES -typecheck] exit=0 
+macos | RESULT xcode N2 [-D CASES -c -o out-N2.o] exit=0 
+macos | RESULT xcode N14 [ -typecheck] exit=0 
+macos | RESULT xcode N14 [ -c -o out-N14.o] exit=0 
+macos | RESULT xcode N14 [-D CASES -typecheck] exit=0 
+macos | RESULT xcode N14 [-D CASES -c -o out-N14.o] exit=0 
+macos | RESULT xcode observable [-typecheck] exit=0 
+macos | swift-driver version: 1.148.6 Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)
+macos | RESULT xcode ONE DEFAULT exit=0 
+macos | RESULT xcode ONE R_STRUCT exit=0 
+macos | RESULT xcode ONE R_NOCONFORM exit=0 
+macos | RESULT xcode ONE R_NESTSTRUCT exit=0 
+macos | RESULT xcode ONE R_CASE exit=0 
+macos | RESULT xcode TWO DEFAULT exit=0 
+macos | RESULT xcode TWO R_STRUCT exit=0 
+macos | RESULT xcode TWO R_NOCONFORM exit=0 
+macos | RESULT xcode TWO R_NESTSTRUCT exit=0 
+macos | RESULT xcode TWO R_CASE exit=0 
+macos | Apple Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+macos | Build config: +assertions
+macos | RESULT macos-main-snapshot-2026-10-17 N1 [ -typecheck] exit=0 
+macos | RESULT macos-main-snapshot-2026-10-17 N1 [ -c -o out-N1.o] exit=0 
+macos | RESULT macos-main-snapshot-2026-10-17 N1 [-D CASES -typecheck] exit=1 EnumCaseDecl should not have attributes
+macos | RESULT macos-main-snapshot-2026-10-17 N1 [-D CASES -c -o out-N1.o] exit=1 EnumCaseDecl should not have attributes
+macos | RESULT macos-main-snapshot-2026-10-17 N2 [ -typecheck] exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+macos | RESULT macos-main-snapshot-2026-10-17 N2 [ -c -o out-N2.o] exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+macos | RESULT macos-main-snapshot-2026-10-17 N2 [-D CASES -typecheck] exit=1 EnumCaseDecl should not have attributes
+macos | RESULT macos-main-snapshot-2026-10-17 N2 [-D CASES -c -o out-N2.o] exit=1 EnumCaseDecl should not have attributes
+macos | RESULT macos-main-snapshot-2026-10-17 N14 [ -typecheck] exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+macos | RESULT macos-main-snapshot-2026-10-17 N14 [ -c -o out-N14.o] exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+macos | RESULT macos-main-snapshot-2026-10-17 N14 [-D CASES -typecheck] exit=1 EnumCaseDecl should not have attributes
+macos | RESULT macos-main-snapshot-2026-10-17 N14 [-D CASES -c -o out-N14.o] exit=1 EnumCaseDecl should not have attributes
+macos | RESULT macos-main-snapshot-2026-10-17 observable [-typecheck] exit=0 
+macos | Apple Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+macos | Build config: +assertions
+macos | RESULT macos-main-snapshot-2026-10-17 ONE DEFAULT exit=0 
+macos | RESULT macos-main-snapshot-2026-10-17 ONE R_STRUCT exit=0 
+macos | RESULT macos-main-snapshot-2026-10-17 ONE R_NOCONFORM exit=0 
+macos | RESULT macos-main-snapshot-2026-10-17 ONE R_NESTSTRUCT exit=0 
+macos | RESULT macos-main-snapshot-2026-10-17 ONE R_CASE exit=1 EnumCaseDecl should not have attributes
+macos | RESULT macos-main-snapshot-2026-10-17 TWO DEFAULT exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+macos | RESULT macos-main-snapshot-2026-10-17 TWO R_STRUCT exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+macos | RESULT macos-main-snapshot-2026-10-17 TWO R_NOCONFORM exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+macos | RESULT macos-main-snapshot-2026-10-17 TWO R_NESTSTRUCT exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:73
+macos | RESULT macos-main-snapshot-2026-10-17 TWO R_CASE exit=1 EnumCaseDecl should not have attributes
+macos | Apple Swift version 6.4.4-dev (LLVM a52029da5113665, Swift 90b3468f3de7d1f)
+macos | Build config: +assertions
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N1 [ -typecheck] exit=0 
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N1 [ -c -o out-N1.o] exit=0 
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N1 [-D CASES -typecheck] exit=1 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N1 [-D CASES -c -o out-N1.o] exit=1 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N2 [ -typecheck] exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N2 [ -c -o out-N2.o] exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N2 [-D CASES -typecheck] exit=1 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N2 [-D CASES -c -o out-N2.o] exit=1 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N14 [ -typecheck] exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N14 [ -c -o out-N14.o] exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N14 [-D CASES -typecheck] exit=1 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 N14 [-D CASES -c -o out-N14.o] exit=1 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 observable [-typecheck] exit=0 
+macos | Apple Swift version 6.4.4-dev (LLVM a52029da5113665, Swift 90b3468f3de7d1f)
+macos | Build config: +assertions
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 ONE DEFAULT exit=0 
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 ONE R_STRUCT exit=0 
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 ONE R_NOCONFORM exit=0 
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 ONE R_NESTSTRUCT exit=0 
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 ONE R_CASE exit=1 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 TWO DEFAULT exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 TWO R_STRUCT exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 TWO R_NOCONFORM exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 TWO R_NESTSTRUCT exit=1 Abort: function abortWithVerificationError at ASTScopePrinting.cpp:78
+macos | RESULT macos-6.4.x-snapshot-2026-10-20 TWO R_CASE exit=1 EnumCaseDecl should not have attributesPlease submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+macos | Apple Swift version 6.4.1 (swift-6.4.1-RELEASE)
+macos | RESULT macos-6.4.1 N1 [ -typecheck] exit=0 
+macos | RESULT macos-6.4.1 N1 [ -c -o out-N1.o] exit=0 
+macos | RESULT macos-6.4.1 N1 [-D CASES -typecheck] exit=0 
+macos | RESULT macos-6.4.1 N1 [-D CASES -c -o out-N1.o] exit=0 
+macos | RESULT macos-6.4.1 N2 [ -typecheck] exit=0 
+macos | RESULT macos-6.4.1 N2 [ -c -o out-N2.o] exit=0 
+macos | RESULT macos-6.4.1 N2 [-D CASES -typecheck] exit=0 
+macos | RESULT macos-6.4.1 N2 [-D CASES -c -o out-N2.o] exit=0 
+macos | RESULT macos-6.4.1 N14 [ -typecheck] exit=0 
+macos | RESULT macos-6.4.1 N14 [ -c -o out-N14.o] exit=0 
+macos | RESULT macos-6.4.1 N14 [-D CASES -typecheck] exit=0 
+macos | RESULT macos-6.4.1 N14 [-D CASES -c -o out-N14.o] exit=0 
+macos | RESULT macos-6.4.1 observable [-typecheck] exit=0 
+macos | Apple Swift version 6.4.1 (swift-6.4.1-RELEASE)
+macos | RESULT macos-6.4.1 ONE DEFAULT exit=0 
+macos | RESULT macos-6.4.1 ONE R_STRUCT exit=0 
+macos | RESULT macos-6.4.1 ONE R_NOCONFORM exit=0 
+macos | RESULT macos-6.4.1 ONE R_NESTSTRUCT exit=0 
+macos | RESULT macos-6.4.1 ONE R_CASE exit=0 
+macos | RESULT macos-6.4.1 TWO DEFAULT exit=0 
+macos | RESULT macos-6.4.1 TWO R_STRUCT exit=0 
+macos | RESULT macos-6.4.1 TWO R_NOCONFORM exit=0 
+macos | RESULT macos-6.4.1 TWO R_NESTSTRUCT exit=0 
+macos | RESULT macos-6.4.1 TWO R_CASE exit=0 

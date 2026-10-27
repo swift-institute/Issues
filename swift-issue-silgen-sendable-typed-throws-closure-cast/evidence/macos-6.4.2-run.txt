@@ -1,0 +1,47 @@
+$ xcrun swiftc --version
+swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Target: arm64-apple-macosx27.2.0
+
+$ xcrun swiftc -Onone -g -swift-version 6 -c reproducer.swift -o /dev/null
+Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+Stack dump:
+1.	Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+2.	Compiling with the current language version
+3.	While evaluating request ASTLoweringRequest(Lowering AST to SIL for file "reproducer.swift")
+4.	While silgen visitDecl 'triggerCrash()' (at reproducer.swift:16:1)
+5.	While silgen emitFunction SIL function "@$s4null12triggerCrashyyF".
+ for 'triggerCrash()' (at reproducer.swift:16:1)
+6.	While silgen closureexpr SIL function "@$s4null12triggerCrashyyFS2iYbAA9TestErrorOYKcfU_".
+ for expression at [reproducer.swift:18:27 - line:21:5] RangeText="{ (x: Int) throws(TestError) in
+        guard x >= 0 else { throw .bad }
+        return x * 2
+    "
+Stack dump without symbol names (ensure you have llvm-symbolizer in your PATH or set the environment var `LLVM_SYMBOLIZER_PATH` to point to it):
+0  swift-frontend           0x0000000106616bb8 llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) + 56
+1  swift-frontend           0x0000000106614714 llvm::sys::RunSignalHandlers() + 172
+2  swift-frontend           0x0000000106617190 SignalHandler(int, __siginfo*, void*) + 356
+3  libsystem_platform.dylib 0x000000019a802144 _sigtramp + 56
+4  swift-frontend           0x0000000106687cf0 createInputFunctionArgument(swift::Lowering::SILGenBuilder&, swift::SILType, swift::SILLocation, swift::ValueDecl*, bool, swift::LifetimeAnnotation, bool, bool, bool) + 396
+5  swift-frontend           0x00000001010e2c78 (anonymous namespace)::LoweredParamGenerator::claimNext() + 340
+6  swift-frontend           0x00000001010e4e48 (anonymous namespace)::EmitBBArguments::handleValue(swift::Lowering::AbstractionPattern, swift::CanType, swift::Lowering::Initialization*) + 104
+7  swift-frontend           0x00000001010e3508 (anonymous namespace)::ArgumentInitHelper::makeArgument(swift::SILLocation, swift::ParamDecl*) + 1892
+8  swift-frontend           0x00000001010e1b20 (anonymous namespace)::ArgumentInitHelper::emitParam(swift::ParamDecl*) + 380
+9  swift-frontend           0x00000001010e0664 swift::Lowering::SILGenFunction::emitBasicProlog(swift::DeclContext*, swift::ParameterList*, swift::ParamDecl*, swift::Type, std::__1::optional<swift::Type>, swift::SourceLoc, unsigned int) + 2872
+10 swift-frontend           0x00000001010de214 swift::Lowering::SILGenFunction::emitProlog(swift::DeclContext*, swift::CaptureInfo, swift::ParameterList*, swift::ParamDecl*, swift::Type, std::__1::optional<swift::Type>, swift::SourceLoc) + 140
+11 swift-frontend           0x0000000101066d1c swift::Lowering::SILGenFunction::emitClosure(swift::AbstractClosureExpr*) + 644
+12 swift-frontend           0x0000000100f9cb54 swift::Lowering::SILGenModule::emitFunctionDefinition(swift::SILDeclRef, swift::SILFunction*) + 2676
+13 swift-frontend           0x0000000106685020 void llvm::function_ref<void ()>::callback_fn<swift::Lowering::SILGenModule::emitClosure(swift::AbstractClosureExpr*, swift::Lowering::FunctionTypeInfo const&)::$_0>(long) + 188
+14 swift-frontend           0x000000010105abf8 (anonymous namespace)::RValueEmitter::visitAbstractClosureExpr(swift::AbstractClosureExpr*, swift::Lowering::SGFContext) + 2956
+15 swift-frontend           0x000000010102c740 swift::Lowering::SILGenFunction::emitRValueAsSingleValue(swift::Expr*, swift::Lowering::SGFContext) + 40
+exit status: 133
+
+$ xcrun swiftc -Onone -g -swift-version 6 <the nine original package settings> -c evidence/original/Sources/main.swift (as .swift)
+-strict-memory-safety -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature LifetimeDependence -enable-experimental-feature Lifetimes -enable-experimental-feature SuppressedAssociatedTypes -enable-upcoming-feature InferIsolatedConformances
+exit status: 133
+4  swift-frontend           0x0000000108f57cf0 createInputFunctionArgument(swift::Lowering::SILGenBuilder&, swift::SILType, swift::SILLocation, swift::ValueDecl*, bool, swift::LifetimeAnnotation, bool, bool, bool) + 396
+
+$ xcrun swiftc -Onone -g -swift-version 6 -c evidence/control-let-bound-closure.swift -o /dev/null
+exit status: 0
+
+$ xcrun swiftc -Onone -g -swift-version 6 -c evidence/control-untyped-throws.swift -o /dev/null
+exit status: 0

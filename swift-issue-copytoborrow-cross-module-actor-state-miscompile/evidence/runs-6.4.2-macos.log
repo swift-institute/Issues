@@ -1,0 +1,52 @@
+# 2026-10-27T20:22:08Z macOS 27.2 arm64
+swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Target: arm64-apple-macosx27.2.0
+
+## bug
+$ swiftc -O -wmo -swift-version 6 -parse-as-library -module-name BugLib -emit-module -emit-module-path bug/BugLib.swiftmodule -emit-object -o bug/BugLib.o BugLib.swift
+$ swiftc -O -wmo -swift-version 6 -module-name BugTest -I bug main.swift bug/BugLib.o -o bug/BugTest
+exit=0 BUG lines=100 first: BUG (0): got id=2, expected 1 last: PASS
+
+## lib-no-wmo
+$ swiftc -O -swift-version 6 -parse-as-library -module-name BugLib -emit-module -emit-module-path lib-no-wmo/BugLib.swiftmodule -emit-object -o lib-no-wmo/BugLib.o BugLib.swift
+$ swiftc -O -wmo -swift-version 6 -module-name BugTest -I lib-no-wmo main.swift lib-no-wmo/BugLib.o -o lib-no-wmo/BugTest
+exit=0 BUG lines=0 first: PASS last: PASS
+
+## lib-onone
+$ swiftc -Onone -swift-version 6 -parse-as-library -module-name BugLib -emit-module -emit-module-path lib-onone/BugLib.swiftmodule -emit-object -o lib-onone/BugLib.o BugLib.swift
+$ swiftc -O -wmo -swift-version 6 -module-name BugTest -I lib-onone main.swift lib-onone/BugLib.o -o lib-onone/BugTest
+exit=0 BUG lines=0 first: PASS last: PASS
+
+## client-onone
+$ swiftc -O -wmo -swift-version 6 -parse-as-library -module-name BugLib -emit-module -emit-module-path client-onone/BugLib.swiftmodule -emit-object -o client-onone/BugLib.o BugLib.swift
+$ swiftc -Onone -swift-version 6 -module-name BugTest -I client-onone main.swift client-onone/BugLib.o -o client-onone/BugTest
+exit=0 BUG lines=0 first: PASS last: PASS
+
+## lib-evolution
+$ swiftc -O -wmo -enable-library-evolution -swift-version 6 -parse-as-library -module-name BugLib -emit-module -emit-module-path lib-evolution/BugLib.swiftmodule -emit-object -o lib-evolution/BugLib.o BugLib.swift
+$ swiftc -O -wmo -swift-version 6 -module-name BugTest -I lib-evolution main.swift lib-evolution/BugLib.o -o lib-evolution/BugTest
+exit=0 BUG lines=0 first: PASS last: PASS
+
+## pass-off-in-lib
+$ swiftc -O -wmo -Xllvm -sil-disable-pass=copy-to-borrow-optimization -swift-version 6 -parse-as-library -module-name BugLib -emit-module -emit-module-path pass-off-in-lib/BugLib.swiftmodule -emit-object -o pass-off-in-lib/BugLib.o BugLib.swift
+$ swiftc -O -wmo -swift-version 6 -module-name BugTest -I pass-off-in-lib main.swift pass-off-in-lib/BugLib.o -o pass-off-in-lib/BugTest
+exit=0 BUG lines=100 first: BUG (0): got id=2, expected 1 last: PASS
+
+## pass-off-in-client
+$ swiftc -O -wmo -swift-version 6 -parse-as-library -module-name BugLib -emit-module -emit-module-path pass-off-in-client/BugLib.swiftmodule -emit-object -o pass-off-in-client/BugLib.o BugLib.swift
+$ swiftc -O -wmo -Xllvm -sil-disable-pass=copy-to-borrow-optimization -swift-version 6 -module-name BugTest -I pass-off-in-client main.swift pass-off-in-client/BugLib.o -o pass-off-in-client/BugTest
+exit=0 BUG lines=0 first: PASS last: PASS
+
+## v1 (Scope without the Mutex<Bool> field)
+70d69
+<     private let _token: Mutex<Bool>
+76d74
+<         self._token = Mutex(false)
+exit=0 BUG lines=0 last: PASS
+
+## v4 (Runtime without the custom unownedExecutor)
+41,43d40
+<     nonisolated public var unownedExecutor: UnownedSerialExecutor {
+<         executor.asUnownedSerialExecutor()
+<     }
+exit=139 BUG lines=0 last: 

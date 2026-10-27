@@ -1,0 +1,81 @@
+#if PLUGIN
+#if os(Windows)
+import ucrt
+func readBytes(_ p: UnsafeMutableRawPointer, _ n: Int) -> Int { Int(_read(0, p, UInt32(n))) }
+func writeBytes(_ p: UnsafeRawPointer, _ n: Int) { _ = _write(1, p, UInt32(n)) }
+_ = _setmode(0, _O_BINARY)
+_ = _setmode(1, _O_BINARY)
+#elseif canImport(Darwin)
+import Darwin
+func readBytes(_ p: UnsafeMutableRawPointer, _ n: Int) -> Int { read(0, p, n) }
+func writeBytes(_ p: UnsafeRawPointer, _ n: Int) { _ = write(1, p, n) }
+#else
+import Glibc
+func readBytes(_ p: UnsafeMutableRawPointer, _ n: Int) -> Int { read(0, p, n) }
+func writeBytes(_ p: UnsafeRawPointer, _ n: Int) { _ = write(1, p, n) }
+#endif
+
+func readExactly(_ n: Int) -> [UInt8]? {
+    var buffer = [UInt8](repeating: 0, count: n)
+    var got = 0
+    while got < n {
+        let r = buffer.withUnsafeMutableBytes { readBytes($0.baseAddress! + got, n - got) }
+        if r <= 0 { return nil }
+        got += r
+    }
+    return buffer
+}
+
+func send(_ s: String) {
+    let bytes = Array(s.utf8)
+    var count = UInt64(bytes.count).littleEndian
+    withUnsafeBytes(of: &count) { writeBytes($0.baseAddress!, 8) }
+    bytes.withUnsafeBytes { writeBytes($0.baseAddress!, bytes.count) }
+}
+
+#if N1
+let attributes = "@A"
+#elseif N14
+let attributes = "@A @B @C @D @E @F @G @H @I @J @K @L @M2 @N"
+#else
+let attributes = "@A @B"
+#endif
+
+while let header = readExactly(8) {
+    var length = 0
+    for i in 0..<8 { length |= Int(header[i]) << (8 * i) }
+    guard let body = readExactly(length) else { break }
+    let message = String(decoding: body, as: UTF8.self)
+    if message.contains("\"getCapability\"") {
+        send(#"{"getCapabilityResult":{"capability":{"protocolVersion":7}}}"#)
+    } else if message.contains("\"memberAttribute\"") {
+        send(#"{"expandMacroResult":{"expandedSource":"\#(attributes)","diagnostics":[]}}"#)
+    } else {
+        send(#"{"expandMacroResult":{"expandedSource":"","diagnostics":[]}}"#)
+    }
+}
+#else
+@attached(memberAttribute) macro M() = #externalMacro(module: "P", type: "M")
+@attached(peer) macro A() = #externalMacro(module: "P", type: "A")
+@attached(peer) macro B() = #externalMacro(module: "P", type: "B")
+@attached(peer) macro C() = #externalMacro(module: "P", type: "C")
+@attached(peer) macro D() = #externalMacro(module: "P", type: "D")
+@attached(peer) macro E() = #externalMacro(module: "P", type: "E")
+@attached(peer) macro F() = #externalMacro(module: "P", type: "F")
+@attached(peer) macro G() = #externalMacro(module: "P", type: "G")
+@attached(peer) macro H() = #externalMacro(module: "P", type: "H")
+@attached(peer) macro I() = #externalMacro(module: "P", type: "I")
+@attached(peer) macro J() = #externalMacro(module: "P", type: "J")
+@attached(peer) macro K() = #externalMacro(module: "P", type: "K")
+@attached(peer) macro L() = #externalMacro(module: "P", type: "L")
+@attached(peer) macro M2() = #externalMacro(module: "P", type: "M2")
+@attached(peer) macro N() = #externalMacro(module: "P", type: "N")
+
+#if CASES
+@M enum Cases { case a(Int) }
+#else
+@M enum Laws {
+    enum Tree: Equatable { case leaf }
+}
+#endif
+#endif

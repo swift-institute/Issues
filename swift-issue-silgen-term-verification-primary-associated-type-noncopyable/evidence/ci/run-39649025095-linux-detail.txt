@@ -1,0 +1,42 @@
+# run 39649025095 (main 7ffacbab, workflow linux-detail): Linux nightly, m11 under several commands. Result and crash lines only; timestamps stripped.
+linux | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux | Target: x86_64-unknown-linux-gnu
+linux | Build config: +assertions
+linux | ##### swiftc -emit-silgen
+linux | /__w/_temp/ee4a3297-d755-411b-b9b3-e1713100a685.sh: line 3:   144 Aborted                 (core dumped) swiftc "$@" /tmp/m11.swift > /tmp/l.txt 2>&1
+linux | Abort: function verify at GenericSignatureQueries.cpp:880
+linux | Term verification failed
+linux | Initial term:    τ_0_3.[Parsing:Input]
+linux | Erased term:     τ_0_3.Input
+linux | Simplified term: τ_0_3.Input
+linux | Requirement machine for <τ_0_0, τ_0_1, τ_0_2, τ_0_3, τ_1_0, τ_1_1 where τ_0_0 == τ_1_1.Input, τ_0_1 : Deinitable, τ_0_1 : Escapable, τ_0_2 == App<τ_1_0, τ_1_0.Input>, τ_0_3 == App<τ_1_0, τ_1_0.Input>.Coder<τ_1_1>, τ_1_0 : Symbol, τ_1_1 : Copyable, τ_1_1 : Coding, τ_1_0.Input == τ_1_1.Output>
+linux | exit=134
+linux | ##### swiftc -c -parse-as-library -o /tmp/o.o
+linux | /__w/_temp/ee4a3297-d755-411b-b9b3-e1713100a685.sh: line 3:   152 Aborted                 (core dumped) swiftc "$@" /tmp/m11.swift > /tmp/l.txt 2>&1
+linux | Abort: function verify at GenericSignatureQueries.cpp:880
+linux | Term verification failed
+linux | Initial term:    τ_0_3.[Parsing:Input]
+linux | Erased term:     τ_0_3.Input
+linux | Simplified term: τ_0_3.Input
+linux | Requirement machine for <τ_0_0, τ_0_1, τ_0_2, τ_0_3, τ_1_0, τ_1_1 where τ_0_0 == τ_1_1.Input, τ_0_1 : Deinitable, τ_0_1 : Escapable, τ_0_2 == App<τ_1_0, τ_1_0.Input>, τ_0_3 == App<τ_1_0, τ_1_0.Input>.Coder<τ_1_1>, τ_1_0 : Symbol, τ_1_1 : Copyable, τ_1_1 : Coding, τ_1_0.Input == τ_1_1.Output>
+linux | exit=134
+linux | ##### swiftc -typecheck
+linux | exit=0
+linux | ##### swiftc -emit-silgen -swift-version 6
+linux | /__w/_temp/ee4a3297-d755-411b-b9b3-e1713100a685.sh: line 3:   161 Aborted                 (core dumped) swiftc "$@" /tmp/m11.swift > /tmp/l.txt 2>&1
+linux | Abort: function verify at GenericSignatureQueries.cpp:880
+linux | Term verification failed
+linux | Initial term:    τ_0_3.[Parsing:Input]
+linux | Erased term:     τ_0_3.Input
+linux | Simplified term: τ_0_3.Input
+linux | Requirement machine for <τ_0_0, τ_0_1, τ_0_2, τ_0_3, τ_1_0, τ_1_1 where τ_0_0 == τ_1_1.Input, τ_0_1 : Deinitable, τ_0_1 : Escapable, τ_0_2 == App<τ_1_0, τ_1_0.Input>, τ_0_3 == App<τ_1_0, τ_1_0.Input>.Coder<τ_1_1>, τ_1_0 : Symbol, τ_1_1 : Copyable, τ_1_1 : Coding, τ_1_0.Input == τ_1_1.Output>
+linux | exit=134
+linux | ##### swiftc -c -parse-as-library -module-name M -package-name p -swift-version 6 -Onone -enable-experimental-feature Lifetimes -o /tmp/o.o
+linux | /__w/_temp/ee4a3297-d755-411b-b9b3-e1713100a685.sh: line 3:   169 Aborted                 (core dumped) swiftc "$@" /tmp/m11.swift > /tmp/l.txt 2>&1
+linux | Abort: function verify at GenericSignatureQueries.cpp:880
+linux | Term verification failed
+linux | Initial term:    τ_0_3.[Parsing:Input]
+linux | Erased term:     τ_0_3.Input
+linux | Simplified term: τ_0_3.Input
+linux | Requirement machine for <τ_0_0, τ_0_1, τ_0_2, τ_0_3, τ_1_0, τ_1_1 where τ_0_0 == τ_1_1.Input, τ_0_1 : Deinitable, τ_0_1 : Escapable, τ_0_2 == App<τ_1_0, τ_1_0.Input>, τ_0_3 == App<τ_1_0, τ_1_0.Input>.Coder<τ_1_1>, τ_1_0 : Symbol, τ_1_1 : Coding, τ_1_1 : Copyable, τ_1_0.Input == τ_1_1.Output>
+linux | exit=134

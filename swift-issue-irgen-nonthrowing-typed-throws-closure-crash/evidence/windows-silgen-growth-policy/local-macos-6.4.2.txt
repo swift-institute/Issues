@@ -1,0 +1,65 @@
+# Local run, 2026-10-27, macOS 27.2 arm64, this port
+$ xcrun swiftc --version
+swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Target: arm64-apple-macosx27.2.0
+
+## The lane's flags: -parse-as-library -module-name M -package-name p -swift-version 6 -Onone -enable-experimental-feature Lifetimes -c
+RESULT v/a_full.swift exit=0 
+RESULT v/b_copyable.swift exit=0 
+RESULT v/c_explicit.swift exit=0 
+RESULT v/d_label.swift exit=0 
+RESULT v/e_errorinbody.swift exit=0 
+RESULT v/f_nosendable.swift exit=0 
+RESULT v/g_func.swift exit=0 
+RESULT v/h_throwing.swift exit=0 
+RESULT v/i_untyped.swift exit=0 
+RESULT v2/j_nongeneric.swift exit=0 
+RESULT v2/k_generic_toplevel_error.swift exit=0 
+RESULT v2/l_generic_nested_error_freefunc.swift exit=1 v2/l_generic_nested_error_freefunc.swift:5:50: error: invalid conversion of thrown error type 'Never' to 'Policy<Element>.Error'
+RESULT v2/m_generic_nested_error_local.swift exit=0 
+RESULT v2/n_minimal_nonstatic.swift exit=0 
+RESULT v2/o_fix_annotated.swift exit=0 
+RESULT v2/p_fix_ignoring_param.swift exit=0 
+
+## Same flags plus -Xfrontend -sil-verify-all (runs the SIL verifier, which release builds skip)
+RESULT v/a_full.swift exit=134 SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+RESULT v/b_copyable.swift exit=134 SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+RESULT v/c_explicit.swift exit=0 
+RESULT v/d_label.swift exit=134 SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+RESULT v/e_errorinbody.swift exit=134 SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+RESULT v/f_nosendable.swift exit=134 SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+RESULT v/g_func.swift exit=134 SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+RESULT v/h_throwing.swift exit=0 
+RESULT v/i_untyped.swift exit=0 
+RESULT v2/j_nongeneric.swift exit=0 
+RESULT v2/k_generic_toplevel_error.swift exit=0 
+RESULT v2/l_generic_nested_error_freefunc.swift exit=1 v2/l_generic_nested_error_freefunc.swift:5:50: error: invalid conversion of thrown error type 'Never' to 'Policy<Element>.Error'
+RESULT v2/m_generic_nested_error_local.swift exit=134 SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+RESULT v2/n_minimal_nonstatic.swift exit=134 SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+RESULT v2/o_fix_annotated.swift exit=0 
+RESULT v2/p_fix_ignoring_param.swift exit=0 
+
+## v2/n_minimal_nonstatic.swift with no other flags
+$ xcrun swiftc -Xfrontend -sil-verify-all -c n_minimal_nonstatic.swift -o out.o
+exit=134
+SIL verification failed: Operand is of an ArchetypeType that does not exist in the Caller's generic param list.: isArchetypeValidInFunction(A, F)
+Verifying instruction:
+   undef<$Policy<Element>.Error>
+->   debug_value undef : $Policy<Element>.Error, var, name "$error", argno 2 // id: %2
+In function:
+// closure #1 in Policy.init()
+// Isolation: nonisolated
+sil private [ossa] @$s3out6PolicyVACyxGycfcS2icfU_ : $@convention(thin) @substituted <τ_0_0> (Int) -> (Int, @error Policy<τ_0_0>.Error) for <Element> {
+// %0 "$0"                                        // users: %3, %1
+bb0(%0 : $Int):
+  debug_value %0, let, name "$0", argno 1         // id: %1
+  debug_value undef : $Policy<Element>.Error, var, name "$error", argno 2 // id: %2
+  return %0                                       // id: %3
+} // end sil function '$s3out6PolicyVACyxGycfcS2icfU_'
+
+Please submit a bug report (https://swift.org/contributing/#reporting-bugs) and include the crash backtrace.
+3.	While evaluating request ASTLoweringRequest(Lowering AST to SIL for file "v2/n_minimal_nonstatic.swift")
+4.	While silgen visitDecl 'Policy' (at v2/n_minimal_nonstatic.swift:1:8)
+5.	While silgen emitValueConstructor SIL function "@$s3out6PolicyVACyxGycfC".
+6.	While silgen closureexpr SIL function "@$s3out6PolicyVACyxGycfcS2icfU_".
+7.	While verifying SIL function "@$s3out6PolicyVACyxGycfcS2icfU_".

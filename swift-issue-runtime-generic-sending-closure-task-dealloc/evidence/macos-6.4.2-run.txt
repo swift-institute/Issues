@@ -1,0 +1,77 @@
+$ xcrun swiftc --version
+swift-driver version: 1.168.6 Apple Swift version 6.4.2 (swiftlang-6.4.2.1.9 clang-2100.4.1.1)
+Target: arm64-apple-macosx27.2.0
+
+# Original file: the 6.3.1 SILGen crash no longer fires; the program it builds aborts at -Onone.
+$ xcrun swiftc -Onone -g -swift-version 6 -parse-as-library -strict-memory-safety -enable-upcoming-feature ExistentialAny -enable-upcoming-feature InternalImportsByDefault -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature LifetimeDependence -enable-experimental-feature Lifetimes -enable-experimental-feature SuppressedAssociatedTypes -enable-upcoming-feature InferIsolatedConformances -c evidence/original/Sources/main.swift -o /dev/null
+exit status: 0
+
+$ xcrun swiftc -Onone -swift-version 6 -parse-as-library <same settings> evidence/original/Sources/main.swift -o x && ./x
+stderr: freed pointer was not the last allocation
+exit status: 134
+
+$ xcrun swiftc -O -swift-version 6 -parse-as-library <same settings> evidence/original/Sources/main.swift -o x && ./x
+OK
+exit status: 0
+
+# No unsafe code: the reduced files build warning-free under strict memory safety and Swift 6 strict concurrency.
+
+$ xcrun swiftc -Onone -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors reproducer.swift -o x && ./x
+hello
+stderr: freed pointer was not the last allocation
+exit status: 134
+
+$ xcrun swiftc -O -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors reproducer.swift -o x && ./x
+hello
+exit status: 0
+
+$ xcrun swiftc -Onone -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/control-no-sending.swift -o x && ./x
+hello
+exit status: 0
+
+$ xcrun swiftc -O -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/control-no-sending.swift -o x && ./x
+hello
+exit status: 0
+
+$ xcrun swiftc -Onone -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/control-non-generic.swift -o x && ./x
+hello
+exit status: 0
+
+$ xcrun swiftc -O -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/control-non-generic.swift -o x && ./x
+hello
+exit status: 0
+
+$ xcrun swiftc -Onone -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/control-plain-resume-param.swift -o x && ./x
+hello
+exit status: 0
+
+$ xcrun swiftc -O -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/control-plain-resume-param.swift -o x && ./x
+hello
+exit status: 0
+
+$ xcrun swiftc -Onone -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/variant-copyable-payload.swift -o x && ./x
+stderr: freed pointer was not the last allocation
+exit status: 134
+
+$ xcrun swiftc -O -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/variant-copyable-payload.swift -o x && ./x
+OK
+exit status: 0
+
+$ xcrun swiftc -Onone -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/control-synchronous.swift -o x && ./x
+hello
+exit status: 0
+
+$ xcrun swiftc -Onone -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/variant-inferred-closure.swift -o x && ./x
+hello
+stderr: freed pointer was not the last allocation
+exit status: 134
+
+$ xcrun swiftc -Onone -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/variant-int-value.swift -o x && ./x
+1
+stderr: freed pointer was not the last allocation
+exit status: 134
+
+$ xcrun swiftc -Onone -swift-version 6 -parse-as-library -strict-memory-safety -warnings-as-errors evidence/variant-noncopyable-typed-throws.swift -o x && ./x
+hello
+stderr: freed pointer was not the last allocation
+exit status: 134

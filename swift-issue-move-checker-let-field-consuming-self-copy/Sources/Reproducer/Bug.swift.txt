@@ -1,0 +1,50 @@
+public protocol SourceProto<Element>: ~Copyable, ~Escapable {
+    associatedtype Element: ~Copyable
+}
+
+public struct Source<E>: SourceProto {
+    public typealias Element = E
+    @usableFromInline var _values: [E]
+    @inlinable public init(_ values: [E]) { self._values = values }
+}
+
+public enum NS {}
+
+extension NS {
+    public struct Builder<Base: SourceProto & ~Copyable & ~Escapable>: ~Copyable, ~Escapable {
+        @usableFromInline let _base: Base
+
+        @_lifetime(copy _base)
+        @inlinable
+        package init(_base: consuming Base) { self._base = _base }
+    }
+
+    public struct Result<Base: SourceProto & ~Copyable & ~Escapable, Output>: ~Copyable, ~Escapable
+    where Base.Element: Copyable {
+        @usableFromInline let _base: Base
+        @usableFromInline let _t: (Base.Element) -> Output
+
+        @_lifetime(copy _base)
+        @inlinable
+        package init(_base: consuming Base, _t: @escaping (Base.Element) -> Output) {
+            self._base = _base
+            self._t = _t
+        }
+    }
+}
+
+extension NS.Builder: Copyable where Base: Copyable & ~Escapable {}
+extension NS.Builder: Escapable where Base: Escapable & ~Copyable {}
+
+extension NS.Builder where Base: ~Copyable & ~Escapable, Base.Element: Copyable {
+    @_lifetime(copy self)
+    @inlinable
+    public consuming func apply<Output>(
+        _ t: @escaping (Base.Element) -> Output
+    ) -> NS.Result<Base, Output> {
+        NS.Result(_base: _base, _t: t)
+    }
+}
+
+let builder = NS.Builder(_base: Source([1, 2, 3]))
+_ = builder.apply { $0 * 2 }

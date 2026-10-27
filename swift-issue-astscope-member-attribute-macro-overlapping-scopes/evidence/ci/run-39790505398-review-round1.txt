@@ -1,0 +1,37 @@
+# run 39790505398 (review/astscope-94dae5 23ec17c080e1a6c36c348758861a4861bf839d1a, workflow review-astscope): round-1 review variants rvw1/. RESULT lines only.
+linux | Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+linux | Build config: +assertions
+linux | RESULT v00_baseline: exit=134 OVERLAP
+linux | RESULT v00_baseline_without_typecheck_flag: exit=1 OVERLAP
+linux | RESULT v01_noA_decl: exit=139 OVERLAP
+linux | RESULT v02_no_type_annot: exit=0 NO-OVERLAP
+linux | RESULT v03_no_diagnostics_field: exit=1 NO-OVERLAP
+linux | RESULT v04_no_protocolVersion: exit=1 NO-OVERLAP
+linux | RESULT v05_no_memberAttr_condition: exit=134 OVERLAP
+linux | RESULT v06_single_A_control: exit=0 NO-OVERLAP
+linux | RESULT v07_empty_struct_control: exit=0 NO-OVERLAP
+linux | RESULT v08_A_no_definition: exit=134 OVERLAP
+linux | RESULT v09_no_littleEndian: exit=134 OVERLAP
+linux | RESULT v10_M_no_parens: PLUGIN BUILD FAILED
+linux | RESULT v11_A_no_parens: PLUGIN BUILD FAILED
+linux | RESULT v12_let_member: exit=134 OVERLAP
+linux | RESULT v13_no_member_struct_member_func: exit=134 OVERLAP
+linux | RESULT v14_no_windows_branch: exit=134 OVERLAP
+macos | Apple Swift version 6.5-dev (LLVM 9b3700c0bd7ce7a, Swift f62414fd1d17227)
+macos | Build config: +assertions
+macos | RESULT v00_baseline: exit=1 OVERLAP
+macos | RESULT v00_baseline_without_typecheck_flag: exit=1 OVERLAP
+macos | RESULT v01_noA_decl: exit=1 OVERLAP
+macos | RESULT v02_no_type_annot: exit=0 NO-OVERLAP
+macos | RESULT v03_no_diagnostics_field: exit=1 NO-OVERLAP
+macos | RESULT v04_no_protocolVersion: exit=1 NO-OVERLAP
+macos | RESULT v05_no_memberAttr_condition: exit=1 OVERLAP
+macos | RESULT v06_single_A_control: exit=0 NO-OVERLAP
+macos | RESULT v07_empty_struct_control: exit=0 NO-OVERLAP
+macos | RESULT v08_A_no_definition: exit=1 OVERLAP
+macos | RESULT v09_no_littleEndian: exit=1 OVERLAP
+macos | RESULT v10_M_no_parens: PLUGIN BUILD FAILED
+macos | RESULT v11_A_no_parens: PLUGIN BUILD FAILED
+macos | RESULT v12_let_member: exit=1 OVERLAP
+macos | RESULT v13_no_member_struct_member_func: exit=1 OVERLAP
+macos | RESULT v14_no_windows_branch: exit=1 OVERLAP

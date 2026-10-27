@@ -1,0 +1,47 @@
+# Windows main snapshot attempts (swift-DEVELOPMENT-SNAPSHOT-2026-10-17-a on windows-latest). None reached a compile. Error lines only; timestamps stripped.
+
+## run 39644966448 (c1dd08ba72bc842b42b50cc0d09aed91dc1b7db2 nightly)
+(SwiftyLab/setup-swift given the snapshot installer URL)
+windows-nightly | Error: spawn UNKNOWN
+
+## run 39645727164 (236c7df27da74503031c9a10aa9d2ed55fce2ec4 win-nightly)
+windows-nightly | swiftc at   (the script found no swiftc.exe after the install; Split-Path then failed on a null path)
+windows-nightly | ##[error]Process completed with exit code 1.
+
+## run 39648674520 (347af437a306b5b0ff4f76ab4ae89a3f3269a488 win-nightly)
+windows-nightly | installer exit 0
+windows-nightly | bin C:\Users\runneradmin\AppData\Local\Programs\Swift\Toolchains\0.0.0+Asserts\usr\bin
+windows-nightly |      | Program 'swift.exe' failed to run: An error occurred trying to start process
+windows-nightly | ##[error]Process completed with exit code 1.
+
+## run 39649352927 (3b950656834018b5402a2fb9188d68a6efad8e6b win-nightly)
+windows-nightly | installer exit 0
+windows-nightly | bin C:\Users\runneradmin\AppData\Local\Programs\Swift\Toolchains\0.0.0+Asserts\usr\bin
+windows-nightly | runtime C:\Users\runneradmin\AppData\Local\Programs\Swift\Runtimes\0.0.0\usr\bin exists=True
+windows-nightly |      | Program 'swiftc.exe' failed to run: An error occurred trying to start process
+windows-nightly | ##[error]Process completed with exit code 1.
+
+## run 39649775973 (97db684253f2034098d7e58b5cc3ac28634838f1 win-nightly)
+windows-nightly | installer exit 0
+windows-nightly | bin C:\Users\runneradmin\AppData\Local\Programs\Swift\Toolchains\0.0.0+Asserts\usr\bin
+windows-nightly | runtime C:\Users\runneradmin\AppData\Local\Programs\Swift\Runtimes\0.0.0\usr\bin exists=True
+windows-nightly |      | Program 'swift-frontend.exe' failed to run: An error occurred trying to start process
+windows-nightly | ##[error]Process completed with exit code 1.
+windows-nightly |      | Program 'swift-frontend.exe' failed to run: An error occurred trying to start process
+windows-nightly | ##[error]Process completed with exit code 1.
+
+## run 39650197861 (c5e13c9917848a986cc3e39209ae9d954e8d6706 win-nightly)
+windows-nightly | installer exit 0
+windows-nightly | bin C:\Users\runneradmin\AppData\Local\Programs\Swift\Toolchains\0.0.0+Asserts\usr\bin
+windows-nightly | runtime C:\Users\runneradmin\AppData\Local\Programs\Swift\Runtimes\0.0.0\usr\bin exists=True
+windows-nightly | EXC: Exception calling "Start" with "1" argument(s): "An error occurred trying to start process 'C:\Users\runneradmin\AppData\Local\Programs\Swift\Toolchains\0.0.0+Asserts\usr\bin\swift-frontend.exe' with working directory 'D:\a\windows-exception-29-reproducer\windows-exception-29-
+windows-nightly |      | Program 'swift-frontend.exe' failed to run: An error occurred trying to start process
+windows-nightly | ##[error]Process completed with exit code 1.
+
+## run 39650672635 (7ad41ef5b24d08db52ede2c97b4fccdc3753dc04 win-nightly)
+windows-nightly | installer exit 0
+windows-nightly | bin C:\Users\runneradmin\AppData\Local\Programs\Swift\Toolchains\0.0.0+Asserts\usr\bin
+windows-nightly | runtime C:\Users\runneradmin\AppData\Local\Programs\Swift\Runtimes\0.0.0\usr\bin exists=True
+windows-nightly | swiftCore: C:\Users\runneradmin\AppData\Local\Programs\Swift\Runtimes\0.0.0\usr\bin\swiftCore.dll | C:\Users\runneradmin\AppData\Local\Programs\Swift\Toolchains\0.0.0+Asserts\usr\bin\swiftCore\swiftCore.dll
+windows-nightly |      | Program 'swift-frontend.exe' failed to run: An error occurred trying to start process
+windows-nightly | ##[error]Process completed with exit code 1.
