@@ -38,62 +38,64 @@ import Testing
 @Suite
 struct NoncopyableRawLayoutTrailingFieldReproducer {
 
-    static let sources = URL(fileURLWithPath: #filePath)
-        .deletingLastPathComponent()  // Tests/
-        .deletingLastPathComponent()  // issue root
-        .appendingPathComponent("Sources/Reproducer")
+    #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        static let sources = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()  // Tests/
+            .deletingLastPathComponent()  // issue root
+            .appendingPathComponent("Sources/Reproducer")
 
-    /// Runs `swiftc` with `arguments` in `directory`. Returns `nil` if the
-    /// compiler could not be launched.
-    static func swiftc(_ arguments: [String], in directory: URL) -> (status: Int32, stderr: String)? {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["swiftc"] + arguments
-        process.currentDirectoryURL = directory
-        let stderr = Pipe()
-        process.standardError = stderr
-        process.standardOutput = Pipe()
-        do { try process.run() } catch { return nil }
-        let data = stderr.fileHandleForReading.readDataToEndOfFile()
-        process.waitUntilExit()
-        return (process.terminationStatus, String(data: data, encoding: .utf8) ?? "")
-    }
-
-    /// `true` if the verifier rejected the IR, `false` if the source compiled,
-    /// `nil` if the compiler was unreachable or failed for another reason.
-    static func classify(_ result: (status: Int32, stderr: String)?) -> Bool? {
-        guard let result else { return nil }
-        if result.stderr.contains("does not dominate all uses") || result.stderr.contains("Broken module") {
-            return true
+        /// Runs `swiftc` with `arguments` in `directory`. Returns `nil` if the
+        /// compiler could not be launched.
+        static func swiftc(_ arguments: [String], in directory: URL) -> (status: Int32, stderr: String)? {
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+            process.arguments = ["swiftc"] + arguments
+            process.currentDirectoryURL = directory
+            let stderr = Pipe()
+            process.standardError = stderr
+            process.standardOutput = Pipe()
+            do { try process.run() } catch { return nil }
+            let data = stderr.fileHandleForReading.readDataToEndOfFile()
+            process.waitUntilExit()
+            return (process.terminationStatus, String(data: data, encoding: .utf8) ?? "")
         }
-        if result.status == 0 { return false }
-        return nil
-    }
 
-    /// Creates a fresh temp directory, copies each `(resource, stagedName)`
-    /// into it as a `.swift` file, and runs `body` with the directory.
-    static func withStaged(
-        _ tag: String,
-        _ files: [(String, String)],
-        _ body: (URL) -> Bool?
-    ) -> Bool? {
-        let pid = ProcessInfo.processInfo.processIdentifier
-        let work = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("rawlayout-trailing-test-\(tag)-\(pid)")
-        try? FileManager.default.removeItem(at: work)
-        guard (try? FileManager.default.createDirectory(at: work, withIntermediateDirectories: true)) != nil else {
+        /// `true` if the verifier rejected the IR, `false` if the source compiled,
+        /// `nil` if the compiler was unreachable or failed for another reason.
+        static func classify(_ result: (status: Int32, stderr: String)?) -> Bool? {
+            guard let result else { return nil }
+            if result.stderr.contains("does not dominate all uses") || result.stderr.contains("Broken module") {
+                return true
+            }
+            if result.status == 0 { return false }
             return nil
         }
-        defer { try? FileManager.default.removeItem(at: work) }
-        for (resource, name) in files {
-            let source = sources.appendingPathComponent(resource)
-            guard FileManager.default.fileExists(atPath: source.path) else { return nil }
-            guard (try? FileManager.default.copyItem(at: source, to: work.appendingPathComponent(name))) != nil else {
+
+        /// Creates a fresh temp directory, copies each `(resource, stagedName)`
+        /// into it as a `.swift` file, and runs `body` with the directory.
+        static func withStaged(
+            _ tag: String,
+            _ files: [(String, String)],
+            _ body: (URL) -> Bool?
+        ) -> Bool? {
+            let pid = ProcessInfo.processInfo.processIdentifier
+            let work = URL(fileURLWithPath: NSTemporaryDirectory())
+                .appendingPathComponent("rawlayout-trailing-test-\(tag)-\(pid)")
+            try? FileManager.default.removeItem(at: work)
+            guard (try? FileManager.default.createDirectory(at: work, withIntermediateDirectories: true)) != nil else {
                 return nil
             }
+            defer { try? FileManager.default.removeItem(at: work) }
+            for (resource, name) in files {
+                let source = sources.appendingPathComponent(resource)
+                guard FileManager.default.fileExists(atPath: source.path) else { return nil }
+                guard (try? FileManager.default.copyItem(at: source, to: work.appendingPathComponent(name))) != nil else {
+                    return nil
+                }
+            }
+            return body(work)
         }
-        return body(work)
-    }
+    #endif
 
     static func crashFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)

@@ -26,10 +26,14 @@ struct NoncopyableSequenceConformanceReproducer {
                 .deletingLastPathComponent()  // issue root
                 .appendingPathComponent("Sources")
             let fm = FileManager.default
+            // The bug depends on file order: it fires only when
+            // `Buffer.Ring+Sequence.swift` precedes `Buffer.Ring.swift`, the order
+            // SwiftPM uses. A directory listing is unordered on Linux, so sort it.
             func swiftFiles(_ dir: String) -> [String] {
                 let url = sources.appendingPathComponent(dir)
                 return ((try? fm.contentsOfDirectory(atPath: url.path)) ?? [])
                     .filter { $0.hasSuffix(".swift") }
+                    .sorted()
                     .map { url.appendingPathComponent($0).path }
             }
             let core = swiftFiles("Core")

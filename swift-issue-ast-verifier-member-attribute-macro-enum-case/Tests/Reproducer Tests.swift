@@ -14,10 +14,9 @@ import Testing
 //
 // Assertions builds run the AST verifier by default; release toolchains run it with
 // `-Xfrontend -enable-ast-verifier`, which this harness passes. The abort is recorded on
-// macOS release (Xcode Swift 6.4.2, run locally) and on assertions builds (Windows 6.4.1,
-// Linux nightly, macOS snapshots; CI). It is not yet recorded on a Linux release
-// toolchain, so `when:` is "Darwin, or an assertions build". If a Linux release leg goes
-// red here because the abort fired, widen the predicate; do not replace it with `{ fired }`.
+// macOS release (Xcode Swift 6.4.2, run locally), on Linux release (Swift 6.4.1-RELEASE
+// x86_64, Issues CI run 40584416933) and on assertions builds (Windows 6.4.1, Linux nightly,
+// macOS snapshots; CI). It fires wherever this harness runs, so `when:` is `true`.
 
 @Suite
 struct ASTVerifierMemberAttributeMacroEnumCaseReproducer {
@@ -36,16 +35,6 @@ struct ASTVerifierMemberAttributeMacroEnumCaseReproducer {
             return (process.terminationStatus, String(data: data, encoding: .utf8) ?? "")
         #else
             return nil
-        #endif
-    }
-
-    /// Where the abort is recorded: Darwin (release, with the verifier enabled) and any
-    /// assertions build.
-    static func knownToFire() -> Bool {
-        #if canImport(Darwin)
-            return true
-        #else
-            return swiftc(["--version"])?.output.contains("+assertions") ?? false
         #endif
     }
 
@@ -100,7 +89,7 @@ struct ASTVerifierMemberAttributeMacroEnumCaseReproducer {
         withKnownIssue(
             "swiftlang/swift#90139 (Issues#175) — member-attribute macro attribute left on an EnumCaseDecl; AST verifier aborts",
             { #expect(fired == false) },
-            when: { Self.knownToFire() }
+            when: { true }
         )
     }
 }

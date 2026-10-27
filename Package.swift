@@ -1326,10 +1326,10 @@ let package = Package(
         // member-attribute macro's attribute is left on the EnumCaseDecl and the AST
         // verifier aborts: "EnumCaseDecl should not have attributes". Fires on
         // assertions builds, and on release toolchains with -enable-ast-verifier
-        // (Xcode 6.4.2 locally).
+        // (Xcode 6.4.2 locally, Linux 6.4.1 on CI).
         //
         // `Crash.swift.txt` is a macro plugin (-D PLUGIN) and its client; both are
-        // compiled OUT OF PROCESS per [ISSUE-029]; `when:` is "Darwin or +assertions".
+        // compiled OUT OF PROCESS per [ISSUE-029]; `when: { true }`.
 
         .testTarget(
             name: "swift-issue-ast-verifier-member-attribute-macro-enum-case-Tests",

@@ -68,7 +68,7 @@ From the lane (runs 39784950734 and 39786015934) and the round-1 review (3979050
 | macOS swift.org 6.4.1, Linux `swift:6.4.1-noble`, Xcode 26.6 (Swift 6.3.3) | accepted (no assertions) | not run | CI, run 39788628757 |
 | Apple Swift 6.4.2 (swiftlang-6.4.2.1.9), Xcode, macOS arm64 | accepted | **aborts** | local, this port |
 
-Run locally (`evidence/local-macos-6.4.2.txt`): the reproducer aborts with the verifier on, and the controls `v4_no_case`, `v6_struct_member` and `v1_empty_expansion` are accepted with the same flags. Not run locally: any assertions build, Linux, Windows. A Linux release toolchain with `-enable-ast-verifier` has not been tried anywhere.
+Run locally (`evidence/local-macos-6.4.2.txt`): the reproducer aborts with the verifier on, and the controls `v4_no_case`, `v6_struct_member` and `v1_empty_expansion` are accepted with the same flags. Not run locally: any assertions build, Linux, Windows. On Issues CI run 40584416933 the Linux release toolchain (Swift 6.4.1-RELEASE, x86_64) with `-enable-ast-verifier` aborts too.
 
 ## Workaround
 
@@ -78,7 +78,7 @@ None that keeps the macro's behaviour. In swift-sql the attributes are `@Table`'
 
 `Tests/Reproducer Tests.swift` and `Sources/Reproducer/main.swift` build the plugin and type-check the client in child processes with `-Xfrontend -enable-ast-verifier`, so the check runs on release toolchains too. The signature is `EnumCaseDecl should not have attributes`. A plugin that fails to build makes the probe inconclusive.
 
-`withKnownIssue` uses `when: { knownToFire() }`: true on Darwin and on any assertions build (`swiftc --version` prints `+assertions`), the places the abort is recorded. On Issues CI that makes the macOS leg (Xcode) a live fix detector. A Linux release leg runs the body unguarded: if the abort fires there too, the test goes red and the predicate should be widened to include it, not replaced with `{ fired }`. The probes skip Windows, like the exemplar.
+`withKnownIssue` uses `when: { true }`. The abort fires wherever the harness runs: macOS release (Xcode Swift 6.4.2, local), Linux release (Swift 6.4.1-RELEASE x86_64, Issues CI run 40584416933, where the first, narrower predicate went red) and assertions builds. On Issues CI the macOS and Linux release legs are live fix detectors. The probes skip Windows, like the exemplar.
 
 Checked locally (`evidence/local-macos-6.4.2.txt`): the test records the known issue and passes, and the probe exits 1. With `v4_no_case.swift` staged as `Crash.swift.txt` in a scratch copy, the test fails with "Known issue was not recorded" and the probe exits 0.
 
