@@ -22,8 +22,8 @@ struct CopyToBorrowCrossModuleActorStateMiscompileReproducer {
 
     static let runs = 5
 
-    static func run(_ arguments: [String], in directory: URL) -> (status: Int32, output: String)? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+    #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        static func run(_ arguments: [String], in directory: URL) -> (status: Int32, output: String)? {
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
             process.arguments = arguments
@@ -35,10 +35,8 @@ struct CopyToBorrowCrossModuleActorStateMiscompileReproducer {
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             process.waitUntilExit()
             return (process.terminationStatus, String(data: data, encoding: .utf8) ?? "")
-        #else
-            return nil
-        #endif
-    }
+        }
+    #endif
 
     /// `true` when an iteration read stale actor state, `false` when every
     /// iteration of every run was correct, `nil` when inconclusive.
