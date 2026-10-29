@@ -40,8 +40,42 @@ A root that reaches a package through two paths requests the union of its traits
 First found through swift-sql, which reaches swift-ascii through swift-rfc-4122 (no traits)
 and swift-iso-9075 → swift-iso-8601 (`["Parser"]`).
 
-## Upstream (2026-10-11)
+## Upstream (2026-10-29)
 
-This is swiftlang/swift-package-manager#10485 (open): the failure depends on order. With `root` listing `m` (requests `T`) before `n` (no traits), the same fixture resolves on Swift 6.4 (swiftlang-6.4.0.34.1). Listing `n` first fails as above. No new upstream report is needed.
+This is swiftlang/swift-package-manager#10485 (open). It is **not** fixed in Swift 6.4.2.
+The record of 2026-10-11 expected swiftlang/swift-package-manager#10550 (cherry-picked to
+`release/6.4.2` as #10570) to fix it. That was wrong: #10550 changes the PubGrub trait map,
+and this graph never reaches it. The fixture still fails, from a clean `.build`, on Xcode 27.2
+(Swift 6.4.2, `swiftlang-6.4.2.1.9`), on `6.4.x-snapshot-2026-10-23`, and with SwiftPM built
+from `main` at 4a61be762 (2026-10-28).
 
-A fix has merged: swiftlang/swift-package-manager#10550 on main (2026-09-21), cherry-picked to `release/6.4.2` as #10570. Its description matches this graph: one parent names a trait, the other names none, and the shared package's guarded dependency is dropped. The neighbouring 6.4.2 fixes #10569 (seed root manifest traits) and #10579 (repeat the trait pass until nothing changes) touch the same path. None of them is in Swift 6.4.0. Re-run this reproducer on the first 6.4.2 or later toolchain: when it resolves, the test flips and the `.when(traits:)` conditions listed in Issues#123 can come back.
+**Cause.** Branch-based and `path:` dependencies are expanded before PubGrub runs, in
+`PubGrubDependencyResolver.processInputs`
+(`Sources/PackageGraph/Resolution/PubGrub/PubGrubDependencyResolver.swift`). Each such package's
+dependencies are expanded once, with the traits of whichever request for it is processed first.
+A later request that names more traits is lost in one of two ways:
+
+1. `PackageContainerConstraint`'s `==` and `hash` ignore traits, so while `b` (defaults) is still
+   queued, `b` with `T` is a duplicate in the `OrderedSet` of pending constraints and is dropped.
+2. Once `b` has been expanded, a later constraint for it is skipped (`continue` in the revision
+   phase, the `overriddenPackages` check in the unversioned phase).
+
+That is why the result depends on order: whichever request is queued first wins. Version-based
+dependencies go through PubGrub and are not affected: the same fixture with
+`from: "1.0.0"` everywhere resolves.
+
+**Minimal conditions (A/B, Xcode 27.2, 2026-10-29).** `root` → `b` (no traits) and `m` → `b`
+(`traits: ["T"]`), `b`'s product dependency on `c` guarded by `T`, `root` and `m` using `B`:
+fails with `branch: "main"` and with `path:` dependencies, in either order of `root`'s
+dependencies; resolves with `from: "1.0.0"`, without the condition, or when `root` asks for `T`
+itself. `c` may be version-based; `b` must be branch-based or `path:`. A version-based `m` that
+asks for `T` on a branch-based `b` that `root` overrides also fails, through a different path
+(PubGrub drops the overridden constraint's traits); the local fix below does not cover that case.
+
+**Local fix (not filed).** Remember the traits each pre-expanded package was expanded with,
+merge the traits of a duplicate queued constraint into the queued one, and expand a package
+again with the union when a request brings new traits. With it, every branch and `path:`
+variant above resolves.
+
+Today's swift-atoms failure ("exhausted attempts … 'swift-always'") is mostly a different
+defect: see [`swift-issue-spm-unused-dependency-trait-request`](../swift-issue-spm-unused-dependency-trait-request).

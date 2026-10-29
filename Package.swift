@@ -73,6 +73,17 @@ let package = Package(
             exclude: ["Fixture"]
         ),
 
+        // MARK: - swift-issue-spm-unused-dependency-trait-request
+        //
+        // SwiftPM enables the traits a package requests on a dependency that none
+        // of its targets uses, so the dependency those traits guard is required
+        // but never resolved ("exhausted attempts"). The test runs repro.swift,
+        // which stages the packages and resolves them out of process.
+        .testTarget(
+            name: "swift-issue-spm-unused-dependency-trait-request-Tests",
+            path: "swift-issue-spm-unused-dependency-trait-request/Tests"
+        ),
+
         // MARK: - swift-issue-spm-implied-trait-conditional-dependency
         //
         // SwiftPM does not activate a conditional dependency trait request when
