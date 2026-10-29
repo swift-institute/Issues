@@ -72,10 +72,11 @@ itself. `c` may be version-based; `b` must be branch-based or `path:`. A version
 asks for `T` on a branch-based `b` that `root` overrides also fails, through a different path
 (PubGrub drops the overridden constraint's traits); the local fix below does not cover that case.
 
-**Local fix (not filed).** Remember the traits each pre-expanded package was expanded with,
-merge the traits of a duplicate queued constraint into the queued one, and expand a package
-again with the union when a request brings new traits. With it, every branch and `path:`
-variant above resolves.
+**Local fix (not filed).** Branch `diamond-traits` (69e594fd1):
+- Record the union of the products and traits requested of each branch-based or local package, and expand the package again whenever a request adds to that union.
+- Merge the traits of duplicate queued constraints, including top-level ones.
+
+Six new tests fail on `main` and pass with the fix. #10485's own reproducer resolves and runs in both orders with it. The mixed case above (a version-based `m` and a branch-based `b`) is still not covered.
 
 Today's swift-atoms failure ("exhausted attempts … 'swift-always'") is mostly a different
 defect: see [`swift-issue-spm-unused-dependency-trait-request`](../swift-issue-spm-unused-dependency-trait-request).

@@ -57,10 +57,13 @@ Two parts of SwiftPM disagree about which dependency edges carry traits.
 SwiftPM means such a request to apply: its functional test
 `TraitTests.traits_whenTraitUnification_whenSecondTraitNotEnabled` requests a trait on an edge
 that is guarded off, and expects the trait to be enabled. So resolution is the side that is wrong.
-A local fix (not filed) gives the resolver the workspace's trait map as a minimum for every
-package, and resolves again while packages are missing and loading manifests has enabled new
-traits. Ignoring unused edges in `updateEnabledTraits` instead also makes the reproducer resolve,
-but it breaks that test, so it was dropped.
+The local fix (not filed) is on branch `unused-edge-traits` (d619102aa):
+- Containers report the trait requests that a manifest, at the exact version being resolved, makes on dependencies its products don't use.
+- The resolver applies them as traits only, so they never add a dependency.
+
+Two earlier attempts were dropped:
+- Ignoring unused edges in `updateEnabledTraits` broke the `TraitTests` case above.
+- Seeding the workspace's trait map into the resolver kept stale traits across updates.
 
 ## Where it was found
 
