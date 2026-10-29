@@ -1,6 +1,6 @@
 # SwiftPM: a trait requested on an unused dependency leaves the dependency it guards unresolved
 
-**Classification:** SwiftPM dependency resolution. The graph fails to resolve.
+**Classification:** SwiftPM dependency resolution. The graph fails to resolve. Record: swift-institute/Issues#211.
 
 A package declares a dependency with a trait, `.package(path: "../b", traits: ["T"])`, but none
 of its targets uses a product of that dependency, or only targets that are guarded by traits that
