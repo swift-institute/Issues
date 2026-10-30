@@ -104,12 +104,12 @@ in **which** `any P` existential is being mangled and **how** it is formed:
 ## Evidence
 
 Full run/job verification table, corrected run IDs, and the local-reproduction
-attempt are in `evidence/run-status-summary.md`. Trimmed log excerpts (assertion
+attempt are in `run-status-summary.md`. Trimmed log excerpts (assertion
 + decisive frames, giant `Program arguments` line elided):
 
-- `evidence/crash-A-swift-pdf-run28640978811.log` — swift-pdf, `any HTML.View` at `HTML.AnyView.swift:30`, run `28640978811`, job `84944472858`.
-- `evidence/crash-A-html-render-own-run28650247696.log` — swift-html-render's own crash, `any HTML.View` at `HTML.AnyView.swift:42`, run `28650247696`, job `84966288630` (branch `windows/anyview-thunk-erasure`, head `0112f8d`, pre-fix).
-- `evidence/crash-B-swift-pdf-run28661306902.log` — swift-pdf, `any PDF.HTML.Style.Modifier` at `PDF.HTML.Context+Rendering.swift:234`, run `28661306902`, job `85002325302`, build progressed to `[8274/8311]`.
+- `crash-A-swift-pdf-run28640978811.log` — swift-pdf, `any HTML.View` at `HTML.AnyView.swift:30`, run `28640978811`, job `84944472858`.
+- `crash-A-html-render-own-run28650247696.log` — swift-html-render's own crash, `any HTML.View` at `HTML.AnyView.swift:42`, run `28650247696`, job `84966288630` (branch `windows/anyview-thunk-erasure`, head `0112f8d`, pre-fix).
+- `crash-B-swift-pdf-run28661306902.log` — swift-pdf, `any PDF.HTML.Style.Modifier` at `PDF.HTML.Context+Rendering.swift:234`, run `28661306902`, job `85002325302`, build progressed to `[8274/8311]`.
 
 GREEN confirmation: run `28653857845` (job `84978112214`), same branch as the
 html-render-own crash, head `b179cf5` (post thunk-erasure fix) — Windows leg
@@ -177,7 +177,7 @@ demonstrating html-render's own pre-fix `any HTML.View` crash is `28650247696`
 
 The brief's claim that the bug is "NOT reproducible on local swift.org 6.4-dev
 / 6.5-dev snapshots" was **not independently verified** by this session — see
-`evidence/run-status-summary.md` for the attempted-but-blocked local
+`run-status-summary.md` for the attempted-but-blocked local
 reproduction (an unrelated pre-existing SIL verifier crash in
 swift-parser-primitives prevented the build from reaching the affected module
 on the installed `swift-DEVELOPMENT-SNAPSHOT-2026-05-27-a` +Asserts toolchain).

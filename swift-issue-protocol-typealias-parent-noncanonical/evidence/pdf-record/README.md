@@ -1,6 +1,6 @@
 # [Compiler][ICE] Windows debug-info mangling aborts on an existential whose root is another package's namespace typealias
 
-Characterization: [CHARACTERIZATION.md](CHARACTERIZATION.md). Sibling: [swift-issue-windows-existential-crash](../swift-issue-windows-existential-crash) (Issues#21, the `any HTML.View` shape).
+Characterization: [CHARACTERIZATION.md](CHARACTERIZATION.md). Merged into [the Issues#21 record](../../README.md) on 2026-10-30: the same defect (a protocol named through a typealias of its parent; here `PDF = ISO_32000`). Paths below are relative to this folder.
 
 ## Summary
 
@@ -11,12 +11,12 @@ On Windows with an assertions toolchain, a debug build aborts with `Assertion is
 The sources are exact copies of swift-compositions/swift-pdf `9d576dabb05d41b73de2a9199c97d6fc4d5c8040` (`.github/repro/` and the workflow that ran them). The package boundary is part of the trigger, so it is kept.
 
 ```console
-swift build -c debug --package-path evidence/source/cross-package/crash --target CrashModule    # aborts
-swift build -c debug --package-path evidence/source/cross-package/crash --target RespellModule  # control: clean
-swiftc -Onone -g -c evidence/source/noncanonical-existential-debuginfo.swift -o repro.o          # control: clean
+swift build -c debug --package-path source/cross-package/crash --target CrashModule    # aborts
+swift build -c debug --package-path source/cross-package/crash --target RespellModule  # control: clean
+swiftc -Onone -g -c source/noncanonical-existential-debuginfo.swift -o repro.o          # control: clean
 ```
 
-`evidence/source/windows-existential-repro.yml` is the workflow that ran this matrix in swift-pdf; its paths are the ones it had there (`.github/repro/…`).
+`source/windows-existential-repro.yml` is the workflow that ran this matrix in swift-pdf; its paths are the ones it had there (`.github/repro/…`).
 
 ## Environment matrix
 

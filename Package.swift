@@ -754,30 +754,18 @@ let package = Package(
             path: "swift-issue-typed-throws-autoclosure-inference/Sources/Reproducer"
         ),
 
-        // NOT POSTED (Issues#21; same defect as open swiftlang/swift#86202).
-        // `any A.P` with `typealias A = E` forms a non-canonical CanType on
-        // assertions builds (any platform). `repro.swift` is compiled OUT OF
-        // PROCESS per [ISSUE-029]; a toolchain without assertions is
-        // inconclusive.
+        // NOT POSTED (Issues#21; open swiftlang/swift#86202, fixed on main by
+        // swiftlang/swift#93790, not on release/6.4.x). `A.P` with
+        // `typealias A = E` forms a non-canonical CanType on assertions
+        // builds (any platform). `repro.swift` is compiled OUT OF PROCESS per
+        // [ISSUE-029]; a toolchain without assertions is inconclusive.
         .testTarget(
-            name: "swift-issue-windows-existential-crash-Tests",
-            path: "swift-issue-windows-existential-crash/Tests"
+            name: "swift-issue-protocol-typealias-parent-noncanonical-Tests",
+            path: "swift-issue-protocol-typealias-parent-noncanonical/Tests"
         ),
         .executableTarget(
-            name: "swift-issue-windows-existential-crash-Repro",
-            path: "swift-issue-windows-existential-crash/Sources/Reproducer"
-        ),
-
-        // The Windows-only ICE's trigger lives in the evidence packages
-        // (two packages, so the namespace typealias crosses a package
-        // boundary); these targets only index them.
-        .testTarget(
-            name: "swift-issue-noncanonical-existential-windows-debuginfo-ice-Tests",
-            path: "swift-issue-noncanonical-existential-windows-debuginfo-ice/Tests"
-        ),
-        .executableTarget(
-            name: "swift-issue-noncanonical-existential-windows-debuginfo-ice-Repro",
-            path: "swift-issue-noncanonical-existential-windows-debuginfo-ice/Sources/Reproducer"
+            name: "swift-issue-protocol-typealias-parent-noncanonical-Repro",
+            path: "swift-issue-protocol-typealias-parent-noncanonical/Sources/Reproducer"
         ),
 
         // MARK: - Batch A Group 2 — migrated nested packages (Issues#73)

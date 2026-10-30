@@ -140,7 +140,7 @@ jobs:
         shell: bash
         run: |
           swift --version
-          evidence="swift-issue-windows-existential-crash/evidence"
+          evidence="swift-issue-protocol-typealias-parent-noncanonical/evidence"
           base="$RUNNER_TEMP/other-package"
           cp -R "$evidence/fixtures/other-package" "$base"
           git -C "$base" init -q -b main

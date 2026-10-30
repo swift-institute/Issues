@@ -1,12 +1,12 @@
 {
   "approvedImpactSHA256" : "0e8d24930dd248a2f7db2929c06bf240317030656fe829563029ae94bd6e5b68",
   "approvedModelSHA256" : "1064ae5eb1a20c786caf7bb337f0451bed3a7fab0a9094217a54d4259c3f4514",
-  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-windows-existential-crash",
+  "canonicalDossierMainURL" : "https:\/\/github.com\/swift-institute\/Issues\/tree\/main\/swift-issue-protocol-typealias-parent-noncanonical",
   "canonicalIssueKey" : "windows-existential-crash",
   "canonicalIssueNumber" : 21,
   "canonicalIssueURL" : "https:\/\/github.com\/swift-institute\/Issues\/issues\/21",
   "contentMode" : "CLEAN_COPY_EXACT_PINNED_BLOBS",
-  "dossier" : "swift-issue-windows-existential-crash",
+  "dossier" : "swift-issue-protocol-typealias-parent-noncanonical",
   "frozenPlanSHA256" : "b96d5afd1f53f8009a916a844540f9d12548df847f28e32e733756e3160b3a31",
   "generated" : "2026-07-27",
   "githubMutationPerformed" : false,
@@ -100,7 +100,7 @@
           "batchRelativeDestination" : "evidence\/source-package\/primary\/Package.swift",
           "contentSHA256" : "d2b964f7745cf7454635c8a706a6a98a68ed431f565aaad2335ff4ad09df5f01",
           "copied" : true,
-          "destinationPath" : "swift-issue-windows-existential-crash\/evidence\/source-package\/primary\/Package.swift",
+          "destinationPath" : "swift-issue-protocol-typealias-parent-noncanonical\/evidence\/source-package\/primary\/Package.swift",
           "plannedBlobSHA1" : "abf8ae94d2899aa009f35f5aab4a9d021fb83c11",
           "sourcePath" : "Package.swift",
           "verifiedGitBlobSHA1" : "abf8ae94d2899aa009f35f5aab4a9d021fb83c11"
@@ -110,7 +110,7 @@
           "batchRelativeDestination" : "evidence\/source-package\/primary\/README.md",
           "contentSHA256" : "38e5661e588acf9189fd3e63b50d59f8c5bfe801003cecd605f2f1be267c11af",
           "copied" : true,
-          "destinationPath" : "swift-issue-windows-existential-crash\/evidence\/source-package\/primary\/README.md",
+          "destinationPath" : "swift-issue-protocol-typealias-parent-noncanonical\/evidence\/source-package\/primary\/README.md",
           "plannedBlobSHA1" : "b7e4cb5a6ce4782ccc3d48b7b0c2d4f714636acd",
           "sourcePath" : "README.md",
           "verifiedGitBlobSHA1" : "b7e4cb5a6ce4782ccc3d48b7b0c2d4f714636acd"
@@ -120,7 +120,7 @@
           "batchRelativeDestination" : "evidence\/source-package\/primary\/Sources\/ExistentialCrash\/Crash.swift",
           "contentSHA256" : "b7520c0bf1e8c8c12aabefc51c735488dcc0ea2a46fc5dd080305eceb64e5ac7",
           "copied" : true,
-          "destinationPath" : "swift-issue-windows-existential-crash\/evidence\/source-package\/primary\/Sources\/ExistentialCrash\/Crash.swift",
+          "destinationPath" : "swift-issue-protocol-typealias-parent-noncanonical\/evidence\/source-package\/primary\/Sources\/ExistentialCrash\/Crash.swift",
           "plannedBlobSHA1" : "13eaaab6706067232b3feff781d0168d0d31b9fc",
           "sourcePath" : "Sources\/ExistentialCrash\/Crash.swift",
           "verifiedGitBlobSHA1" : "13eaaab6706067232b3feff781d0168d0d31b9fc"
@@ -190,7 +190,7 @@
           "batchRelativeDestination" : "evidence\/fixtures\/other-package\/Package.swift",
           "contentSHA256" : "246af88928855c6124003024f6682d1d66b3bf8400a3d78c90135d6beecdc050",
           "copied" : true,
-          "destinationPath" : "swift-issue-windows-existential-crash\/evidence\/fixtures\/other-package\/Package.swift",
+          "destinationPath" : "swift-issue-protocol-typealias-parent-noncanonical\/evidence\/fixtures\/other-package\/Package.swift",
           "plannedBlobSHA1" : "50fff3fba047ad9a6ef0f85624bfa3194eb7d7b1",
           "sourcePath" : "Package.swift",
           "verifiedGitBlobSHA1" : "50fff3fba047ad9a6ef0f85624bfa3194eb7d7b1"
@@ -200,7 +200,7 @@
           "batchRelativeDestination" : "evidence\/fixtures\/other-package\/Sources\/BaseModule\/BaseModule.swift",
           "contentSHA256" : "b0ab127becbdffa55772acc041d1bec3ed5685cf3506761d948e3041e24772d3",
           "copied" : true,
-          "destinationPath" : "swift-issue-windows-existential-crash\/evidence\/fixtures\/other-package\/Sources\/BaseModule\/BaseModule.swift",
+          "destinationPath" : "swift-issue-protocol-typealias-parent-noncanonical\/evidence\/fixtures\/other-package\/Sources\/BaseModule\/BaseModule.swift",
           "plannedBlobSHA1" : "fce03b7097b1c14054790c664c657d4168ac43c0",
           "sourcePath" : "Sources\/BaseModule\/BaseModule.swift",
           "verifiedGitBlobSHA1" : "fce03b7097b1c14054790c664c657d4168ac43c0"

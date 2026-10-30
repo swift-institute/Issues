@@ -16,7 +16,7 @@ import Testing
 // is `true`.
 
 @Suite
-struct WindowsExistentialCrashReproducer {
+struct ProtocolTypealiasParentNoncanonicalReproducer {
 
     static func swiftc(_ arguments: [String]) -> (status: Int32, output: String)? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
@@ -64,7 +64,7 @@ struct WindowsExistentialCrashReproducer {
         guard let fired = Self.bugFires() else { return }
 
         withKnownIssue(
-            "swiftlang/swift#86202 (Issues#21) — `any A.P` with `typealias A = E` forms a non-canonical CanType",
+            "swiftlang/swift#86202 (Issues#21; fixed on main by swiftlang/swift#93790) — `A.P` with `typealias A = E` forms a non-canonical CanType",
             { #expect(fired == false) },
             when: { true }
         )
