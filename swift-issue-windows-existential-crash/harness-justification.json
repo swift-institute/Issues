@@ -1,18 +1,18 @@
 {
-  "authoritativeCommand" : "swift build -c debug",
-  "authoritativeEvidenceRoot" : "evidence\/source-package",
-  "canonicalIssueKey" : "windows-existential-crash",
-  "environment" : "Swift 6.0.3+; x86_64-unknown-windows-msvc; macOS\/Linux negative controls; three primary branches and companion tags 0.1.0\/0.2.0 must remain archived.",
-  "generatedIndexFiles" : [
-    "Sources\/Reproducer\/main.swift",
-    "Tests\/Reproducer.swift"
+  "authoritativeCommand": "swiftc -g repro.swift",
+  "authoritativeEvidenceRoot": "repro.swift",
+  "canonicalIssueKey": "windows-existential-crash",
+  "environment": "Any assertions build: 6.4.x and main snapshots (macOS arm64, local 2026-10-30), Windows 6.4.1+Asserts. Release toolchains without assertions accept the file.",
+  "generatedIndexFiles": [
+    "Sources/Reproducer/main.swift",
+    "Tests/Reproducer Tests.swift"
   ],
-  "generatedIndexFilesAreAuthoritativeReproducer" : false,
-  "issueNumber" : "21",
-  "negativeControlOrExpectedBehavior" : "The two-package source compiles with DWARF debug information on Windows.",
-  "positiveTrigger" : "Swift 6.0.3 assertions build fails isActuallyCanonicalOrNull while mangling the existential; macOS\/Linux and -gnone controls pass.",
-  "reason" : "The trigger depends on cross-module, cross-package, toolchain, platform, or test-discovery structure. A flattened synthetic package would not be evidence-equivalent.",
-  "rootPackageManifestCreated" : false,
-  "schemaVersion" : 1,
-  "strategy" : "PRESERVE_EXACT_SOURCE_PACKAGE_BOUNDARIES"
+  "generatedIndexFilesAreAuthoritativeReproducer": false,
+  "issueNumber": "21",
+  "negativeControlOrExpectedBehavior": "repro.swift compiles; `any E.P` (no typealias on the parent) compiles on the same toolchains.",
+  "positiveTrigger": "An existential of a protocol named through a typealias of its parent (`any A.P`, `typealias A = E`) asserts isActuallyCanonicalOrNull: in IRGen debug-info mangling on 6.4.x (needs -g), in the SIL verifier on main.",
+  "reason": "repro.swift aborts the compiler, so the harness compiles it out of process; evidence/ keeps the original two-package reproduction as history.",
+  "rootPackageManifestCreated": false,
+  "schemaVersion": 1,
+  "strategy": "OUT_OF_PROCESS_SINGLE_FILE"
 }

@@ -754,9 +754,11 @@ let package = Package(
             path: "swift-issue-typed-throws-autoclosure-inference/Sources/Reproducer"
         ),
 
-        // The Windows-only ICE's platform gate lives in the evidence
-        // package (the local target compiles everywhere; the defect needs
-        // x86_64-unknown-windows-msvc, per the harness justification).
+        // NOT POSTED (Issues#21; same defect as open swiftlang/swift#86202).
+        // `any A.P` with `typealias A = E` forms a non-canonical CanType on
+        // assertions builds (any platform). `repro.swift` is compiled OUT OF
+        // PROCESS per [ISSUE-029]; a toolchain without assertions is
+        // inconclusive.
         .testTarget(
             name: "swift-issue-windows-existential-crash-Tests",
             path: "swift-issue-windows-existential-crash/Tests"
