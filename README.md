@@ -1,7 +1,7 @@
 # Issues
 
 Minimal Swift packages reproducing toolchain and compiler bugs encountered
-while developing the [Swift Institute](https://swift-institute.org)
+while developing the [Swift Institute](https://github.com/swift-institute)
 ecosystem — the institute's own defect records: each entry carries the
 reduced reproducer, evidence captures, duplicate differentiation against
 upstream reports, and the verified workaround the ecosystem ships.
@@ -17,11 +17,6 @@ When a bug catalog entry says "this code miscompiles on Linux release,"
 the issue reproducer proves it — runnable from `swift test` (or directly
 via the standalone executable) and verified by CI on every supported
 platform.
-
-The companion research repository is at
-[swift-institute/Research](https://github.com/swift-institute/Research).
-The companion experiments repository is at
-[swift-institute/Experiments](https://github.com/swift-institute/Experiments).
 
 ## Reporting upstream
 
