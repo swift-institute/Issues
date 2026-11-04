@@ -1,5 +1,19 @@
 name: CI
 
+# This repository's ci.yml is deliberately not the fleet's generated caller
+# (Coen, 4 Nov 2026): its job is to run the issues. Don't overwrite it in a
+# fleet-wide ci.yml rollout.
+#
+# Each swift-issue-*/ folder with a test target runs by itself on each platform,
+# so one issue's crash or red leg can't hide or cancel another's. A test wraps
+# its bug in withKnownIssue, so a leg going red means the bug stopped firing or
+# changed. The Monday sweep runs every issue and adds Linux nightly, which is
+# what detects upstream fixes. A push runs only the issues it changed. There is
+# no ci-ok: one red issue is evidence, not a broken repository.
+#
+# The Swift and Xcode versions are read from the shared workflow, which holds
+# the fleet's only pins.
+
 on:
   push:
     branches:
@@ -7,21 +21,218 @@ on:
   pull_request:
     branches:
       - main
-  merge_group:
-    types:
-      - checks_requested
+  schedule:
+    - cron: "0 6 * * 1"
   workflow_dispatch:
+    inputs:
+      issue:
+        description: "One swift-issue-* folder to run. Empty runs every issue."
+        required: false
+        default: ""
 
 permissions:
-  actions: read
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name != 'schedule' }}
+
+env:
+  SHARED_WORKFLOW: https://raw.githubusercontent.com/swift-institute/.github/main/.github/workflows/swift-ci.yml
 
 jobs:
-  ci:
-    if: ${{ !github.event.repository.private }}
-    name: ci / matrix
-    uses: swift-institute/.github/.github/workflows/swift-ci.yml@main
+  validate:
+    name: Validate package
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: institute-ci
+        uses: swift-institute/.github/.github/actions/institute-ci@50595dd24c7540cfd2de57cf38cafa7da79f7236
+      - name: Validate package
+        shell: bash
+        env:
+          BINARY: ${{ steps.institute-ci.outputs.binary }}
+        run: |
+          "$BINARY" ci -- package validate \
+            --repository "$GITHUB_REPOSITORY" \
+            --root "$GITHUB_WORKSPACE"
+
+  plan:
+    name: Choose issues
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      issues: ${{ steps.choose.outputs.issues }}
+      swift-version: ${{ steps.pins.outputs.swift-version }}
+      xcode-version: ${{ steps.pins.outputs.xcode-version }}
+    steps:
+      - uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Read the fleet's pins
+        id: pins
+        shell: bash
+        run: |
+          set -euo pipefail
+          workflow="$(curl --fail --silent --show-error --location --retry 3 "$SHARED_WORKFLOW")"
+          swift="$(sed -nE 's/^  SWIFT_VERSION: "([^"]+)"$/\1/p' <<< "$workflow")"
+          xcode="$(sed -nE 's/^  XCODE_VERSION: "([^"]+)"$/\1/p' <<< "$workflow")"
+          [ -n "$swift" ] && [ -n "$xcode" ] || { echo "::error::could not read the fleet's pins"; exit 1; }
+          echo "swift-version=$swift" >> "$GITHUB_OUTPUT"
+          echo "xcode-version=$xcode" >> "$GITHUB_OUTPUT"
+      - name: Choose issues
+        id: choose
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          ONE: ${{ inputs.issue }}
+        run: |
+          set -euo pipefail
+          all="$(grep -oE 'path: "swift-issue-[^/"]+/Tests"' Package.swift | sed -E 's/path: "([^/]+).*/\1/' | sort -u)"
+          case "$EVENT" in
+            schedule) chosen="$all" ;;
+            workflow_dispatch) if [ -n "$ONE" ]; then chosen="$ONE"; else chosen="$all"; fi ;;
+            *)
+              from="${BASE:-$BEFORE}"
+              if [ -z "$from" ] || ! git cat-file -e "$from^{commit}" 2>/dev/null; then
+                changed=".github/workflows/ci.yml"
+              else
+                changed="$(git diff --name-only "$from" "$GITHUB_SHA")"
+              fi
+              if grep -qxE 'Package\.swift|\.github/workflows/ci\.yml' <<< "$changed"; then
+                chosen="$all"
+              else
+                chosen="$(comm -12 <(grep -oE '^swift-issue-[^/]+' <<< "$changed" | sort -u || true) <(sort <<< "$all"))"
+              fi
+              ;;
+          esac
+          issues="$(printf '%s\n' "$chosen" | jq -Rsc 'split("\n") | map(select(length > 0))')"
+          echo "issues=$issues" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Issues chosen: $(jq length <<< "$issues") of $(grep -c . <<< "$all")"
+            echo "Folders with no test target aren't run here:"
+            comm -23 <(ls -d swift-issue-*/ | sed 's:/$::' | sort) <(sort <<< "$all") | sed 's/^/- /'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  linux:
+    name: ${{ matrix.issue }} · Linux · release
+    needs: plan
+    if: ${{ needs.plan.outputs.issues != '[]' }}
+    runs-on: ubuntu-latest
+    container: swift:${{ needs.plan.outputs.swift-version }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        issue: ${{ fromJson(needs.plan.outputs.issues) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Test
+        shell: bash
+        env:
+          ISSUE: ${{ matrix.issue }}
+        run: |
+          swift --version
+          swift test -c release --filter "$(tr - _ <<< "$ISSUE")_Tests"
+
+  nightly:
+    name: ${{ matrix.issue }} · Linux · nightly
+    needs: plan
+    if: ${{ github.event_name == 'schedule' && needs.plan.outputs.issues != '[]' }}
+    runs-on: ubuntu-latest
+    container: swiftlang/swift:nightly-main-noble
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        issue: ${{ fromJson(needs.plan.outputs.issues) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Test
+        shell: bash
+        env:
+          ISSUE: ${{ matrix.issue }}
+        run: |
+          swift --version
+          swift test --filter "$(tr - _ <<< "$ISSUE")_Tests"
+
+  macos:
+    name: ${{ matrix.issue }} · macOS
+    needs: plan
+    if: ${{ needs.plan.outputs.issues != '[]' }}
+    runs-on: xcode-27
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      # The organization's macOS runners are shared: leave room for the rest of it.
+      max-parallel: 2
+      matrix:
+        issue: ${{ fromJson(needs.plan.outputs.issues) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: sudo xcode-select -s "/Applications/Xcode_${{ needs.plan.outputs.xcode-version }}.app"
+      - name: Test
+        shell: bash
+        env:
+          ISSUE: ${{ matrix.issue }}
+        run: |
+          swift --version
+          swift test --filter "$(tr - _ <<< "$ISSUE")_Tests"
+
+  windows:
+    name: ${{ matrix.issue }} · Windows
+    needs: plan
+    if: ${{ needs.plan.outputs.issues != '[]' }}
+    runs-on: windows-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        issue: ${{ fromJson(needs.plan.outputs.issues) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: SwiftyLab/setup-swift@38f54a76b70d989321de9dc7c840618c08cf56e9 # v1.14.0
+        with:
+          swift-version: ${{ needs.plan.outputs.swift-version }}
+          # As in the shared workflow: the cached snapshot crashes SwiftPM on Windows.
+          cache-snapshot: false
+      - name: Test
+        shell: bash
+        env:
+          ISSUE: ${{ matrix.issue }}
+        run: |
+          swift --version
+          filter="$(tr - _ <<< "$ISSUE")_Tests"
+          # As in the shared workflow: SwiftPM itself sometimes dies right after
+          # resolution (swift-institute/Issues#225), so these two codes retry once.
+          status=0
+          swift test --filter "$filter" --build-system native --scratch-path C:/b || status=$?
+          if [ "$status" -eq 139 ] || [ "$status" -eq 132 ]; then
+            echo "::warning::swift test itself crashed (exit $status); retrying once."
+            status=0
+            swift test --filter "$filter" --build-system native --scratch-path C:/b || status=$?
+          fi
+          exit "$status"

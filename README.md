@@ -8,5 +8,6 @@ Use this repository when you hit what looks like a bug in the Swift toolchain, S
 - `issue-check` decides the `upstream-ready` and `upstream-filed` labels. Nobody applies them by judgment.
 - A reproducer holds only what the bug needs: no package-internal types, no transitive dependencies, and no settings beyond what triggers it.
 - A reproducer's test wraps the trigger in `withKnownIssue`, so it stays green while the bug fires and turns red when the fix lands. It never uses `.disabled(if:)`, which stays silent when upstream fixes the bug.
-- A test turning red on a newer toolchain means the bug may be fixed. Confirm it, then close the issue and remove the reproducer or keep it as a regression fixture.
+- CI runs each issue's tests by itself on Linux, macOS and Windows. A push runs the issues it changed, and every Monday all of them run, plus Linux nightly.
+- A red leg is evidence, not a broken repository: there is no `ci-ok`, and one issue never blocks another. A leg turning red means the bug stopped firing or changed. Confirm it, then close the issue and remove the reproducer or keep it as a regression fixture.
 - A reproducer's `main.swift` exits with 1 when the bug fires and 0 when it doesn't, because the test runner can mask some code generation bugs.
