@@ -7,15 +7,39 @@ import Testing
     struct SPMUnusedDependencyTraitRequestReproducer {
         /// Runs the standalone reproducer; `true` when SwiftPM fails to resolve its graph.
         static func bugFires() throws -> Bool? {
+            let script = URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()
+                .deletingLastPathComponent()
+                .appendingPathComponent("repro.swift")
+            // Compiled, then run: `swift <file>` runs it in the interpreter, whose JIT
+            // can't load Foundation on Windows.
+            let program = FileManager.default.temporaryDirectory
+                .appendingPathComponent(programName("issue-211-\(ProcessInfo.processInfo.processIdentifier)"))
+            // REASON: best-effort cleanup of a scratch file.
+            // swiftlint:disable:next no_try_optional
+            defer { try? FileManager.default.removeItem(at: program) }
+            let build = try launch(URL(fileURLWithPath: "/usr/bin/env"), ["swiftc", script.path, "-o", program.path])
+            guard build.status == 0 else {
+                Issue.record("the reproducer didn't compile (exit \(build.status)):\n\(build.output.suffix(3000))")
+                return nil
+            }
+            let result = try launch(program, [])
+            // Exit 1 alone is not a verdict: a crash or a failed step can exit 1 too.
+            switch result.status {
+            case 1 where result.output.contains("exhausted attempts to resolve the dependencies graph"): return true
+            case 0: return false
+            default:
+                Issue.record("the reproducer ended without a verdict (exit \(result.status)):\n\(result.output.suffix(3000))")
+                return nil
+            }
+        }
+
+        // REASON: Process.run() throws an untyped Foundation error.
+        // swiftlint:disable:next typed_throws_required
+        static func launch(_ executable: URL, _ arguments: [String]) throws -> (status: Int32, output: String) {
             let process = Process()
-            process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-            process.arguments = [
-                "swift",
-                URL(fileURLWithPath: #filePath)
-                    .deletingLastPathComponent()
-                    .deletingLastPathComponent()
-                    .appendingPathComponent("repro.swift").path,
-            ]
+            process.executableURL = executable
+            process.arguments = arguments
             let pipe = Pipe()
             process.standardOutput = pipe
             process.standardError = pipe
@@ -23,15 +47,7 @@ import Testing
             try process.run()
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             process.waitUntilExit()
-            let output = String(decoding: data, as: UTF8.self)
-            // Exit 1 alone is not a verdict: a script that fails to compile exits 1 too.
-            switch process.terminationStatus {
-            case 1 where output.contains("exhausted attempts to resolve the dependencies graph"): return true
-            case 0: return false
-            default:
-                Issue.record("the reproducer ended without a verdict (exit \(process.terminationStatus)):\n\(output.suffix(3000))")
-                return nil
-            }
+            return (process.terminationStatus, String(decoding: data, as: UTF8.self))
         }
 
         @Test
@@ -69,4 +85,13 @@ import Testing
         #endif
     }
 
+
+    /// A program's file name: swiftc writes exactly the -o path, so on Windows it ends in .exe.
+    func programName(_ base: String) -> String {
+        #if os(Windows)
+            return "\(base).exe"
+        #else
+            return base
+        #endif
+    }
 #endif
