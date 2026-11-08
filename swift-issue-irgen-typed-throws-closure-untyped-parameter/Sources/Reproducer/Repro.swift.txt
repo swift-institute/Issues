@@ -1,0 +1,14 @@
+struct Failure: Error { var code: Int32; var message: String? }
+struct Connection: Sendable {}
+struct Grant: Sendable, Equatable { var id: String }
+func fetch(_ c: Connection) throws(Failure) -> [Grant] { [] }
+
+func observe<V: Sendable>(_ body: @escaping @Sendable (Connection) throws -> V) async throws -> V {
+    try body(Connection())
+}
+
+func run() async throws -> [Grant] {
+    try await observe { (c: Connection) throws(Failure) -> [Grant] in
+        try fetch(c)
+    }
+}

@@ -1,0 +1,4 @@
+func f(_ x: UInt128) async -> UInt128 { x }
+let r = await f(42)
+print(r)
+if r != 42 { fatalError("wrong: \(r)") }

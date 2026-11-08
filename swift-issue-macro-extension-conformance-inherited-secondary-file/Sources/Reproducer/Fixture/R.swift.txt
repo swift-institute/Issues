@@ -1,0 +1,12 @@
+protocol Src {}
+protocol Tbl: Src {}
+struct Sel<From: Src> {}
+
+@attached(extension, conformances: Tbl)
+macro T() = #externalMacro(module: "Plugin", type: "T")
+
+@T struct Record {}
+
+extension Record {
+    static func outbox() -> Sel<Self> { fatalError() }
+}

@@ -1,0 +1,2 @@
+func f<each T>(_ t: (repeat each T)) {}
+func g<each T>(_ t: (repeat each T)) { f(t) }

@@ -1,0 +1,4 @@
+struct L { var a = (0, 0, 0, 0, 0) }
+func f(_ l: L) {}
+let g: @convention(thin) (L) -> () = f
+g(L())

@@ -1,0 +1,43 @@
+import Dispatch
+
+// An actor whose executor is a dispatch queue, so code can ask whether it is running on
+// that actor. A custom executor rather than DispatchSerialQueue, which Linux lacks.
+let key = DispatchSpecificKey<Bool>()
+let queue = DispatchQueue(label: "A")
+final class QueueExecutor: SerialExecutor {
+    func enqueue(_ job: consuming ExecutorJob) {
+        let job = UnownedJob(job)
+        queue.async { job.runSynchronously(on: self.asUnownedSerialExecutor()) }
+    }
+}
+let executor = QueueExecutor()
+actor A {
+    nonisolated var unownedExecutor: UnownedSerialExecutor { executor.asUnownedSerialExecutor() }
+}
+func onA() -> Bool { DispatchQueue.getSpecific(key: key) == true }
+
+// The isolated parameter is checked, and the closure captures the parameter itself.
+func checked(isolation: isolated (any Actor)?) async {
+    guard isolation != nil else { return }
+    await withTaskCancellationHandler(
+        operation: { _ = isolation; print("checked:   on actor in operation:", onA()) },
+        onCancel: {},
+        isolation: isolation
+    )
+}
+
+// The isolated parameter is bound with `guard let`; the closure captures the bound local.
+func bound(isolation: isolated (any Actor)?) async {
+    guard let isolation else { return }
+    print("guard let: on actor before call:   ", onA())
+    await withTaskCancellationHandler(
+        operation: { _ = isolation; print("guard let: on actor in operation:", onA()) },
+        onCancel: {},
+        isolation: isolation
+    )
+}
+
+queue.setSpecific(key: key, value: true)
+let a = A()
+await checked(isolation: a)
+await bound(isolation: a)

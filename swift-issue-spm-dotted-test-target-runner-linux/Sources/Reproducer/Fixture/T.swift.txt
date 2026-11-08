@@ -1,0 +1,3 @@
+import Testing
+import A
+@Test func t() { #expect(a == 1) }

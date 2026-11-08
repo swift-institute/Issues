@@ -1,0 +1,5 @@
+func g() throws -> [UInt8] { [] }
+
+func h() throws -> Int {
+    try g().span.count
+}

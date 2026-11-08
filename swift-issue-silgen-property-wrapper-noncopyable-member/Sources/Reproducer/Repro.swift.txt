@@ -1,0 +1,19 @@
+@propertyWrapper
+public struct Wrapper<Value: ~Copyable>: ~Copyable {
+    private var _value: Value
+    public init(wrappedValue: consuming Value) { self._value = wrappedValue }
+    public var wrappedValue: Value {
+        _read { yield _value }
+        _modify { yield &_value }
+    }
+}
+
+public struct Box<Value: ~Copyable>: ~Copyable {
+    @Wrapper public var value: Value
+    public init(_ value: consuming Value) { self.value = value }
+}
+
+func crash() {
+    let box = Box<Int>(42)
+    _ = box.value
+}

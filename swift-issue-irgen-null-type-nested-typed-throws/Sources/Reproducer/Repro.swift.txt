@@ -1,0 +1,35 @@
+public struct Event { }
+
+public struct Descriptor: ~Copyable {
+}
+
+public enum Failure: Swift.Error { case cancelled }
+
+struct Entry: ~Copyable {
+    let descriptor: Descriptor?
+    let continuation: CheckedContinuation<Event?, Never>
+}
+
+public actor Submitter {
+
+    func send(_ entry: consuming Entry) {}
+
+    public func submit<R>(
+        descriptor: consuming Descriptor? ,
+        mapEvent: (Event) throws(Failure) -> R
+    ) async throws(Failure) -> R {
+        let event: Event? = await withTaskCancellationHandler {
+            let result: Event? = await withCheckedContinuation {
+                (c: CheckedContinuation<Event?, Never>) in
+                let entry = Entry(descriptor: consume descriptor, continuation: c)
+                descriptor = nil
+                self.send(consume entry)
+            }
+            return result
+        } onCancel: {
+        }
+
+        guard let event else { throw .cancelled }
+        return try mapEvent(event)
+    }
+}

@@ -1,0 +1,5 @@
+func typedThrowsAutoclosure<E: Error, T>(_ value: @autoclosure () throws(E) -> T) throws(E) -> T { try value() }
+func triggerBug() {
+    let r: Bool = typedThrowsAutoclosure(true)
+    _ = r
+}

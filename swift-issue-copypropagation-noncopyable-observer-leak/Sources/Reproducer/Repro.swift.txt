@@ -1,0 +1,147 @@
+import Synchronization
+
+struct UErr: Error { var witness: String; var operation: String; var line: Int }
+
+struct NoncopyableHandle: ~Copyable {
+    let fd: Int32
+}
+
+struct NoncopyableDriverAPI{
+    let create: () throws(UErr) -> NoncopyableHandle
+    let register: (borrowing NoncopyableHandle, Int32) throws(UErr) -> Int
+    let poll: (borrowing NoncopyableHandle, inout [Int32]) throws(UErr) -> Int
+    let close: (consuming NoncopyableHandle) -> Void
+
+    public enum Calls{
+        case create
+        case register(Int32)
+        case poll
+        case close
+    }
+
+    public enum Result: ~Copyable {
+        case create(Swift.Result<NoncopyableHandle, UErr>)
+        case register(Swift.Result<Int, UErr>)
+        case poll(Swift.Result<Int, UErr>)
+        case close(Swift.Result<Void, Never>)
+    }
+
+    public struct Outcome: ~Copyable {let action: Calls
+        public let result: Result
+        public init(action: Calls, result: consuming Result) {
+            self.action = action
+            self.result = result
+        }
+        consuming func __consumeResult() -> Result {
+            result
+        }
+    }
+
+    public struct Observe{let witness: NoncopyableDriverAPI
+        @usableFromInline init(_ witness: NoncopyableDriverAPI) { self.witness = witness }
+        public func after(
+            _ observer: @escaping (borrowing Outcome) -> Swift.Void
+        ) -> NoncopyableDriverAPI {
+            NoncopyableDriverAPI(
+                create: { [witness] () throws(UErr) in
+                    let action: Calls = .create
+                    do throws(UErr) {
+                        let result = try witness.create()
+                        let __outcome = Outcome(action: action, result: Result.create(Swift.Result<NoncopyableHandle, UErr>.success(result)))
+                        observer(__outcome)
+                        let __result = __outcome.__consumeResult()
+                        switch consume __result {
+                        case .create(.success(let __value)):
+                            return __value
+                        default:
+                            fatalError("unreachable")
+                        }
+                    } catch {
+                        let __outcome = Outcome(action: action, result: Result.create(Swift.Result<NoncopyableHandle, UErr>.failure(error)))
+                        observer(__outcome)
+                        throw error
+                    }
+                },
+                register: { [witness] (p0: borrowing NoncopyableHandle, p1) throws(UErr) in
+                    let action: Calls = .register(p1)
+                    do throws(UErr) {
+                        let result = try witness.register(p0, p1)
+                        let __outcome = Outcome(action: action, result: Result.register(Swift.Result<Int, UErr>.success(result)))
+                        observer(__outcome)
+                        let __result = __outcome.__consumeResult()
+                        switch consume __result {
+                        case .register(.success(let __value)):
+                            return __value
+                        default:
+                            fatalError("unreachable")
+                        }
+                    } catch {
+                        let __outcome = Outcome(action: action, result: Result.register(Swift.Result<Int, UErr>.failure(error)))
+                        observer(__outcome)
+                        throw error
+                    }
+                },
+                poll: { [witness] (p0: borrowing NoncopyableHandle, p1: inout [Int32]) throws(UErr) in
+                    let action: Calls = .poll
+                    do throws(UErr) {
+                        let result = try witness.poll(p0, &p1)
+                        let __outcome = Outcome(action: action, result: Result.poll(Swift.Result<Int, UErr>.success(result)))
+                        observer(__outcome)
+                        let __result = __outcome.__consumeResult()
+                        switch consume __result {
+                        case .poll(.success(let __value)):
+                            return __value
+                        default:
+                            fatalError("unreachable")
+                        }
+                    } catch {
+                        let __outcome = Outcome(action: action, result: Result.poll(Swift.Result<Int, UErr>.failure(error)))
+                        observer(__outcome)
+                        throw error
+                    }
+                },
+                close: { [witness] (p0: consuming NoncopyableHandle) in
+                    let action: Calls = .close
+                    witness.close(consume p0)
+                    let __outcome = Outcome(action: action, result: Result.close(Swift.Result<Void, Never>.success(())))
+                    observer(__outcome)
+                }
+            )
+        }
+    }
+
+    public var observe: Observe { Observe(self) }
+}
+
+func check(_ b: Bool) { if !b { fatalError() } }
+
+func observeAfterWorksWithBorrowing() throws {
+    let log = Synchronization.Mutex<[String]>([])
+
+    let base = NoncopyableDriverAPI(
+        create: { NoncopyableHandle(fd: 55) },
+        register: { _, descriptor in Int(descriptor) },
+        poll: { handle, buffer in
+            buffer.append(handle.fd)
+            return 1
+        },
+        close: { handle in
+            log.withLock { $0.append("closed fd=\(handle.fd)") }
+        }
+    )
+
+    let observed = base.observe.after { outcome in
+        log.withLock { $0.append("after:\(outcome.action)") }
+    }
+
+    let h = try observed.create()
+    check(h.fd == 55)
+    let regResult = try observed.register(h, 42)
+    check(regResult == 42)
+    var buffer: [Int32] = []
+    _ = try observed.poll(h, &buffer)
+    observed.close(consume h)
+
+    let entries = log.withLock { $0 }
+    check(entries.contains("after:create"))
+}

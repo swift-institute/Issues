@@ -1,0 +1,1 @@
+func probe() { _ = Record.outbox() }

@@ -1,0 +1,2 @@
+struct F<let n: Int> {}
+func f() { let x = F<4_294_967_296>(); _ = x }

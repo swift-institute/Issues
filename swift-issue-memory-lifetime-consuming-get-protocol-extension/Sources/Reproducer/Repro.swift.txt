@@ -1,0 +1,8 @@
+protocol P: ~Copyable {}
+extension P where Self: ~Copyable {
+  var v: Int { consuming get { 0 } }
+}
+struct C: P, ~Copyable { var x: Int }
+func f() {
+  _ = C(x: 1).v
+}

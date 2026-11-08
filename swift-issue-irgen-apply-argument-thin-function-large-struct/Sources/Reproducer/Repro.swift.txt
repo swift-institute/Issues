@@ -1,0 +1,2 @@
+struct L { var a = (0, 0, 0, 0, 0) }
+unsafeBitCast(0, to: (@convention(thin) (L) -> ()).self)(L())

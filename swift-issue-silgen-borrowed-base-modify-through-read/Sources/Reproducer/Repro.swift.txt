@@ -1,0 +1,34 @@
+public struct Entry {
+    public var flags: Int = 0
+    public mutating func nop(data: Int) { flags = data }
+}
+
+public struct Slot: ~Copyable, ~Escapable {
+    let pointer: UnsafeMutablePointer<Entry>
+
+    @_lifetime(borrow pointer)
+    init(_ pointer: UnsafeMutablePointer<Entry>) { self.pointer = pointer }
+
+    public var entry: Entry {
+        _read { yield pointer.pointee }
+        nonmutating _modify { yield &pointer.pointee }
+    }
+}
+
+public struct Ring: ~Copyable {
+    var sqes: UnsafeMutablePointer<Entry>
+    public init(sqes: UnsafeMutablePointer<Entry>) { self.sqes = sqes }
+
+    public var next: Slot {
+        mutating _read { yield Slot(sqes) }
+    }
+}
+
+final class RingState {
+    var ring: Ring
+    init(ring: consuming Ring) { self.ring = ring }
+
+    func enqueue() {
+        ring.next.entry.nop(data: 1)
+    }
+}

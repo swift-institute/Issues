@@ -1,0 +1,3 @@
+struct S: ~Copyable {}
+protocol P { var s: S { get } }
+func f(_ p: some P) { let s = p.s }

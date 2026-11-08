@@ -1,0 +1,18 @@
+public struct A<E>: ~Copyable {
+  @usableFromInline var p: UnsafePointer<E>
+  public var span: Span<E> {
+    @inlinable @_lifetime(borrow self) get { unsafe _overrideLifetime(Span(_unsafeStart: p, count: 1), borrowing: self) }
+  }
+}
+
+public enum Small<E>: ~Copyable {
+  case a(A<E>)
+
+  public var span: Span<E> {
+    @inlinable @_lifetime(borrow self) get {
+      switch self {
+      case .a(let x): return x.span
+      }
+    }
+  }
+}

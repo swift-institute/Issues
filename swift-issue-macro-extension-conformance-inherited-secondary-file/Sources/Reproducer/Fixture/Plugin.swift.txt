@@ -1,0 +1,19 @@
+import SwiftCompilerPlugin
+import SwiftSyntax
+import SwiftSyntaxMacros
+
+public struct T: ExtensionMacro {
+    public static func expansion(
+        of node: AttributeSyntax,
+        attachedTo declaration: some DeclGroupSyntax,
+        providingExtensionsOf type: some TypeSyntaxProtocol,
+        conformingTo protocols: [TypeSyntax],
+        in context: some MacroExpansionContext
+    ) throws -> [ExtensionDeclSyntax] {
+        [try ExtensionDeclSyntax("extension \(type.trimmed): Tbl {}")]
+    }
+}
+
+@main struct P: CompilerPlugin {
+    let providingMacros: [any Macro.Type] = [T.self]
+}
