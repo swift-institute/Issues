@@ -34,7 +34,7 @@ struct Reproducer {
         #endif
     }
 
-    static let markers: [String] = ["addKeyPathApplicationRootConstraint"]
+    static let markers: [String] = ["addKeyPathApplicationRootConstraint", "path[1].getKind() == ConstraintLocator::KeyPathDynamicMember"]
 
     #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
         static func bugFires() -> Bool? {

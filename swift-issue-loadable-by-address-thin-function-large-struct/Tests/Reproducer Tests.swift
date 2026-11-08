@@ -12,7 +12,9 @@ import Testing
 @Suite
 struct Reproducer {
 
-    static let markers: [String] = ["SILModuleTransform \"LoadableByAddress\""]
+    // On Linux x86_64 the pass dies on std::bad_optional_access, and in CI the output can
+    // end at the terminate line, before the pretty stack names the pass.
+    static let markers: [String] = ["SILModuleTransform \"LoadableByAddress\"", "terminate called after throwing an instance of 'std::bad_optional_access'"]
 
     #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
         static func bugFires() -> Bool? {

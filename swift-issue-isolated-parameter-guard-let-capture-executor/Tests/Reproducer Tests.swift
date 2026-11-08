@@ -14,6 +14,13 @@ struct Reproducer {
 
     static let markers: [String] = ["guard let: on actor in operation: false"]
 
+    /// swiftc writes exactly the -o path, so on Windows the program must be named .exe.
+    #if os(Windows)
+        static let programName = "repro.exe"
+    #else
+        static let programName = "repro"
+    #endif
+
     #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
         static func bugFires() -> Bool? {
             let source = URL(fileURLWithPath: #filePath)
@@ -35,15 +42,15 @@ struct Reproducer {
                 Issue.record("no swiftc to run")
                 return nil
             }
-            let result = run(launcher, ["-swift-version", "6", "repro.swift", "-o", "repro"], in: work, seconds: 600)
+            let result = run(launcher, ["-swift-version", "6", "repro.swift", "-o", Self.programName], in: work, seconds: 600)
             guard !result.timedOut, result.status == 0 else {
                 Issue.record("the reproduction didn't compile (exit \(result.status)):\n\(result.output.suffix(3000))")
                 return nil
             }
             #if os(Windows)
-                let program = (work.appendingPathComponent("repro.exe"), [String]())
+                let program = (work.appendingPathComponent(Self.programName), [String]())
             #else
-                let program = (work.appendingPathComponent("repro"), [String]())
+                let program = (work.appendingPathComponent(Self.programName), [String]())
             #endif
             let execution = run(program, [], in: work, seconds: 120)
             if markers.contains(where: execution.output.contains) { return true }
