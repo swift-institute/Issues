@@ -21,7 +21,7 @@
 # a signature check; the hosted runner images are unpinnable and are
 # recorded per run.
 #
-# Governance: like issue-105-toolchain-recheck.yml, a bespoke workflow in a
+# Governance: a bespoke workflow in a
 # control-plane repository, outside the generated-caller topology; its typed
 # whitelist entry belongs in swift-institute/.github repository-policy.
 

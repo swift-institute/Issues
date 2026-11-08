@@ -1,4 +1,4 @@
-# The toolchain matrix of a "Toolchain bug" record, run on CI (UPSTREAM-PROCEDURE.md, step 4).
+# The toolchain matrix of a "Toolchain bug" record, run on CI (UPSTREAM-PROCEDURE.md, section 2).
 #
 # Runs the record's minimal reproduction on each named toolchain. A plan job
 # on Linux (`issue-check --matrix … --print-setup`) sends each name to its

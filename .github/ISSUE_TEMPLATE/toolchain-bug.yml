@@ -17,7 +17,7 @@ body:
     id: owner
     attributes:
       label: Owner
-      description: Whose bug it is. Decide this first (procedure, step 1).
+      description: Whose bug it is. Decide this first (procedure, section 1).
       options:
         - swiftlang/swift (compiler, standard library, runtime, SourceKit)
         - swiftlang/swift-package-manager
@@ -112,7 +112,7 @@ body:
       label: Upstream draft
       description: >
         The exact text to file, using the owner's own template headings in
-        their order (procedure, step 6). It contains the minimal reproduction
+        their order (the headings issue-check names). It contains the minimal reproduction
         verbatim and no machine-local paths.
   - type: checkboxes
     id: readiness
