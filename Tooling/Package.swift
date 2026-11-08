@@ -18,7 +18,7 @@ import PackageDescription
 //                   labels.
 //
 // This package is separate from the root Issues package so the reproducer
-// convention there (exactly two targets per issue, no dependencies) is kept.
+// folders there keep no dependencies.
 
 let package = Package(
     name: "Tooling",

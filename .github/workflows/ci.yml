@@ -4,7 +4,7 @@ name: CI
 # (Coen, 4 Nov 2026): its job is to run the issues. Don't overwrite it in a
 # fleet-wide ci.yml rollout.
 #
-# Each swift-issue-*/ folder with a test target runs by itself on each platform,
+# Each swift-issue-*/ folder runs by itself on each platform,
 # so one issue's crash or red leg can't hide or cancel another's. A test wraps
 # its bug in withKnownIssue, so a leg going red means the bug stopped firing or
 # changed. The Monday sweep and a manual run add Linux nightly, which is what
@@ -63,6 +63,27 @@ jobs:
             --repository "$GITHUB_REPOSITORY" \
             --root "$GITHUB_WORKSPACE"
 
+  layout:
+    name: Folder layout
+    runs-on: ubuntu-latest
+    container: swift:6.4.0-noble
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install gh
+        run: apt-get update -qq && apt-get install -y -qq gh > /dev/null
+      - name: Build issue-check
+        run: swift build --package-path Tooling --product issue-check
+      - name: Check every folder's layout
+        run: Tooling/.build/debug/issue-check --layout --repo "$GITHUB_REPOSITORY"
+
   plan:
     name: Choose issues
     runs-on: ubuntu-latest
@@ -100,7 +121,7 @@ jobs:
           ONE: ${{ inputs.issue }}
         run: |
           set -euo pipefail
-          all="$(grep -oE 'path: "swift-issue-[^/"]+/Tests"' Package.swift | sed -E 's/path: "([^/]+).*/\1/' | sort -u)"
+          all="$(ls -d swift-issue-*/ | sed 's:/$::' | sort)"
           case "$EVENT" in
             schedule) chosen="$all" ;;
             workflow_dispatch) if [ -n "$ONE" ]; then chosen="$ONE"; else chosen="$all"; fi ;;
@@ -122,8 +143,6 @@ jobs:
           echo "issues=$issues" >> "$GITHUB_OUTPUT"
           {
             echo "## Issues chosen: $(jq length <<< "$issues") of $(grep -c . <<< "$all")"
-            echo "Folders with no test target aren't run here:"
-            comm -23 <(ls -d swift-issue-*/ | sed 's:/$::' | sort) <(sort <<< "$all") | sed 's/^/- /'
           } >> "$GITHUB_STEP_SUMMARY"
 
   linux:
@@ -172,7 +191,8 @@ jobs:
           ISSUE: ${{ matrix.issue }}
         run: |
           swift --version
-          swift test --filter "$(tr - _ <<< "$ISSUE")_Tests"
+          # Same configuration as the release leg, so a red nightly leg differs from it only in the toolchain.
+          swift test -c release --filter "$(tr - _ <<< "$ISSUE")_Tests"
 
   macos:
     name: ${{ matrix.issue }} · macOS

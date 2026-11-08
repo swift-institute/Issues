@@ -85,6 +85,9 @@ public enum Readiness: String, CaseIterable, Sendable {
         require(release != nil, .matrix, "no row for the current release toolchain (e.g. \(releaseExample))")
         require(branch != nil, .matrix, "no row for the latest release-branch snapshot (e.g. `\(prefix)6.4.x-snapshot-2026-10-20`)")
         require(main != nil, .matrix, "no row for the latest main snapshot (e.g. `\(prefix)main-snapshot-2026-10-17`)")
+        if release == nil || branch == nil || main == nil {
+            findings.append(Finding(field: .matrix, message: "take the table from CI, not a local run: `gh workflow run toolchain-matrix.yml -f issue=<N> -f toolchains=<release>,<branch snapshot>,<main snapshot>`"))
+        }
         if let main {
             if let snapshotDate = Readiness.snapshotDate(main.toolchain) {
                 let age = date.timeIntervalSince(snapshotDate) / 86_400

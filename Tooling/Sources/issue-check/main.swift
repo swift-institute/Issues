@@ -3,6 +3,7 @@ import Toolchain_Report
 
 let usage = """
     USAGE: issue-check (<issue-number> | --body-file <path>) [options]
+           issue-check --layout [<repository-root>] [--offline]
 
     Checks a "Toolchain bug" record against what its readiness label demands
     (see UPSTREAM-PROCEDURE.md). Exits 1 when anything is missing.
@@ -27,6 +28,11 @@ let usage = """
                             for the Windows toolchain on PATH), print the
                             Toolchain matrix table and stop
       --post                With --matrix: also post the table on the issue
+      --layout [<root>]     Check every swift-issue-*/ folder under <root> (default:
+                            the current directory): an ISSUE file naming an open
+                            issue, a Tests/ test using withKnownIssue, and no notes.
+                            Exits 1 when any folder departs from it.
+      --offline             With --layout: don't ask GitHub which issues are open
     """
 
 func fail(_ message: String) -> Never {
@@ -51,6 +57,8 @@ var printsSetup = false
 var matrixToolchains: [String] = []
 var posts = false
 var date = Date()
+var layoutRoot: String?
+var offline = false
 
 var options = CommandLine.arguments.dropFirst().makeIterator()
 while let argument = options.next() {
@@ -68,6 +76,9 @@ while let argument = options.next() {
     case "--print-setup": printsSetup = true
     case "--matrix": matrixToolchains = value().split(separator: ",").map(String.init)
     case "--post": posts = true
+    case "--layout": layoutRoot = FileManager.default.currentDirectoryPath
+    case "--offline": offline = true
+    case _ where layoutRoot != nil && !argument.hasPrefix("-"): layoutRoot = argument
     case "--date":
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
@@ -79,6 +90,24 @@ while let argument = options.next() {
     case _ where number == nil && argument.allSatisfy(\.isNumber): number = argument
     default: fail("Unknown option \(argument).\n\n" + usage)
     }
+}
+
+if let layoutRoot {
+    let root = URL(fileURLWithPath: layoutRoot)
+    var open: Set<Int>?
+    if !offline {
+        open = Set(try gh(["issue", "list", "--repo", repository, "--state", "open", "--limit", "1000", "--json", "number", "--jq", ".[].number"])
+            .split(separator: "\n").compactMap { Int($0) })
+    }
+    let findings = Layout.findings(in: root, openIssues: open)
+    let count = Layout.folders(in: root).count
+    if findings.isEmpty {
+        print("PASS \(count) folders have the layout")
+    } else {
+        print("FAIL \(Set(findings.map(\.folder)).count) of \(count) folders depart from the layout:")
+        for finding in findings { print("  - \(finding)") }
+    }
+    exit(findings.isEmpty ? 0 : 1)
 }
 
 if printsSetup, !matrixToolchains.isEmpty { print(Platform.setup(matrixToolchains)); exit(0) }
