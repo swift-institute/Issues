@@ -42,14 +42,12 @@ import Testing
 //
 // FLIP SEMANTICS
 // --------------
-// `when:` is gated on the instrument being PRESENT AND REPORTING BOTH sites.
-// This repository's CI installs SwiftLint in the lint job only, so under
-// `swift test` the guard is false, known-issue matching is inactive, and the
-// body asserts nothing — the honest outcome when the instrument is absent. Where
-// SwiftLint IS on PATH the block is active: green while the correction breaks
-// the build, RED the moment it stops doing so, and that flip is the
-// fix-detection signal.
+// macOS only: the macOS CI leg installs the pinned portable SwiftLint 0.65.1 and
+// checks its digest. A missing tool or a failed control records an issue (red),
+// never a silent pass. Otherwise green while the bug fires, RED the moment it
+// stops, and that flip is the fix-detection signal.
 
+#if os(macOS)
 @Suite struct `SwiftLint Redundant Nil Coalescing Double Optional` {
     @Suite struct Unit {}
 }
@@ -59,8 +57,16 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
     /// Whether the corrected fixture still compiles, plus whether lint calls the
     /// corrected fixture clean. `nil` when the instrument is unreachable, the
     /// positive control fails, or the fixture did not compile to begin with.
+    /// Records why there is no measurement, at the failing precondition's line, and
+    /// returns nil. The macOS leg installs the pinned SwiftLint, so a missing tool or
+    /// a failed control is a red test, never a silent pass.
+    static func unmeasured<T>(sourceLocation: SourceLocation = #_sourceLocation) -> T? {
+        Issue.record("no measurement: SwiftLint is missing from PATH or a control failed here", sourceLocation: sourceLocation)
+        return nil
+    }
+
     static func measure() -> (compilesAfterFix: Bool, lintCleanAfterFix: Bool)? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if os(macOS)
             let sources = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()
                 .deletingLastPathComponent()
@@ -81,7 +87,7 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
                     at: work.appendingPathComponent("Sources"),
                     withIntermediateDirectories: true
                 )) != nil
-            else { return nil }
+            else { return Self.unmeasured() }
             defer { try? FileManager.default.removeItem(at: work) }
 
             let staged = work.appendingPathComponent("Sources/Fixture.swift")
@@ -94,7 +100,7 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
                     at: sources.appendingPathComponent("Config.yml.txt"),
                     to: work.appendingPathComponent(".swiftlint.yml")
                 )) != nil
-            else { return nil }
+            else { return Self.unmeasured() }
 
             func run(_ arguments: [String]) -> (status: Int32, output: String)? {
                 let process = Process()
@@ -117,7 +123,7 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
             // compiled".
             guard let before = run(["swiftc", "-typecheck", "-swift-version", "6", staged.path]),
                 before.status == 0
-            else { return nil }
+            else { return Self.unmeasured() }
 
             // POSITIVE CONTROL: both sites must be reported — the hazard (double
             // optional) and the genuinely-redundant single optional. A run reporting
@@ -126,17 +132,17 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
                 let linted = run([
                     "swiftlint", "lint", "--strict", "--no-cache", "--reporter", "json",
                 ])
-            else { return nil }
+            else { return Self.unmeasured() }
             guard linted.output.components(separatedBy: "redundant_nil_coalescing").count - 1 == 2
-            else { return nil }
+            else { return Self.unmeasured() }
 
             guard let fixed = run(["swiftlint", "--fix", "--no-cache"]), fixed.status == 0 else {
-                return nil
+                return Self.unmeasured()
             }
             guard let after = run(["swiftc", "-typecheck", "-swift-version", "6", staged.path])
-            else { return nil }
+            else { return Self.unmeasured() }
             guard let recheck = run(["swiftlint", "lint", "--strict", "--no-cache"]) else {
-                return nil
+                return Self.unmeasured()
             }
 
             return (after.status == 0, recheck.status == 0)
@@ -146,11 +152,10 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
     }
 
     @Test func `the redundant_nil_coalescing correction turns compiling code into a compile error`() {
-        let measured = Self.measure()
+        guard let measured = Self.measure() else { return }
         withKnownIssue(
             "swiftlint --fix deletes the `?? nil` that flattens a double optional"
         ) {
-            guard let measured else { return }
             #expect(
                 measured.compilesAfterFix,
                 """
@@ -158,8 +163,7 @@ extension `SwiftLint Redundant Nil Coalescing Double Optional`.Unit {
                 lint reports the broken fixture clean: \(measured.lintCleanAfterFix).
                 """
             )
-        } when: {
-            measured != nil
         }
     }
 }
+#endif

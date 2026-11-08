@@ -30,14 +30,12 @@ import Testing
 //
 // FLIP SEMANTICS
 // --------------
-// `when:` is gated on the instrument being PRESENT AND REPORTING. This
-// repository's CI installs SwiftLint in the lint job only, so under `swift test`
-// the guard is false, known-issue matching is inactive, and the body asserts
-// nothing — the honest outcome when the instrument is absent. Where SwiftLint IS
-// on PATH the block is active: green while the divergence fires, RED the moment
-// correction count equals report count, and that flip is the fix-detection
-// signal.
+// macOS only: the macOS CI leg installs the pinned portable SwiftLint 0.65.1 and
+// checks its digest. A missing tool or a failed control records an issue (red),
+// never a silent pass. Otherwise green while the bug fires, RED the moment it
+// stops, and that flip is the fix-detection signal.
 
+#if os(macOS)
 @Suite struct `SwiftLint Synthesized Initializer Fix Beyond Lint` {
     @Suite struct Unit {}
 }
@@ -46,8 +44,16 @@ extension `SwiftLint Synthesized Initializer Fix Beyond Lint`.Unit {
 
     /// Sites reported by `lint --strict`, and sites actually mutated by `--fix`.
     /// `nil` when the instrument is unreachable or its positive control fails.
+    /// Records why there is no measurement, at the failing precondition's line, and
+    /// returns nil. The macOS leg installs the pinned SwiftLint, so a missing tool or
+    /// a failed control is a red test, never a silent pass.
+    static func unmeasured<T>(sourceLocation: SourceLocation = #_sourceLocation) -> T? {
+        Issue.record("no measurement: SwiftLint is missing from PATH or a control failed here", sourceLocation: sourceLocation)
+        return nil
+    }
+
     static func measure() -> (reported: Int, corrected: Int)? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if os(macOS)
             let sources = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()
                 .deletingLastPathComponent()
@@ -68,7 +74,7 @@ extension `SwiftLint Synthesized Initializer Fix Beyond Lint`.Unit {
                     at: work.appendingPathComponent("Sources"),
                     withIntermediateDirectories: true
                 )) != nil
-            else { return nil }
+            else { return Self.unmeasured() }
             defer { try? FileManager.default.removeItem(at: work) }
 
             let staged = work.appendingPathComponent("Sources/Fixture.swift")
@@ -81,7 +87,7 @@ extension `SwiftLint Synthesized Initializer Fix Beyond Lint`.Unit {
                     at: sources.appendingPathComponent("Config.yml.txt"),
                     to: work.appendingPathComponent(".swiftlint.yml")
                 )) != nil
-            else { return nil }
+            else { return Self.unmeasured() }
 
             func run(_ arguments: [String]) -> (status: Int32, output: String)? {
                 let process = Process()
@@ -103,17 +109,17 @@ extension `SwiftLint Synthesized Initializer Fix Beyond Lint`.Unit {
                 let linted = run([
                     "swiftlint", "lint", "--strict", "--no-cache", "--reporter", "json",
                 ])
-            else { return nil }
+            else { return Self.unmeasured() }
             let reported =
                 linted.output.components(separatedBy: "unneeded_synthesized_initializer").count - 1
             // POSITIVE CONTROL: an instrument reporting nothing is broken — rule
             // disabled, configuration not found, fixture not linted — not fixed.
-            guard reported > 0 else { return nil }
+            guard reported > 0 else { return Self.unmeasured() }
 
             guard let fixed = run(["swiftlint", "--fix", "--no-cache"]), fixed.status == 0 else {
-                return nil
+                return Self.unmeasured()
             }
-            guard let mutated = try? String(contentsOf: staged, encoding: .utf8) else { return nil }
+            guard let mutated = try? String(contentsOf: staged, encoding: .utf8) else { return Self.unmeasured() }
             let surviving = mutated.components(separatedBy: "internal init(value: Int)").count - 1
             return (reported, 6 - surviving)
         #else
@@ -122,11 +128,10 @@ extension `SwiftLint Synthesized Initializer Fix Beyond Lint`.Unit {
     }
 
     @Test func `--fix mutates strictly more sites than lint --strict reports`() {
-        let measured = Self.measure()
+        guard let measured = Self.measure() else { return }
         withKnownIssue(
             "swiftlint --fix corrects enum-nested and extension-declared types that lint never reports"
         ) {
-            guard let measured else { return }
             #expect(
                 measured.corrected == measured.reported,
                 """
@@ -135,8 +140,7 @@ extension `SwiftLint Synthesized Initializer Fix Beyond Lint`.Unit {
                 mutation(s) were applied to code that was never reported as violating.
                 """
             )
-        } when: {
-            measured != nil
         }
     }
 }
+#endif

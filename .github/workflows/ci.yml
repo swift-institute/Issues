@@ -211,6 +211,17 @@ jobs:
         with:
           persist-credentials: false
       - run: sudo xcode-select -s "/Applications/Xcode_${{ needs.plan.outputs.xcode-version }}.app"
+      # The SwiftLint records measure SwiftLint itself: the pinned portable release
+      # the Institute uses (institute's Source Policy), checked against its digest.
+      - name: Install SwiftLint 0.65.1
+        if: ${{ startsWith(matrix.issue, 'swift-issue-swiftlint-') }}
+        shell: bash
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/swiftlint.zip" https://github.com/realm/SwiftLint/releases/download/0.65.1/portable_swiftlint.zip
+          echo "c1e429b0599cf1b516f369a2d9ec04eaf0e436f3c12b637df8851fa52ff694d0  $RUNNER_TEMP/swiftlint.zip" | shasum -a 256 -c
+          unzip -q "$RUNNER_TEMP/swiftlint.zip" swiftlint -d "$RUNNER_TEMP/swiftlint"
+          echo "52112ece2dfa99c2442a1367f9a365d43784714cf224c3675bf8bc2f18ebd7c8  $RUNNER_TEMP/swiftlint/swiftlint" | shasum -a 256 -c
+          echo "$RUNNER_TEMP/swiftlint" >> "$GITHUB_PATH"
       - name: Test
         shell: bash
         env:
@@ -247,7 +258,7 @@ jobs:
           swift --version
           filter="$(tr - _ <<< "$ISSUE")_Tests"
           # As in the shared workflow: SwiftPM itself sometimes dies right after
-          # resolution (swift-institute/Issues#225), so these two codes retry once.
+          # resolution (swift-institute/.github#658), so these two codes retry once.
           status=0
           swift test --filter "$filter" --build-system native --scratch-path C:/b || status=$?
           if [ "$status" -eq 139 ] || [ "$status" -eq 132 ]; then
