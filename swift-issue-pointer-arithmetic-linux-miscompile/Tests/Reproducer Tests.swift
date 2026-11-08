@@ -63,7 +63,18 @@ struct PointerArithmeticReproducer {
         withKnownIssue(
             "swiftlang/swift#77558 — release-mode pointer arithmetic miscompile",
             { #expect(loaded == 20) },
-            when: { isRelease() }
+            when: { isRelease() && Self.beforeFix }
         )
+    }
+
+    /// Clean on main-snapshot-2026-11-01; still fires on 6.4.1 and on the 6.4.x
+    /// branch, although swiftlang/swift#89048 (and its 6.4 cherry-pick #89067)
+    /// closed #77558 in May. From 6.5 on, a wrong load is a regression and fails.
+    static var beforeFix: Bool {
+        #if compiler(>=6.5)
+            return false
+        #else
+            return true
+        #endif
     }
 }
