@@ -9,7 +9,7 @@
 // plugin that speaks the compiler's plugin protocol directly (no swift-syntax). Built
 // without the flag it is the client, which aborts an assertions-enabled `swift-frontend`.
 // So it cannot be a compiled target: this executable builds the plugin and type-checks
-// the client OUT OF PROCESS ([ISSUE-029]). Release toolchains do not run the ASTScope
+// the client OUT OF PROCESS. Release toolchains do not run the ASTScope
 // verifier and accept the client; on them the probe is inconclusive.
 //
 // Exit code:

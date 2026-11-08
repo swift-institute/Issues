@@ -8,7 +8,7 @@ import Testing
 // of a protocol named through a typealias of its parent (`any A.P`, `typealias A = E`)
 // trips `isActuallyCanonicalOrNull() && "Forming a CanType out of a non-canonical type!"`.
 //
-// `repro.swift` aborts the compiler, so it is compiled OUT OF PROCESS ([ISSUE-029]).
+// `repro.swift` aborts the compiler, so it is compiled OUT OF PROCESS.
 // The assertion is compiled out of release toolchains, which accept the file, so a
 // toolchain without `+assertions` is inconclusive. On 6.4 assertions builds it fires in
 // IRGen's debug-info mangling (needs `-g`); on main snapshots, in the SIL verifier

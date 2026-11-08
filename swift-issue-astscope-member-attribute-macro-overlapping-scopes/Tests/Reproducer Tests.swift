@@ -11,7 +11,7 @@ import Testing
 //
 // `Crash.swift.txt` is a macro plugin (`-D PLUGIN`, speaking the plugin protocol
 // directly, no swift-syntax) and its client in one file. The plugin is built and the
-// client type-checked OUT OF PROCESS, because the client aborts the compiler ([ISSUE-029]).
+// client type-checked OUT OF PROCESS, because the client aborts the compiler.
 //
 // Only assertions builds run the ASTScope verifier. Release toolchains accept the client,
 // so their clean result says nothing about a fix. `when:` is therefore "this swiftc is an

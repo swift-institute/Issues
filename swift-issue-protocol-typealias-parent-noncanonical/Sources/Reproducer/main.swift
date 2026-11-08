@@ -2,7 +2,7 @@
 // — standalone exit-code probe.
 //
 // `../../repro.swift` aborts `swift-frontend`, so it cannot be a compiled target: this
-// executable compiles it OUT OF PROCESS ([ISSUE-029]). The assertion exists only in
+// executable compiles it OUT OF PROCESS. The assertion exists only in
 // assertions builds (snapshots, and the Windows release toolchain); release toolchains
 // without assertions accept the file, so the probe reports them as inconclusive.
 //

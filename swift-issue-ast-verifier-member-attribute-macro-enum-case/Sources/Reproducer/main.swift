@@ -9,7 +9,7 @@
 // plugin that speaks the compiler's plugin protocol directly (no swift-syntax). Built
 // without the flag it is the client, which aborts `swift-frontend` in the AST verifier.
 // So it cannot be a compiled target: this executable builds the plugin and type-checks
-// the client OUT OF PROCESS ([ISSUE-029]).
+// the client OUT OF PROCESS.
 //
 // Assertions builds run the AST verifier by default. Release toolchains run it with
 // `-Xfrontend -enable-ast-verifier`, which this probe passes, so the defect shows on

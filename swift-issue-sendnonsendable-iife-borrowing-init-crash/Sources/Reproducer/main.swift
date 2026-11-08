@@ -6,7 +6,7 @@
 //
 // `Crash.swift.txt` aborts the compiler, so it cannot be a compiled target.
 // This executable stages `ReproLib.swift.txt` as its own module, then compiles
-// `Crash.swift.txt` against it, both OUT OF PROCESS ([ISSUE-029]).
+// `Crash.swift.txt` against it, both OUT OF PROCESS.
 //
 // Exit code:
 //   1  — bug fired  (swiftc aborted in the "SendNonSendable" pass)

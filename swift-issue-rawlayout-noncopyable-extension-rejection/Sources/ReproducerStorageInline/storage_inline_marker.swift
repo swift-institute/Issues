@@ -14,7 +14,7 @@
 // though the primary declaration is correctly scoped under
 // `extension Storage where Element: ~Copyable`.
 //
-// THE WORKAROUND (Workaround D in INVESTIGATION-ARC.md):
+// THE WORKAROUND (Workaround D in the investigation notes on the issue named in ../../ISSUE):
 //
 //   extension Storage.Inline: Marker where Element: ~Copyable {
 //       public typealias Element = Element

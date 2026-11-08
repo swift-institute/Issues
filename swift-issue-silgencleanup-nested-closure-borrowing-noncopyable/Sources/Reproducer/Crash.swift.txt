@@ -21,7 +21,7 @@
 //     intermediate closure) does not crash.
 //
 // NOT load-bearing (present here only because the field report described
-// them; removing them still crashes — see README "Empirical correction"):
+// them; removing them still crashes — see the issue named in ../../ISSUE):
 //   - The early-return `guard`/loop branches. `@Sendable`. `Sendable`
 //     conformance on the borrowing type. A `Rule`-style wrapper struct.
 //     A second (severity) parameter.

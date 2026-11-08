@@ -7,7 +7,7 @@
 //
 // `Crash.swift.txt` compiles cleanly but its program crashes at run time, which
 // would take the probe down with it. This executable compiles it at `-Onone`
-// OUT OF PROCESS, runs the result as a child process and reports ([ISSUE-029]).
+// OUT OF PROCESS, runs the result as a child process and reports.
 // `-O` emits this metadata statically and hides the bug, so the flag matters.
 //
 // Exit code:

@@ -81,7 +81,7 @@ public enum Readiness: String, CaseIterable, Sendable {
         let main = Readiness.newest(own.filter { $0.toolchain.hasPrefix(prefix + "main-snapshot-") })
         let branch = Readiness.newest(own.filter { Platform.swiftlyName($0.toolchain).range(of: #"^\d+\.\d+(\.x)?-snapshot-"#, options: .regularExpression) != nil })
         let release = own.first { Platform.swiftlyName($0.toolchain).range(of: #"^(xcode-)?\d+\.\d+(\.\d+)?$"#, options: .regularExpression) != nil }
-        let releaseExample = platform == .windows ? "`windows-6.4.1`" : "`xcode-27.2` or `6.4.1`"
+        let releaseExample = platform == .windows ? "`windows-6.4.2`" : "`xcode-27.2` or `6.4.2`"
         require(release != nil, .matrix, "no row for the current release toolchain (e.g. \(releaseExample))")
         require(branch != nil, .matrix, "no row for the latest release-branch snapshot (e.g. `\(prefix)6.4.x-snapshot-2026-10-20`)")
         require(main != nil, .matrix, "no row for the latest main snapshot (e.g. `\(prefix)main-snapshot-2026-10-17`)")

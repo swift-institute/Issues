@@ -8,7 +8,7 @@ import Testing
 // `associatedtype Element` leaks `Copyable` into the nested `~Copyable` type's
 // `Heap<Element>` stored property. The loose sources at ../Sources/Core and
 // ../Sources/Ring are NOT SwiftPM targets — Ring is rejected by design — so the
-// probe emits both modules out of process ([ISSUE-029]).
+// probe emits both modules out of process.
 //
 // The rejection fires on the -emit-module path (what `swift build` runs) on
 // 6.3.3-RELEASE and Apple Swift 6.4 (swiftlang-6.4.0.34.1); `-typecheck` alone

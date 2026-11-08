@@ -7,7 +7,7 @@ import Testing
 // The type checker emits "failed to produce diagnostic for expression" instead of
 // an ambiguity error when an ambiguous call is the argument of an ambiguous
 // overloaded call. `Crash.swift.txt` is ill-formed on purpose, so it is
-// type-checked OUT OF PROCESS ([ISSUE-029]).
+// type-checked OUT OF PROCESS.
 //
 // Fires on every toolchain tested (6.3.3 through 6.5-dev), so `when: { true }`:
 // the test stays green while the fallback error appears and flips red once a

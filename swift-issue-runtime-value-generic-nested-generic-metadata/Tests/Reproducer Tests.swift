@@ -7,7 +7,7 @@ import Testing
 // swift-institute/Issues#105. Instantiating metadata at run time for a generic
 // type nested in a value-generic type (`Link<1>.Node<Int>`) crashes inside
 // libswiftCore. `Crash.swift.txt` compiles cleanly but its program crashes, so it
-// is compiled at `-Onone` and run OUT OF PROCESS ([ISSUE-029]). `-O` hides it.
+// is compiled at `-Onone` and run OUT OF PROCESS. `-O` hides it.
 //
 // A regression in Swift 6.4 (swiftlang/swift#89965, cherry-picked to 6.4.x as
 // #89995). Fixed on main by swiftlang/swift#91267, not backported to 6.4.x. So

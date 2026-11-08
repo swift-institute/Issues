@@ -8,7 +8,7 @@ import Testing
 // `LoweredParamGenerator::claimNext`) emitting a typed-throws closure literal that
 // is cast inline with `as @Sendable (Int) throws(TestError) -> Int` and passed to
 // a generic `<V: Sendable>` parameter. `Crash.swift.txt` crashes the compiler, so
-// it is compiled OUT OF PROCESS ([ISSUE-029]).
+// it is compiled OUT OF PROCESS.
 //
 // Fires on 6.3.1 and 6.4.2 (macOS arm64) with no feature flags, at `-Onone`. SILGen
 // does not depend on the target, so `when: { true }`: the test stays green while

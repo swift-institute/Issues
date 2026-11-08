@@ -10,7 +10,7 @@ import Testing
 //
 // `Crash.swift.txt` is a macro plugin (`-D PLUGIN`, speaking the plugin protocol
 // directly, no swift-syntax) and its client in one file. The plugin is built and the
-// client type-checked OUT OF PROCESS, because the client aborts the compiler ([ISSUE-029]).
+// client type-checked OUT OF PROCESS, because the client aborts the compiler.
 //
 // Assertions builds run the AST verifier by default; release toolchains run it with
 // `-Xfrontend -enable-ast-verifier`, which this harness passes. The abort is recorded on

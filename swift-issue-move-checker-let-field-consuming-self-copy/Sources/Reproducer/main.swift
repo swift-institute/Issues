@@ -6,7 +6,7 @@
 //
 // `Bug.swift.txt` does not compile on affected toolchains, so it cannot be a
 // compiled target. This executable compiles it OUT OF PROCESS and reports the
-// result ([ISSUE-029]).
+// result.
 //
 // Exit code:
 //   1  — bug fired  (swiftc emitted "copy of noncopyable typed value")

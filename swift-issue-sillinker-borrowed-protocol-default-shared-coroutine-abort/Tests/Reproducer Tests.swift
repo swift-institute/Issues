@@ -26,7 +26,7 @@ import Testing
 // `withKnownIssue` is GREEN while the bug fires and flips RED the moment the
 // importing module compiles cleanly. That red flip is the fix-detection signal.
 //
-// VERSION STORY (every row `swift --version`-confirmed; see ../README.md)
+// VERSION STORY (every row `swift --version`-confirmed; see the issue named in ../ISSUE)
 //   6.3.3-RELEASE (macOS arm64, Linux aarch64, Linux x86_64) . abort, MandatorySILLinker
 //   Apple Swift 6.4 (Xcode) ................................. abort, MandatorySILLinker
 //   6.4.x-snapshot-2026-07-23 (+assertions) ................. abort, earlier: SIL verifier

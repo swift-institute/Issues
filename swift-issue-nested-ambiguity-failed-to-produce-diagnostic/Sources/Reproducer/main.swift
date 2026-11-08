@@ -5,7 +5,7 @@
 // "failed to produce diagnostic" for a nested ambiguity — standalone exit-code probe.
 //
 // `Crash.swift.txt` is ill-formed on purpose, so it cannot be a compiled target.
-// This executable type-checks it OUT OF PROCESS and reports the result ([ISSUE-029]).
+// This executable type-checks it OUT OF PROCESS and reports the result.
 //
 // Exit code:
 //   1  — bug fired  (swiftc emitted "failed to produce diagnostic")

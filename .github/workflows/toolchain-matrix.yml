@@ -38,7 +38,7 @@ jobs:
   plan:
     name: toolchain-matrix / plan
     runs-on: ubuntu-latest
-    container: swift:6.4.0-noble
+    container: swift:6.4.2-noble
     timeout-minutes: 30
     env:
       TOOLCHAINS_LIST: ${{ inputs.toolchains }}

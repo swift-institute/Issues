@@ -13,7 +13,7 @@
 #
 # Wiring only: every verdict is Swift in Tooling/Sources. Pin boundary:
 # actions/checkout and SwiftyLab/setup-swift are SHA-pinned; the plan job runs
-# in the swift:6.4.0-noble image (a tag, recorded per run); swiftly.pkg is
+# in the swift:6.4.2-noble image (a tag, recorded per run); swiftly.pkg is
 # downloaded from swift.org and must carry an Apple-issued Developer ID
 # signature (checked and recorded); swiftly verifies each toolchain it
 # installs; setup-swift verifies the Windows release it resolves, while a
@@ -54,7 +54,7 @@ jobs:
         (contains(github.event.issue.labels.*.name, 'upstream-ready') ||
          contains(github.event.issue.labels.*.name, 'upstream-filed')))
     runs-on: ubuntu-latest
-    container: swift:6.4.0-noble
+    container: swift:6.4.2-noble
     timeout-minutes: 30
     permissions:
       contents: read

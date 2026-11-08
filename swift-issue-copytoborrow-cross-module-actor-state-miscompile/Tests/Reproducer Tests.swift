@@ -7,7 +7,7 @@ import Testing
 // With CopyToBorrowOptimization, a client built with -O against a library built
 // with -O -wmo reads an actor's `state` as `.running` after an awaited call set
 // it to `.shuttingDown`. The two modules need their own flags, so they are built
-// and run OUT OF PROCESS ([ISSUE-029]).
+// and run OUT OF PROCESS.
 //
 // The client loops 100 times and the probe runs it `runs` times: the bug was
 // recorded as flaky (about 50 of 100 on 6.3.1). On 6.4.2 it is wrong 100 of 100.

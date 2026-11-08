@@ -1,7 +1,7 @@
 // Compiler-aborting / silently-truncating reproducer, shipped as a .txt RESOURCE
 // (compiling it as a normal target would abort the package build on an asserts
 // toolchain). Driven OUT OF PROCESS by ../../Tests/Reproducer.swift and
-// ../main.swift. See ../../README.md.
+// ../main.swift. See the issue named in ../../ISSUE.
 //
 // swiftlang/swift — `ExtensionTableInfo::EmitKeyDataLength` serializes the per-base-name
 // extension-table `dataLength` as a **uint16_t**, which overflows when one nominal type is

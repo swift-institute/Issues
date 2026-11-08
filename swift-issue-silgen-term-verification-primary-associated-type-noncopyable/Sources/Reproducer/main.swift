@@ -6,7 +6,7 @@
 //
 // `Crash.swift.txt` aborts an assertions-enabled `swift-frontend`, so it cannot be a
 // compiled target. This executable compiles it OUT OF PROCESS and reports the result
-// ([ISSUE-029]). Release toolchains do not run this verification and compile the file;
+//. Release toolchains do not run this verification and compile the file;
 // on them the probe is inconclusive.
 //
 // Exit code:

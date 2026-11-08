@@ -8,7 +8,7 @@ import Testing
 // bug." when a `consuming func` on a `~Copyable, ~Escapable` builder forwards its
 // `let`-bound `~Copyable` stored property into a sibling type's `consuming`
 // initializer. `Bug.swift.txt` does not compile on affected toolchains, so it is
-// compiled OUT OF PROCESS ([ISSUE-029]).
+// compiled OUT OF PROCESS.
 //
 // Fires on release toolchains (6.3.2, 6.4.2 on macOS arm64), so `when: { true }`:
 // the test stays green while the diagnostic appears and flips red once the source

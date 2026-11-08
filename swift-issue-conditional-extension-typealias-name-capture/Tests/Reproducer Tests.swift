@@ -28,7 +28,7 @@ import Testing
 // `nightly-main-jammy` cron IS the fix-detection signal.
 //
 // VERSION STORY (verified by re-running the reducer under each toolchain —
-// `swift --version`-confirmed; see ../README.md)
+// `swift --version`-confirmed; see the issue named in ../ISSUE)
 //   6.3.2 (Xcode default) ........ REJECTS (bogus conformance error)
 //   6.4-dev (2026-03-16-a) ....... REJECTS identically (+assertions; none fire)
 //   6.5-dev (2026-05-27-a) ....... REJECTS identically (+assertions; none fire)

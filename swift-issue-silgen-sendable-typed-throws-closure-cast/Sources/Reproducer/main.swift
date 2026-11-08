@@ -7,7 +7,7 @@
 //
 // `Crash.swift.txt` crashes `swift-frontend` (signal 5) during SILGen, so it
 // cannot be a compiled target. This executable compiles it OUT OF PROCESS and
-// reports the result ([ISSUE-029]).
+// reports the result.
 //
 // Exit code:
 //   1  — bug fired  (swiftc failed while SILGen emitted the closure)

@@ -7,7 +7,7 @@ import Testing
 // The SendNonSendable pass aborts in `Partition::merge` when a function body holds
 // an immediately-invoked closure that builds a `~Copyable, ~Escapable` View through
 // a public borrowing `@_lifetime` init. `Crash.swift.txt` aborts the compiler, so
-// the library and the caller are compiled OUT OF PROCESS ([ISSUE-029]).
+// the library and the caller are compiled OUT OF PROCESS.
 //
 // Fires on release toolchains (6.3.1, 6.4.2 on macOS arm64), so `when: { true }`:
 // the test stays green while the compiler aborts and flips red once the caller

@@ -7,7 +7,7 @@
 // The bug needs two modules built with specific flags: the library `BugLib` with
 // `-O -wmo` (so cross-module optimization serializes its bodies) and the client
 // with `-O`. SwiftPM cannot set those flags per target here, so this executable
-// builds both modules OUT OF PROCESS and runs the result ([ISSUE-029]).
+// builds both modules OUT OF PROCESS and runs the result.
 //
 // The client loops 100 times; each wrong result prints a "BUG (i)" line. The bug
 // was recorded as flaky (about 50 of 100 iterations on 6.3.1), so the probe runs

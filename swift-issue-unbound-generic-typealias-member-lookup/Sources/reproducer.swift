@@ -5,7 +5,7 @@
 // The rejection is specific to a generic alias base — not to alias bases, and
 // not to unbound bases, as such. This file fails `swiftc -typecheck` BY
 // DESIGN (row 4) and is therefore NOT a live SwiftPM target; the two
-// harnesses drive it out of process. See README.md for the full matrix,
+// harnesses drive it out of process. See the issue named in ../ISSUE for the full matrix,
 // toolchain table, and ecosystem-decoupling note (swift-institute/.github#122).
 
 public struct Carrier<Substrate> {}

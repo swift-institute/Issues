@@ -6,7 +6,7 @@
 // generic outer type — standalone exit-code probe.
 //
 // `Crash.swift.txt` crashes `swift-frontend`, so it cannot be a compiled target.
-// This executable type-checks it OUT OF PROCESS and reports the result ([ISSUE-029]).
+// This executable type-checks it OUT OF PROCESS and reports the result.
 //
 // Exit code:
 //   1  — bug fired  (swift-frontend crashed while resolving `F.B<Int>`)

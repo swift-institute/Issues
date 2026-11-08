@@ -62,9 +62,41 @@ public enum Layout {
                     }
                 }
             }
+
+            for input in unusedInputs(in: base) {
+                finding("\(input) is never named by Tests/ or Sources/Reproducer/, so nothing runs it. Delete it, or move what it shows onto the issue.")
+            }
         }
         findings += manifestFindings(in: root)
         return findings
+    }
+
+    /// Everything in a folder that the build doesn't compile — files beside
+    /// `ISSUE`, `Tests/` and `Sources/`, entries of `Sources/` other than
+    /// `Reproducer/`, and non-Swift entries of `Tests/` and `Sources/Reproducer/` —
+    /// that no harness file names in quotes or as a path component.
+    static func unusedInputs(in base: URL) -> [String] {
+        let files = FileManager.default
+        func entries(_ path: String) -> [String] {
+            ((try? files.contentsOfDirectory(atPath: base.appendingPathComponent(path).path)) ?? [])
+                .filter { $0 != ".DS_Store" }
+        }
+        var candidates: [String] = []
+        candidates += entries("").filter { !["ISSUE", "Tests", "Sources"].contains($0) }
+        candidates += entries("Sources").filter { $0 != "Reproducer" }.map { "Sources/\($0)" }
+        for harness in ["Tests", "Sources/Reproducer"] {
+            candidates += entries(harness).filter { !$0.hasSuffix(".swift") }.map { "\(harness)/\($0)" }
+        }
+        let harnessText = ["Tests", "Sources/Reproducer"].flatMap { harness in
+            entries(harness).filter { $0.hasSuffix(".swift") }.compactMap {
+                try? String(contentsOf: base.appendingPathComponent("\(harness)/\($0)"), encoding: .utf8)
+            }
+        }.joined(separator: "\n")
+        // Notes are reported as notes, not again as unused inputs.
+        return candidates.sorted().filter { !$0.hasSuffix(".md") && ($0 as NSString).lastPathComponent != "evidence" }.filter { candidate in
+            let name = NSRegularExpression.escapedPattern(for: (candidate as NSString).lastPathComponent)
+            return harnessText.range(of: "[\"/]\(name)[\"/]", options: .regularExpression) == nil
+        }
     }
 
     /// The root manifest lists every folder by name, because SwiftPM caches a

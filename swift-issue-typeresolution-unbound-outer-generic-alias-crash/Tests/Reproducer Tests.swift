@@ -8,7 +8,7 @@ import Testing
 // when a generic typealias is named through its generic outer type with the
 // outer's arguments left out (`F.B<Int>` for `struct F<V> { typealias B<U> = U }`).
 // `Crash.swift.txt` crashes the compiler, so it is type-checked OUT OF PROCESS
-// ([ISSUE-029]).
+//.
 //
 // Fires on 6.3.1 and 6.4.2 (the only toolchains run), so `when: { true }`: the
 // test stays green while the compiler crashes and flips red once it accepts the

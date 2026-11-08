@@ -8,7 +8,7 @@ import Testing
 // from a function whose own parameter is `sending`, aborts the task allocator
 // at `-Onone`: "freed pointer was not the last allocation" in
 // `swift_task_dealloc`. `Crash.swift.txt` compiles cleanly but its program
-// aborts, so it is compiled and run OUT OF PROCESS ([ISSUE-029]). `-O` hides it.
+// aborts, so it is compiled and run OUT OF PROCESS. `-O` hides it.
 //
 // Fires on Apple Swift 6.4.2 (macOS arm64). The code is compiler-generated task
 // allocation, not target code, so `when: { true }`: green while the abort

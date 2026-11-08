@@ -37,7 +37,7 @@ public protocol P {
 //
 // The property may be stored (as here) or computed — both crash. Its type is
 // an ordinary generic parameter, NOT `Never`; this entry is not the
-// `Body == Never` extension-default case (see README, "Differentiation").
+// `Body == Never` extension-default case (see the issue named in ../../ISSUE).
 public struct Box<Body: P>: P {
     public let body: Body
     public init(body: Body) { self.body = body }

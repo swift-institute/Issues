@@ -8,7 +8,7 @@ import Testing
 // `RequirementMachine::verify` ("Term verification failed", GenericSignatureQueries.cpp:880)
 // while lowering an initializer that pins a `~Copyable` generic parameter to a nested
 // generic conditional conformer of a protocol with primary associated types.
-// `Crash.swift.txt` aborts the compiler, so it is compiled OUT OF PROCESS ([ISSUE-029]).
+// `Crash.swift.txt` aborts the compiler, so it is compiled OUT OF PROCESS.
 //
 // Only assertions builds run this verification. Release toolchains (Xcode, swift.org
 // releases) compile the file, so their clean result says nothing about a fix. `when:` is

@@ -42,6 +42,21 @@ struct LayoutTests {
         #expect(Layout.findings(in: root) == [])
     }
 
+    @Test func `an input no harness names is a finding`() throws {
+        let root = try Self.repository([
+            "swift-issue-a": [
+                "ISSUE": "12",
+                "Tests/T.swift": #"withKnownIssue { }; let s = here.appendingPathComponent("Sources/Reproducer/Crash.swift.txt"); let r = "../repro.swift""#,
+                "Sources/Reproducer/Crash.swift.txt": "",
+                "Sources/Reproducer/Old.swift.txt": "",
+                "repro.swift": "",
+                "reproducer.swift": "",
+                "Sources/Variant/v.swift": "",
+            ]
+        ])
+        #expect(Layout.unusedInputs(in: root.appendingPathComponent("swift-issue-a")) == ["Sources/Reproducer/Old.swift.txt", "Sources/Variant", "reproducer.swift"])
+    }
+
     @Test func `the manifest's list and the folders must agree`() throws {
         let root = try Self.repository(["swift-issue-a": Self.good, "swift-issue-b": Self.good])
         try "let folders = [\n    \"swift-issue-a\",\n    \"swift-issue-gone\",\n]".write(to: root.appendingPathComponent("Package.swift"), atomically: true, encoding: .utf8)
