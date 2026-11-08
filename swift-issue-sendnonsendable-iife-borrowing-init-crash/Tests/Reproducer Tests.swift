@@ -96,7 +96,11 @@ struct SendNonSendableIIFEBorrowingInitCrashReproducer {
             else { return nil }
 
             if caller.status != 0
-                && (caller.errors.contains("\"SendNonSendable\"") || caller.errors.contains("While silgen closureexpr")) { return true }
+                // CI's Linux x86_64 leg prints only the abort (std::out_of_range from map::at),
+                // without the pretty stack that names the pass.
+                && (caller.errors.contains("\"SendNonSendable\"") || caller.errors.contains("While silgen closureexpr")
+                    || caller.errors.contains("terminate called after throwing an instance of 'std::out_of_range'"))
+            { return true }
             if caller.status == 0 { return false }
             Issue.record("swiftc failed without the record's markers (exit \(caller.status)):\n\(caller.errors.suffix(3000))")
             return nil

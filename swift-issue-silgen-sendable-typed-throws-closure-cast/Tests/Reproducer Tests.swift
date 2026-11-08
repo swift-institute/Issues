@@ -60,7 +60,11 @@ struct SILGenSendableTypedThrowsClosureCastReproducer {
                 ) ?? ""
             process.waitUntilExit()
 
-            if process.terminationStatus != 0 && errText.contains("While silgen closureexpr") { return true }
+            // CI's Linux x86_64 leg prints only the abort message, without the pretty stack.
+            if process.terminationStatus != 0
+                && (errText.contains("While silgen closureexpr")
+                    || errText.contains("cannot create this instruction without a function context"))
+            { return true }
             if process.terminationStatus == 0 { return false }
             Issue.record("swiftc failed without the record's markers (exit \(process.terminationStatus)):\n\(errText.suffix(3000))")
             return nil
