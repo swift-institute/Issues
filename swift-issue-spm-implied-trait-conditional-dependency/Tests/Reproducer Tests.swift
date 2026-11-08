@@ -6,6 +6,16 @@ import Testing
     @Suite
     struct SPMImpliedTraitConditionalDependencyReproducer {
         /// Runs the standalone reproducer; `true` when SwiftPM fails to resolve the fixture graph.
+        /// SwiftPM 6.4.2 on Windows resolves this graph (CI run 42520039697, 2026-11-08);
+        /// macOS and Linux fail to. On Windows the test guards that it keeps resolving.
+        static var firesHere: Bool {
+            #if os(Windows)
+                return false
+            #else
+                return true
+            #endif
+        }
+
         static func bugFires() throws -> Bool? {
             let script = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()
@@ -57,6 +67,8 @@ import Testing
                 "SwiftPM: implied trait does not activate conditional dependency trait requests"
             ) {
                 #expect(!fired)
+            } when: {
+                Self.firesHere
             }
         }
     }

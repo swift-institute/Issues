@@ -6,6 +6,16 @@ import Testing
     @Suite
     struct SPMDiamondTraitConditionalDependencyReproducer {
         /// Runs the standalone reproducer; `true` when SwiftPM fails to resolve the fixture graph.
+        /// SwiftPM 6.4.2 on Windows resolves this graph (CI run 42520039697, 2026-11-08);
+        /// macOS and Linux fail to. On Windows the test guards that it keeps resolving.
+        static var firesHere: Bool {
+            #if os(Windows)
+                return false
+            #else
+                return true
+            #endif
+        }
+
         static func bugFires() throws -> Bool? {
             let script = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()
@@ -59,6 +69,8 @@ import Testing
                 "SwiftPM: a diamond with and without a trait leaves the trait-gated dependency unresolved"
             ) {
                 #expect(!fired)
+            } when: {
+                Self.firesHere
             }
         }
     }
