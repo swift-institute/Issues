@@ -1,5 +1,10 @@
-import func Darwin.fflush
-import var Darwin.stdout
+#if canImport(Darwin)
+    import func Darwin.fflush
+    import var Darwin.stdout
+#elseif canImport(Glibc)
+    import func Glibc.fflush
+    import var Glibc.stdout
+#endif
 
 protocol P {}
 struct Pool: ~Copyable {}

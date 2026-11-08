@@ -68,7 +68,8 @@ struct MoveCheckerLetFieldConsumingSelfCopyReproducer {
                 ) ?? ""
             process.waitUntilExit()
 
-            if errText.contains("copy of noncopyable typed value") { return true }
+            if (errText.contains("copy of noncopyable typed value")
+                || errText.contains("copy of non-'Copyable' typed value")) { return true }
             if process.terminationStatus == 0 { return false }
             return nil
         #else

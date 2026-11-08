@@ -76,12 +76,15 @@
             exit(2)
         }
         let with = try build(import: "import Foundation")
-        if with.status != 0
-            && with.output.contains("but module 'System' has a minimum deployment target")
-        {
-            print(
-                "bug fired: _Testing_Foundation is built for the toolchain's minimum macOS and loads the package's System module"
-            )
+        // Xcode's toolchain reports the overlay loading the package's System module for the
+        // wrong deployment target; a Swift.org toolchain rebuilds the SDK's XPC interface and
+        // resolves its `System::FileDescriptor` against the package's System. Both are the bug.
+        let markers = [
+            "but module 'System' has a minimum deployment target",
+            "cannot find type 'System::FileDescriptor' in scope",
+        ]
+        if with.status != 0 && markers.contains(where: with.output.contains) {
+            print("bug fired: an SDK overlay resolved the package's System module")
             exit(1)
         }
         if with.status != 0 {

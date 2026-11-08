@@ -70,7 +70,7 @@ struct RuntimeValueGenericNestedGenericMetadataReproducer {
             run.executableURL = program
             var environment = ProcessInfo.processInfo.environment
             environment["SWIFT_BACKTRACE"] = "enable=no"
-            run.environment = environment
+            run.environment = withToolchainRuntime(environment)
             let output = Pipe()
             run.standardOutput = output
             run.standardError = FileHandle.nullDevice
@@ -101,3 +101,28 @@ struct RuntimeValueGenericNestedGenericMetadataReproducer {
         )
     }
 }
+
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+    /// On macOS, a program built by a toolchain other than Xcode's still loads the system's
+    /// Swift runtime, so a snapshot run would test the system's runtime, not the snapshot's.
+    /// When the `swiftc` on PATH belongs to such a toolchain, point the loader at its runtime.
+    /// Elsewhere, and for Xcode's toolchain, the environment is returned unchanged.
+    func withToolchainRuntime(_ environment: [String: String]) -> [String: String] {
+        #if os(macOS)
+            for directory in (environment["PATH"] ?? "").split(separator: ":") {
+                let swiftc = URL(fileURLWithPath: String(directory)).appendingPathComponent("swiftc")
+                guard FileManager.default.isExecutableFile(atPath: swiftc.path) else { continue }
+                let resolved = swiftc.resolvingSymlinksInPath()
+                guard !resolved.path.contains(".app/Contents/Developer") else { return environment }
+                let runtime = resolved.deletingLastPathComponent().deletingLastPathComponent()
+                    .appendingPathComponent("lib/swift/macosx")
+                guard FileManager.default.fileExists(atPath: runtime.appendingPathComponent("libswiftCore.dylib").path)
+                else { return environment }
+                var environment = environment
+                environment["DYLD_LIBRARY_PATH"] = runtime.path
+                return environment
+            }
+        #endif
+        return environment
+    }
+#endif

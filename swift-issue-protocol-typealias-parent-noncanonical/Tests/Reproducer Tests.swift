@@ -36,7 +36,7 @@ struct ProtocolTypealiasParentNoncanonicalReproducer {
     }
 
     /// `true` when the compiler asserted, `false` when it compiled the file, `nil` when
-    /// inconclusive (no assertions in this toolchain, or any other outcome).
+    /// inconclusive (any other outcome).
     static func bugFires() -> Bool? {
         #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
             let source = URL(fileURLWithPath: #filePath)
@@ -44,10 +44,7 @@ struct ProtocolTypealiasParentNoncanonicalReproducer {
                 .deletingLastPathComponent()  // issue root
                 .appendingPathComponent("repro.swift")
 
-            guard FileManager.default.fileExists(atPath: source.path),
-                let version = swiftc(["--version"]),
-                version.output.contains("+assertions")
-            else { return nil }
+            guard FileManager.default.fileExists(atPath: source.path) else { return nil }
 
             guard let result = swiftc(["-g", "-c", source.path, "-o", "/dev/null"]) else { return nil }
 
@@ -64,9 +61,14 @@ struct ProtocolTypealiasParentNoncanonicalReproducer {
         guard let fired = Self.bugFires() else { return }
 
         withKnownIssue(
-            "swiftlang/swift#86202 (Issues#21; fixed on main by swiftlang/swift#93790) — `A.P` with `typealias A = E` forms a non-canonical CanType",
+            "swiftlang/swift#86202 (Issues#21; still fires with -g on main after swiftlang/swift#93790) — `A.P` with `typealias A = E` forms a non-canonical CanType",
             { #expect(fired == false) },
-            when: { true }
+            when: { Self.hasAssertions }
         )
+    }
+
+    /// The abort is an assertion: only a toolchain built with assertions shows it.
+    static var hasAssertions: Bool {
+        swiftc(["--version"])?.output.contains("+assertions") ?? false
     }
 }

@@ -76,7 +76,16 @@ struct CopyToBorrowCrossModuleActorStateMiscompileReproducer {
                 "main.swift", "BugLib.o", "-o", "BugTest",
             ]
             for step in [library, client] {
-                guard let result = run(step, in: work), result.status == 0 else { return nil }
+                guard let result = run(step, in: work) else { return nil }
+                guard result.status == 0 else {
+                    // Assertions builds reject the client in the SIL verifier before the
+                    // miscompile can run; that defect is swift-institute/Issues#250, with its own folder.
+                    if result.output.contains("Found verification error when verifying before lowering ownership") {
+                        return nil
+                    }
+                    Issue.record("a build step failed (exit \(result.status)):\n\(result.output.suffix(3000))")
+                    return nil
+                }
             }
 
             var wrong = 0
@@ -89,6 +98,7 @@ struct CopyToBorrowCrossModuleActorStateMiscompileReproducer {
             }
             if wrong > 0 { return true }
             if clean == runs { return false }
+            Issue.record("only \(clean) of \(runs) runs completed cleanly, and none showed the bug")
             return nil
         #else
             return nil

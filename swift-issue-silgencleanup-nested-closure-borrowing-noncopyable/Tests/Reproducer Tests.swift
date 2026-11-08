@@ -48,7 +48,10 @@ struct SILGenCleanupNestedClosureBorrowingNoncopyableReproducer {
                 .deletingLastPathComponent()  // issue root
                 .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
 
-            guard FileManager.default.fileExists(atPath: here.path) else { return nil }
+            guard FileManager.default.fileExists(atPath: here.path) else {
+                Issue.record("Sources/Reproducer/Crash.swift.txt is missing")
+                return nil
+            }
 
             let pid = ProcessInfo.processInfo.processIdentifier
             let swiftCopy = URL(fileURLWithPath: NSTemporaryDirectory())
@@ -57,6 +60,7 @@ struct SILGenCleanupNestedClosureBorrowingNoncopyableReproducer {
                 .appendingPathComponent("silgencleanup-nested-closure-test-\(pid).out")
             try? FileManager.default.removeItem(at: swiftCopy)
             guard (try? FileManager.default.copyItem(at: here, to: swiftCopy)) != nil else {
+                Issue.record("could not stage the reproduction")
                 return nil
             }
             defer {
@@ -71,7 +75,10 @@ struct SILGenCleanupNestedClosureBorrowingNoncopyableReproducer {
             process.standardError = stderr
             process.standardOutput = Pipe()
 
-            do { try process.run() } catch { return nil }
+            do { try process.run() } catch {
+                Issue.record("could not launch swiftc: \(error)")
+                return nil
+            }
             process.waitUntilExit()
 
             let errText =
@@ -80,13 +87,18 @@ struct SILGenCleanupNestedClosureBorrowingNoncopyableReproducer {
                     encoding: .utf8
                 ) ?? ""
 
-            if errText.contains("Found ownership error") && errText.contains("SILGenCleanup") {
+            // Release toolchains abort in SILGenCleanup; an assertions build of 6.4.x asserts
+            // on the same capture earlier, in SILGenFunction::emitCaptures.
+            if (errText.contains("Found ownership error") && errText.contains("SILGenCleanup"))
+                || errText.contains("no address for captured var!")
+            {
                 return true
             }
-            if process.terminationStatus == 0 {
-                return false  // compiled cleanly — fix has landed
+            if process.terminationStatus == 0 || errText.contains("cannot be captured by an escaping closure since it is a borrowed parameter") {
+                return false  // compiled, or diagnosed the capture (main): no crash
             }
-            return nil  // failed for an unrelated reason — inconclusive
+            Issue.record("swiftc failed without the record's markers (exit \(process.terminationStatus)):\n\(errText.suffix(3000))")
+            return nil
         #else
             return nil  // no subprocess facility
         #endif
@@ -98,7 +110,17 @@ struct SILGenCleanupNestedClosureBorrowingNoncopyableReproducer {
         withKnownIssue(
             "SILGenCleanup ownership-verifier abort: nested local closure capturing a borrowing ~Copyable parameter of an enclosing closure literal",
             { #expect(fired == false) },
-            when: { true }
+            when: { Self.beforeFix }
         )
+    }
+
+    /// Fixed on main before 6.5; every 6.4 toolchain still has it. From 6.5 on, the bug
+    /// firing again is a regression and fails the test.
+    static var beforeFix: Bool {
+        #if compiler(>=6.5)
+            return false
+        #else
+            return true
+        #endif
     }
 }

@@ -26,7 +26,10 @@ struct RuntimeSendingThunkFreedPointerReproducer {
                 .deletingLastPathComponent()  // issue root
                 .appendingPathComponent("Sources/Reproducer/Crash.swift.txt")
 
-            guard FileManager.default.fileExists(atPath: crashSource.path) else { return nil }
+            guard FileManager.default.fileExists(atPath: crashSource.path) else {
+                Issue.record("Sources/Reproducer/Crash.swift.txt is missing")
+                return nil
+            }
 
             let pid = ProcessInfo.processInfo.processIdentifier
             let temporary = URL(fileURLWithPath: NSTemporaryDirectory())
@@ -35,6 +38,7 @@ struct RuntimeSendingThunkFreedPointerReproducer {
             try? FileManager.default.removeItem(at: swiftCopy)
             try? FileManager.default.removeItem(at: program)
             guard (try? FileManager.default.copyItem(at: crashSource, to: swiftCopy)) != nil else {
+                Issue.record("could not stage the reproduction")
                 return nil
             }
             defer {
@@ -51,21 +55,36 @@ struct RuntimeSendingThunkFreedPointerReproducer {
             let compileErrors = Pipe()
             compile.standardError = compileErrors
             compile.standardOutput = Pipe()
-            do { try compile.run() } catch { return nil }
-            _ = compileErrors.fileHandleForReading.readDataToEndOfFile()
+            do { try compile.run() } catch {
+                Issue.record("could not launch swiftc: \(error)")
+                return nil
+            }
+            let compileText = String(decoding: compileErrors.fileHandleForReading.readDataToEndOfFile(), as: UTF8.self)
             compile.waitUntilExit()
-            guard compile.terminationStatus == 0 else { return nil }
+            // An assertions build rejects the function whose task allocation the release
+            // build gets wrong: SIL verification (6.4.x) or ClosureLifetimeFixup (main). The
+            // mangled name is matched without its module prefix, which follows the file name.
+            if compile.terminationStatus != 0 && compileText.contains("3OneV6resume9returningyxn_tYaF") {
+                return true
+            }
+            guard compile.terminationStatus == 0 else {
+                Issue.record("the reproduction failed to compile without the known abort:\n\(compileText.suffix(3000))")
+                return nil
+            }
 
             let run = Process()
             run.executableURL = program
             var environment = ProcessInfo.processInfo.environment
             environment["SWIFT_BACKTRACE"] = "enable=no"
-            run.environment = environment
+            run.environment = withToolchainRuntime(environment)
             let output = Pipe()
             let errors = Pipe()
             run.standardOutput = output
             run.standardError = errors
-            do { try run.run() } catch { return nil }
+            do { try run.run() } catch {
+                Issue.record("could not launch the reproduction: \(error)")
+                return nil
+            }
             let errorText =
                 String(
                     data: errors.fileHandleForReading.readDataToEndOfFile(),
@@ -82,6 +101,7 @@ struct RuntimeSendingThunkFreedPointerReproducer {
                 return true
             }
             if run.terminationStatus == 0 && outputText.contains("hello") { return false }
+            Issue.record("the program ended without the record's output (status \(run.terminationStatus)):\n\(errorText.suffix(3000))")
             return nil
         #else
             return nil
@@ -99,3 +119,28 @@ struct RuntimeSendingThunkFreedPointerReproducer {
         )
     }
 }
+
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+    /// On macOS, a program built by a toolchain other than Xcode's still loads the system's
+    /// Swift runtime, so a snapshot run would test the system's runtime, not the snapshot's.
+    /// When the `swiftc` on PATH belongs to such a toolchain, point the loader at its runtime.
+    /// Elsewhere, and for Xcode's toolchain, the environment is returned unchanged.
+    func withToolchainRuntime(_ environment: [String: String]) -> [String: String] {
+        #if os(macOS)
+            for directory in (environment["PATH"] ?? "").split(separator: ":") {
+                let swiftc = URL(fileURLWithPath: String(directory)).appendingPathComponent("swiftc")
+                guard FileManager.default.isExecutableFile(atPath: swiftc.path) else { continue }
+                let resolved = swiftc.resolvingSymlinksInPath()
+                guard !resolved.path.contains(".app/Contents/Developer") else { return environment }
+                let runtime = resolved.deletingLastPathComponent().deletingLastPathComponent()
+                    .appendingPathComponent("lib/swift/macosx")
+                guard FileManager.default.fileExists(atPath: runtime.appendingPathComponent("libswiftCore.dylib").path)
+                else { return environment }
+                var environment = environment
+                environment["DYLD_LIBRARY_PATH"] = runtime.path
+                return environment
+            }
+        #endif
+        return environment
+    }
+#endif

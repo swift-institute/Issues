@@ -62,8 +62,11 @@ struct BorrowingActorClosureReproducer {
                     encoding: .utf8
                 ) ?? ""
 
+            // Release toolchains crash in MoveOnlyTypeEliminator; an assertions toolchain's
+            // SIL verifier rejects the same leaked `@moveOnly` value first.
             if output.contains("MoveOnlyTypeEliminator")
                 || output.contains("Unhandled SIL Instruction")
+                || (output.contains("SIL verification failed") && output.contains("$@moveOnly"))
             {
                 return true
             }
@@ -72,6 +75,7 @@ struct BorrowingActorClosureReproducer {
                 return false
             }
 
+            Issue.record("swiftc failed without the record's markers (exit \(process.terminationStatus)):\n\(output.suffix(3000))")
             return nil
         #else
             return nil

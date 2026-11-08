@@ -66,7 +66,8 @@
             ) ?? ""
         process.waitUntilExit()
 
-        if errText.contains("copy of noncopyable typed value") {
+        if (errText.contains("copy of noncopyable typed value")
+                || errText.contains("copy of non-'Copyable' typed value")) {
             FileHandle.standardError.write(
                 Data("BUG FIRED: copy of noncopyable typed value at the let field forwarded from consuming self.\n".utf8)
             )

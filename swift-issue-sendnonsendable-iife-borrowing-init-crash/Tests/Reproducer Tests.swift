@@ -93,7 +93,8 @@ struct SendNonSendableIIFEBorrowingInitCrashReproducer {
                 ])
             else { return nil }
 
-            if caller.status != 0 && caller.errors.contains("\"SendNonSendable\"") { return true }
+            if caller.status != 0
+                && (caller.errors.contains("\"SendNonSendable\"") || caller.errors.contains("While silgen closureexpr")) { return true }
             if caller.status == 0 { return false }
             return nil
         #else

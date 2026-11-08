@@ -92,7 +92,8 @@
             return 0
         }
 
-        if caller.status != 0 && caller.errors.contains("\"SendNonSendable\"") {
+        if caller.status != 0
+                && (caller.errors.contains("\"SendNonSendable\"") || caller.errors.contains("While silgen closureexpr")) {
             FileHandle.standardError.write(
                 Data("BUG FIRED: swiftc aborted in the SendNonSendable pass.\n".utf8)
             )
