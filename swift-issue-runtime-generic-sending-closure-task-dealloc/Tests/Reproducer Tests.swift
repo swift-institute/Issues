@@ -1,6 +1,6 @@
 import Testing
 
-#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
     import Foundation
 #endif
 
@@ -20,7 +20,7 @@ struct RuntimeSendingThunkFreedPointerReproducer {
     /// `true` when the compiled program aborted in the task allocator, `false`
     /// when it printed "hello" and exited 0, `nil` when inconclusive.
     static func bugFires() -> Bool? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
             let crashSource = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()  // Tests/
                 .deletingLastPathComponent()  // issue root
@@ -34,7 +34,7 @@ struct RuntimeSendingThunkFreedPointerReproducer {
             let pid = ProcessInfo.processInfo.processIdentifier
             let temporary = URL(fileURLWithPath: NSTemporaryDirectory())
             let swiftCopy = temporary.appendingPathComponent("sending-thunk-freed-pointer-test-\(pid).swift")
-            let program = temporary.appendingPathComponent("sending-thunk-freed-pointer-test-\(pid)")
+            let program = temporary.appendingPathComponent(programName("sending-thunk-freed-pointer-test-\(pid)"))
             try? FileManager.default.removeItem(at: swiftCopy)
             try? FileManager.default.removeItem(at: program)
             guard (try? FileManager.default.copyItem(at: crashSource, to: swiftCopy)) != nil else {
@@ -55,6 +55,7 @@ struct RuntimeSendingThunkFreedPointerReproducer {
             let compileErrors = Pipe()
             compile.standardError = compileErrors
             compile.standardOutput = Pipe()
+            resolveEnv(compile)
             do { try compile.run() } catch {
                 Issue.record("could not launch swiftc: \(error)")
                 return nil
@@ -81,6 +82,7 @@ struct RuntimeSendingThunkFreedPointerReproducer {
             let errors = Pipe()
             run.standardOutput = output
             run.standardError = errors
+            resolveEnv(run)
             do { try run.run() } catch {
                 Issue.record("could not launch the reproduction: \(error)")
                 return nil
@@ -120,7 +122,7 @@ struct RuntimeSendingThunkFreedPointerReproducer {
     }
 }
 
-#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
     /// On macOS, a program built by a toolchain other than Xcode's still loads the system's
     /// Swift runtime, so a snapshot run would test the system's runtime, not the snapshot's.
     /// When the `swiftc` on PATH belongs to such a toolchain, point the loader at its runtime.
@@ -142,5 +144,36 @@ struct RuntimeSendingThunkFreedPointerReproducer {
             }
         #endif
         return environment
+    }
+#endif
+
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
+    /// `/usr/bin/env` does not exist on Windows. There, a process set up to run a tool
+    /// through it runs the tool found on Path instead; elsewhere nothing changes.
+    func resolveEnv(_ process: Process) {
+        #if os(Windows)
+            guard process.executableURL?.path.hasSuffix("/usr/bin/env") == true,
+                let arguments = process.arguments, let name = arguments.first
+            else { return }
+            let path = ProcessInfo.processInfo.environment["Path"] ?? ProcessInfo.processInfo.environment["PATH"] ?? ""
+            for directory in path.split(separator: ";") {
+                let candidate = URL(fileURLWithPath: String(directory))
+                    .appendingPathComponent(name.hasSuffix(".exe") ? name : "\(name).exe")
+                if FileManager.default.fileExists(atPath: candidate.path) {
+                    process.executableURL = candidate
+                    process.arguments = Array(arguments.dropFirst())
+                    return
+                }
+            }
+        #endif
+    }
+
+    /// A program's file name: swiftc writes exactly the -o path, so on Windows it ends in .exe.
+    func programName(_ base: String) -> String {
+        #if os(Windows)
+            return "\(base).exe"
+        #else
+            return base
+        #endif
     }
 #endif

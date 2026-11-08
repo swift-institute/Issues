@@ -1,6 +1,6 @@
 import Testing
 
-#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
     import Foundation
 #endif
 
@@ -23,13 +23,14 @@ import Testing
 struct ASTScopeMemberAttributeMacroOverlappingScopesReproducer {
 
     static func swiftc(_ arguments: [String]) -> (status: Int32, output: String)? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
             process.arguments = ["swiftc"] + arguments
             let output = Pipe()
             process.standardError = output
             process.standardOutput = output
+            resolveEnv(process)
             do { try process.run() } catch { return nil }
             let data = output.fileHandleForReading.readDataToEndOfFile()
             process.waitUntilExit()
@@ -47,7 +48,7 @@ struct ASTScopeMemberAttributeMacroOverlappingScopesReproducer {
     /// `true` when swiftc aborted with the scope overlap, `false` when it accepted the
     /// client, `nil` when inconclusive (including a plugin that did not build).
     static func bugFires() -> Bool? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
             let crashSource = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()  // Tests/
                 .deletingLastPathComponent()  // issue root
@@ -98,3 +99,26 @@ struct ASTScopeMemberAttributeMacroOverlappingScopesReproducer {
         )
     }
 }
+
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
+    /// `/usr/bin/env` does not exist on Windows. There, a process set up to run a tool
+    /// through it runs the tool found on Path instead; elsewhere nothing changes.
+    func resolveEnv(_ process: Process) {
+        #if os(Windows)
+            guard process.executableURL?.path.hasSuffix("/usr/bin/env") == true,
+                let arguments = process.arguments, let name = arguments.first
+            else { return }
+            let path = ProcessInfo.processInfo.environment["Path"] ?? ProcessInfo.processInfo.environment["PATH"] ?? ""
+            for directory in path.split(separator: ";") {
+                let candidate = URL(fileURLWithPath: String(directory))
+                    .appendingPathComponent(name.hasSuffix(".exe") ? name : "\(name).exe")
+                if FileManager.default.fileExists(atPath: candidate.path) {
+                    process.executableURL = candidate
+                    process.arguments = Array(arguments.dropFirst())
+                    return
+                }
+            }
+        #endif
+    }
+
+#endif

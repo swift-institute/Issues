@@ -1,6 +1,6 @@
 import Testing
 
-#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
     import Foundation
 #endif
 
@@ -38,7 +38,7 @@ import Testing
 @Suite
 struct NoncopyableRawLayoutTrailingFieldReproducer {
 
-    #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+    #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
         static let sources = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()  // Tests/
             .deletingLastPathComponent()  // issue root
@@ -54,6 +54,7 @@ struct NoncopyableRawLayoutTrailingFieldReproducer {
             let stderr = Pipe()
             process.standardError = stderr
             process.standardOutput = Pipe()
+            resolveEnv(process)
             do { try process.run() } catch { return nil }
             let data = stderr.fileHandleForReading.readDataToEndOfFile()
             process.waitUntilExit()
@@ -98,7 +99,7 @@ struct NoncopyableRawLayoutTrailingFieldReproducer {
     #endif
 
     static func crashFires() -> Bool? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
             return withStaged("crash", [("Crash.swift.txt", "Crash.swift")]) { work in
                 classify(
                     swiftc(
@@ -118,7 +119,7 @@ struct NoncopyableRawLayoutTrailingFieldReproducer {
     }
 
     static func accessLevelFires() -> Bool? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
             return withStaged("access", [("AccessLevel.swift.txt", "AccessLevel.swift")]) { work in
                 classify(
                     swiftc(
@@ -137,7 +138,7 @@ struct NoncopyableRawLayoutTrailingFieldReproducer {
     }
 
     static func crossModuleFires() -> Bool? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
             let files = [
                 ("CrossModuleCore.swift.txt", "CrossModuleCore.swift"),
                 ("CrossModuleMiddleware.swift.txt", "CrossModuleMiddleware.swift"),
@@ -206,3 +207,26 @@ struct NoncopyableRawLayoutTrailingFieldReproducer {
         Self.expectStillBroken("two raw-layout fields across modules, -O -wmo", Self.crossModuleFires())
     }
 }
+
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
+    /// `/usr/bin/env` does not exist on Windows. There, a process set up to run a tool
+    /// through it runs the tool found on Path instead; elsewhere nothing changes.
+    func resolveEnv(_ process: Process) {
+        #if os(Windows)
+            guard process.executableURL?.path.hasSuffix("/usr/bin/env") == true,
+                let arguments = process.arguments, let name = arguments.first
+            else { return }
+            let path = ProcessInfo.processInfo.environment["Path"] ?? ProcessInfo.processInfo.environment["PATH"] ?? ""
+            for directory in path.split(separator: ";") {
+                let candidate = URL(fileURLWithPath: String(directory))
+                    .appendingPathComponent(name.hasSuffix(".exe") ? name : "\(name).exe")
+                if FileManager.default.fileExists(atPath: candidate.path) {
+                    process.executableURL = candidate
+                    process.arguments = Array(arguments.dropFirst())
+                    return
+                }
+            }
+        #endif
+    }
+
+#endif

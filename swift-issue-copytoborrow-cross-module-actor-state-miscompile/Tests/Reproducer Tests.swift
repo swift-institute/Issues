@@ -1,6 +1,6 @@
 import Testing
 
-#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
     import Foundation
 #endif
 
@@ -22,7 +22,7 @@ struct CopyToBorrowCrossModuleActorStateMiscompileReproducer {
 
     static let runs = 5
 
-    #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+    #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
         static func run(_ arguments: [String], in directory: URL) -> (status: Int32, output: String)? {
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
@@ -31,6 +31,7 @@ struct CopyToBorrowCrossModuleActorStateMiscompileReproducer {
             let pipe = Pipe()
             process.standardOutput = pipe
             process.standardError = pipe
+            resolveEnv(process)
             do { try process.run() } catch { return nil }
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             process.waitUntilExit()
@@ -41,7 +42,7 @@ struct CopyToBorrowCrossModuleActorStateMiscompileReproducer {
     /// `true` when an iteration read stale actor state, `false` when every
     /// iteration of every run was correct, `nil` when inconclusive.
     static func bugFires() -> Bool? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
             let reproducer = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()  // Tests/
                 .deletingLastPathComponent()  // issue root
@@ -124,3 +125,26 @@ struct CopyToBorrowCrossModuleActorStateMiscompileReproducer {
 }
 
 // swiftlint:enable no_try_optional
+
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
+    /// `/usr/bin/env` does not exist on Windows. There, a process set up to run a tool
+    /// through it runs the tool found on Path instead; elsewhere nothing changes.
+    func resolveEnv(_ process: Process) {
+        #if os(Windows)
+            guard process.executableURL?.path.hasSuffix("/usr/bin/env") == true,
+                let arguments = process.arguments, let name = arguments.first
+            else { return }
+            let path = ProcessInfo.processInfo.environment["Path"] ?? ProcessInfo.processInfo.environment["PATH"] ?? ""
+            for directory in path.split(separator: ";") {
+                let candidate = URL(fileURLWithPath: String(directory))
+                    .appendingPathComponent(name.hasSuffix(".exe") ? name : "\(name).exe")
+                if FileManager.default.fileExists(atPath: candidate.path) {
+                    process.executableURL = candidate
+                    process.arguments = Array(arguments.dropFirst())
+                    return
+                }
+            }
+        #endif
+    }
+
+#endif

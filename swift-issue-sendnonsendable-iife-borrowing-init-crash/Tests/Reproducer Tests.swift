@@ -1,6 +1,6 @@
 import Testing
 
-#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
     import Foundation
 #endif
 
@@ -19,7 +19,7 @@ struct SendNonSendableIIFEBorrowingInitCrashReproducer {
     /// `true` when swiftc aborted in SendNonSendable, `false` when the caller
     /// compiled, `nil` when inconclusive.
     static func bugFires() -> Bool? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
             let sources = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()  // Tests/
                 .deletingLastPathComponent()  // issue root
@@ -58,6 +58,7 @@ struct SendNonSendableIIFEBorrowingInitCrashReproducer {
                 let stderr = Pipe()
                 process.standardError = stderr
                 process.standardOutput = FileHandle.nullDevice
+                resolveEnv(process)
                 do { try process.run() } catch { return nil }
                 let errors =
                     String(
@@ -113,3 +114,26 @@ struct SendNonSendableIIFEBorrowingInitCrashReproducer {
         )
     }
 }
+
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
+    /// `/usr/bin/env` does not exist on Windows. There, a process set up to run a tool
+    /// through it runs the tool found on Path instead; elsewhere nothing changes.
+    func resolveEnv(_ process: Process) {
+        #if os(Windows)
+            guard process.executableURL?.path.hasSuffix("/usr/bin/env") == true,
+                let arguments = process.arguments, let name = arguments.first
+            else { return }
+            let path = ProcessInfo.processInfo.environment["Path"] ?? ProcessInfo.processInfo.environment["PATH"] ?? ""
+            for directory in path.split(separator: ";") {
+                let candidate = URL(fileURLWithPath: String(directory))
+                    .appendingPathComponent(name.hasSuffix(".exe") ? name : "\(name).exe")
+                if FileManager.default.fileExists(atPath: candidate.path) {
+                    process.executableURL = candidate
+                    process.arguments = Array(arguments.dropFirst())
+                    return
+                }
+            }
+        #endif
+    }
+
+#endif

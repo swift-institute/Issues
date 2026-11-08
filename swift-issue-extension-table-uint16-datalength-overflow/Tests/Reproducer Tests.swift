@@ -1,6 +1,6 @@
 import Testing
 
-#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
     import Foundation
 #endif
 
@@ -42,7 +42,7 @@ struct ExtensionTableUInt16DataLengthOverflowReproducer {
     /// Returns `true` if the bug fires (crash OR truncation), `false` if fixed,
     /// `nil` if no compiler could be reached / an unrelated failure occurred.
     static func bugFires() -> Bool? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
             let crashSource = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()  // Tests/
                 .deletingLastPathComponent()  // issue root
@@ -109,7 +109,7 @@ struct ExtensionTableUInt16DataLengthOverflowReproducer {
         #endif
     }
 
-    #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+    #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
         /// Runs a command via `/usr/bin/env`, returning (exitStatus, stderr) or (nil, "")
         /// if the process could not be launched.
         private static func run(_ args: [String]) -> (Int32?, String) {
@@ -119,6 +119,7 @@ struct ExtensionTableUInt16DataLengthOverflowReproducer {
             let err = Pipe()
             process.standardError = err
             process.standardOutput = Pipe()
+            resolveEnv(process)
             do { try process.run() } catch { return (nil, "") }
             process.waitUntilExit()
             let text =
@@ -149,3 +150,26 @@ struct ExtensionTableUInt16DataLengthOverflowReproducer {
         #endif
     }
 }
+
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
+    /// `/usr/bin/env` does not exist on Windows. There, a process set up to run a tool
+    /// through it runs the tool found on Path instead; elsewhere nothing changes.
+    func resolveEnv(_ process: Process) {
+        #if os(Windows)
+            guard process.executableURL?.path.hasSuffix("/usr/bin/env") == true,
+                let arguments = process.arguments, let name = arguments.first
+            else { return }
+            let path = ProcessInfo.processInfo.environment["Path"] ?? ProcessInfo.processInfo.environment["PATH"] ?? ""
+            for directory in path.split(separator: ";") {
+                let candidate = URL(fileURLWithPath: String(directory))
+                    .appendingPathComponent(name.hasSuffix(".exe") ? name : "\(name).exe")
+                if FileManager.default.fileExists(atPath: candidate.path) {
+                    process.executableURL = candidate
+                    process.arguments = Array(arguments.dropFirst())
+                    return
+                }
+            }
+        #endif
+    }
+
+#endif

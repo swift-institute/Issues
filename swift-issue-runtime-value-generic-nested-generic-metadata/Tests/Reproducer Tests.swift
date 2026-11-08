@@ -1,6 +1,6 @@
 import Testing
 
-#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
     import Foundation
 #endif
 
@@ -30,7 +30,7 @@ struct RuntimeValueGenericNestedGenericMetadataReproducer {
     /// `true` when the compiled program died on a signal, `false` when it printed
     /// the type name, `nil` when inconclusive.
     static func bugFires() -> Bool? {
-        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+        #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
             let crashSource = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()  // Tests/
                 .deletingLastPathComponent()  // issue root
@@ -41,7 +41,7 @@ struct RuntimeValueGenericNestedGenericMetadataReproducer {
             let pid = ProcessInfo.processInfo.processIdentifier
             let temporary = URL(fileURLWithPath: NSTemporaryDirectory())
             let swiftCopy = temporary.appendingPathComponent("value-generic-nested-metadata-test-\(pid).swift")
-            let program = temporary.appendingPathComponent("value-generic-nested-metadata-test-\(pid)")
+            let program = temporary.appendingPathComponent(programName("value-generic-nested-metadata-test-\(pid)"))
             try? FileManager.default.removeItem(at: swiftCopy)
             try? FileManager.default.removeItem(at: program)
             guard (try? FileManager.default.copyItem(at: crashSource, to: swiftCopy)) != nil else {
@@ -61,6 +61,7 @@ struct RuntimeValueGenericNestedGenericMetadataReproducer {
             let compileErrors = Pipe()
             compile.standardError = compileErrors
             compile.standardOutput = Pipe()
+            resolveEnv(compile)
             do { try compile.run() } catch { return nil }
             _ = compileErrors.fileHandleForReading.readDataToEndOfFile()
             compile.waitUntilExit()
@@ -74,6 +75,7 @@ struct RuntimeValueGenericNestedGenericMetadataReproducer {
             let output = Pipe()
             run.standardOutput = output
             run.standardError = FileHandle.nullDevice
+            resolveEnv(run)
             do { try run.run() } catch { return nil }
             let outputText =
                 String(
@@ -102,7 +104,7 @@ struct RuntimeValueGenericNestedGenericMetadataReproducer {
     }
 }
 
-#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
     /// On macOS, a program built by a toolchain other than Xcode's still loads the system's
     /// Swift runtime, so a snapshot run would test the system's runtime, not the snapshot's.
     /// When the `swiftc` on PATH belongs to such a toolchain, point the loader at its runtime.
@@ -124,5 +126,36 @@ struct RuntimeValueGenericNestedGenericMetadataReproducer {
             }
         #endif
         return environment
+    }
+#endif
+
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
+    /// `/usr/bin/env` does not exist on Windows. There, a process set up to run a tool
+    /// through it runs the tool found on Path instead; elsewhere nothing changes.
+    func resolveEnv(_ process: Process) {
+        #if os(Windows)
+            guard process.executableURL?.path.hasSuffix("/usr/bin/env") == true,
+                let arguments = process.arguments, let name = arguments.first
+            else { return }
+            let path = ProcessInfo.processInfo.environment["Path"] ?? ProcessInfo.processInfo.environment["PATH"] ?? ""
+            for directory in path.split(separator: ";") {
+                let candidate = URL(fileURLWithPath: String(directory))
+                    .appendingPathComponent(name.hasSuffix(".exe") ? name : "\(name).exe")
+                if FileManager.default.fileExists(atPath: candidate.path) {
+                    process.executableURL = candidate
+                    process.arguments = Array(arguments.dropFirst())
+                    return
+                }
+            }
+        #endif
+    }
+
+    /// A program's file name: swiftc writes exactly the -o path, so on Windows it ends in .exe.
+    func programName(_ base: String) -> String {
+        #if os(Windows)
+            return "\(base).exe"
+        #else
+            return base
+        #endif
     }
 #endif
