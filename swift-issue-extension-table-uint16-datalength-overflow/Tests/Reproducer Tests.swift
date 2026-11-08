@@ -133,12 +133,19 @@ struct ExtensionTableUInt16DataLengthOverflowReproducer {
         withKnownIssue(
             "swiftlang/swift#90319 — ExtensionTableInfo uint16 dataLength overflow (Serialization.cpp:239): crash on asserts, silent truncation on release",
             { #expect(fired == false) },
-            // `when: { true }`, NOT `{ fired }`: the `guard let fired … else { return }`
-            // above already skips unreachable / N-A platforms, so known-issue matching must
-            // stay ACTIVE when the bug stops firing — that is what flips the leg RED on an
-            // upstream fix (the cron's whole purpose). `{ fired }` disables matching on a fix,
-            // leaves the body passing, and stays GREEN forever (empirically verified).
-            when: { true }
+            // Gated on the toolchain, never on `fired`: `{ fired }` would turn matching off
+            // when the fix lands, and the leg would stay green forever.
+            when: { Self.beforeFix }
         )
+    }
+
+    /// Fixed on main before 6.5 (swiftlang/swift#90594, merged 2026-07-13); every 6.4 toolchain still has it. From 6.5 on,
+    /// the bug firing again is a regression and fails the test.
+    static var beforeFix: Bool {
+        #if compiler(>=6.5)
+            return false
+        #else
+            return true
+        #endif
     }
 }

@@ -63,7 +63,18 @@ public enum Layout {
                 }
             }
         }
+        findings += manifestFindings(in: root)
         return findings
+    }
+
+    /// The root manifest lists every folder by name, because SwiftPM caches a
+    /// manifest by its text and would not notice a folder added or removed.
+    static func manifestFindings(in root: URL) -> [Finding] {
+        guard let manifest = try? String(contentsOf: root.appendingPathComponent("Package.swift"), encoding: .utf8) else { return [] }
+        let listed = Set(manifest.matches(of: /"(swift-issue-[^"\/]+)"/).map { String($0.output.1) })
+        let present = Set(folders(in: root))
+        return present.subtracting(listed).sorted().map { Finding(folder: $0, message: "not listed in Package.swift's folders, so it isn't built. Add it to the list.") }
+            + listed.subtracting(present).sorted().map { Finding(folder: $0, message: "listed in Package.swift but no such folder exists. Remove it from the list.") }
     }
 
     public static func folders(in root: URL) -> [String] {

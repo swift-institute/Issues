@@ -41,4 +41,11 @@ struct LayoutTests {
         let root = try Self.repository(["swift-issue-closed": ["ISSUE": "3", "Tests/T.swift": "withKnownIssue"]])
         #expect(Layout.findings(in: root) == [])
     }
+
+    @Test func `the manifest's list and the folders must agree`() throws {
+        let root = try Self.repository(["swift-issue-a": Self.good, "swift-issue-b": Self.good])
+        try "let folders = [\n    \"swift-issue-a\",\n    \"swift-issue-gone\",\n]".write(to: root.appendingPathComponent("Package.swift"), atomically: true, encoding: .utf8)
+        let findings = Layout.findings(in: root, openIssues: [12])
+        #expect(findings.map(\.folder) == ["swift-issue-b", "swift-issue-gone"])
+    }
 }

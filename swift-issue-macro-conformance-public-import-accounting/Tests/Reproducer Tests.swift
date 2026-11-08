@@ -27,10 +27,20 @@ import Testing
         func `A public conformance added by a macro counts toward public import use`() throws {
             let fired = try Self.bugFires()
             withKnownIssue(
-                "Swift: macro-generated public declarations do not count toward public import accounting"
-            ) {
-                #expect(!fired)
-            }
+                "Swift: macro-generated public declarations do not count toward public import accounting",
+                { #expect(!fired) },
+                when: { Self.beforeFix }
+            )
+        }
+
+        /// Fixed on main before 6.5 (clean on main-snapshot-2026-10-27; fix PR not identified); every 6.4 toolchain still has it. From 6.5 on,
+        /// the bug firing again is a regression and fails the test.
+        static var beforeFix: Bool {
+            #if compiler(>=6.5)
+                return false
+            #else
+                return true
+            #endif
         }
     }
 #endif

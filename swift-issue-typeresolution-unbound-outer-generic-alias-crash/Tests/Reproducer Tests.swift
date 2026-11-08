@@ -67,7 +67,17 @@ struct TypeResolutionUnboundOuterGenericAliasCrashReproducer {
         withKnownIssue(
             "Type resolution: segfault in applyUnboundGenericArguments for a generic alias through an unbound outer generic",
             { #expect(fired == false) },
-            when: { true }
+            when: { Self.beforeFix }
         )
+    }
+
+    /// Fixed on main before 6.5 (swiftlang/swift#93642, merged 2026-10-28); every 6.4 toolchain still has it. From 6.5 on,
+    /// the bug firing again is a regression and fails the test.
+    static var beforeFix: Bool {
+        #if compiler(>=6.5)
+            return false
+        #else
+            return true
+        #endif
     }
 }
