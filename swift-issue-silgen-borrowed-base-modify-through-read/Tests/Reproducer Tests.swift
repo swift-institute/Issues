@@ -24,7 +24,7 @@ struct Reproducer {
         #endif
     }
 
-    static let markers: [String] = ["getLookupExprBaseLValue"]
+    static let markers: [String] = ["getLookupExprBaseLValue", "!e->getType()->is<LValueType>()"]
 
     #if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
         static func bugFires() -> Bool? {
