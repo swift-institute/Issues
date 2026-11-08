@@ -64,7 +64,7 @@ import Testing
         func `A package reached with and without a trait resolves its trait-gated dependency`()
             throws
         {
-            guard let fired = try Self.bugFires() else { return }
+            guard let fired = try Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
             withKnownIssue(
                 "SwiftPM: a diamond with and without a trait leaves the trait-gated dependency unresolved"
             ) {

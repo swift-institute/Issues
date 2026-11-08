@@ -31,36 +31,53 @@ struct NoncopyableSametypeConditionalConformanceReproducer {
                 .deletingLastPathComponent()  // Tests/
                 .deletingLastPathComponent()  // issue root
                 .appendingPathComponent("Sources/reproducer.swift")
-            guard FileManager.default.fileExists(atPath: source.path) else { return nil }
+            guard FileManager.default.fileExists(atPath: source.path) else {
+                Issue.record("Sources/reproducer.swift is missing")
+                return nil
+            }
 
             let pid = ProcessInfo.processInfo.processIdentifier
             let binary = URL(fileURLWithPath: NSTemporaryDirectory())
                 .appendingPathComponent(programName("sametype-conformance-test-\(pid)"))
+            // REASON: best-effort cleanup of a scratch file.
+            // swiftlint:disable:next no_try_optional
             defer { try? FileManager.default.removeItem(at: binary) }
 
-            func run(
-                _ executable: String,
-                _ arguments: [String]
-            ) -> (
-                signaled: Bool, status: Int32
-            )? {
+            func run(_ executable: String, _ arguments: [String]) -> (crashed: Bool, status: Int32, output: String)? {
                 let process = Process()
                 process.executableURL = URL(fileURLWithPath: executable)
                 process.environment = withToolchainRuntime(ProcessInfo.processInfo.environment)
                 process.arguments = arguments
-                process.standardError = Pipe()
-                process.standardOutput = Pipe()
+                let pipe = Pipe()
+                process.standardError = pipe
+                process.standardOutput = pipe
                 resolveEnv(process)
-                do { try process.run() } catch { return nil }
+                do { try process.run() } catch {
+                    Issue.record("could not launch \(executable): \(error)")
+                    return nil
+                }
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
                 process.waitUntilExit()
-                return (process.terminationReason == .uncaughtSignal, process.terminationStatus)
+                // A crash is a signal on Unix; on Windows it is an NTSTATUS exit code
+                // (0xC0000005 and the like), which is negative as an Int32.
+                #if os(Windows)
+                    let crashed = process.terminationReason == .uncaughtSignal || process.terminationStatus < 0
+                #else
+                    let crashed = process.terminationReason == .uncaughtSignal
+                #endif
+                return (crashed, process.terminationStatus, String(decoding: data, as: UTF8.self))
             }
 
-            guard let compile = run("/usr/bin/env", ["swiftc", source.path, "-o", binary.path]),
-                !compile.signaled, compile.status == 0
-            else { return nil }
+            guard let compile = run("/usr/bin/env", ["swiftc", source.path, "-o", binary.path]) else { return nil }
+            guard !compile.crashed, compile.status == 0 else {
+                Issue.record("the reproduction didn't compile (exit \(compile.status)):\n\(compile.output.suffix(3000))")
+                return nil
+            }
             guard let execution = run(binary.path, []) else { return nil }
-            return execution.signaled
+            if execution.crashed { return true }
+            if execution.status == 0 { return false }
+            Issue.record("the program ended without a verdict (exit \(execution.status)):\n\(execution.output.suffix(3000))")
+            return nil
         #else
             return nil
         #endif
@@ -68,7 +85,7 @@ struct NoncopyableSametypeConditionalConformanceReproducer {
 
     @Test
     func reproducer() {
-        guard let fired = Self.bugFires() else { return }
+        guard let fired = Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
         withKnownIssue(
             "~Copyable same-type conditional conformance: compiled reproducer crashes at runtime (SIGSEGV)",
             { #expect(fired == false) },

@@ -36,9 +36,11 @@ struct Reproducer {
                 return nil
             }
             var result = run(launcher, ["-enable-library-evolution", "-enable-experimental-feature", "Lifetimes", "-c", "repro.swift", "-o", "repro.o"], in: work, seconds: 600)
+            var statuses = [result.status]
             // The crash is intermittent on release builds: try again before concluding it didn't fire.
             for _ in 1..<3 where !result.timedOut && !markers.contains(where: result.output.contains) {
                 result = run(launcher, ["-enable-library-evolution", "-enable-experimental-feature", "Lifetimes", "-c", "repro.swift", "-o", "repro.o"], in: work, seconds: 600)
+                statuses.append(result.status)
             }
             if result.timedOut {
                 Issue.record("swiftc ran past its time limit")
@@ -46,7 +48,7 @@ struct Reproducer {
             }
             if markers.contains(where: result.output.contains) { return true }
             if result.status == 0 { return false }
-            Issue.record("swiftc failed without the record's markers (exit \(result.status)):\n\(result.output.suffix(3000))")
+            Issue.record("swiftc failed without the record's markers (exit statuses \(statuses)):\n\(result.output.suffix(3000))")
             return nil
         }
 
@@ -110,7 +112,7 @@ struct Reproducer {
 
     @Test
     func reproducer() {
-        guard let fired = Self.bugFires() else { return }
+        guard let fired = Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
         withKnownIssue(
             "swift-institute/Issues#192",
             { #expect(fired == false) },

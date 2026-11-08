@@ -130,7 +130,7 @@ struct ExtensionTableUInt16DataLengthOverflowReproducer {
 
     @Test
     func reproducer() {
-        guard let fired = Self.bugFires() else { return }  // no compiler / inconclusive → skip
+        guard let fired = Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }  // no compiler / inconclusive → skip
         withKnownIssue(
             "swiftlang/swift#90319 — ExtensionTableInfo uint16 dataLength overflow (Serialization.cpp:239): crash on asserts, silent truncation on release",
             { #expect(fired == false) },

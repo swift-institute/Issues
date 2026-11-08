@@ -101,7 +101,7 @@ struct RawlayoutNoncopyableExtensionRejectionReproducer {
 
     @Test
     func reproducer() {
-        guard let fired = Self.bugFires() else { return }
+        guard let fired = Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
         withKnownIssue(
             "@_rawLayout ~Copyable extension rejects-valid: 'Element' does not conform to protocol 'Copyable'",
             { #expect(fired == false) },

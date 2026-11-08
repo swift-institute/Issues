@@ -151,7 +151,7 @@ struct NoncopyableAssoctypeSecondProtocolBodylessWitnessReproducer {
     @Test
     func reproducer() {
         guard let fired = Self.bugFires() else {
-            // No reachable compiler, or an unrelated failure — nothing to assert.
+            Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)")
             return
         }
 

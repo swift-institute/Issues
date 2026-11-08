@@ -52,7 +52,7 @@ import Testing
 
         @Test
         func `A public conformance added by a macro counts toward public import use`() throws {
-            guard let fired = try Self.bugFires() else { return }
+            guard let fired = try Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
             withKnownIssue(
                 "Swift: macro-generated public declarations do not count toward public import accounting",
                 { #expect(!fired) },

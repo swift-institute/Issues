@@ -59,7 +59,7 @@ struct ProtocolTypealiasParentNoncanonicalReproducer {
 
     @Test
     func reproducer() {
-        guard let fired = Self.bugFires() else { return }
+        guard let fired = Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
 
         withKnownIssue(
             "swiftlang/swift#86202 (Issues#21; still fires with -g on main after swiftlang/swift#93790) — `A.P` with `typealias A = E` forms a non-canonical CanType",

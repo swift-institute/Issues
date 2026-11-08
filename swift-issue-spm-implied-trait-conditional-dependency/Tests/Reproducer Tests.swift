@@ -62,7 +62,7 @@ import Testing
 
         @Test
         func `An implied trait's conditional dependency trait request resolves`() throws {
-            guard let fired = try Self.bugFires() else { return }
+            guard let fired = try Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
             withKnownIssue(
                 "SwiftPM: implied trait does not activate conditional dependency trait requests"
             ) {

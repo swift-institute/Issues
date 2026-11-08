@@ -86,6 +86,7 @@ struct RuntimeValueGenericNestedGenericMetadataReproducer {
 
             if run.terminationReason == .uncaughtSignal { return true }
             if run.terminationStatus == 0 && outputText.contains(".Node<Swift.Int>") { return false }
+            Issue.record("the program ended without the record's output (exit \(run.terminationStatus)):\n\(outputText.suffix(3000))")
             return nil
         #else
             return nil
@@ -94,7 +95,7 @@ struct RuntimeValueGenericNestedGenericMetadataReproducer {
 
     @Test
     func reproducer() {
-        guard let fired = Self.bugFires() else { return }
+        guard let fired = Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
 
         withKnownIssue(
             "swift-institute/Issues#105 — runtime SIGSEGV: metadata for a generic type nested in a value-generic type",

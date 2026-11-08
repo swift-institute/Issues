@@ -107,7 +107,7 @@ struct SILGenCleanupNestedClosureBorrowingNoncopyableReproducer {
 
     @Test
     func reproducer() {
-        guard let fired = Self.bugFires() else { return }
+        guard let fired = Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
         withKnownIssue(
             "SILGenCleanup ownership-verifier abort: nested local closure capturing a borrowing ~Copyable parameter of an enclosing closure literal",
             { #expect(fired == false) },

@@ -175,7 +175,7 @@ struct NoncopyableRawLayoutTrailingFieldReproducer {
 
     static func expectStillBroken(_ trigger: String, _ fired: Bool?) {
         guard let fired else {
-            // No reachable compiler, or an unrelated failure — nothing to assert.
+            Issue.record("no verdict for \(trigger): the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)")
             return
         }
         withKnownIssue(

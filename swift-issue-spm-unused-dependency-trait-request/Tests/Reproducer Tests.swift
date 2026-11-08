@@ -54,7 +54,7 @@ import Testing
         func `A trait requested on an unused dependency does not leave its guarded dependency unresolved`()
             throws
         {
-            guard let fired = try Self.bugFires() else { return }
+            guard let fired = try Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
             withKnownIssue(
                 "SwiftPM: a trait requested on a dependency no target uses requires the dependency it guards, which is never resolved"
             ) {

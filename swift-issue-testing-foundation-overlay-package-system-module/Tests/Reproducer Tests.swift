@@ -38,7 +38,7 @@ import Testing
         func `A test target importing Foundation builds beside a package module named System`()
             throws
         {
-            guard let fired = try Self.bugFires() else { return }
+            guard let fired = try Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
             withKnownIssue(
                 "Swift: the _Testing_Foundation overlay resolves a package module named System"
             ) {

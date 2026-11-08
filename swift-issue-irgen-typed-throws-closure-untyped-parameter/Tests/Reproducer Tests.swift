@@ -106,7 +106,7 @@ struct Reproducer {
 
     @Test
     func reproducer() {
-        guard let fired = Self.bugFires() else { return }
+        guard let fired = Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
         withKnownIssue(
             "swift-institute/Issues#209",
             { #expect(fired == false) },

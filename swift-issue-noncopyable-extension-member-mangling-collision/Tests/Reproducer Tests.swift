@@ -60,7 +60,7 @@ struct NoncopyableExtensionMemberManglingCollisionReproducer {
 
     @Test
     func reproducer() {
-        guard let fired = Self.bugFires() else { return }
+        guard let fired = Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
         withKnownIssue(
             "~Copyable extension-member mangling collision: body member and redundant-with-default extension member mangle identically",
             { #expect(fired == false) },

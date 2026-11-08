@@ -112,7 +112,7 @@ struct RuntimeSendingThunkFreedPointerReproducer {
 
     @Test
     func reproducer() {
-        guard let fired = Self.bugFires() else { return }
+        guard let fired = Self.bugFires() else { Issue.record("no verdict: the reproduction could not be staged, built or run here (a reason recorded above, if any, says why)"); return }
 
         withKnownIssue(
             "Task allocator: freed pointer was not the last allocation, sending closure through a generic async value",
