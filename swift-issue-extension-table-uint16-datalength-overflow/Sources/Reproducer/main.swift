@@ -33,9 +33,9 @@
         process.standardError = err
         process.standardOutput = Pipe()
         do { try process.run() } catch { return (nil, "") }
-        process.waitUntilExit()
         let text =
             String(data: err.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+        process.waitUntilExit()
         return (process.terminationStatus, text)
     }
 

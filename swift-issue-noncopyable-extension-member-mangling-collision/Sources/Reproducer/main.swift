@@ -43,12 +43,12 @@
         FileHandle.standardError.write(Data("inconclusive: could not launch swiftc\n".utf8))
         exit(0)
     }
-    process.waitUntilExit()
     let errText =
         String(
             data: stderr.fileHandleForReading.readDataToEndOfFile(),
             encoding: .utf8
         ) ?? ""
+    process.waitUntilExit()
     try? FileManager.default.removeItem(at: objectFile)
 
     if errText.contains("multiple definitions of symbol") {

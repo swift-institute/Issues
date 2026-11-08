@@ -80,13 +80,13 @@ struct SILGenCleanupNestedClosureBorrowingNoncopyableReproducer {
                 Issue.record("could not launch swiftc: \(error)")
                 return nil
             }
-            process.waitUntilExit()
 
             let errText =
                 String(
                     data: stderr.fileHandleForReading.readDataToEndOfFile(),
                     encoding: .utf8
                 ) ?? ""
+            process.waitUntilExit()
 
             // Release toolchains abort in SILGenCleanup; an assertions build of 6.4.x asserts
             // on the same capture earlier, in SILGenFunction::emitCaptures.

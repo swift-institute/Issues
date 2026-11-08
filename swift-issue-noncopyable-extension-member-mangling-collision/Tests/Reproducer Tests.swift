@@ -43,12 +43,12 @@ struct NoncopyableExtensionMemberManglingCollisionReproducer {
             process.standardOutput = Pipe()
             resolveEnv(process)
             do { try process.run() } catch { return nil }
-            process.waitUntilExit()
             let errText =
                 String(
                     data: stderr.fileHandleForReading.readDataToEndOfFile(),
                     encoding: .utf8
                 ) ?? ""
+            process.waitUntilExit()
 
             if errText.contains("multiple definitions of symbol") { return true }
             if process.terminationStatus == 0 { return false }

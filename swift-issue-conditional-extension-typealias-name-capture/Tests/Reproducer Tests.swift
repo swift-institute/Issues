@@ -76,13 +76,13 @@ struct ConditionalExtensionTypealiasNameCaptureReproducer {
 
             resolveEnv(process)
             do { try process.run() } catch { return nil }
-            process.waitUntilExit()
 
             let errText =
                 String(
                     data: stderr.fileHandleForReading.readDataToEndOfFile(),
                     encoding: .utf8
                 ) ?? ""
+            process.waitUntilExit()
 
             if errText.contains("error: type 'Substrate' does not conform to protocol 'P'") {
                 return true  // the bogus rejection — the bug's signature

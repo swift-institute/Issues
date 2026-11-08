@@ -1,9 +1,30 @@
 // Stages a package whose extension macro adds a public conformance naming a type
 // from a second module, and builds the client with `public import` and with `import`.
 // Exit 1 when `public import` is reported unused (bug fired), 0 when it builds.
-#if canImport(Glibc) || canImport(Musl) || canImport(Darwin)
+#if canImport(Glibc) || canImport(Musl) || canImport(Darwin) || os(Windows)
 
     import Foundation
+
+/// `/usr/bin/env` does not exist on Windows. There, a process set up to run a tool
+/// through it runs the tool found on Path instead; elsewhere nothing changes.
+func resolveEnv(_ process: Process) {
+    #if os(Windows)
+        guard process.executableURL?.path.hasSuffix("/usr/bin/env") == true,
+            let arguments = process.arguments, let name = arguments.first
+        else { return }
+        let path = ProcessInfo.processInfo.environment["Path"] ?? ProcessInfo.processInfo.environment["PATH"] ?? ""
+        for directory in path.split(separator: ";") {
+            let candidate = URL(fileURLWithPath: String(directory))
+                .appendingPathComponent(name.hasSuffix(".exe") ? name : "\(name).exe")
+            if FileManager.default.fileExists(atPath: candidate.path) {
+                process.executableURL = candidate
+                process.arguments = Array(arguments.dropFirst())
+                return
+            }
+        }
+    #endif
+}
+
 
     let fixture = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
         .appendingPathComponent("Fixture")
@@ -22,6 +43,7 @@
         let pipe = Pipe()
         process.standardOutput = pipe
         process.standardError = pipe
+        resolveEnv(process)
         try process.run()
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
         process.waitUntilExit()

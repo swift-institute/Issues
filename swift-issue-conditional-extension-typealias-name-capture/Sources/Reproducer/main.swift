@@ -58,13 +58,13 @@
         FileHandle.standardError.write(Data("could not launch swiftc: \(error)\n".utf8))
         exit(0)
     }
-    process.waitUntilExit()
 
     let errText =
         String(
             data: stderr.fileHandleForReading.readDataToEndOfFile(),
             encoding: .utf8
         ) ?? ""
+    process.waitUntilExit()
 
     try? FileManager.default.removeItem(at: swiftCopy)
 

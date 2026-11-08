@@ -45,12 +45,12 @@
         exit(0)
     }
 
-    process.waitUntilExit()
     let output =
         String(
             data: stderr.fileHandleForReading.readDataToEndOfFile(),
             encoding: .utf8
         ) ?? ""
+    process.waitUntilExit()
 
     let bugFired =
         output.contains("MoveOnlyTypeEliminator")

@@ -56,12 +56,12 @@ struct BorrowingActorClosureReproducer {
                 return nil
             }
 
-            process.waitUntilExit()
             let output =
                 String(
                     data: stderr.fileHandleForReading.readDataToEndOfFile(),
                     encoding: .utf8
                 ) ?? ""
+            process.waitUntilExit()
 
             // Release toolchains crash in MoveOnlyTypeEliminator; an assertions toolchain's
             // SIL verifier rejects the same leaked `@moveOnly` value first.

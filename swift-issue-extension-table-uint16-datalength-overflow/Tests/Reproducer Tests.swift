@@ -121,9 +121,9 @@ struct ExtensionTableUInt16DataLengthOverflowReproducer {
             process.standardOutput = Pipe()
             resolveEnv(process)
             do { try process.run() } catch { return (nil, "") }
-            process.waitUntilExit()
             let text =
                 String(data: err.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+            process.waitUntilExit()
             return (process.terminationStatus, text)
         }
     #endif

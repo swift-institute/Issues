@@ -23,11 +23,13 @@ import Testing
             try process.run()
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             process.waitUntilExit()
+            let output = String(decoding: data, as: UTF8.self)
+            // Exit 1 alone is not a verdict: a script that fails to compile exits 1 too.
             switch process.terminationStatus {
-            case 1: return true
+            case 1 where output.contains("bug fired"): return true
             case 0: return false
             default:
-                Issue.record("the reproducer ended without a verdict (exit \(process.terminationStatus)):\n\(String(decoding: data, as: UTF8.self).suffix(3000))")
+                Issue.record("the reproducer ended without a verdict (exit \(process.terminationStatus)):\n\(output.suffix(3000))")
                 return nil
             }
         }

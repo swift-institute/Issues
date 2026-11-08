@@ -6,7 +6,7 @@ import Testing
     @Suite
     struct SPMUnusedDependencyTraitRequestReproducer {
         /// Runs the standalone reproducer; `true` when SwiftPM fails to resolve its graph.
-        static func bugFires() throws -> Bool {
+        static func bugFires() throws -> Bool? {
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
             process.arguments = [
@@ -16,19 +16,29 @@ import Testing
                     .deletingLastPathComponent()
                     .appendingPathComponent("repro.swift").path,
             ]
-            process.standardOutput = FileHandle.nullDevice
-            process.standardError = FileHandle.nullDevice
+            let pipe = Pipe()
+            process.standardOutput = pipe
+            process.standardError = pipe
             resolveEnv(process)
             try process.run()
+            let data = pipe.fileHandleForReading.readDataToEndOfFile()
             process.waitUntilExit()
-            return process.terminationStatus == 1
+            let output = String(decoding: data, as: UTF8.self)
+            // Exit 1 alone is not a verdict: a script that fails to compile exits 1 too.
+            switch process.terminationStatus {
+            case 1 where output.contains("exhausted attempts to resolve the dependencies graph"): return true
+            case 0: return false
+            default:
+                Issue.record("the reproducer ended without a verdict (exit \(process.terminationStatus)):\n\(output.suffix(3000))")
+                return nil
+            }
         }
 
         @Test
         func `A trait requested on an unused dependency does not leave its guarded dependency unresolved`()
             throws
         {
-            let fired = try Self.bugFires()
+            guard let fired = try Self.bugFires() else { return }
             withKnownIssue(
                 "SwiftPM: a trait requested on a dependency no target uses requires the dependency it guards, which is never resolved"
             ) {

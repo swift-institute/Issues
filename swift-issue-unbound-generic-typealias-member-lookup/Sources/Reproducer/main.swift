@@ -45,13 +45,13 @@
         FileHandle.standardError.write(Data("inconclusive: could not launch swiftc\n".utf8))
         exit(0)
     }
-    process.waitUntilExit()
 
     let errText =
         String(
             data: stderr.fileHandleForReading.readDataToEndOfFile(),
             encoding: .utf8
         ) ?? ""
+    process.waitUntilExit()
 
     if errText.contains("is not a member type of type") && errText.contains("Alias") {
         FileHandle.standardError.write(

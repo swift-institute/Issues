@@ -51,12 +51,12 @@ struct UnboundGenericTypealiasMemberLookupReproducer {
             process.standardOutput = Pipe()
             resolveEnv(process)
             do { try process.run() } catch { return nil }
-            process.waitUntilExit()
             let errText =
                 String(
                     data: stderr.fileHandleForReading.readDataToEndOfFile(),
                     encoding: .utf8
                 ) ?? ""
+            process.waitUntilExit()
 
             if errText.contains("is not a member type of type") && errText.contains("Alias") {
                 return true

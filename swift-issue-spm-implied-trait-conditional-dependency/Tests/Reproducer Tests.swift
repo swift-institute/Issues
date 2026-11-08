@@ -6,7 +6,7 @@ import Testing
     @Suite
     struct SPMImpliedTraitConditionalDependencyReproducer {
         /// Runs the standalone reproducer; `true` when SwiftPM fails to resolve the fixture graph.
-        static func bugFires() throws -> Bool {
+        static func bugFires() throws -> Bool? {
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
             process.arguments = [
@@ -16,17 +16,27 @@ import Testing
                     .deletingLastPathComponent()
                     .appendingPathComponent("Sources/Reproducer/main.swift").path,
             ]
-            process.standardOutput = FileHandle.nullDevice
-            process.standardError = FileHandle.nullDevice
+            let pipe = Pipe()
+            process.standardOutput = pipe
+            process.standardError = pipe
             resolveEnv(process)
             try process.run()
+            let data = pipe.fileHandleForReading.readDataToEndOfFile()
             process.waitUntilExit()
-            return process.terminationStatus == 1
+            let output = String(decoding: data, as: UTF8.self)
+            // Exit 1 alone is not a verdict: a script that fails to compile exits 1 too.
+            switch process.terminationStatus {
+            case 1 where output.contains("bug fired"): return true
+            case 0: return false
+            default:
+                Issue.record("the reproducer ended without a verdict (exit \(process.terminationStatus)):\n\(output.suffix(3000))")
+                return nil
+            }
         }
 
         @Test
         func `An implied trait's conditional dependency trait request resolves`() throws {
-            let fired = try Self.bugFires()
+            guard let fired = try Self.bugFires() else { return }
             withKnownIssue(
                 "SwiftPM: implied trait does not activate conditional dependency trait requests"
             ) {
