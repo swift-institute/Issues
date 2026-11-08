@@ -69,8 +69,7 @@ struct SendNonSendableIIFEBorrowingInitCrashReproducer {
                 return (process.terminationStatus, errors)
             }
 
-            guard
-                let library = swiftc([
+            let library = swiftc([
                     "-emit-module", "-parse-as-library",
                     "-module-name", "ReproLib",
                     "-swift-version", "6",
@@ -78,9 +77,11 @@ struct SendNonSendableIIFEBorrowingInitCrashReproducer {
                     "ReproLib.swift",
                     "-emit-module-path", "ReproLib.swiftmodule",
                     "-o", "ReproLib.o",
-                ]),
-                library.status == 0
-            else { return nil }
+                ])
+            guard let library, library.status == 0 else {
+                Issue.record("ReproLib didn't build:\n\(library.map { String($0.errors.suffix(3000)) } ?? "swiftc did not launch")")
+                return nil
+            }
 
             guard
                 let caller = swiftc([
@@ -97,6 +98,7 @@ struct SendNonSendableIIFEBorrowingInitCrashReproducer {
             if caller.status != 0
                 && (caller.errors.contains("\"SendNonSendable\"") || caller.errors.contains("While silgen closureexpr")) { return true }
             if caller.status == 0 { return false }
+            Issue.record("swiftc failed without the record's markers (exit \(caller.status)):\n\(caller.errors.suffix(3000))")
             return nil
         #else
             return nil

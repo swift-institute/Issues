@@ -4,6 +4,10 @@
 #elseif canImport(Glibc)
     import func Glibc.fflush
     import var Glibc.stdout
+#elseif canImport(ucrt)
+    import func ucrt.fflush
+    import func ucrt.__acrt_iob_func
+    let stdout = __acrt_iob_func(1)
 #endif
 
 protocol P {}

@@ -62,6 +62,7 @@ struct SILGenSendableTypedThrowsClosureCastReproducer {
 
             if process.terminationStatus != 0 && errText.contains("While silgen closureexpr") { return true }
             if process.terminationStatus == 0 { return false }
+            Issue.record("swiftc failed without the record's markers (exit \(process.terminationStatus)):\n\(errText.suffix(3000))")
             return nil
         #else
             return nil
