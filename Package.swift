@@ -26,7 +26,7 @@ let folders = [
     "swift-issue-ast-verifier-member-attribute-macro-enum-case",
     "swift-issue-astscope-member-attribute-macro-overlapping-scopes",
     "swift-issue-async-uint128-argument-aarch64-linux",
-    "swift-issue-borrowing-actor-closure",
+    "swift-issue-borrowing-class-to-anyobject-conversion",
     "swift-issue-conditional-extension-typealias-name-capture",
     "swift-issue-copypropagation-noncopyable-observer-leak",
     "swift-issue-copytoborrow-cross-module-actor-state-miscompile",

@@ -1,0 +1,2 @@
+class S {}
+func f(_ s: borrowing S) { _ = s as AnyObject }
