@@ -44,6 +44,7 @@ body:
         - New issue
         - Comment on an existing open issue
         - Cherry-pick request on the fixing pull request
+        - Reopen request on a closed issue that still reproduces
         - Do not file (fixed on main, a duplicate that needs nothing, or not a toolchain bug)
   - type: textarea
     id: signature

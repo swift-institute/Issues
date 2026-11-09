@@ -109,6 +109,7 @@ extension Report {
         case newIssue = "New issue"
         case comment = "Comment on an existing open issue"
         case cherryPick = "Cherry-pick request on the fixing pull request"
+        case reopen = "Reopen request on a closed issue that still reproduces"
         case none = "Do not file"
 
         public init?(option: String) {

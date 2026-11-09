@@ -52,6 +52,16 @@ struct ReadinessTests {
             .contains { $0.field == .action && $0.message.contains("fixed on main") })
     }
 
+    @Test func `a reopen request needs the bug still failing on main`() throws {
+        let date = Readiness.snapshotDate("2026-10-22")!
+        let reopen = try Self.fixture("complete.md")
+            .replacingOccurrences(of: "Cherry-pick request on the fixing pull request", with: "Reopen request on a closed issue that still reproduces")
+        #expect(Report(body: reopen).action == .reopen)
+        // The fixture's main row does not reproduce: nothing to reopen.
+        #expect(Readiness.ready.findings(Report(body: reopen), on: date)
+            .contains { $0.field == .action && $0.message.contains("nothing to reopen") })
+    }
+
     @Test func `our own code and third-party imports never go upstream`() throws {
         let body = try Self.fixture("complete.md")
             .replacingOccurrences(of: "swiftlang/swift (compiler, standard library, runtime, SourceKit)", with: "Our own code (never upstream)")

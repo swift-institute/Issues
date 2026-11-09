@@ -42,7 +42,7 @@ gh workflow run toolchain-matrix.yml -R swift-institute/Issues -f issue=<N> -f t
 
 ## 3. Duplicates and draft
 
-Search the owner's repository, open and closed, for issues and pull requests: use the failing function, the phase, the assertion text and the API. An open duplicate turns the filing into a comment that adds what it lacks. A closed one sends you back to the matrix. The draft uses the owner's own template headings and stands alone: no machine-local paths, no "available on request", no Institute context.
+Search the owner's repository, open and closed, for issues and pull requests: use the failing function, the phase, the assertion text and the API. An open duplicate turns the filing into a comment that adds what it lacks. A closed one sends you back to the matrix. If the latest main snapshot still fails (a fix that was reverted, or one that missed this case), the filing is a request to reopen that issue: one comment with the matrix, the minimal reproduction and what shows the fix is not on main. The draft uses the owner's own template headings and stands alone: no machine-local paths, no "available on request", no Institute context.
 
 ## 4. Independent review
 

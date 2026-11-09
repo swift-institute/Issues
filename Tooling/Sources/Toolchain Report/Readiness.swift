@@ -96,6 +96,7 @@ public enum Readiness: String, CaseIterable, Sendable {
             let fixedOnMain = main.result.hasPrefix("does not reproduce") || main.result.hasPrefix("fixed")
             require(!(fixedOnMain && action == .newIssue), .action, "fixed on main: do not file a new issue (find the fix; a cherry-pick request is the most that applies)")
             require(!(!fixedOnMain && action == .cherryPick), .action, "still fails on main, so there is no fix to cherry-pick")
+            require(!(fixedOnMain && action == .reopen), .action, "fixed on main: there is nothing to reopen")
         }
 
         // Duplicate search.
@@ -106,7 +107,7 @@ public enum Readiness: String, CaseIterable, Sendable {
         }
         require(duplicates.range(of: #"\d{4}-\d{2}-\d{2}"#, options: .regularExpression) != nil, .duplicates, "state the date of the search")
         require(duplicates.contains("Verdict:"), .duplicates, "end with a `Verdict:` line")
-        if action == .comment || action == .cherryPick {
+        if action == .comment || action == .cherryPick || action == .reopen {
             require(duplicates.range(of: #"(#\d+|github\.com/\S+/(issues|pull)/\d+)"#, options: .regularExpression) != nil, .duplicates, "name the issue or pull request the comment goes on")
         }
 
