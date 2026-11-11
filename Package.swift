@@ -30,6 +30,7 @@ let folders = [
     "swift-issue-conditional-extension-typealias-name-capture",
     "swift-issue-copypropagation-noncopyable-observer-leak",
     "swift-issue-copytoborrow-cross-module-actor-state-miscompile",
+    "swift-issue-debuginfo-implicit-typealias-conditional-extension",
     "swift-issue-debuginfo-integer-generic-above-uint32",
     "swift-issue-extension-table-uint16-datalength-overflow",
     "swift-issue-irgen-apply-argument-thin-function-large-struct",
