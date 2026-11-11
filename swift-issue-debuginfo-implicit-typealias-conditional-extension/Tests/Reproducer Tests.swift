@@ -4,7 +4,7 @@ import Testing
     import Foundation
 #endif
 
-// Debug info aborts with "Failed to reconstruct type" for a local whose type is the implicit Element typealias that lands in a conditional conformance extension written before the type (assertions builds).
+// Debug info aborts with "Failed to reconstruct type" for a variable whose type is the implicit Element typealias that lands in a conditional conformance written before an unconditional one (assertions builds).
 // The record is the issue named in ../ISSUE; the reproduction is
 // Sources/Reproducer/Repro.swift.txt, run out of process. A failure that carries none
 // of the record's markers is recorded, never skipped: the bug changed.
