@@ -9,8 +9,5 @@ actor A<T> {
 }
 
 @main struct M {
-  static func main() async {
-    await A<Int>().f()
-    print("ok")
-  }
+  static func main() async { await A<Int>().f() }
 }
