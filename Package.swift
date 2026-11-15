@@ -61,6 +61,7 @@ let folders = [
     "swift-issue-sendnonsendable-iife-borrowing-init-crash",
     "swift-issue-sil-verifier-error-debug-value-async-typed-throws-call",
     "swift-issue-silgen-borrowed-base-modify-through-read",
+    "swift-issue-silgen-embedded-top-level-await-null-main-actor",
     "swift-issue-silgen-pack-expansion-tuple-argument",
     "swift-issue-silgen-property-wrapper-noncopyable-member",
     "swift-issue-silgen-sendable-typed-throws-closure-cast",
