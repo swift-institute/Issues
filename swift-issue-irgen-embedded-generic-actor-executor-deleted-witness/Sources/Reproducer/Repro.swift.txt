@@ -1,0 +1,16 @@
+import _Concurrency
+
+actor I {}
+
+actor A<T> {
+  let i = I()
+  nonisolated var unownedExecutor: UnownedSerialExecutor { i.unownedExecutor }
+  func f() {}
+}
+
+@main struct M {
+  static func main() async {
+    await A<Int>().f()
+    print("ok")
+  }
+}

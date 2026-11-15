@@ -1,0 +1,3 @@
+protocol B { associatedtype D: Equatable }
+struct C<D: Equatable>: B {}
+let b: any B = C<Int>()
