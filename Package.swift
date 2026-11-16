@@ -72,6 +72,7 @@ let folders = [
     "swift-issue-spm-diamond-trait-conditional-dependency",
     "swift-issue-spm-dotted-test-target-runner-linux",
     "swift-issue-spm-implied-trait-conditional-dependency",
+    "swift-issue-spm-manifest-cache-environment-recompile",
     "swift-issue-spm-unused-dependency-trait-request",
     "swift-issue-static-exclusivity-library-evolution-noncopyable-span",
     "swift-issue-swift-format-shorthand-drops-module-selector",
